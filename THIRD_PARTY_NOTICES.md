@@ -34,6 +34,25 @@ licence. The full licence texts follow the list.
 - Source: <https://github.com/adobe-fonts/source-serif>, <https://github.com/adobe-fonts/source-sans>
   and <https://github.com/adobe-fonts/source-code-pro>; packaged by <https://fontsource.org>.
 
+## CodeMirror 6
+
+- What: the text editor of the live split editor ([interaction.md](docs/spec/interaction.md#the-live-split-editor)):
+  line numbers, editing, undo, completion and diagnostic marks. Aerie adds its own Lines colouring,
+  indenting and completion on top (`src/app/editor.ts`) and loads the editor only when an author
+  presses "Edit". Packages, each used unmodified:
+  - `@codemirror/autocomplete` 6.20.4, `@codemirror/commands` 6.11.1, `@codemirror/language` 6.13.1,
+    `@codemirror/lint` 6.9.7, `@codemirror/state` 6.7.6, `@codemirror/streamparser` 6.0.0 and
+    `@codemirror/view` 6.43.15 - Copyright (C) 2018-2021 by Marijn Haverbeke and others;
+  - `@lezer/common` 1.5.4, `@lezer/highlight` 1.2.5 and `@lezer/lr` 1.4.11 - Copyright (C) 2018 by
+    Marijn Haverbeke and others;
+  - `style-mod` 4.1.4 - Copyright (C) 2018 by Marijn Haverbeke and others;
+  - `w3c-keyname` 2.2.8 - Copyright (C) 2016 by Marijn Haverbeke and others;
+  - `crelt` 1.0.7 - Copyright (C) 2020 by Marijn Haverbeke;
+  - `@marijn/find-cluster-break` 1.0.4 - Copyright (C) 2024 by Marijn Haverbeke.
+- Licence: MIT, text below (the same text in every package, with the copyright line above).
+- Source: <https://codemirror.net> and <https://github.com/codemirror>; the exact releases are the
+  npm packages named above, for example <https://www.npmjs.com/package/@codemirror/view/v/6.43.15>.
+
 ## Eclipse Public License 2.0
 
 ```text
@@ -396,4 +415,28 @@ INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
 OTHER DEALINGS IN THE FONT SOFTWARE.
+```
+
+## MIT License
+
+```text
+Copyright (C) <the years and holders listed above for each package>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 ```

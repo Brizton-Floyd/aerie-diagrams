@@ -138,6 +138,10 @@ input {
     sans-serif;
   cursor: pointer;
 }
+.tools {
+  display: flex;
+  gap: 8px;
+}
 /* A fixed width, so the bar's geometry is the same in every face and on every system. */
 .tool.theme {
   width: 64px;
@@ -302,4 +306,277 @@ input {
     400 14px 'Source Code Pro',
     ui-monospace,
     monospace;
+}
+
+/* The stage's notice ("Showing the last version without errors", INT-806 and INT-854) and what is
+   shown over the stage, such as watch mode's error list (INT-852). */
+.notice {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  z-index: 1;
+  margin: 0;
+  padding: 6px 14px;
+  transform: translateX(-50%);
+  background: var(--aerie-paper);
+  border: 1px solid var(--aerie-rule);
+  border-left: 4px solid var(--aerie-accent);
+  font:
+    400 14px 'Source Serif 4',
+    Georgia,
+    serif;
+  white-space: nowrap;
+}
+.overlay {
+  position: absolute;
+  top: 56px;
+  left: 24px;
+  right: 24px;
+  z-index: 1;
+  max-height: 50%;
+  overflow: auto;
+}
+.overlay .problems {
+  margin: 0;
+}
+.overlay .problems ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+[hidden] {
+  display: none !important;
+}
+
+/* INT-801: the split editor takes the sidebar's place, 40% of the window and at least 360 px. */
+.body.editing {
+  grid-template-columns: var(--editor-width, 40vw) minmax(0, 1fr) 344px;
+}
+/* A fixed width, so the bar's geometry is the same in every face and on every system. */
+.tool.edit {
+  width: 64px;
+}
+.tool:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.tool:disabled:hover {
+  background: var(--aerie-paper);
+  color: inherit;
+}
+.editor-pane {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--aerie-paper);
+  border-right: 1px solid var(--aerie-rule);
+}
+.editor-bar {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--aerie-rule);
+}
+.editor-host {
+  flex: 1;
+  min-height: 0;
+}
+.divider {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  bottom: 0;
+  z-index: 2;
+  width: 7px;
+  cursor: col-resize;
+}
+.divider:hover {
+  background: var(--aerie-rule);
+}
+
+/* INT-806: the error list below the editor, errors before warnings. */
+.errors {
+  flex: none;
+  max-height: 30%;
+  overflow: auto;
+  margin: 0;
+  padding: 6px 0;
+  list-style: none;
+  border-top: 1px solid var(--aerie-rule);
+}
+.errors:empty {
+  display: none;
+}
+.errors button {
+  display: block;
+  width: 100%;
+  padding: 5px 14px 5px 12px;
+  border: 0;
+  border-left: 4px solid var(--aerie-accent);
+  background: none;
+  text-align: left;
+  font:
+    400 14px/1.4 'Source Serif 4',
+    Georgia,
+    serif;
+  cursor: pointer;
+}
+.errors .warning button {
+  border-left-color: var(--aerie-muted);
+}
+.errors button:hover {
+  background: var(--aerie-band-0);
+}
+
+/* INT-801: while editing, the breadcrumb's view title opens a menu of views and scenarios. */
+.crumb-title {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: underline dotted var(--aerie-contour-soft);
+  text-underline-offset: 4px;
+}
+.crumb-menu {
+  inset: auto;
+  margin: 0;
+  min-width: 220px;
+  padding: 6px;
+  background: var(--aerie-paper);
+  color: var(--aerie-ink);
+  border: 1px solid var(--aerie-rule);
+  border-radius: 3px;
+}
+.crumb-menu .heading {
+  margin: 6px 8px 4px;
+  font:
+    600 12px 'Source Sans 3',
+    system-ui,
+    sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--aerie-muted);
+}
+.crumb-menu button {
+  display: block;
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 3px;
+  background: none;
+  text-align: left;
+  font:
+    400 15px 'Source Serif 4',
+    Georgia,
+    serif;
+  cursor: pointer;
+}
+.crumb-menu button:hover {
+  background: var(--aerie-band-0);
+}
+
+/* INT-802: the editor in Source Code Pro, each line coloured by its kind. Three classes deep, so
+   these win over CodeMirror's own theme. */
+.editor-host .cm-editor {
+  height: 100%;
+  background: var(--aerie-paper);
+  color: var(--aerie-edge);
+}
+.editor-host .cm-editor .cm-scroller {
+  font:
+    400 13.5px/20px 'Source Code Pro',
+    ui-monospace,
+    monospace;
+}
+.editor-host .cm-editor .cm-gutters {
+  background: var(--aerie-paper);
+  color: var(--aerie-muted);
+  border-right: 1px solid var(--aerie-rule);
+}
+.editor-host .cm-editor .cm-activeLine,
+.editor-host .cm-editor .cm-activeLineGutter {
+  background: var(--aerie-band-0);
+}
+.editor-host .cm-editor .cm-cursor {
+  border-left-color: var(--aerie-ink);
+}
+.editor-host .cm-editor .cm-selectionBackground {
+  background: var(--aerie-accent-soft) !important;
+}
+.editor-host .cm-editor.cm-focused {
+  outline: 2px solid var(--aerie-accent);
+  outline-offset: -2px;
+}
+.editor-host .cm-editor .lines-keyword {
+  color: var(--aerie-accent-ink);
+}
+.editor-host .cm-editor .lines-id {
+  color: var(--aerie-ink);
+}
+.editor-host .cm-editor .lines-rewording {
+  color: var(--aerie-trail-back);
+}
+.editor-host .cm-editor .lines-description {
+  color: var(--aerie-muted);
+}
+.editor-host .cm-editor .lines-comment {
+  color: var(--aerie-contour);
+}
+.editor-host .cm-editor .lines-tag {
+  color: var(--aerie-muted);
+  background: var(--aerie-band-0);
+}
+.editor-host .cm-editor .lines-kind {
+  color: var(--aerie-accent-ink);
+  background: var(--aerie-accent-soft);
+}
+
+/* INT-806: diagnostics underlined with a wavy line (`accent` for errors, `muted` for warnings),
+   marked in the margin, with the message on hover. */
+.editor-host .cm-editor .cm-lintRange-error,
+.editor-host .cm-editor .cm-lintRange-warning {
+  background-image: none;
+  text-decoration: underline wavy var(--aerie-accent);
+  text-decoration-skip-ink: none;
+  text-underline-offset: 3px;
+}
+.editor-host .cm-editor .cm-lintRange-warning {
+  text-decoration-color: var(--aerie-muted);
+}
+.editor-host .cm-editor .cm-lint-marker {
+  content: normal;
+  width: 8px;
+  height: 8px;
+  margin: 6px 3px;
+  border-radius: 50%;
+  background: var(--aerie-accent);
+}
+.editor-host .cm-editor .cm-lint-marker-warning {
+  background: var(--aerie-muted);
+}
+.editor-host .cm-editor .cm-tooltip {
+  background: var(--aerie-paper);
+  color: var(--aerie-ink);
+  border: 1px solid var(--aerie-rule);
+  font:
+    400 14px 'Source Sans 3',
+    system-ui,
+    sans-serif;
+}
+.editor-host .cm-editor .cm-diagnostic-error {
+  border-left-color: var(--aerie-accent);
+}
+.editor-host .cm-editor .cm-diagnostic-warning {
+  border-left-color: var(--aerie-muted);
+}
+.editor-host .cm-editor .cm-tooltip-autocomplete ul li[aria-selected] {
+  background: var(--aerie-band-1);
+  color: var(--aerie-ink);
+}
+.editor-host .cm-editor .cm-completionDetail {
+  color: var(--aerie-muted);
 }

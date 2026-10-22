@@ -9,6 +9,16 @@ export {
   type DiagnosticId,
   type Severity,
 } from './catalogue.ts';
+export {
+  completionsAt,
+  highlight,
+  newLineIndent,
+  type CompletionOption,
+  type Completions,
+  type OptionKind,
+  type Token,
+  type TokenKind,
+} from './editing.ts';
 export { format, type FormatResult } from './format.ts';
 export { ICON_NAMES, type IconName } from './icons.ts';
 export * from './model.ts';

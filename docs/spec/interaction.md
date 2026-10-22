@@ -209,21 +209,26 @@ walkthrough step.
 - **INT-807** The "Format" button and Shift+Alt+F run the formatter (LANG-931) on the text.
 - **INT-808** The editor works on a copy of the model in the page. The text is kept on the device
   between visits until the author chooses "Discard changes". "Download" saves it as a `.aerie` file.
-  Shared links always describe the published model, not the author's copy.
+  The diagram shows the copy from the moment the editor opens until the page is reloaded; a page
+  opened afresh shows the published model until the author presses "Edit" again. Shared links always
+  describe the published model, not the author's copy.
 
 ## Watch mode
 
 For authors who write in their own editor.
 
 - **INT-851** `aerie watch <file>` starts a small server on `127.0.0.1` only (port 4310, or the one
-  given with `--port`), prints its address, opens it in the browser (unless `--no-open`) and shows the
-  file's diagram.
+  given with `--port`; `--port 0` takes any free port), prints its address, opens it in the browser
+  (unless `--no-open`) and shows the file's diagram. It serves the built page (`npm run build`) and
+  answers only requests addressed to `127.0.0.1` or `localhost`, so a web page elsewhere cannot read
+  the file.
 - **INT-852** Each time the file is saved (changes within 100 ms count as one), Aerie checks it and
   sends the result to every open page. A page updates exactly as the split editor does (INT-805 and
   INT-806), keeping the reader's picture, and shows the error list over the stage when there are
   errors.
 - **INT-853** The terminal prints the diagnostics of every check in the `aerie check` format
-  (LANG-962), then "Updated." or "Showing the last version without errors."
+  (LANG-962), then "Updated." or "Showing the last version without errors.", or, while no version of
+  the file has been without errors, "There is nothing to show until the errors are fixed."
 - **INT-854** When the file cannot be read (it was moved or deleted), the page keeps the last picture
   and says, for example, "Aerie cannot read lotto.aerie: there is no file with that name any more."
   It recovers when the file comes back.

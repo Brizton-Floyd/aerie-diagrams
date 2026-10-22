@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 // The `aerie` command: check, format and print the model of Lines files
-// (docs/spec/language.md, section 14).
+// (docs/spec/language.md, section 14), and watch one (docs/spec/interaction.md, INT-851).
 import { readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { format, serializeModel, type Diagnostic } from '../lines/index.ts';
 import { check as checkSource } from '../model/index.ts';
+import { CannotWatch, WATCH_PORT, openInBrowser, watch, type Watching } from './watch.ts';
 
 /** Everything the command touches, so tests can run it without a disk or a terminal. */
 export interface Io {
@@ -13,12 +14,18 @@ export interface Io {
   write: (path: string, text: string) => void;
   stdout: (text: string) => void;
   stderr: (text: string) => void;
+  /**
+   * `aerie watch`: starts watching (with the folder of the built page filled in) and resolves when
+   * the author stops it (Ctrl+C). Without it, the command cannot watch.
+   */
+  watch?: (start: (pages: string) => Promise<Watching>) => Promise<void>;
 }
 
 const USAGE = `Usage:
   aerie check <file>... [--format text|json]   report every problem in each file
   aerie format <file>... [--check | --stdout]  format each file in place (also: aerie fmt)
   aerie model <file>                           print the canonical model of a file
+  aerie watch <file> [--port <n>] [--no-open]  show the file's diagram, updated on every save
 `;
 
 /** Thrown for a command that cannot run (exit code 2, LANG-966). */
@@ -157,9 +164,47 @@ function model(args: string[], io: Io): number {
   return 0;
 }
 
-/** Runs the command with its arguments and returns the exit code (LANG-966). */
-export function run(args: string[], io: Io): number {
+/** INT-851: `aerie watch <file>`, which runs until the author stops it. */
+async function watchFile(args: string[], io: Io): Promise<number> {
+  try {
+    const options = readOptions('watch', args, ['--no-open'], ['--port']);
+    const [path, ...others] = options.files;
+    if (path === undefined || others.length > 0) {
+      throw new CannotRun('aerie watch shows one file. Name just one.');
+    }
+    const given = options.values.get('--port');
+    const port = given === undefined ? WATCH_PORT : Number(given);
+    if (!/^\d+$/.test(given ?? '0') || port > 65535) {
+      throw new CannotRun(`--port is a number from 0 to 65535, not ${given ?? ''}.`);
+    }
+    if (io.watch === undefined) throw new CannotRun('aerie watch needs a terminal to run in.');
+    await io.watch((pages) =>
+      watch({
+        file: path,
+        port,
+        pages,
+        out: io.stdout,
+        line: diagnosticLine,
+        ...(options.flags.has('--no-open') ? {} : { open: openInBrowser }),
+      }),
+    );
+    return 0;
+  } catch (error) {
+    if (error instanceof CannotRun || error instanceof CannotWatch) {
+      io.stderr(`${error.message}\n`);
+      return 2;
+    }
+    throw error;
+  }
+}
+
+/**
+ * Runs the command with its arguments and returns the exit code (LANG-966); `aerie watch` returns
+ * it once the author stops watching.
+ */
+export function run(args: string[], io: Io): number | Promise<number> {
   const [command, ...rest] = args;
+  if (command === 'watch') return watchFile(rest, io);
   try {
     switch (command) {
       case 'check':
@@ -203,6 +248,17 @@ export const nodeIo: Io = {
   },
   stdout: (text) => process.stdout.write(text),
   stderr: (text) => process.stderr.write(text),
+  watch: async (start) => {
+    const watching = await start(fileURLToPath(new URL('../../dist/', import.meta.url)));
+    await new Promise<void>((stopped) => {
+      process.once('SIGINT', () => {
+        void watching.close().then(() => {
+          process.stdout.write('Stopped watching.\n');
+          stopped();
+        });
+      });
+    });
+  },
 };
 
 function isEntryPoint(): boolean {
@@ -216,5 +272,7 @@ function isEntryPoint(): boolean {
 }
 
 if (isEntryPoint()) {
-  process.exitCode = run(process.argv.slice(2), nodeIo);
+  void Promise.resolve(run(process.argv.slice(2), nodeIo)).then((code) => {
+    process.exitCode = code;
+  });
 }
