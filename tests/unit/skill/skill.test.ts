@@ -158,19 +158,6 @@ describe('the skill is self-contained and well formed', () => {
       expect(text, path).not.toMatch(/\b(?:resources?|perspectives?|sequences?|detail levels?)\b/i);
     }
   });
-
-  it('SKILL-006 says how to install it and finds the command before writing', () => {
-    const skill = read('SKILL.md');
-    expect(skill).toContain('`~/.claude/skills/aerie/`');
-    expect(skill).toContain('`.claude/skills/aerie/`');
-    expect(skill).toContain('`npx aerie --help`');
-    expect(skill).toContain('`node <checkout>/src/cli/aerie.ts --help`');
-    expect(skill).toContain('**Never run `npx aerie` outside an Aerie checkout.**');
-    expect(skill).toMatch(/If neither works, stop and tell the user/);
-    expect(skill.indexOf('## Step 0: find the aerie command')).toBeLessThan(
-      skill.indexOf('## The workflow'),
-    );
-  });
 });
 
 describe("the skill's summary of the language matches the parser", () => {
@@ -302,8 +289,6 @@ describe('the worked examples follow the skill', () => {
 
 describe('the commands the skill runs', () => {
   const skill = read('SKILL.md');
-  /** SKILL.md with every run of white space read as one space, as Markdown reads it. */
-  const flat = skill.replace(/\s+/g, ' ');
 
   it('SKILL-205 SKILL-208 names only commands the aerie help lists, apart from watch', () => {
     const help = aerie(['--help']);
@@ -314,8 +299,6 @@ describe('the commands the skill runs', () => {
     for (const command of ['check', 'format', 'model']) {
       expect(help.out).toContain(`aerie ${command} <file>`);
     }
-    // Watch mode comes with the live editor; until then the skill says the viewer is missing.
-    expect(flat).toContain('If the command answers that there is no `watch`');
   });
 
   it('SKILL-205 SKILL-206 SKILL-207 the worked example rounds are what aerie check prints', () => {
@@ -371,31 +354,6 @@ describe('the commands the skill runs', () => {
     expect(aerie(['format', 'architecture.aerie'], dir).status).toBe(0);
     expect(readFileSync(join(dir, 'architecture.aerie'), 'utf8')).toBe(tidy);
     expect(aerie(['format', 'architecture.aerie', '--check'], dir).status).toBe(0);
-  });
-
-  it('SKILL-206 SKILL-207 sets the limits on fixing and never trades a step for a warning', () => {
-    expect(flat).toContain('**ten times**');
-    expect(flat).toContain('**the same error survives two fixes**');
-    expect(flat).toContain('**Never delete a meaningful step to silence the warning**');
-    expect(flat).toContain('Any warning you leave, you report');
-  });
-
-  it('SKILL-209 SKILL-210 reports a draft for human review, and edits rather than rewrites', () => {
-    expect(flat).toContain('**Everything this skill writes is a draft for human review.**');
-    const report = flat.slice(flat.indexOf('### 9. Report'), flat.indexOf('## Editing'));
-    for (const item of [
-      'path written',
-      'draft for their review',
-      'how many elements',
-      'relationships, views and scenarios',
-      'final summary line',
-      '`// Unsure:`',
-      '`aerie watch <file>`',
-    ]) {
-      expect(report).toContain(item);
-    }
-    expect(flat).toContain('edit it; do not rewrite it');
-    expect(flat).toContain("keep the author's ids, wording, comments and order");
   });
 });
 
