@@ -348,6 +348,21 @@ export function distanceToRoute(box: Box, points: readonly Point[]): number {
   return best;
 }
 
+/** LAYOUT-006: every route segment is horizontal or vertical, and no segment has no length. */
+function routesSquare(picture: Picture, findings: Finding[]): void {
+  for (const [id, edge] of Object.entries(picture.layout.result.edges)) {
+    edge.points.forEach((a, i) => {
+      const b = edge.points[i + 1];
+      if (b === undefined) return;
+      if (a.x === b.x && a.y === b.y) {
+        findings.push({ rule: 'LAYOUT-006', message: `the route of ${id} repeats a point` });
+      } else if (a.x !== b.x && a.y !== b.y) {
+        findings.push({ rule: 'LAYOUT-006', message: `the route of ${id} has a slanted segment` });
+      }
+    });
+  }
+}
+
 /** Whether a route passes through the inside of a box. */
 function onRoute(box: Box, points: readonly Point[]): boolean {
   return points.some((a, i) => {
@@ -407,6 +422,7 @@ export function checkStructure(
   labelsClear(picture, findings);
   everyRelationshipDrawn(semantics, picture, findings);
   linesGoAround(picture, findings);
+  routesSquare(picture, findings);
   labelsBeside(picture, findings);
   return findings;
 }

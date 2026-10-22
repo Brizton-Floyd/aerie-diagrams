@@ -218,6 +218,22 @@ describe('structure rule checks', () => {
     );
   });
 
+  it('LAYOUT-006 catches a slanted or repeated route point', () => {
+    const bent = copy();
+    const edge = bent.result.edges['user->website'];
+    const first = edge?.points[0];
+    if (edge === undefined || first === undefined) throw new Error('user->website is drawn');
+    edge.points = [
+      first,
+      { ...first },
+      { x: first.x + 3, y: first.y + 40 },
+      ...edge.points.slice(1),
+    ];
+    const messages = check(bent).map((each) => each.message);
+    expect(messages).toContain('the route of user->website repeats a point');
+    expect(messages).toContain('the route of user->website has a slanted segment');
+  });
+
   it('LAYOUT-006 catches a label lying on its own route', () => {
     const on = copy();
     const edge = on.result.edges['user->website'];

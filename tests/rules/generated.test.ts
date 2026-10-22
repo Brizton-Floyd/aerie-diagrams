@@ -15,7 +15,10 @@ import { states } from './pictures.ts';
 
 const ENGINE = inProcessEngine();
 
-describe.each(generatedModels(1, 40))('generated model $seed', ({ semantics }) => {
+// Seeds where ELK leaves jogs near a pixel wide at container borders (LAYOUT-006 straightening).
+const JOGGED = [73, 120, 270, 987, 1011, 1049, 1218].flatMap((seed) => generatedModels(seed, 1));
+
+describe.each([...generatedModels(1, 40), ...JOGGED])('generated model $seed', ({ semantics }) => {
   const layouter = new Layouter(semantics, ENGINE);
 
   it('RULE-001 to RULE-007 and RULE-009 hold on every view and zoom state', async () => {
