@@ -136,7 +136,12 @@ are in [overview.md](overview.md#reading-this-spec).
 | ----- | ----------------------------------------------------------------------------------------------------------------- | ---------------------- |
 | unit  | The skill's files are well formed; every Lines example in it passes `aerie check` without errors and is formatted | SKILL-001 to SKILL-006 |
 | unit  | The skill's summary of the language matches the parser: the same keywords and line kinds                          | SKILL-101 to SKILL-108 |
-| unit  | The commands the skill runs exist and print what the skill expects                                                | SKILL-201 to SKILL-210 |
+| unit  | The worked examples mark what they could not confirm; the commands the skill runs exist and print what it expects | SKILL-203 to SKILL-208 |
+
+SKILL-201, SKILL-202, SKILL-209 and SKILL-210 (agreeing scope, reading the project, reporting, and
+editing rather than rewriting) have no unit test: they are verified by human review of the skill and
+by the dry run recorded in [voting-app.md](../skill-dry-runs/voting-app.md), and again by A11's record
+(SKILL-301).
 
 The skill's behaviour on a real project is shown in A11, where it drafts the Lotto sample; the
 transcript summary is committed with that slice (SKILL-301).
