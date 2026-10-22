@@ -20,7 +20,14 @@ every human working here follows these rules on every task:
      `GLOSSARY.md`, `tickets/`);
    - the clean prototypes in `/Users/briztonfloyd/Desktop/firstmate/data/ilo-own-language/`,
      `.../ilo-own-layout/` and `.../ilo-own-look/`;
-   - general, product-neutral references (language and library docs, package registries, standards).
+   - general, product-neutral references (language and library docs, package registries, standards);
+   - the task's own firstmate instructions (the brief firstmate dispatches for the task, for
+     example `/Users/briztonfloyd/Desktop/firstmate/data/<task>/brief.md`);
+   - product-neutral firstmate tooling (for example scripts in
+     `/Users/briztonfloyd/Desktop/firstmate/bin/`).
+
+   These allowances never extend to the sources banned in rule 1.
+
 3. **Keep a read log** for every task (below). If you are unsure whether a source is allowed, do not
    open it; ask.
 4. If you open a forbidden source by accident, stop, record it in your read log, and report it
