@@ -1,0 +1,5 @@
+website: Website
+screen-api: Screen API
+website asks screen-api for picks
+website calls Screen-api
+website calls the API.

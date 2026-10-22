@@ -1,0 +1,90 @@
+{
+  "format": "aerie-model/1",
+  "id": "words",
+  "title": {
+    "base": "Words with spaces",
+    "set": {}
+  },
+  "about": {
+    "base": null,
+    "set": {},
+    "add": {}
+  },
+  "audiences": [
+    {
+      "id": "exec",
+      "name": "Executive",
+      "code": false
+    },
+    {
+      "id": "manager",
+      "name": "Manager",
+      "code": false
+    },
+    {
+      "id": "engineer",
+      "name": "Engineer",
+      "code": true
+    }
+  ],
+  "defaultAudience": "manager",
+  "elements": [
+    {
+      "id": "web",
+      "parent": null,
+      "name": {
+        "base": "Website | main",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Shows [things] and a \\ backslash",
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "api",
+      "parent": null,
+      "name": {
+        "base": "Screen API",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "subject": "web",
+      "verb": {
+        "base": "calls [v2] on",
+        "set": {}
+      },
+      "object": "api",
+      "kind": "runtime",
+      "about": {
+        "base": "Descriptions keep \\| and \\[ as written.",
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "views": [],
+  "scenarios": [],
+  "walkthroughs": []
+}

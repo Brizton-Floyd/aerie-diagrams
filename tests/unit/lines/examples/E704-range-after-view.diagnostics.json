@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E704",
+    "severity": "error",
+    "line": 4,
+    "column": 14,
+    "endLine": 4,
+    "endColumn": 17,
+    "message": "`main` is a view, so this step takes element ids after the colon, not step numbers."
+  }
+]

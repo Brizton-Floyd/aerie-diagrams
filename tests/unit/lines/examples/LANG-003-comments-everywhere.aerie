@@ -1,0 +1,4 @@
+web: Website
+  > Read the guide at https://example.com//guide // not a comment
+    // a comment in the middle of a description
+    and the paragraph carries on.

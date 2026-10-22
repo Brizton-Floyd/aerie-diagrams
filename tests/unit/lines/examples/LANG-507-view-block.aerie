@@ -1,0 +1,5 @@
+web: Website
+view main: Main
+  > Shown when nothing is selected.
+  @exec: Big picture
+  @exec > For executives.

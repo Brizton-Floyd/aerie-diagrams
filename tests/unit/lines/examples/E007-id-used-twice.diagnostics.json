@@ -1,0 +1,29 @@
+[
+  {
+    "id": "E007",
+    "severity": "error",
+    "line": 3,
+    "column": 1,
+    "endLine": 3,
+    "endColumn": 4,
+    "message": "`web` is already used on line 1. Every element, view, scenario and walkthrough needs its own id."
+  },
+  {
+    "id": "E007",
+    "severity": "error",
+    "line": 5,
+    "column": 6,
+    "endLine": 5,
+    "endColumn": 9,
+    "message": "`api` is already used on line 2. Every element, view, scenario and walkthrough needs its own id."
+  },
+  {
+    "id": "E007",
+    "severity": "error",
+    "line": 6,
+    "column": 10,
+    "endLine": 6,
+    "endColumn": 13,
+    "message": "`web` is already used on line 1. Every element, view, scenario and walkthrough needs its own id."
+  }
+]

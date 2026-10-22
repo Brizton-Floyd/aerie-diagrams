@@ -1,0 +1,20 @@
+[
+  {
+    "id": "E302",
+    "severity": "error",
+    "line": 3,
+    "column": 3,
+    "endLine": 3,
+    "endColumn": 4,
+    "message": "There is already `@exec:` wording for this on line 2. Keep one."
+  },
+  {
+    "id": "E302",
+    "severity": "error",
+    "line": 7,
+    "column": 3,
+    "endLine": 7,
+    "endColumn": 4,
+    "message": "There is already `@exec:` wording for this on line 6. Keep one."
+  }
+]

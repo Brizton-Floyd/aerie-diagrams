@@ -1,0 +1,7 @@
+web: Website
+api: Screen API
+db: Database
+web calls api
+web calls db
+scenario flow: Flow
+  web calls api, db

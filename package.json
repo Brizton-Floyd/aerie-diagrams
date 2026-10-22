@@ -5,6 +5,9 @@
   "description": "Aerie Diagrams - one model, every audience.",
   "license": "UNLICENSED",
   "type": "module",
+  "bin": {
+    "aerie": "src/cli/aerie.ts"
+  },
   "engines": {
     "node": ">=24"
   },

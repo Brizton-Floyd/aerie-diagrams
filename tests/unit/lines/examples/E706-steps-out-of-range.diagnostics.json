@@ -1,0 +1,29 @@
+[
+  {
+    "id": "E706",
+    "severity": "error",
+    "line": 8,
+    "column": 14,
+    "endLine": 8,
+    "endColumn": 15,
+    "message": "The steps of `flow` run from 1 to 2, so `3` cannot be played."
+  },
+  {
+    "id": "E706",
+    "severity": "error",
+    "line": 9,
+    "column": 14,
+    "endLine": 9,
+    "endColumn": 17,
+    "message": "The steps of `flow` run from 1 to 2, so `0-1` cannot be played."
+  },
+  {
+    "id": "E706",
+    "severity": "error",
+    "line": 10,
+    "column": 14,
+    "endLine": 10,
+    "endColumn": 17,
+    "message": "The steps of `flow` run from 1 to 2, so `2-1` cannot be played."
+  }
+]

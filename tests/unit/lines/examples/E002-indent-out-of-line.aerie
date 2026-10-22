@@ -1,0 +1,5 @@
+suite: Suite
+    web: Website
+      page: Page
+   api: Screen API
+db: Database

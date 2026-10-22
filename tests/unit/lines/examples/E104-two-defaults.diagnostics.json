@@ -1,0 +1,20 @@
+[
+  {
+    "id": "E104",
+    "severity": "error",
+    "line": 1,
+    "column": 27,
+    "endLine": 1,
+    "endColumn": 34,
+    "message": "Only one audience can be the default, but `a` and `b` are both marked `(default)`."
+  },
+  {
+    "id": "E104",
+    "severity": "error",
+    "line": 1,
+    "column": 46,
+    "endLine": 1,
+    "endColumn": 53,
+    "message": "Only one audience can be the default, but `a` and `c` are both marked `(default)`."
+  }
+]

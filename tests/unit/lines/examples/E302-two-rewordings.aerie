@@ -1,0 +1,7 @@
+web: Website
+  @exec: Our site
+  @exec: | Our tagline
+api: Screen API
+web calls api
+  @exec: uses
+  @exec: talks to

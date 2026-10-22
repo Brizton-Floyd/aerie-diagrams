@@ -1,0 +1,9 @@
+// @ rewording, > description, keyword lines, `id:` elements, and `id word` sentences.
+model kinds: Line kinds
+web: Website
+  > A description.
+  @exec: Site
+api: Screen API
+web calls api
+view main: Main
+  show web, api

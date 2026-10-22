@@ -1,0 +1,20 @@
+[
+  {
+    "id": "E201",
+    "severity": "error",
+    "line": 2,
+    "column": 8,
+    "endLine": 2,
+    "endColumn": 11,
+    "message": "There is no icon called `wbe`. Did you mean `web`? The icons are: `person`, `stack`, `web`, `api`, `gear`, `module`, `route`, `dice`, `search`, `books`, `grid`, `monitor`, `cylinder`, `history`, `refresh`, `document`, `archive`, `building`, `box`."
+  },
+  {
+    "id": "E201",
+    "severity": "error",
+    "line": 4,
+    "column": 8,
+    "endLine": 4,
+    "endColumn": 17,
+    "message": "There is no icon called `spaceship`. The icons are: `person`, `stack`, `web`, `api`, `gear`, `module`, `route`, `dice`, `search`, `books`, `grid`, `monitor`, `cylinder`, `history`, `refresh`, `document`, `archive`, `building`, `box`."
+  }
+]

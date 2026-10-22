@@ -21,6 +21,15 @@ npm run check
 `npm run check` is the single gate: typecheck, lint, unit tests, layout rule checks, goldens,
 screenshots and browser journeys. CI runs the same command on every push and pull request.
 
+To check, format or print the model of a Lines file
+([docs/spec/language.md](docs/spec/language.md#14-command-line-tools)):
+
+```sh
+npx aerie check samples/lotto.aerie
+npx aerie format samples/lotto.aerie
+npx aerie model samples/lotto.aerie
+```
+
 ## Where to look
 
 - [AGENTS.md](AGENTS.md) - how to work here, including the clean-room rules (mandatory).

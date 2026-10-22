@@ -1,0 +1,25 @@
+web: Website
+  view inner: Inner
+  show web
+  step web
+  open web
+  > fine here
+api: Screen API
+  icon api
+    icon web
+  @exec: Our API
+    > nothing goes here
+web calls api
+> top-level description
+@exec: top-level rewording
+view main: Main
+  icon web
+  db: Database
+  web calls api
+scenario flow: Flow
+  web calls api
+    web calls api
+walkthrough tour: Tour
+  step main
+    for exec
+      kind code

@@ -1,0 +1,47 @@
+[
+  {
+    "id": "E008",
+    "severity": "error",
+    "line": 2,
+    "column": 1,
+    "endLine": 2,
+    "endColumn": 4,
+    "message": "There is no element called `api`."
+  },
+  {
+    "id": "E008",
+    "severity": "error",
+    "line": 2,
+    "column": 17,
+    "endLine": 2,
+    "endColumn": 22,
+    "message": "There is no element called `wrong`."
+  },
+  {
+    "id": "E004",
+    "severity": "error",
+    "line": 4,
+    "column": 1,
+    "endLine": 4,
+    "endColumn": 2,
+    "message": "Aerie cannot read this line. A line starts with an element id and a colon, a keyword such as `view`, `>` for a description, `@` for an audience's wording, or an element id for a sentence."
+  },
+  {
+    "id": "E009",
+    "severity": "error",
+    "line": 7,
+    "column": 14,
+    "endLine": 7,
+    "endColumn": 15,
+    "message": "This `[` has no closing `]`."
+  },
+  {
+    "id": "E008",
+    "severity": "error",
+    "line": 8,
+    "column": 11,
+    "endLine": 8,
+    "endColumn": 18,
+    "message": "There is no element called `nothing`."
+  }
+]

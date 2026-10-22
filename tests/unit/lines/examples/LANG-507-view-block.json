@@ -1,0 +1,77 @@
+{
+  "format": "aerie-model/1",
+  "id": null,
+  "title": {
+    "base": null,
+    "set": {}
+  },
+  "about": {
+    "base": null,
+    "set": {},
+    "add": {}
+  },
+  "audiences": [
+    {
+      "id": "exec",
+      "name": "Executive",
+      "code": false
+    },
+    {
+      "id": "manager",
+      "name": "Manager",
+      "code": false
+    },
+    {
+      "id": "engineer",
+      "name": "Engineer",
+      "code": true
+    }
+  ],
+  "defaultAudience": "manager",
+  "elements": [
+    {
+      "id": "web",
+      "parent": null,
+      "name": {
+        "base": "Website",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "relationships": [],
+  "views": [
+    {
+      "id": "main",
+      "title": {
+        "base": "Main",
+        "set": {
+          "exec": "Big picture"
+        }
+      },
+      "about": {
+        "base": "Shown when nothing is selected.",
+        "set": {
+          "exec": "For executives."
+        },
+        "add": {}
+      },
+      "show": [],
+      "kinds": [
+        "runtime"
+      ]
+    }
+  ],
+  "scenarios": [],
+  "walkthroughs": []
+}

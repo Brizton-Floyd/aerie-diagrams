@@ -1,0 +1,7 @@
+suite: Suite
+  web: Website
+view main: Main
+walkthrough tour: Tour
+  step main
+    open web
+    close suite, nothing

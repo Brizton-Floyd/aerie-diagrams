@@ -1,0 +1,3 @@
+web: Website [service]
+view main: Main
+  show [servcie], [store]

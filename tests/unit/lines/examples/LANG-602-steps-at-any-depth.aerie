@@ -1,0 +1,8 @@
+suite: Suite
+  web: Website
+    page: Page
+  api: Screen API
+page calls api
+scenario flow: Flow
+  page calls api
+  api returns data to page

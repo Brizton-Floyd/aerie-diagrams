@@ -1,0 +1,107 @@
+{
+  "format": "aerie-model/1",
+  "id": null,
+  "title": {
+    "base": null,
+    "set": {}
+  },
+  "about": {
+    "base": null,
+    "set": {},
+    "add": {}
+  },
+  "audiences": [
+    {
+      "id": "exec",
+      "name": "Executive",
+      "code": false
+    },
+    {
+      "id": "manager",
+      "name": "Manager",
+      "code": false
+    },
+    {
+      "id": "engineer",
+      "name": "Engineer",
+      "code": true
+    }
+  ],
+  "defaultAudience": "manager",
+  "elements": [
+    {
+      "id": "web",
+      "parent": null,
+      "name": {
+        "base": "Website",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "relationships": [],
+  "views": [
+    {
+      "id": "main",
+      "title": {
+        "base": "Main",
+        "set": {}
+      },
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      },
+      "show": [],
+      "kinds": [
+        "runtime"
+      ]
+    }
+  ],
+  "scenarios": [],
+  "walkthroughs": [
+    {
+      "id": "tour",
+      "title": {
+        "base": "Tour",
+        "set": {}
+      },
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      },
+      "steps": [
+        {
+          "target": "main",
+          "focus": [
+            "web"
+          ],
+          "range": null,
+          "open": [],
+          "close": [],
+          "audience": null,
+          "about": {
+            "base": "The **website** comes first.",
+            "set": {
+              "exec": "Where customers buy."
+            },
+            "add": {
+              "engineer": "Angular 21."
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

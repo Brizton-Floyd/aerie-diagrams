@@ -1,0 +1,38 @@
+[
+  {
+    "id": "E006",
+    "severity": "error",
+    "line": 1,
+    "column": 1,
+    "endLine": 1,
+    "endColumn": 5,
+    "message": "`view` is a word Lines uses for itself, so it cannot be an id. Choose another id."
+  },
+  {
+    "id": "E006",
+    "severity": "error",
+    "line": 3,
+    "column": 7,
+    "endLine": 3,
+    "endColumn": 11,
+    "message": "`step` is a word Lines uses for itself, so it cannot be an id. Choose another id."
+  },
+  {
+    "id": "E006",
+    "severity": "error",
+    "line": 4,
+    "column": 11,
+    "endLine": 4,
+    "endColumn": 14,
+    "message": "`for` is a word Lines uses for itself, so it cannot be an id. Choose another id."
+  },
+  {
+    "id": "E006",
+    "severity": "error",
+    "line": 5,
+    "column": 10,
+    "endLine": 5,
+    "endColumn": 14,
+    "message": "`show` is a word Lines uses for itself, so it cannot be an id. Choose another id."
+  }
+]

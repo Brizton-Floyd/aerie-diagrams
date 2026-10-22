@@ -1,0 +1,204 @@
+{
+  "format": "aerie-model/1",
+  "id": null,
+  "title": {
+    "base": null,
+    "set": {}
+  },
+  "about": {
+    "base": null,
+    "set": {},
+    "add": {}
+  },
+  "audiences": [
+    {
+      "id": "exec",
+      "name": "Executive",
+      "code": false
+    },
+    {
+      "id": "manager",
+      "name": "Manager",
+      "code": false
+    },
+    {
+      "id": "engineer",
+      "name": "Engineer",
+      "code": true
+    }
+  ],
+  "defaultAudience": "manager",
+  "elements": [
+    {
+      "id": "web",
+      "parent": null,
+      "name": {
+        "base": "Website",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "api",
+      "parent": null,
+      "name": {
+        "base": "Screen API",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "subject": "web",
+      "verb": {
+        "base": "calls",
+        "set": {}
+      },
+      "object": "api",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "views": [],
+  "scenarios": [
+    {
+      "id": "flow",
+      "title": {
+        "base": "Flow",
+        "set": {}
+      },
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      },
+      "steps": [
+        {
+          "subject": "web",
+          "verb": {
+            "base": "calls",
+            "set": {}
+          },
+          "object": "api",
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "subject": "api",
+          "verb": {
+            "base": "answers",
+            "set": {}
+          },
+          "object": "web",
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "subject": "web",
+          "verb": {
+            "base": "calls",
+            "set": {}
+          },
+          "object": "api",
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {}
+          }
+        }
+      ]
+    }
+  ],
+  "walkthroughs": [
+    {
+      "id": "tour",
+      "title": {
+        "base": "Tour",
+        "set": {}
+      },
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      },
+      "steps": [
+        {
+          "target": "flow",
+          "focus": [],
+          "range": null,
+          "open": [],
+          "close": [],
+          "audience": null,
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "target": "flow",
+          "focus": [],
+          "range": {
+            "from": 2,
+            "to": 2
+          },
+          "open": [],
+          "close": [],
+          "audience": null,
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "target": "flow",
+          "focus": [],
+          "range": {
+            "from": 1,
+            "to": 3
+          },
+          "open": [],
+          "close": [],
+          "audience": null,
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {}
+          }
+        }
+      ]
+    }
+  ]
+}

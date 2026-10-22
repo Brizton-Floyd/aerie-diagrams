@@ -1,0 +1,9 @@
+web:
+api: | Only a tagline
+web calls api
+view big-picture
+scenario flow:
+  web calls api
+walkthrough tour:
+  step big-picture
+model shop

@@ -1,0 +1,47 @@
+[
+  {
+    "id": "E501",
+    "severity": "error",
+    "line": 3,
+    "column": 8,
+    "endLine": 3,
+    "endColumn": 14,
+    "message": "`web +x` is not something a view can show. Use an element id, an id with a depth such as `web +1`, or a tag in brackets such as `[service]`."
+  },
+  {
+    "id": "E501",
+    "severity": "error",
+    "line": 3,
+    "column": 16,
+    "endLine": 3,
+    "endColumn": 24,
+    "message": "`web +100` is not something a view can show. Use an element id, an id with a depth such as `web +1`, or a tag in brackets such as `[service]`."
+  },
+  {
+    "id": "E501",
+    "severity": "error",
+    "line": 3,
+    "column": 26,
+    "endLine": 3,
+    "endColumn": 31,
+    "message": "`[a b]` is not something a view can show. Use an element id, an id with a depth such as `web +1`, or a tag in brackets such as `[service]`."
+  },
+  {
+    "id": "E501",
+    "severity": "error",
+    "line": 3,
+    "column": 33,
+    "endLine": 3,
+    "endColumn": 40,
+    "message": "`web web` is not something a view can show. Use an element id, an id with a depth such as `web +1`, or a tag in brackets such as `[service]`."
+  },
+  {
+    "id": "E501",
+    "severity": "error",
+    "line": 3,
+    "column": 42,
+    "endLine": 3,
+    "endColumn": 44,
+    "message": "`+1` is not something a view can show. Use an element id, an id with a depth such as `web +1`, or a tag in brackets such as `[service]`."
+  }
+]

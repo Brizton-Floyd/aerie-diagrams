@@ -1,0 +1,20 @@
+[
+  {
+    "id": "E502",
+    "severity": "error",
+    "line": 3,
+    "column": 9,
+    "endLine": 3,
+    "endColumn": 16,
+    "message": "No element has the tag `[servcie]`. Did you mean `service`?"
+  },
+  {
+    "id": "E502",
+    "severity": "error",
+    "line": 3,
+    "column": 20,
+    "endLine": 3,
+    "endColumn": 25,
+    "message": "No element has the tag `[store]`."
+  }
+]

@@ -1,0 +1,82 @@
+{
+  "model": {
+    "format": "aerie-model/1",
+    "id": null,
+    "title": {
+      "base": null,
+      "set": {}
+    },
+    "about": {
+      "base": null,
+      "set": {},
+      "add": {}
+    },
+    "audiences": [
+      {
+        "id": "exec",
+        "name": "Executive",
+        "code": false
+      },
+      {
+        "id": "manager",
+        "name": "Manager",
+        "code": false
+      },
+      {
+        "id": "engineer",
+        "name": "Engineer",
+        "code": true
+      }
+    ],
+    "defaultAudience": "manager",
+    "elements": [
+      {
+        "id": "store",
+        "parent": null,
+        "name": {
+          "base": "Results store",
+          "set": {}
+        },
+        "tagline": {
+          "base": "Keeps every past draw",
+          "set": {}
+        },
+        "tags": [
+          "service"
+        ],
+        "icon": "cylinder",
+        "about": {
+          "base": "Downloads winning numbers, keeps every past draw, and answers the engine's questions.",
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "id": "saved-draws",
+        "parent": "store",
+        "name": {
+          "base": "Saved draws",
+          "set": {}
+        },
+        "tagline": {
+          "base": "One file per game",
+          "set": {}
+        },
+        "tags": [
+          "store"
+        ],
+        "icon": null,
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      }
+    ],
+    "relationships": [],
+    "views": [],
+    "scenarios": [],
+    "walkthroughs": []
+  },
+  "diagnostics": []
+}

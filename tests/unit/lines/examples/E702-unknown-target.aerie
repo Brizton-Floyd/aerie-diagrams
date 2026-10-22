@@ -1,0 +1,10 @@
+web: Website
+api: Screen API
+web calls api
+view main: Main
+scenario flow: Flow
+  web calls api
+walkthrough tour: Tour
+  step mian
+  step flwo: 1
+  step nowhere: web

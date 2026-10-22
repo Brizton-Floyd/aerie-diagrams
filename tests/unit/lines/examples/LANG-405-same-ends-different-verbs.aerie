@@ -1,0 +1,5 @@
+web: Website
+api: Screen API
+web reads from api
+web writes to api
+web reads from api [code]

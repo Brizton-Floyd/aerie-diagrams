@@ -1,0 +1,7 @@
+web: Website
+view main: Main
+walkthrough tour: Tour
+  step main: web
+    > The **website** comes first.
+    @exec > Where customers buy.
+    @engineer >> Angular 21.

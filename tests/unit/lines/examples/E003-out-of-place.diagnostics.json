@@ -1,0 +1,119 @@
+[
+  {
+    "id": "E003",
+    "severity": "error",
+    "line": 2,
+    "column": 3,
+    "endLine": 2,
+    "endColumn": 7,
+    "message": "`view` lines go at the top level, with no indent."
+  },
+  {
+    "id": "E003",
+    "severity": "error",
+    "line": 3,
+    "column": 3,
+    "endLine": 3,
+    "endColumn": 7,
+    "message": "`show` lines go inside a view."
+  },
+  {
+    "id": "E003",
+    "severity": "error",
+    "line": 4,
+    "column": 3,
+    "endLine": 4,
+    "endColumn": 7,
+    "message": "`step` lines go inside a walkthrough."
+  },
+  {
+    "id": "E003",
+    "severity": "error",
+    "line": 5,
+    "column": 3,
+    "endLine": 5,
+    "endColumn": 7,
+    "message": "`open` lines go inside a walkthrough step."
+  },
+  {
+    "id": "E003",
+    "severity": "error",
+    "line": 9,
+    "column": 5,
+    "endLine": 9,
+    "endColumn": 9,
+    "message": "Nothing can go inside a `icon` line. Remove the extra indent."
+  },
+  {
+    "id": "E003",
+    "severity": "error",
+    "line": 11,
+    "column": 5,
+    "endLine": 11,
+    "endColumn": 6,
+    "message": "Nothing can go inside a `@exec:` line. Remove the extra indent."
+  },
+  {
+    "id": "E003",
+    "severity": "error",
+    "line": 13,
+    "column": 1,
+    "endLine": 13,
+    "endColumn": 2,
+    "message": "A `>` description needs something to describe. Indent it under the element, relationship, view or scenario it is about."
+  },
+  {
+    "id": "E003",
+    "severity": "error",
+    "line": 14,
+    "column": 1,
+    "endLine": 14,
+    "endColumn": 6,
+    "message": "A `@exec` line rewords the line it is indented under. Indent it under the line it rewords."
+  },
+  {
+    "id": "E003",
+    "severity": "error",
+    "line": 16,
+    "column": 3,
+    "endLine": 16,
+    "endColumn": 7,
+    "message": "`icon` lines go inside an element."
+  },
+  {
+    "id": "E003",
+    "severity": "error",
+    "line": 17,
+    "column": 3,
+    "endLine": 17,
+    "endColumn": 5,
+    "message": "An element goes at the top level or inside another element."
+  },
+  {
+    "id": "E003",
+    "severity": "error",
+    "line": 18,
+    "column": 3,
+    "endLine": 18,
+    "endColumn": 6,
+    "message": "A sentence goes at the top level, as a relationship, or inside a scenario, as a step."
+  },
+  {
+    "id": "E003",
+    "severity": "error",
+    "line": 21,
+    "column": 5,
+    "endLine": 21,
+    "endColumn": 8,
+    "message": "A sentence goes at the top level, as a relationship, or inside a scenario, as a step."
+  },
+  {
+    "id": "E003",
+    "severity": "error",
+    "line": 25,
+    "column": 7,
+    "endLine": 25,
+    "endColumn": 11,
+    "message": "Nothing can go inside a `for` line. Remove the extra indent."
+  }
+]

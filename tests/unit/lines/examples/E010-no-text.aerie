@@ -1,0 +1,18 @@
+web: Website |
+  >
+  @exec:
+  @exec: |
+  @exec >
+  @engineer >>
+  icon
+view main: Main
+  show
+  kind
+walkthrough tour: Tour
+  step main:
+  step
+    open
+    close
+    for
+model
+audiences

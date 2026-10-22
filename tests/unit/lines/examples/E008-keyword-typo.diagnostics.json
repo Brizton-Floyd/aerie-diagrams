@@ -1,0 +1,20 @@
+[
+  {
+    "id": "E008",
+    "severity": "error",
+    "line": 2,
+    "column": 1,
+    "endLine": 2,
+    "endColumn": 5,
+    "message": "There is no element called `veiw`. Did you mean `view`?"
+  },
+  {
+    "id": "E008",
+    "severity": "error",
+    "line": 4,
+    "column": 1,
+    "endLine": 4,
+    "endColumn": 5,
+    "message": "There is no element called `sohw`. Did you mean `show`?"
+  }
+]

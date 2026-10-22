@@ -1,0 +1,4 @@
+model shop: Corner shop
+  > A small shop.
+  @exec: The business
+web: Website

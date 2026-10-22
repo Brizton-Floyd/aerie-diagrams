@@ -1,0 +1,9 @@
+Web: Website
+screen_api: Screen API
+api-: Trailing hyphen
+two--hyphens: Two hyphens
+2fa: Starts with a digit
+ok: Fine [Service ok]
+ok calls ok [Code]
+view Main: Main
+audiences Exec, manager

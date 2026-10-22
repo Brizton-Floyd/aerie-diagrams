@@ -1,0 +1,9 @@
+audiences web "Web readers", v2 "Version two"
+
+web: Website
+screen-api: Screen API
+v2-store: Version 2 store
+a1b2: Digits inside
+
+web calls screen-api
+screen-api writes to v2-store

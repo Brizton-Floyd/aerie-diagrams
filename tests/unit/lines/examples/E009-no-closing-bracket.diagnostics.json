@@ -1,0 +1,29 @@
+[
+  {
+    "id": "E009",
+    "severity": "error",
+    "line": 1,
+    "column": 14,
+    "endLine": 1,
+    "endColumn": 15,
+    "message": "This `[` has no closing `]`."
+  },
+  {
+    "id": "E009",
+    "severity": "error",
+    "line": 3,
+    "column": 15,
+    "endLine": 3,
+    "endColumn": 16,
+    "message": "This `[` has no closing `]`."
+  },
+  {
+    "id": "E009",
+    "severity": "error",
+    "line": 5,
+    "column": 8,
+    "endLine": 5,
+    "endColumn": 9,
+    "message": "This `[` has no closing `]`."
+  }
+]

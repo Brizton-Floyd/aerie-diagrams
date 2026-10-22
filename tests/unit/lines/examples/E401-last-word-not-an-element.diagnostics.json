@@ -1,0 +1,29 @@
+[
+  {
+    "id": "E401",
+    "severity": "error",
+    "line": 3,
+    "column": 29,
+    "endLine": 3,
+    "endColumn": 34,
+    "message": "A sentence must end with the element it points to, and `picks` is not an element. If you meant `screen-api`, reword the line so `screen-api` comes last."
+  },
+  {
+    "id": "E401",
+    "severity": "error",
+    "line": 4,
+    "column": 15,
+    "endLine": 4,
+    "endColumn": 25,
+    "message": "A sentence must end with the element it points to, and `Screen-api` is not an element. Did you mean `screen-api`?"
+  },
+  {
+    "id": "E401",
+    "severity": "error",
+    "line": 5,
+    "column": 19,
+    "endLine": 5,
+    "endColumn": 23,
+    "message": "A sentence must end with the element it points to, and `API.` is not an element."
+  }
+]

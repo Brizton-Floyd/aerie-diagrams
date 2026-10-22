@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E202",
+    "severity": "error",
+    "line": 3,
+    "column": 3,
+    "endLine": 3,
+    "endColumn": 7,
+    "message": "`web` already has an icon, on line 2. Keep one `icon` line."
+  }
+]

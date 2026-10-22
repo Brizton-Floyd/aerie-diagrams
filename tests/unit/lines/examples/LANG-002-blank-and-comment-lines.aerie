@@ -1,0 +1,11 @@
+// A comment before anything.
+
+web: Website
+
+  // A comment inside a block changes nothing.
+
+  api: Screen API
+
+
+// Blank lines between top-level blocks change nothing either.
+db: Database

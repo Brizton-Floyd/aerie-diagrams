@@ -1,0 +1,7 @@
+// Any indent works, as long as a block's statements share it.
+suite: Suite
+    web: Website
+    api: Screen API
+        handler: Handler
+    db: Database
+outside: Outside

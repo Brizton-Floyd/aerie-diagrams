@@ -1,0 +1,5 @@
+web: Website
+api: Screen API
+web uses api [code]
+view main: Main
+  kind cdoe, runtime, build

@@ -1,0 +1,20 @@
+[
+  {
+    "id": "E406",
+    "severity": "error",
+    "line": 3,
+    "column": 15,
+    "endLine": 3,
+    "endColumn": 27,
+    "message": "A relationship has one kind in brackets, such as `[code]`, and this one has 2."
+  },
+  {
+    "id": "E406",
+    "severity": "error",
+    "line": 4,
+    "column": 15,
+    "endLine": 4,
+    "endColumn": 17,
+    "message": "A relationship has one kind in brackets, such as `[code]`, and this one has 0."
+  }
+]

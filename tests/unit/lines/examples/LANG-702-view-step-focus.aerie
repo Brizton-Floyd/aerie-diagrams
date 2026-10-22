@@ -1,0 +1,5 @@
+web: Website
+api: Screen API
+view main: Main
+walkthrough tour: Tour
+  step main: web, api

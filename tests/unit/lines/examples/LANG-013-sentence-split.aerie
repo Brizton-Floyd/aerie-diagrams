@@ -1,0 +1,6 @@
+web: Website
+api: Screen API
+engine: Engine
+store: Store
+web gets screen data from api
+engine depends on api, store, web [code]

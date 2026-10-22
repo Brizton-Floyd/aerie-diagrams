@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E403",
+    "severity": "error",
+    "line": 2,
+    "column": 1,
+    "endLine": 2,
+    "endColumn": 14,
+    "message": "A relationship joins two different elements, but this one starts and ends at `web`."
+  }
+]

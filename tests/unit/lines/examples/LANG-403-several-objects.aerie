@@ -1,0 +1,7 @@
+engine: Engine
+strategies: Strategies
+formats: Formats
+legacy: Legacy
+engine depends on strategies, formats, legacy [code]
+  > Build-time dependencies.
+  @engineer: links against

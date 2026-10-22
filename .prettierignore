@@ -4,3 +4,6 @@ package-lock.json
 .claude/
 # Canonical JSON models are byte-exact output of the Aerie serializer (docs/spec/language.md).
 docs/spec/examples/*.json
+# Expected canonical models and diagnostics of the language fixtures (ACC-012), byte-exact too.
+tests/unit/lines/examples/*.json
+tests/unit/lines/spec-examples/*.json

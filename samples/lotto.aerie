@@ -1,0 +1,314 @@
+// The Lotto suite, written in Lines: the worked example of the Aerie spec (docs/spec/language.md).
+// Unmarked wording is what every audience reads; @exec and @engineer lines reword the line above.
+
+model lotto: The Lotto suite
+  > How results come in, how picks are generated, and what each part does.
+
+audiences exec "Executive", manager "Manager" (default), engineer "Engineer" (code)
+
+// ---------------------------------------------------------------- elements
+
+user: User | Using a browser [person]
+  > Opens the website, picks a state and game, and asks for numbers. The browser only
+    ever talks to the website.
+  @engineer >> `localhost:4200`; the Screen API, the Analysis engine and the Results store
+    are never reached from the browser.
+
+suite: Lotto suite | Runs as one stack on one machine [system]
+  > The four parts of the suite, started together and wired to each other.
+  @exec: | Our lottery number service
+  @engineer >> `compose.yaml` in `lotto-options-core` builds the four services from source
+    (`deploy/backend/Dockerfile` for the three JVM services, `deploy/web-ui/Dockerfile` for the
+    website) and publishes each on `127.0.0.1`. The Results store and website sources come
+    from sibling clones.
+
+  website: Website | Picks a game, generates numbers [service]
+    icon web
+    > The screens the user sees: the dashboard, the Smart Generator with its betslip printout,
+      and range analysis. Every request goes to the Screen API.
+    @engineer: | lotto-options-ui, Angular 21
+    @engineer >> An Angular 21 single-page app, zoneless and standalone. It calls only relative
+      `/ui/*` URLs. nginx serves the built app on port 80 (published as 4200) and proxies
+      `/ui/*` to `${BFF_URL}` with buffering off and a 300 s read timeout; in development
+      `ng serve` with `proxy.conf.json` does the same.
+
+  screen-api: Screen API | Prepares data for each screen [service module]
+    icon api
+    > Takes what the Analysis engine returns and shapes it into exactly what one screen needs.
+      Holds no lottery logic of its own.
+    @exec: Website back end | Gets each screen its data
+    @engineer: | lotto-options-core-bff, WebFlux :8080
+    @engineer >> Spring WebFlux on `127.0.0.1:8080` (ADR-0001, ADR-0003). Endpoints under `/ui`:
+      `ping`, `catalog/states`, `dashboard/{state}/{game}` (plus `/matrix`, `/position-trend`,
+      `/pattern-edge`), `POST dashboard/{state}/{game}/generate`,
+      `POST dashboard/{state}/{game}/betslip/pdf`, `POST range-analysis`. `CoreApiClient` calls
+      five engine endpoints on `core-api.base-url` (`http://localhost:8002`). OpenAPI at
+      `/v3/api-docs`, from which the website generates its types.
+
+  engine: Analysis engine | Generates and scores picks [service]
+    icon gear
+    > The brains of the suite: dashboards, number generation, range analysis, game-out advice
+      and betslip printing. Only the Screen API talks to it.
+    @exec: Number engine | Turns past draws into suggested picks
+    @exec > Where the value is: it studies every past draw and suggests numbers to play.
+    @engineer: | lotto-options-core-server :8002
+    @engineer >> Spring Boot on port 8002, one jar (`lotto-options-core-service.jar`) built from
+      the modules in the Engineering view. Health at `/api/v1/gameout/health`.
+
+    engine-service: Engine service | The running program [module]
+      > The part of the engine that runs: it takes requests, generates picks and looks up draw
+        history.
+      @engineer: core-server | Spring Boot module
+      @engineer >> Inbound REST controllers, the application services and the outbound client
+        to the Results store.
+
+      request-handling: Request handling | Receives requests from the Screen API [part]
+        icon route
+        > Accepts each request and hands it to the right service.
+        @engineer >> `AnalysisController` (`/api/v1/analysis`: `GET /{state}/{game}/dashboard`,
+          `POST /generate/numbers`, `POST /range-analysis`), `CatalogController`
+          (`GET /api/v1/catalog/states`), `GameOutController` (`/api/v1/gameout/*`) and
+          `BetslipController` (`POST /api/v1/betslip/pdf`).
+
+      pick-generation: Pick generation | Runs the chosen strategy [part]
+        icon dice
+        > Gets the game's draw history, runs the strategy the user chose, and scores the
+          resulting tickets against past draws.
+        @engineer >> `LotteryNumberGenerationService.getRandomNumberGeneratedData`. It loads
+          history through `LotteryStateService`, picks a generator from
+          `RandomNumberGeneratorFactory` by the request's `numberGenerator`, and returns
+          `GeneratedNumberData` with prize-level results.
+
+      history-lookup: Draw history lookup | Fetches past draws from the Results store [part]
+        icon search
+        > The engine's only way to get draw data: it asks the Results store for a game's full
+          history.
+        @engineer >> `WebClientLotteryStateService`, built from `persistence-service.host`
+          (`http://localhost:8001/`) and `persistence-service.games` (`api/v1/state/games`).
+          The catalog comes from `GET api/v1/all/v2/state-games`.
+
+    strategies: Strategies library | The number-picking methods [module]
+      icon books
+      > The three ways to pick numbers: Balanced Spread (matches the game's hot low/high and
+        odd/even mix), Secure Random and Fast Random. Also the dashboard analyzers and the
+        ticket scorer.
+      @engineer: core-result-analyzer | Generators and scorer
+      @engineer >> `LowOddLowEvenHighOddHighEvenLotteryNumberGenerator` and
+        `TemplateMatrixLotteryNumberGenerator` (categorical), `UniformLotteryNumberGenerator`
+        (`SecureRandom`, `ThreadLocalRandom`), and `LotteryResultsComparator`.
+
+    formats: Shared data formats | The shapes of requests and results [module]
+      icon grid
+      > The definitions of what a request and a result look like, shared by the engine and the
+        Screen API so both sides agree.
+      @engineer: core-model | Request and result types
+      @engineer >> Such as `RandomNumberGeneratorRequest` and `GeneratedNumberData`. It pulls in
+        the Results store's `lottery-result-persistence-service-models`.
+
+    legacy: Legacy desktop support | Kept for the old desktop app [module legacy]
+      icon monitor
+      > Code kept only until the old desktop app is retired. Nothing else uses it.
+      @engineer: core-legacy-desktop | Quarantined by ADR-0009
+      @engineer >> `TicketGenerationController` (`/api/v2/generate-tickets` with its SSE status)
+        and `LottoOptionsCoreController` (`/api/v1/lotto-options-core/games/*`). Deleted with
+        the desktop client.
+
+  store: Results store | Keeps every past draw [service]
+    icon cylinder
+    > Downloads winning numbers, keeps every past draw, and answers the engine's questions
+      about them.
+    @exec > Keeps every winning number on file and refreshes itself every two hours.
+    @engineer: | lottery-result-persistence-service :8001
+    @engineer >> Spring Boot on port 8001. Modules `lottery-result-persistence-server` (the API),
+      `lottery-result-aggregator` (updating, reading, saving) and
+      `lottery-result-persistence-service-models`.
+
+    history-service: Draw history service | Answers requests for past draws [part]
+      icon history
+      > Lists the states and games on file and returns a game's full draw history on request.
+      @engineer >> `PersistenceServiceController` under `/api/v1`: `GET /states`,
+        `GET /states/{stateName}/games`, `GET /all/state-games`, `GET /all/v2/state-games` (the
+        catalog the engine reads), `GET /state-games/{state}` and `POST /state/games`
+        (`{stateName, gameName}` in, the full `LotteryGame` out).
+
+    updater: Results updater | Checks for new draws every 2 hours [part]
+      icon refresh
+      > Every two hours, and once at start-up, downloads the latest results for every game, a
+        few at a time and politely.
+      @engineer >> `DrawResultJob` on cron `0 0 */2 * * ?`. `LotteryResultPollingService` fans
+        out over a 4-thread pool with resilience4j retry (3 attempts) and a rate limit of 4
+        downloads a second, then publishes `PollCompletedEvent`.
+
+    reader: Results reader | Turns downloaded files into draws [part]
+      icon document
+      > Reads each downloaded file and turns its rows into draws for the game.
+      @engineer >> `CsvFileReader` downloads each game's CSV export; `TexasLotteryHistoryProcessor`
+        parses it into a `LotteryGame`. The 17 Texas games are listed under `urls.states` in
+        `application.yml`. A Louisiana PDF reader exists but its source is commented out.
+
+    saved-draws: Saved draws | One file per game [store]
+      icon archive
+      > Where the draws live: one file per game, replaced whole each time new results come in,
+        so a half-written file is never read.
+      @engineer >> `LotteryGameSerializer` writes one Java-serialized `LotteryGame` at
+        `{lottery.storage.base-dir}/{STATE}/{Game}.ser` (temp file plus rename). `base-dir` is
+        `tmp` locally and `/data` in the container, the `draw-data` volume.
+
+texas: Texas Lottery website | Publishes winning numbers per game [external]
+  > The official source of results. The suite downloads one file per game from it.
+  @engineer >> Per-game CSV exports under
+    `texaslottery.com/export/sites/lottery/Games/.../Winning_Numbers/`. The only live external
+    source.
+
+// ----------------------------------------------------------- relationships
+// Declared once, at the finest grain. A view that shows only a container draws the sentence
+// between the nearest drawn elements, so the Big picture needs no relationships of its own.
+
+user uses website
+website gets screen data from screen-api
+  @exec: works through
+  @engineer: calls /ui/* on
+screen-api requests analysis from request-handling
+  @exec: asks for numbers from
+  @engineer: POSTs /api/v1/analysis/* to
+request-handling hands requests to pick-generation
+pick-generation gets past draws from history-lookup
+pick-generation picks and scores tickets with strategies
+history-lookup fetches draw history from history-service
+  @engineer: POSTs /api/v1/state/games to
+history-service reads saved-draws
+updater downloads new results from texas
+  @engineer: polls CSV exports every 2 h from
+updater hands the files to reader
+reader saves draws into saved-draws
+  @engineer: writes {STATE}/{Game}.ser to
+updater announces new draws to history-service
+
+engine-service depends on strategies, formats, legacy [code]
+strategies depends on formats [code]
+legacy depends on formats [code]
+screen-api uses the shapes in formats [code]
+  @engineer: depends on
+
+// ------------------------------------------------------------------- views
+
+view big-picture: Big picture
+  show user, suite +1, texas
+  > The suite in one line: the user uses the **website**, the website asks the **Screen API**,
+    the Screen API asks the **Analysis engine**, and the engine gets its draw history from the
+    **Results store**, which keeps itself current from the **Texas Lottery website**.
+  > Click any part for what it does; the other views go one level deeper.
+
+view services: Services
+  show user, suite +2, texas
+  > The same suite one level down: what each part contains and which parts talk to each other.
+  > Requests flow from the top down. Draw data flows the other way: the **Results updater**
+    downloads it and the **Draw history service** hands it to the engine.
+
+view engineering: Engineering: code modules
+  show [module]
+  kind code
+  @exec: How the code is organised
+  > The Maven modules of **lotto-options-core** by dependency. The Screen API shares only the
+    data formats with the engine.
+  @engineer >> ADR-0009 names the target: a hexagonal `core-domain`, `core-application`,
+    `core-api-contract` and `core-server`, enforced by ArchUnit rules (ADR-0010). That
+    refactor is in progress and not drawn here.
+
+// --------------------------------------------------------------- scenarios
+// Steps are sentences too: the subject sends, the object receives.
+
+scenario generate-picks: Generate picks
+  > What happens when the user clicks **Generate** on the Smart Generator, step by step. The
+    strategy runs in the engine; the Results store only supplies the past draws.
+
+  user clicks Generate on website
+    > The user has chosen a game, a strategy and how many tickets.
+    @engineer >> The Smart Generator screen posts a `numberGenerator`
+      (`LOW_ODD_LOW_EVEN_HIGH_ODD_HIGH_EVEN`, `SecureRandom` or `ThreadLocalRandom`) and
+      `numberSetsPerPattern`.
+  website asks for picks from screen-api
+    > The website sends the request on; nginx passes it through without waiting for the whole
+      answer.
+    @engineer: POSTs /ui/dashboard/{state}/{game}/generate to
+    @engineer >> Proxied to `BFF_URL` with buffering off. `DashboardController` hands it to
+      `SmartGeneratorService`, which maps it to the engine's request and calls
+      `CoreApiClient.generateNumbers`.
+  screen-api requests analysis from request-handling
+    > The Screen API asks the engine to generate numbers.
+    @engineer: POSTs /api/v1/analysis/generate/numbers to
+    @engineer >> With a `RandomNumberGeneratorRequest` from `core-model`.
+  request-handling hands the request to pick-generation
+    @engineer >> `LotteryNumberGenerationService.getRandomNumberGeneratedData`.
+  pick-generation asks for past draws from history-lookup
+    > Pick generation needs the game's full history first.
+    @engineer >> `LotteryStateService.getLottoGameDrawData(game, state)`, implemented by
+      `WebClientLotteryStateService`.
+  history-lookup fetches draw history from history-service
+    > The Results store returns every past draw of the game from its saved file.
+    @engineer >> `POST /api/v1/state/games` with `{stateName, gameName}`; the full `LotteryGame`
+      comes back.
+  history-service returns the full history to history-lookup
+  history-lookup hands the past draws to pick-generation
+  pick-generation generates and scores tickets with strategies
+    > The chosen strategy picks the numbers, and each ticket is checked against past draws to
+      show what it would have won.
+    @engineer >> The generator chosen by `numberGenerator` through
+      `RandomNumberGeneratorFactory`; `LotteryResultsComparator` scores the tickets into
+      prize-level results.
+  strategies returns scored tickets to pick-generation
+  pick-generation returns the picks to request-handling
+    @engineer >> A `GeneratedNumberData` with the tickets and their prize-level results.
+  request-handling returns the picks to screen-api
+    @engineer >> 200 with `GeneratedNumberData`.
+  screen-api sends picks ready to show to website
+    > The Screen API reshapes the picks into exactly what the Smart Generator screen shows.
+    @engineer >> `SmartGeneratorService` maps the data to a `GeneratedNumbersViewModel`.
+  website shows the picks to user
+
+scenario results-poll: Results poll
+  > How the suite keeps its draw history current: every two hours, and once at start-up, so a
+    fresh install fills itself before anyone asks for a game.
+
+  updater downloads new results from texas
+    > One file per game, a few at a time, with retries.
+    @engineer >> 17 games, 4 at a time, at most 4 downloads a second, 3 attempts each.
+  texas returns one file per game to updater
+  updater hands the files to reader
+    > Each file becomes the game's list of draws.
+    @engineer >> Each CSV becomes a `LotteryGame` with its draws.
+  reader returns the draws to updater
+  updater saves draws into saved-draws
+    > The game's file is replaced whole.
+    @engineer >> Written to `{STATE}/{Game}.ser` through a temp file and a rename.
+  updater announces new draws to history-service
+    > The history service forgets what it had cached, so the next request sees the new draws.
+    @engineer >> `PollCompletedEvent`; `CatalogCacheEvictor` clears the read caches.
+
+// ------------------------------------------------------------- walkthrough
+// One story for a room: it moves through views and scenarios, and its narration adapts too.
+
+walkthrough tour: A tour of the Lotto suite
+  step big-picture: website
+    > The user opens the **website** in a browser and picks a state and a game.
+  step big-picture: screen-api
+    > The **Screen API** prepares the data for each screen. It has no lottery logic of its own.
+  step big-picture: engine
+    > The **Analysis engine** does the thinking: dashboards, generated picks, scoring and
+      betslips.
+    @exec > The **engine** is where the value is: it turns past draws into suggested picks.
+    @engineer >> One Spring Boot jar on port 8002, built from the modules in the Engineering view.
+  step services: pick-generation
+    open engine-service
+    > Inside the engine, **Pick generation** runs the strategy the user chose and scores the
+      tickets against past draws.
+  step big-picture: store
+    > The **Results store** keeps every past draw and refreshes them from the Texas Lottery
+      website every two hours.
+  step services: store
+    > Inside the store, the updater downloads new results, the reader turns them into draws, and
+      the history service answers the engine.
+  step generate-picks
+    > Now follow one request: what happens when the user clicks **Generate**.
+  step big-picture
+    > The whole suite again.

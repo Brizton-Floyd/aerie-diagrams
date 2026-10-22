@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E105",
+    "severity": "error",
+    "line": 1,
+    "column": 29,
+    "endLine": 1,
+    "endColumn": 30,
+    "message": "A model can have at most 6 audiences, and this line lists 7."
+  }
+]

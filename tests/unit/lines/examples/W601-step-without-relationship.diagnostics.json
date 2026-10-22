@@ -1,0 +1,11 @@
+[
+  {
+    "id": "W601",
+    "severity": "warning",
+    "line": 9,
+    "column": 3,
+    "endLine": 9,
+    "endColumn": 15,
+    "message": "No relationship joins `web` and `db` in the model. Add one, such as `web reads db`, or check this step."
+  }
+]
