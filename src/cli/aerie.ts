@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // The `aerie` command: check, format and print the model of Lines files
 // (docs/spec/language.md, section 14).
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, realpathSync, writeFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { format, parse, serializeModel, type Diagnostic } from '../lines/index.ts';
 
 /** Everything the command touches, so tests can run it without a disk or a terminal. */
@@ -203,6 +204,16 @@ export const nodeIo: Io = {
   stderr: (text) => process.stderr.write(text),
 };
 
-if (import.meta.main) {
+function isEntryPoint(): boolean {
+  const entry = process.argv[1];
+  if (entry === undefined) return false;
+  try {
+    return realpathSync(entry) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+
+if (isEntryPoint()) {
   process.exitCode = run(process.argv.slice(2), nodeIo);
 }
