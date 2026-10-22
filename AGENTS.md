@@ -69,7 +69,9 @@ same. The individual suites are the `test:*` scripts in [package.json](package.j
 - Update baselines deliberately: `npx vitest run --project golden -u`, and
   `npx playwright test --project screenshots --update-snapshots`. The language fixtures
   (`tests/unit/lines/examples/`, ACC-012) update the same way with `--project unit -u`; review the
-  diff, since the expected files come from the code under test.
+  diff, since the expected files come from the code under test. The readability baseline
+  (`tests/rules/scores.json`, ACC-004) updates with
+  `AERIE_UPDATE_SCORES=1 npx vitest run --project rules tests/rules/scores.test.ts`.
 - `npx aerie check|format|model <file>` runs the Lines tools ([src/cli/aerie.ts](src/cli/aerie.ts),
   executed by Node's type stripping, so it imports `.ts` files and uses only erasable syntax).
   `npx aerie` works only inside this checkout: elsewhere npm fetches an unrelated package of the same
@@ -78,8 +80,8 @@ same. The individual suites are the `test:*` scripts in [package.json](package.j
   `tests/unit/skill/` runs every Lines example in it through the CLI and holds its language summary
   to the parser, so a language change that breaks the skill fails `test:unit`.
 
-The rules, screenshots and journeys suites still hold stubs that prove their wiring; the slice that
-owns each suite replaces its stub.
+The screenshots and journeys suites still hold stubs that prove their wiring; the slice that owns
+each suite replaces its stub.
 
 ## Sharp edges
 
@@ -97,6 +99,15 @@ owns each suite replaces its stub.
   TypeScript too and may import only `src/lines/index.ts`. Its entry point and API notes are in
   [src/model/index.ts](src/model/index.ts). Diagnostics that need the model's meaning (E604, E703)
   come from its `check()`, which the CLI and the language fixtures use; `parse()` alone omits them.
+- `src/layout/` (layout interface, reserve, ELK adapter, lanes, rule checks, scores) is pure
+  TypeScript too, built only on `src/lines/index.ts` and `src/model/index.ts`; its API notes are in
+  [src/layout/index.ts](src/layout/index.ts). Only `src/layout/elk/` imports `elkjs` (LAYOUT-002,
+  lint-enforced; tests too). Import `inProcessEngine` (Node) and `workerEngine` (browser) from their
+  own modules so the browser bundle never pulls in the in-process ELK.
+- Text is measured from `src/layout/text/advances.json`, written from the bundled Fontsource fonts by
+  `node scripts/font-metrics.ts`; rerun it when a font package changes (a unit test compares them).
+- Vitest 5 hides the console output of passing tests; a suite that reports (LAYOUT-901) writes to
+  `process.stdout`.
 - Playwright builds and serves the app on port 4173 and never reuses a running server. Set
   `AERIE_PREVIEW_PORT` when several checkouts run checks at the same time.
 - Screenshot baselines are shared across platforms (no OS suffix), so screenshot tests must not
