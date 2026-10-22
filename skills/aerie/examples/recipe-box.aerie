@@ -1,0 +1,113 @@
+// Worked example 1: the Recipe box project, described in recipe-box.md.
+// A draft for human review: every line comes from a file named in recipe-box.md.
+
+model recipe-box: Recipe box
+  > A small web app where home cooks save recipes, plan the week's meals and get the shopping
+    list by email.
+
+audiences exec "Executive", manager "Manager" (default), engineer "Engineer" (code)
+
+// ---------------------------------------------------------------- elements
+
+cook: Home cook | Plans meals in a browser [person]
+  > Saves recipes, plans the week and asks for a shopping list.
+
+recipe-box: Recipe box | Recipes, meal plans and shopping lists [system]
+  > Three parts that start together: the web app, the recipe API and the database.
+  @exec: | Our meal planning product
+  @engineer >> `compose.yaml` starts `web`, `api` and `db`. Only `web` is published, on port
+    3000.
+
+  web: Web app | The screens cooks use [service]
+    icon web
+    > Shows recipes and the weekly plan, and sends every change to the recipe API.
+    @engineer: | recipe-web, React 19 and Vite
+    @engineer >> Built by `web/Dockerfile` and served by nginx on port 3000, which passes
+      `/api/*` on to `api:8000`.
+
+  api: Recipe API | Keeps recipes and plans, builds shopping lists [service]
+    icon api
+    > Saves recipes and meal plans, and turns a week's plan into a shopping list.
+    @exec: Recipe service | Where the planning happens
+    @engineer: | recipe-api, FastAPI :8000
+    @engineer >> Routes in `api/routes/`: `recipes.py`, `plans.py` and `lists.py`.
+
+    recipes: Recipe handling | Saves and searches recipes [module]
+      @engineer: | api/routes/recipes.py
+      @engineer >> `GET` and `POST /api/recipes`, `GET /api/recipes/search?q=`.
+
+    planner: Meal planner | Turns a week's plan into a list [module]
+      @engineer: | api/routes/plans.py, api/routes/lists.py
+      @engineer >> `PUT /api/plans/{week}` and `POST /api/lists/send`.
+
+    mailer: Mailer | Sends the shopping list [module]
+      @engineer: | api/mail.py
+      @engineer >> Reads `MAIL_API_KEY` and `MAIL_FROM` from the environment.
+
+  db: Recipe database | Every recipe and meal plan [store]
+    > Recipes, their ingredients, and each week's plan.
+    @engineer: | PostgreSQL 16
+    @engineer >> The `db` service in `compose.yaml`, with the volume `pgdata`. Tables come from
+      `api/migrations/`.
+
+// Unsure: the project names no email provider; `MAIL_API_KEY` suggests a hosted one.
+mail: Email service | Delivers email [external]
+  > An outside email provider.
+
+// ---------------------------------------------------------------- relationships
+
+cook plans meals in web
+web sends recipes to recipes
+  @engineer: calls /api/recipes on
+web sends weekly plans to planner
+  @engineer: calls /api/plans on
+web asks for the shopping list from planner
+  @engineer: POSTs /api/lists/send to
+recipes saves recipes in db
+planner reads recipes from db
+planner saves meal plans in db
+planner hands the shopping list to mailer
+mailer sends the shopping list through mail
+  @engineer: POSTs the message to
+mail emails the shopping list to cook
+
+// ---------------------------------------------------------------- views
+
+view big-picture: Big picture
+  show cook, recipe-box +1, mail
+  > Who uses Recipe box, its three parts, and the one outside service it needs.
+
+view inside-api: Inside the recipe API
+  show cook, web, api +1, db, mail
+  @exec: How planning works
+
+// ---------------------------------------------------------------- scenarios
+
+scenario send-list: Sending the shopping list
+  > From pressing "Email my list" to the email arriving.
+  cook asks for the shopping list from web
+  web asks for the shopping list from planner
+    @engineer: POSTs /api/lists/send to
+  planner reads the week's recipes from db
+  db returns the recipes to planner
+  planner hands the shopping list to mailer
+  mailer sends the shopping list through mail
+  mail emails the shopping list to cook
+    > Usually within a minute.
+    @exec > The cook has the list on their phone before they leave for the shop.
+
+// ---------------------------------------------------------------- walkthrough
+
+walkthrough tour: A tour of Recipe box
+  step big-picture
+    > Cooks use one web app. Behind it are an API, a database and an email service.
+  step big-picture: api
+    > The **Recipe API** does the work: recipes, plans and shopping lists.
+    @exec > The **Recipe service** is where the planning happens.
+  step inside-api: planner, mailer
+    > Inside it, the **Meal planner** builds the list and the **Mailer** sends it.
+    @engineer >> Both are plain modules in one FastAPI process; nothing is queued.
+  step send-list: 1-4
+    > A shopping list starts with the week's recipes.
+  step send-list: 5-7
+    > Then it goes out by email.

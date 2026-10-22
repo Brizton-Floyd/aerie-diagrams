@@ -1,0 +1,142 @@
+// Worked example 2: the Parcel tracker project, described in parcel-tracker.md.
+// A draft for human review: every line comes from a file named in parcel-tracker.md.
+
+model parcels: Parcel tracker
+  > Couriers scan parcels; recipients get a text at each step and can check where their
+    parcel is.
+
+audiences exec "Executive", manager "Manager" (default), engineer "Engineer" (code)
+
+// ---------------------------------------------------------------- elements
+
+courier: Courier | Scans parcels on the road [person]
+  > Scans each parcel when it is picked up, moved and delivered.
+
+recipient: Recipient | Waits for a parcel [person]
+  > Gets a text message at each step and can open the tracking page.
+
+tracker: Parcel tracker | Follows every parcel from pickup to door [system]
+  > A mobile app for couriers and three back-end parts, joined by an event queue.
+  @exec: | Tells customers where their parcel is
+  @engineer >> An npm workspaces monorepo. `deploy/compose.yaml` runs `tracking-api`,
+    `notifier`, `nats` and `postgres`; the courier app ships through the app stores.
+
+  scan-app: Courier app | Scans parcel labels [service package]
+    icon monitor
+    > The phone app couriers use to scan labels and mark deliveries.
+    @engineer: | packages/scan-app, React Native
+    @engineer >> Sends each scan to `TRACKING_API_URL`, keeping scans on the phone while there
+      is no signal.
+
+  tracking-api: Tracking API | Takes scans, answers status questions [service package]
+    icon api
+    > Records every scan and tells recipients where their parcel is.
+    @exec: Tracking service | Knows where every parcel is
+    @engineer: | packages/tracking-api, Fastify :8080
+
+    scan-intake: Scan intake | Records scans [module]
+      @engineer: | src/routes/scans.ts
+      @engineer >> `POST /scans`. Saves the scan, then publishes `parcel.scanned` on NATS.
+
+    status-lookup: Status lookup | Answers where a parcel is [module]
+      @engineer: | src/routes/status.ts
+      @engineer >> `GET /parcels/:code`, the page behind the link in each text message.
+
+  events: Parcel events | Every scan, in order [queue]
+    icon refresh
+    > Passes news of each scan from the tracking API to the notifier.
+    @engineer: | NATS JetStream, stream PARCELS
+    @engineer >> The `nats` service in `deploy/compose.yaml`, run with `-js`.
+
+  notifier: Notifier | Texts recipients [service package]
+    icon gear
+    > Turns each scan into a short text message for the recipient.
+    @engineer: | packages/notifier, Node worker
+    @engineer >> A durable consumer of `parcel.scanned`. Message wording lives in
+      `src/templates/`.
+
+  shared-events: Event formats | What a scan event looks like [module package]
+    icon grid
+    > The one definition of a scan event, shared so both sides agree.
+    @engineer: | packages/shared-events
+    @engineer >> Zod schemas and the TypeScript types made from them.
+
+  db: Tracking database | Every parcel and scan [store]
+    @engineer: | PostgreSQL 16, database tracking
+
+// Unsure: the README says texts are sent "through our SMS partner" without naming it.
+sms: SMS gateway | Sends text messages [external]
+  @engineer: | HTTPS API, key in SMS_API_KEY
+
+// ---------------------------------------------------------------- relationships
+
+courier scans parcels with scan-app
+recipient checks a parcel with status-lookup
+scan-app sends scans to scan-intake
+  @engineer: POSTs /scans to
+scan-intake saves scans in db
+  @engineer: INSERTs scans into
+scan-intake publishes scan events to events
+  @engineer: publishes parcel.scanned to
+notifier takes scan events from events
+  @engineer: consumes parcel.scanned from
+notifier sends texts through sms
+sms delivers texts to recipient
+status-lookup reads parcel history from db
+
+tracking-api depends on shared-events [code]
+notifier depends on shared-events [code]
+
+// ---------------------------------------------------------------- views
+
+view big-picture: Big picture
+  show courier, recipient, tracker +1, sms
+
+view services: Services
+  show courier, recipient, tracker +2, sms
+  > Every part, with the tracking API opened up.
+
+view engineering: Engineering: packages
+  show [package]
+  kind code
+  @exec: How the code is organised
+
+// ---------------------------------------------------------------- scenarios
+
+scenario parcel-scanned: A parcel is scanned
+  > From a courier's scan to the recipient's text message.
+  courier scans a parcel with scan-app
+  scan-app sends the scan to scan-intake
+  scan-intake saves the scan in db
+  scan-intake publishes a scan event to events
+  notifier takes the scan event from events
+  notifier sends a text through sms
+  sms delivers the text to recipient
+    > The text holds a link to the tracking page.
+
+scenario status-check: A recipient checks a parcel
+  recipient opens the tracking link with status-lookup
+  status-lookup reads the parcel's history from db
+  db returns the history to status-lookup
+  status-lookup shows where the parcel is to recipient
+
+// ---------------------------------------------------------------- walkthrough
+
+walkthrough tour: A tour of the Parcel tracker
+  step big-picture
+    > Couriers scan, recipients get texts. In between is the Parcel tracker.
+  step big-picture: events
+    > The parts never call each other directly to send texts: each scan becomes an
+      **event**, and the notifier picks it up.
+    @exec > Scans and texts are decoupled, so a slow text service never slows couriers down.
+  step parcel-scanned: 1-4
+    > A scan is saved first, then announced.
+  step parcel-scanned: 5-7
+    > The notifier turns the announcement into a text.
+  step services: status-lookup
+    > The text links to **Status lookup**, inside the tracking API.
+  step status-check
+    > The recipient sees where their parcel is.
+  step engineering
+    for engineer
+    > The tracking API and the notifier share one package of event formats.

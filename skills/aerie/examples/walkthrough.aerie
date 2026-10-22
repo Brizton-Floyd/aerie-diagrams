@@ -1,0 +1,44 @@
+// A walkthrough is a narrated tour for presenting to a room. Its steps show views (optionally
+// focused on some elements) or play a scenario, whole or a range of its steps. A step can open
+// or close containers and switch the audience. Narration can be reworded per audience.
+
+model library: Town library
+
+borrower: Borrower [person]
+
+library: Library system | Lends books [system]
+  catalogue: Catalogue | Every book and where it is [service]
+    search: Search | Finds books by title or author [module]
+    holds: Holds | Keeps books for borrowers [module]
+  loans: Loans | Who has which book [service]
+  loans-db: Loans database | Every loan [store]
+
+borrower finds books with search
+borrower places holds with holds
+holds checks availability with loans
+loans saves loans in loans-db
+
+view big-picture: Big picture
+  show borrower, library +1
+
+scenario hold: Placing a hold
+  borrower places a hold with holds
+  holds checks availability with loans
+  loans returns the answer to holds
+  holds confirms the hold to borrower
+
+walkthrough tour: A tour of the library system
+  step big-picture
+    > Borrowers use one system, which has three parts.
+  step big-picture: catalogue
+    > The **Catalogue** is what borrowers see.
+    @exec > The **Catalogue** is where borrowers find and reserve books.
+  step big-picture: holds
+    open catalogue
+    > Inside it, **Holds** keeps books aside for borrowers.
+  step hold: 1-2
+    > A hold starts with a check that the book is free.
+  step hold: 3-4
+    for engineer
+    > Then the answer comes back and the borrower hears about it.
+    @engineer >> The check is a synchronous call; nothing is queued.

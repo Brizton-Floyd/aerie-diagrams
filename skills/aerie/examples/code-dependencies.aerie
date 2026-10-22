@@ -1,0 +1,27 @@
+// Build-time dependencies use the kind `[code]`; runtime calls have no kind. A view by tag with
+// `kind code` shows how the code is put together, while the other views keep showing runtime.
+
+model invoices: Invoicing
+
+invoices: Invoicing | Bills customers [system]
+  invoice-api: Invoice API | Takes and answers requests [service module]
+  pdf-worker: PDF worker | Turns invoices into PDF files [service module]
+  billing-core: Billing rules | Prices, discounts and tax [module]
+  invoice-types: Invoice formats | The shape of an invoice [module]
+  invoice-db: Invoice database | Every invoice sent [store]
+
+invoice-api saves invoices in invoice-db
+invoice-api asks for a PDF from pdf-worker
+pdf-worker reads invoices from invoice-db
+
+invoice-api depends on billing-core, invoice-types [code]
+pdf-worker depends on invoice-types [code]
+billing-core depends on invoice-types [code]
+
+view services: Services
+  show invoices +1
+
+view engineering: Engineering
+  show [module]
+  kind code
+  @exec: How the code is organised
