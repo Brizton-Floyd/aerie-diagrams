@@ -1,0 +1,29 @@
+// A scenario is a flow told as steps. Each step is a sentence like a relationship, with one
+// object. A reply is its own step, written in the other direction. Every step has a
+// relationship behind it in the model, so `aerie check` reports nothing.
+
+model members: Members site
+
+member: Member [person]
+
+site: Members site | Pages and accounts [system]
+  web: Web pages | What members see [service]
+  accounts: Accounts service | Checks passwords and issues sessions [service]
+  sessions: Session store | Who is signed in [store]
+
+member signs in with web
+web checks passwords with accounts
+accounts saves sessions in sessions
+
+view services: Services
+  show member, site +1
+
+scenario sign-in: A member signs in
+  > What happens between typing a password and seeing the home page.
+  member sends a name and password to web
+  web checks the password with accounts
+    @engineer: POSTs /sessions to
+  accounts saves a new session in sessions
+    > The session lasts for 12 hours.
+  accounts returns the session to web
+  web shows the home page to member

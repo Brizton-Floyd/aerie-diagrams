@@ -1,0 +1,32 @@
+// Wording for each audience. Unmarked text is the default audience's voice (here the manager).
+// `@level:` replaces one-line wording, `@level >` replaces the description, and
+// `@level >>` adds a paragraph after it. Every audience sees the same elements.
+
+model payroll: Payroll
+  > How staff get paid each month.
+  @exec: Payroll at a glance
+
+audiences exec "Executive", manager "Manager" (default), engineer "Engineer" (code)
+
+clerk: Payroll clerk | Runs the monthly pay run [person]
+
+payroll: Payroll system | Works out and pays every salary [system]
+  > Takes hours and rates, works out pay and tax, and sends payments to the bank.
+  @exec: | Pays our people correctly and on time
+  @exec > Keeps pay right and on time, so staff trust it and the company stays within the law.
+  @engineer: | payroll-svc, Django 5 :8000
+  @engineer >> One Django project, `payroll/`, deployed as a single container. Pay runs are
+    Celery tasks on the `payruns` queue.
+
+bank: Bank | Moves the money [external]
+  @engineer: | Bank payments API over HTTPS
+
+clerk starts the monthly pay run in payroll
+payroll sends payments to bank
+  > One payment per person, sent as one batch.
+  @engineer: POSTs a payment batch to
+  @engineer >> `payroll/bank/client.py` signs the batch with the key in `BANK_SIGNING_KEY`.
+
+view big-picture: Big picture
+  show clerk, payroll, bank
+  @exec: Who is involved

@@ -72,6 +72,11 @@ same. The individual suites are the `test:*` scripts in [package.json](package.j
   diff, since the expected files come from the code under test.
 - `npx aerie check|format|model <file>` runs the Lines tools ([src/cli/aerie.ts](src/cli/aerie.ts),
   executed by Node's type stripping, so it imports `.ts` files and uses only erasable syntax).
+  `npx aerie` works only inside this checkout: elsewhere npm fetches an unrelated package of the same
+  name, so run `node <checkout>/src/cli/aerie.ts` instead.
+- [skills/aerie/](skills/aerie/SKILL.md) is the Claude skill for writing models (A12).
+  `tests/unit/skill/` runs every Lines example in it through the CLI and holds its language summary
+  to the parser, so a language change that breaks the skill fails `test:unit`.
 
 The rules, screenshots and journeys suites still hold stubs that prove their wiring; the slice that
 owns each suite replaces its stub.

@@ -1,0 +1,136 @@
+// The Example Voting App, drafted with the Aerie skill. A draft for human review.
+
+model voting-app: Example voting app
+  > A small app split across five containers: people vote on one page and watch the results
+    change live on another.
+
+audiences exec "Executive", manager "Manager" (default), engineer "Engineer" (code)
+
+// ---------------------------------------------------------------- elements
+
+voter: Voter | Votes in a browser [person]
+  > Picks one of two options. Each browser gets one vote, which it can change.
+
+// Unsure: nothing says whether voters and results viewers are different people.
+viewer: Results viewer | Watches the results [person]
+  > Keeps the results page open and sees the scores change as votes arrive.
+
+voting-app: Voting app | Collects votes and shows results live [system]
+  > Five containers started together: two web pages, a queue, a worker and a database.
+  @exec: | A live poll, start to finish
+  @engineer >> `docker-compose.yml` starts `vote`, `result`, `worker`, `redis` and `db` on two
+    networks, `front-tier` and `back-tier`. `k8s-specifications/` and `docker-stack.yml` run
+    the same five.
+
+  vote: Voting page | Takes each vote [service]
+    icon web
+    > Shows the two options and takes each vote. A cookie remembers the voter, so a second
+      vote replaces the first.
+    @exec: | Where people vote
+    @engineer: | vote, Python Flask :80
+    @engineer >> `vote/app.py`, served by gunicorn with 4 workers; published on 8080 (31000 on
+      Kubernetes). The options come from `OPTION_A` and `OPTION_B` (default Cats and Dogs).
+
+  redis: Vote queue | Holds votes until they are counted [queue]
+    icon refresh
+    > New votes wait here until the worker picks them up.
+    @engineer: | redis:alpine, list votes
+    @engineer >> Each vote is a JSON object `{voter_id, vote}` on the list `votes`.
+
+  worker: Vote worker | Moves votes into the database [service]
+    icon gear
+    > Takes votes off the queue one by one and records them, replacing a voter's earlier vote.
+    @engineer: | worker, .NET 7
+    @engineer >> `worker/Program.cs`: pops from `votes` every 100 ms, then `INSERT`s into the
+      `votes` table, or `UPDATE`s the row when the voter already has one. Uses
+      StackExchange.Redis and Npgsql.
+
+  db: Votes database | One row per voter [store]
+    > Keeps the latest vote of every voter.
+    @engineer: | postgres:15-alpine, table votes
+    @engineer >> Volume `db-data`. The worker creates the `votes` table (`id`, `vote`) at start.
+
+  result: Results page | Shows the scores live [service]
+    icon monitor
+    > Counts the votes every second and pushes the new scores to every open results page.
+    @exec: | The live scoreboard
+    @engineer: | result, Node.js 18 Express :80
+    @engineer >> `result/server.js` runs `SELECT vote, COUNT(id) ... GROUP BY vote` every
+      second and emits `scores` over Socket.IO; `views/app.js` (AngularJS) draws them. Published
+      on 8081 (31001 on Kubernetes).
+
+  seed: Vote seeder | Sends test votes on demand [tool]
+    > Only runs when asked, to fill the app with 3,000 test votes.
+    @engineer: | seed-data, ApacheBench
+    @engineer >> The `seed` profile in `docker-compose.yml`; `generate-votes.sh` posts 2,000
+      votes for a and 1,000 for b to `http://vote/`.
+
+// ---------------------------------------------------------------- relationships
+
+voter casts votes on vote
+  @engineer: POSTs vote=a or vote=b to
+vote adds votes to redis
+  @engineer: RPUSHes JSON onto votes in
+worker takes votes from redis
+  @engineer: pops from votes in
+worker records votes in db
+  @engineer: INSERTs or UPDATEs rows in
+result counts votes in db
+  @engineer: SELECTs counts every second from
+viewer opens the results page on result
+result pushes live scores to viewer
+  @engineer: emits scores over Socket.IO to
+seed sends test votes to vote
+
+// ---------------------------------------------------------------- views
+
+view big-picture: Big picture
+  show voter, viewer, voting-app +1
+  > Who uses the app and the five parts behind it.
+
+view votes-in: How a vote gets in
+  show voter, vote, redis, worker, db
+
+view results-out: How results get out
+  show db, result, viewer
+
+// ---------------------------------------------------------------- scenarios
+
+scenario vote-counted: A vote is counted
+  > From pressing a button to the score changing on every results page.
+  voter casts a vote on vote
+  vote adds the vote to redis
+  worker takes the vote from redis
+    > Within a tenth of a second.
+  worker records the vote in db
+  result counts the votes in db
+    > Once a second, whether or not anything changed.
+  db returns the counts to result
+  result pushes the new scores to viewer
+
+scenario vote-changed: A voter changes their vote
+  > Each browser has one vote; voting again replaces it.
+  voter votes again on vote
+  vote adds the new vote to redis
+    @engineer >> The same `voter_id`, read from the cookie.
+  worker takes the vote from redis
+  worker replaces the earlier vote in db
+    @engineer: UPDATEs the voter's row in
+
+// ---------------------------------------------------------------- walkthrough
+
+walkthrough tour: A tour of the voting app
+  step big-picture
+    > Voters use one page, viewers watch another, and three parts sit between them.
+  step votes-in: redis
+    > Votes do not go straight to the database: they wait in a **queue**.
+    @exec > The queue keeps voting fast even when the database is busy.
+  step vote-counted: 1-4
+    > A vote goes in through the page, the queue and the worker.
+  step results-out: result
+    > The **Results page** reads the totals once a second.
+  step vote-counted: 5-7
+    > And every open results page sees the new scores.
+  step vote-changed
+    for engineer
+    > Voting twice from one browser replaces the first vote instead of adding one.

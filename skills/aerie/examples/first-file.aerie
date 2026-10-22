@@ -1,0 +1,20 @@
+// The smallest useful model: a person, a system with two parts, an outside system,
+// the relationships between them, and one view. Everything else is optional.
+
+model notes: Team notes
+
+reader: Team member [person]
+
+notes: Team notes | Shared notes for a small team [system]
+  app: Notes app | Where notes are written and read [service]
+  db: Notes database | Every note and its history [store]
+
+search: Search provider | Finds notes by their words [external]
+
+reader writes notes in app
+app saves notes in db
+app sends new notes to search
+app asks for matching notes from search
+
+view big-picture: Big picture
+  show reader, notes +1, search
