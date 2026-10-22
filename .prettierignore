@@ -1,0 +1,4 @@
+package-lock.json
+**/__snapshots__/
+**/__screenshots__/
+.claude/
