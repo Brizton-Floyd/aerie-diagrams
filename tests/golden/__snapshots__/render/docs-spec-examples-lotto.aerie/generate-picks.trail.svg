@@ -1,0 +1,265 @@
+<?xml-stylesheet href="../contour.css" type="text/css"?>
+<svg xmlns="http://www.w3.org/2000/svg" class="aerie" viewBox="0 0 761 816" width="761" height="816" overflow="visible" role="img" aria-label="The Lotto suite: Big picture" data-view="big-picture" data-audience="manager">
+  <defs>
+    <pattern id="aerie-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect class="hatch-bg" width="7" height="7"/>
+      <path class="hatch-line" d="M0 0V7"/>
+    </pattern>
+  </defs>
+  <g class="boxes">
+    <g class="node leaf person now" data-id="user" transform="translate(180 29)">
+      <rect class="shape" width="178" height="59" rx="29.5"/>
+      <rect class="ring" x="-3" y="-3" width="184" height="65" rx="32.5"/>
+      <g class="icon" data-icon="person" transform="translate(12 12) scale(0.34375)">
+        <circle cx="32" cy="21" r="10"/>
+        <path d="M12 56c0-12 9-20 20-20s20 8 20 20"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="28">User</text>
+      <text class="t-tagline" x="44" y="44" data-width="105">Using a browser</text>
+    </g>
+    <g class="node open depth-0 context" data-id="suite" transform="translate(12 191)">
+      <rect class="shape" width="426.5" height="598" rx="18"/>
+      <rect class="inner" x="5" y="5" width="416.5" height="588" rx="13"/>
+      <rect class="ring" x="-3" y="-3" width="432.5" height="604" rx="21"/>
+      <g class="icon" data-icon="stack" transform="translate(12 12) scale(0.34375)">
+        <path d="M32 9 56 21 32 33 8 21Z"/>
+        <path d="M8 31l24 12 24-12"/>
+        <path d="M8 41l24 12 24-12"/>
+      </g>
+      <g class="control" transform="translate(405.5 21)">
+        <circle r="9"/>
+        <path d="M-4 0H4"/>
+      </g>
+    </g>
+    <g class="node leaf now" data-id="website" transform="translate(127.5 261)">
+      <rect class="shape" width="283" height="59" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="289" height="65" rx="7"/>
+      <g class="icon" data-icon="web" transform="translate(12 12) scale(0.34375)">
+        <rect x="8" y="11" width="48" height="42" rx="5"/>
+        <path d="M8 21h48"/>
+        <path d="M27 29l-7 7 7 7"/>
+        <path d="M37 29l7 7-7 7"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="49">Website</text>
+      <text class="t-tagline" x="44" y="44" data-width="214">Picks a game, generates numbers</text>
+    </g>
+    <g class="node leaf full" data-id="screen-api" transform="translate(146 381)">
+      <rect class="shape" width="246" height="76" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="252" height="82" rx="7"/>
+      <g class="icon" data-icon="api" transform="translate(12 12) scale(0.34375)">
+        <rect x="26" y="18" width="14" height="28" rx="3"/>
+        <path d="M7 25h19M7 39h19"/>
+        <path d="M40 32h16"/>
+        <path d="M50 26l6 6-6 6"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="65">Screen API</text>
+      <text class="t-tagline" x="44" y="44" data-width="190">Prepares data for each screen</text>
+    </g>
+    <g class="node closed full" data-id="engine" transform="translate(123.5 518)">
+      <rect class="shape" width="291" height="96" rx="8"/>
+      <rect class="inner" x="5" y="5" width="281" height="86" rx="3"/>
+      <rect class="ring" x="-3" y="-3" width="297" height="102" rx="11"/>
+      <g class="icon" data-icon="gear" transform="translate(12 12) scale(0.34375)">
+        <path d="M28.1 16.5 29 10.7h6l.9 5.8 4.3 1.8 4.7-3.5 4.3 4.3-3.5 4.7 1.8 4.3 5.8.9v6l-5.8.9-1.8 4.3 3.5 4.7-4.3 4.3-4.7-3.5-4.3 1.8-.9 5.8h-6l-.9-5.8-4.3-1.8-4.7 3.5-4.3-4.3 3.5-4.7-1.8-4.3-5.8-.9v-6l5.8-.9 1.8-4.3-3.5-4.7 4.3-4.3 4.7 3.5Z"/>
+        <circle cx="32" cy="32" r="6"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="93">Analysis engine</text>
+      <text class="t-tagline" x="44" y="44" data-width="174">Generates and scores picks</text>
+      <text class="t-chip" x="44" y="79" data-width="80">4 parts inside</text>
+      <g class="control" transform="translate(270 21)">
+        <circle r="9"/>
+        <path d="M-4 0H4M0-4V4"/>
+      </g>
+    </g>
+    <g class="node closed full" data-id="store" transform="translate(117.5 675)">
+      <rect class="shape" width="303" height="96" rx="8"/>
+      <rect class="inner" x="5" y="5" width="293" height="86" rx="3"/>
+      <rect class="ring" x="-3" y="-3" width="309" height="102" rx="11"/>
+      <g class="icon" data-icon="cylinder" transform="translate(12 12) scale(0.34375)">
+        <path d="M14 14c0-3.3 8-6 18-6s18 2.7 18 6-8 6-18 6-18-2.7-18-6Z"/>
+        <path d="M14 14v36c0 3.3 8 6 18 6s18-2.7 18-6V14"/>
+        <path d="M14 26c0 3.3 8 6 18 6s18-2.7 18-6"/>
+        <path d="M14 38c0 3.3 8 6 18 6s18-2.7 18-6"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="78">Results store</text>
+      <text class="t-tagline" x="44" y="44" data-width="145">Keeps every past draw</text>
+      <text class="t-chip" x="44" y="79" data-width="80">4 parts inside</text>
+      <g class="control" transform="translate(282 21)">
+        <circle r="9"/>
+        <path d="M-4 0H4M0-4V4"/>
+      </g>
+    </g>
+    <g class="node leaf external dim" data-id="texas" transform="translate(384 12)">
+      <rect class="shape" width="262" height="76" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="268" height="82" rx="7"/>
+      <g class="icon" data-icon="building" transform="translate(12 12) scale(0.34375)">
+        <path d="M8 56h48"/>
+        <path d="M16 56V10h32v46"/>
+        <path d="M24 18h4M36 18h4M24 27h4M36 27h4M24 36h4M36 36h4"/>
+        <path d="M29 56V46h6v10"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="132">Texas Lottery website</text>
+      <text class="t-tagline" x="44" y="44" data-width="206">Publishes winning numbers per</text>
+      <text class="t-tagline" x="44" y="61" data-width="35">game</text>
+    </g>
+  </g>
+  <g class="edges">
+    <g class="edge dim" data-id="user-&gt;website">
+      <path class="line" d="M269 88L269 261"/>
+      <path class="arrow" d="M264 249L269 261L274 249"/>
+    </g>
+    <g class="edge dim" data-id="website-&gt;screen-api">
+      <path class="line" d="M269 320L269 381"/>
+      <path class="arrow" d="M264 369L269 381L274 369"/>
+    </g>
+    <g class="edge dim" data-id="screen-api-&gt;engine">
+      <path class="line" d="M269 457L269 518"/>
+      <path class="arrow" d="M264 506L269 518L274 506"/>
+    </g>
+    <g class="edge dim" data-id="engine-&gt;store">
+      <path class="line" d="M269 614L269 675"/>
+      <path class="arrow" d="M264 663L269 675L274 663"/>
+    </g>
+    <g class="edge dim" data-id="store-&gt;texas">
+      <path class="line" d="M269 771L269 795Q269 804 278 804L506 804Q515 804 515 795L515 88"/>
+      <path class="arrow" d="M520 100L515 88L510 100"/>
+    </g>
+  </g>
+  <g class="heads">
+    <g class="head depth-0 context" data-id="suite" transform="translate(12 191)">
+      <text class="t-name" x="44" y="26" data-width="65">Lotto suite</text>
+      <text class="t-tagline" x="44" y="44" data-width="220">Runs as one stack on one machine</text>
+    </g>
+  </g>
+  <g class="labels">
+    <g class="label dim" data-id="user-&gt;website">
+      <title>User uses Website.</title>
+      <text class="t-label" x="231" y="142.5" data-width="25">uses</text>
+    </g>
+    <g class="label dim" data-id="website-&gt;screen-api">
+      <title>Website gets screen data from Screen API.</title>
+      <text class="t-label" x="137" y="356" data-width="125">gets screen data from</text>
+    </g>
+    <g class="label dim" data-id="screen-api-&gt;engine">
+      <title>Screen API requests analysis from Request handling.</title>
+      <text class="t-label" x="86.5" y="493" data-width="132">requests analysis from</text>
+    </g>
+    <g class="label dim" data-id="engine-&gt;store">
+      <title>Draw history lookup fetches draw history from Draw history service.</title>
+      <text class="t-label" x="72.5" y="650" data-width="152">fetches draw history from</text>
+    </g>
+    <g class="label dim" data-id="store-&gt;texas">
+      <title>Results updater downloads new results from Texas Lottery website.</title>
+      <text class="t-label" x="551" y="142.5" data-width="167">downloads new results from</text>
+    </g>
+  </g>
+  <g class="trail">
+    <g class="step call past" data-step="1">
+      <path class="curve" d="M285.56 93Q324.68 174.5 285.56 256"/>
+      <path class="arrow" d="M286.25 243.02L285.56 256L295.26 247.35"/>
+    </g>
+    <g class="step call past" data-step="2">
+      <path class="curve" d="M285.56 325Q299.84 354.75 289.64 376"/>
+      <path class="arrow" d="M290.33 363.02L289.64 376L299.34 367.35"/>
+    </g>
+    <g class="step call past" data-step="3">
+      <path class="curve" d="M289.64 462Q304.28 492.5 294.44 513"/>
+      <path class="arrow" d="M295.13 500.02L294.44 513L304.14 504.35"/>
+    </g>
+    <g class="step call past" data-step="4">
+      <path class="curve" d="M417.5 529C452.17 519 452.17 549 417.5 539"/>
+      <path class="arrow" d="M430.42 537.52L417.5 539L427.64 547.13"/>
+    </g>
+    <g class="step call past" data-step="5">
+      <path class="curve" d="M417.5 551C452.17 541 452.17 571 417.5 561"/>
+      <path class="arrow" d="M430.42 559.52L417.5 561L427.64 569.13"/>
+    </g>
+    <g class="step call past" data-step="6">
+      <path class="curve" d="M294.44 619Q306.68 644.5 294.44 670"/>
+      <path class="arrow" d="M295.13 657.02L294.44 670L304.14 661.35"/>
+    </g>
+    <g class="step reply past" data-step="7">
+      <path class="curve" d="M243.56 670Q231.32 644.5 243.56 619"/>
+    </g>
+    <g class="step reply past" data-step="8">
+      <path class="curve" d="M417.5 573C452.17 563 452.17 593 417.5 583"/>
+    </g>
+    <g class="step call past" data-step="9">
+      <path class="curve" d="M417.5 529C452.17 519 452.17 549 417.5 539"/>
+      <path class="arrow" d="M430.42 537.52L417.5 539L427.64 547.13"/>
+    </g>
+    <g class="step reply past" data-step="10">
+      <path class="curve" d="M417.5 551C452.17 541 452.17 571 417.5 561"/>
+    </g>
+    <g class="step reply past" data-step="11">
+      <path class="curve" d="M417.5 573C452.17 563 452.17 593 417.5 583"/>
+    </g>
+    <g class="step reply past" data-step="12">
+      <path class="curve" d="M243.56 513Q233.72 492.5 248.36 462"/>
+    </g>
+    <g class="step reply past" data-step="13">
+      <path class="curve" d="M248.36 376Q238.16 354.75 252.44 325"/>
+    </g>
+    <g class="step reply now" data-step="14">
+      <path class="curve" d="M252.44 256Q213.32 174.5 252.44 93"/>
+    </g>
+  </g>
+  <g class="badges">
+    <g class="badge" data-step="1" transform="translate(305.12 174.5)">
+      <circle r="9"/>
+      <text class="t-badge" y="4">1</text>
+    </g>
+    <g class="badge" data-step="2" transform="translate(293.72 352.63)">
+      <circle r="9"/>
+      <text class="t-badge" y="4">2</text>
+    </g>
+    <g class="badge" data-step="3" transform="translate(298.16 490)">
+      <circle r="9"/>
+      <text class="t-badge" y="4">3</text>
+    </g>
+    <g class="badge" data-step="4" transform="translate(437.5 534)">
+      <circle r="9"/>
+      <text class="t-badge" y="4">4</text>
+    </g>
+    <g class="badge" data-step="5" transform="translate(437.5 556)">
+      <circle r="9"/>
+      <text class="t-badge" y="4">5</text>
+    </g>
+    <g class="badge" data-step="6" transform="translate(300.56 644.5)">
+      <circle r="9"/>
+      <text class="t-badge" y="4">6</text>
+    </g>
+    <g class="badge" data-step="7" transform="translate(237.44 644.5)">
+      <circle r="9"/>
+      <text class="t-badge" y="4">7</text>
+    </g>
+    <g class="badge" data-step="8" transform="translate(437.5 578)">
+      <circle r="9"/>
+      <text class="t-badge" y="4">8</text>
+    </g>
+    <g class="badge" data-step="9" transform="translate(437.5 534)">
+      <circle r="9"/>
+      <text class="t-badge" y="4">9</text>
+    </g>
+    <g class="badge" data-step="10" transform="translate(437.5 556)">
+      <circle r="9"/>
+      <text class="t-badge" y="4">10</text>
+    </g>
+    <g class="badge" data-step="11" transform="translate(437.5 578)">
+      <circle r="9"/>
+      <text class="t-badge" y="4">11</text>
+    </g>
+    <g class="badge" data-step="12" transform="translate(239.84 490)">
+      <circle r="9"/>
+      <text class="t-badge" y="4">12</text>
+    </g>
+    <g class="badge" data-step="13" transform="translate(244.28 352.63)">
+      <circle r="9"/>
+      <text class="t-badge" y="4">13</text>
+    </g>
+    <g class="badge now" data-step="14" transform="translate(232.88 174.5)">
+      <circle r="12"/>
+      <text class="t-badge" y="4.5">14</text>
+    </g>
+  </g>
+</svg>

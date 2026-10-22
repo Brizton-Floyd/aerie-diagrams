@@ -6,7 +6,8 @@ Aerie is diagram-as-code for architecture. Engineers describe a system once, in 
 every reader explores it as an interactive diagram at their own level: the same model reads differently
 for an executive, a manager and an engineer, and opens deeper in place when someone wants more detail.
 
-Private, work in progress. No product code yet; the functional spec is written.
+Private, work in progress. The Lines language, model, layout and the Contour renderer are built;
+the interactions come next ([docs/slice-plan.md](docs/slice-plan.md)).
 
 ## Getting started
 
@@ -29,6 +30,15 @@ npx aerie check samples/lotto.aerie
 npx aerie format samples/lotto.aerie
 npx aerie model samples/lotto.aerie
 ```
+
+To see Aerie draw, start the viewer and open the address it prints:
+
+```sh
+npm run dev
+```
+
+It opens the Lotto sample; pick another bundled sample or open a local `.aerie` file from the
+sidebar, then choose a view, an audience, a zoom, a selection or a scenario step.
 
 ## Where to look
 

@@ -21,7 +21,8 @@ licence. The full licence texts follow the list.
 - What: the three font families Aerie draws with and measures text from
   ([look.md](docs/spec/look.md#type)), from the Fontsource packages
   `@fontsource/source-serif-4` 5.3.1, `@fontsource/source-sans-3` 5.3.1 and
-  `@fontsource/source-code-pro` 5.3.1.
+  `@fontsource/source-code-pro` 5.3.1. Aerie's page serves the packages' unmodified font files
+  (WOFF2 and WOFF) from its own build and never fetches fonts from a font service.
 - Copyright, as each font file states it:
   - Source Serif 4 (version 4.004): © 2014 - 2021 Adobe Systems Incorporated
     (http://www.adobe.com/), with Reserved Font Name ‘Source’.

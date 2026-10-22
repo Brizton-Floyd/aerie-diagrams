@@ -1,0 +1,103 @@
+// Every shape Aerie draws in the Contour look (docs/spec/look.md): a person, an outside system,
+// leaves, a closed container, open containers at every band depth, and the whole icon set. The
+// renderer's screenshots and goldens use it; it is not a real system.
+
+model shapes: Every Contour shape
+  > One of each shape and icon, so a change to the look shows up in one picture.
+
+audiences exec "Executive", manager "Manager" (default), engineer "Engineer" (code)
+
+visitor: Visitor | A person, drawn as a pill [person]
+  @engineer: | role: visitor
+
+outside: Outside service | Hatched, off the edge of the map [external]
+  @engineer: | https://example.org/api
+
+ground: Ground | An open container at depth 0 [system]
+  ridge: Ridge | An open container at depth 1 [system]
+    crest: Crest | At depth 2 [system]
+      summit: Summit | At depth 3 [system]
+        peak: Peak | Deeper still, on the depth 3 band [system]
+          cairn: Cairn | A leaf at the very top
+            @engineer: | cairn.ts
+          shed: Shed | A closed container [system]
+            rake: Rake | Inside the shed
+            spade: Spade | Inside the shed
+
+icons: Icons | The whole v1 icon set [system]
+  people: People and screens [system]
+    i-person: person | Head and shoulders
+      icon person
+    i-web: web | A browser window
+      icon web
+    i-monitor: monitor | A screen on a stand
+      icon monitor
+    i-api: api | Lines in, an arrow out
+      icon api
+    i-route: route | A point with an arrow leaving
+      icon route
+  work: Work [system]
+    i-gear: gear | A cog
+      icon gear
+    i-module: module | A cube
+      icon module
+    i-stack: stack | Three stacked layers
+      icon stack
+    i-dice: dice | A die showing five
+      icon dice
+    i-refresh: refresh | Two arrows chasing round
+      icon refresh
+  keeping: Keeping [system]
+    i-cylinder: cylinder | A storage drum
+      icon cylinder
+    i-grid: grid | A table
+      icon grid
+    i-document: document | A page, folded
+      icon document
+    i-archive: archive | A box with a lid
+      icon archive
+    i-books: books | Books on a shelf
+      icon books
+  places: Places [system]
+    i-building: building | An office block
+      icon building
+    i-search: search | A magnifying glass
+      icon search
+    i-history: history | A clock turning back
+      icon history
+    i-box: box | The default
+      icon box
+
+visitor walks up to cairn
+  @engineer: GET /cairn from
+cairn calls on outside
+cairn keeps tools in shed
+rake leans on spade
+i-person uses i-web
+i-web shows on i-monitor
+i-monitor calls i-api
+i-api forwards to i-route
+i-gear turns i-module
+i-module sits on i-stack
+i-stack rolls i-dice
+i-dice asks for i-refresh
+i-cylinder fills i-grid
+i-grid prints i-document
+i-document goes in i-archive
+i-archive sits by i-books
+i-building holds i-search
+i-search finds i-history
+i-history keeps i-box
+
+view shapes: Shapes
+  show visitor, ground +5, outside
+
+view icon-set: Icons
+  show icons +2
+
+scenario visit: A visit
+  visitor walks up to cairn
+  cairn calls on outside
+  outside answers cairn
+  cairn keeps tools in shed
+  rake leans on spade

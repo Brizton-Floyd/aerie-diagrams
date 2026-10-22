@@ -1,0 +1,239 @@
+view shapes, default (no changes)
+  visitor
+  outside
+  ground (open)
+    ridge (open)
+      crest (open)
+        summit (open)
+          peak (open)
+            cairn
+            shed (closed, 2 inside)
+  visitor->cairn carries 0
+    exec: walks up to
+    manager: walks up to
+    engineer: GET /cairn from
+  cairn->outside carries 1
+    exec: calls on
+    manager: calls on
+    engineer: calls on
+  cairn->shed carries 2
+    exec: keeps tools in
+    manager: keeps tools in
+    engineer: keeps tools in
+
+view shapes, everything open (shed open)
+  visitor
+  outside
+  ground (open)
+    ridge (open)
+      crest (open)
+        summit (open)
+          peak (open)
+            cairn
+            shed (open)
+              rake
+              spade
+  visitor->cairn carries 0
+    exec: walks up to
+    manager: walks up to
+    engineer: GET /cairn from
+  cairn->outside carries 1
+    exec: calls on
+    manager: calls on
+    engineer: calls on
+  cairn->shed carries 2
+    exec: keeps tools in
+    manager: keeps tools in
+    engineer: keeps tools in
+  rake->spade carries 3
+    exec: leans on
+    manager: leans on
+    engineer: leans on
+
+view shapes, all closed (ground closed)
+  visitor
+  outside
+  ground (closed, 1 inside)
+  visitor->ground carries 0
+    exec: walks up to
+    manager: walks up to
+    engineer: GET /cairn from
+  ground->outside carries 1
+    exec: calls on
+    manager: calls on
+    engineer: calls on
+
+view icon-set, default (no changes)
+  icons (open)
+    people (open)
+      i-person
+      i-web
+      i-monitor
+      i-api
+      i-route
+    work (open)
+      i-gear
+      i-module
+      i-stack
+      i-dice
+      i-refresh
+    keeping (open)
+      i-cylinder
+      i-grid
+      i-document
+      i-archive
+      i-books
+    places (open)
+      i-building
+      i-search
+      i-history
+      i-box
+  i-person->i-web carries 4
+    exec: uses
+    manager: uses
+    engineer: uses
+  i-web->i-monitor carries 5
+    exec: shows on
+    manager: shows on
+    engineer: shows on
+  i-monitor->i-api carries 6
+    exec: calls
+    manager: calls
+    engineer: calls
+  i-api->i-route carries 7
+    exec: forwards to
+    manager: forwards to
+    engineer: forwards to
+  i-gear->i-module carries 8
+    exec: turns
+    manager: turns
+    engineer: turns
+  i-module->i-stack carries 9
+    exec: sits on
+    manager: sits on
+    engineer: sits on
+  i-stack->i-dice carries 10
+    exec: rolls
+    manager: rolls
+    engineer: rolls
+  i-dice->i-refresh carries 11
+    exec: asks for
+    manager: asks for
+    engineer: asks for
+  i-cylinder->i-grid carries 12
+    exec: fills
+    manager: fills
+    engineer: fills
+  i-grid->i-document carries 13
+    exec: prints
+    manager: prints
+    engineer: prints
+  i-document->i-archive carries 14
+    exec: goes in
+    manager: goes in
+    engineer: goes in
+  i-archive->i-books carries 15
+    exec: sits by
+    manager: sits by
+    engineer: sits by
+  i-building->i-search carries 16
+    exec: holds
+    manager: holds
+    engineer: holds
+  i-search->i-history carries 17
+    exec: finds
+    manager: finds
+    engineer: finds
+  i-history->i-box carries 18
+    exec: keeps
+    manager: keeps
+    engineer: keeps
+
+view icon-set, everything open (no changes)
+  icons (open)
+    people (open)
+      i-person
+      i-web
+      i-monitor
+      i-api
+      i-route
+    work (open)
+      i-gear
+      i-module
+      i-stack
+      i-dice
+      i-refresh
+    keeping (open)
+      i-cylinder
+      i-grid
+      i-document
+      i-archive
+      i-books
+    places (open)
+      i-building
+      i-search
+      i-history
+      i-box
+  i-person->i-web carries 4
+    exec: uses
+    manager: uses
+    engineer: uses
+  i-web->i-monitor carries 5
+    exec: shows on
+    manager: shows on
+    engineer: shows on
+  i-monitor->i-api carries 6
+    exec: calls
+    manager: calls
+    engineer: calls
+  i-api->i-route carries 7
+    exec: forwards to
+    manager: forwards to
+    engineer: forwards to
+  i-gear->i-module carries 8
+    exec: turns
+    manager: turns
+    engineer: turns
+  i-module->i-stack carries 9
+    exec: sits on
+    manager: sits on
+    engineer: sits on
+  i-stack->i-dice carries 10
+    exec: rolls
+    manager: rolls
+    engineer: rolls
+  i-dice->i-refresh carries 11
+    exec: asks for
+    manager: asks for
+    engineer: asks for
+  i-cylinder->i-grid carries 12
+    exec: fills
+    manager: fills
+    engineer: fills
+  i-grid->i-document carries 13
+    exec: prints
+    manager: prints
+    engineer: prints
+  i-document->i-archive carries 14
+    exec: goes in
+    manager: goes in
+    engineer: goes in
+  i-archive->i-books carries 15
+    exec: sits by
+    manager: sits by
+    engineer: sits by
+  i-building->i-search carries 16
+    exec: holds
+    manager: holds
+    engineer: holds
+  i-search->i-history carries 17
+    exec: finds
+    manager: finds
+    engineer: finds
+  i-history->i-box carries 18
+    exec: keeps
+    manager: keeps
+    engineer: keeps
+
+view icon-set, all closed (icons closed)
+  icons (closed, 4 inside)

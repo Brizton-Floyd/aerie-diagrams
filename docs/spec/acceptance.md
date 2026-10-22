@@ -79,13 +79,13 @@ are in [overview.md](overview.md#reading-this-spec).
 
 ### A5: Contour renderer
 
-| Suite       | What it proves                                                                                | Requirements                               |
-| ----------- | --------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| unit        | Tokens for both themes, and contrast computed from them                                       | LOOK-001 to LOOK-013, SCORE-004            |
-| unit        | Type scale, box anatomy, shapes, icons, relationship and selection styles in the drawing code | LOOK-101 to LOOK-603                       |
-| golden      | The drawn SVG (numbers rounded, ids stable) for every sample, view, audience and theme        | LOOK-201 to LOOK-503                       |
-| screenshots | Every Lotto view in every audience in both themes at 1600 x 900, and one sample of each shape | LOOK-301 to LOOK-502, LOOK-801 to LOOK-807 |
-| screenshots | In the browser, drawn text fits its box and labels fit their space for every audience         | RULE-003, RULE-008                         |
+| Suite       | What it proves                                                                                                   | Requirements                               |
+| ----------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| unit        | Tokens for both themes, and contrast computed from them                                                          | LOOK-001 to LOOK-013, SCORE-004            |
+| unit        | Type scale, box anatomy, shapes, icons, relationship and selection styles in the drawing code                    | LOOK-101 to LOOK-603                       |
+| golden      | The drawn SVG (numbers rounded, ids stable) for every sample, view and audience; the stylesheet with both themes | LOOK-201 to LOOK-503                       |
+| screenshots | Every Lotto view in every audience in both themes at 1600 x 900, and one sample of each shape                    | LOOK-301 to LOOK-502, LOOK-801 to LOOK-807 |
+| screenshots | In the browser, drawn text fits its box and labels fit their space for every audience                            | RULE-003, RULE-008                         |
 
 ### A6: Interactions
 

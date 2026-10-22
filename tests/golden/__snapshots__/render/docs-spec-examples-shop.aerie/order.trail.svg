@@ -1,0 +1,100 @@
+<?xml-stylesheet href="../contour.css" type="text/css"?>
+<svg xmlns="http://www.w3.org/2000/svg" class="aerie" viewBox="0 0 320 393" width="320" height="393" overflow="visible" role="img" aria-label="Corner shop: Overview" data-view="overview" data-audience="owner">
+  <defs>
+    <pattern id="aerie-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect class="hatch-bg" width="7" height="7"/>
+      <path class="hatch-line" d="M0 0V7"/>
+    </pattern>
+  </defs>
+  <g class="boxes">
+    <g class="node leaf person full" data-id="customer" transform="translate(105 12)">
+      <rect class="shape" width="150" height="46" rx="23"/>
+      <rect class="ring" x="-3" y="-3" width="156" height="52" rx="26"/>
+      <g class="icon" data-icon="person" transform="translate(12 12) scale(0.34375)">
+        <circle cx="32" cy="21" r="10"/>
+        <path d="M12 56c0-12 9-20 20-20s20 8 20 20"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="59">Customer</text>
+    </g>
+    <g class="node open depth-0 context" data-id="shop" transform="translate(12 144)">
+      <rect class="shape" width="296" height="237" rx="18"/>
+      <rect class="inner" x="5" y="5" width="286" height="227" rx="13"/>
+      <rect class="ring" x="-3" y="-3" width="302" height="243" rx="21"/>
+      <g class="icon" data-icon="stack" transform="translate(12 12) scale(0.34375)">
+        <path d="M32 9 56 21 32 33 8 21Z"/>
+        <path d="M8 31l24 12 24-12"/>
+        <path d="M8 41l24 12 24-12"/>
+      </g>
+      <g class="control" transform="translate(275 21)">
+        <circle r="9"/>
+        <path d="M-4 0H4"/>
+      </g>
+    </g>
+    <g class="node leaf now" data-id="web" transform="translate(70 197)">
+      <rect class="shape" width="220" height="59" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="226" height="65" rx="7"/>
+      <g class="icon" data-icon="box" transform="translate(12 12) scale(0.34375)">
+        <rect x="12" y="12" width="40" height="40" rx="8"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="63">Storefront</text>
+      <text class="t-tagline" x="44" y="44" data-width="164">Where customers browse</text>
+    </g>
+    <g class="node leaf now" data-id="orders" transform="translate(105 317)">
+      <rect class="shape" width="150" height="46" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="156" height="52" rx="7"/>
+      <g class="icon" data-icon="cylinder" transform="translate(12 12) scale(0.34375)">
+        <path d="M14 14c0-3.3 8-6 18-6s18 2.7 18 6-8 6-18 6-18-2.7-18-6Z"/>
+        <path d="M14 14v36c0 3.3 8 6 18 6s18-2.7 18-6V14"/>
+        <path d="M14 26c0 3.3 8 6 18 6s18-2.7 18-6"/>
+        <path d="M14 38c0 3.3 8 6 18 6s18-2.7 18-6"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="75">Orders store</text>
+    </g>
+  </g>
+  <g class="edges">
+    <g class="edge dim" data-id="customer-&gt;web">
+      <path class="line" d="M180 58L180 197"/>
+      <path class="arrow" d="M175 185L180 197L185 185"/>
+    </g>
+    <g class="edge dim" data-id="web-&gt;orders">
+      <path class="line" d="M180 256L180 317"/>
+      <path class="arrow" d="M175 305L180 317L185 305"/>
+    </g>
+  </g>
+  <g class="heads">
+    <g class="head depth-0 context" data-id="shop" transform="translate(12 144)">
+      <text class="t-name" x="44" y="26" data-width="32">Shop</text>
+      <text class="t-tagline" x="44" y="44" data-width="118">Sells things online</text>
+    </g>
+  </g>
+  <g class="labels">
+    <g class="label dim" data-id="customer-&gt;web">
+      <title>Customer buys from Storefront.</title>
+      <text class="t-label" x="104.5" y="104" data-width="60">buys from</text>
+    </g>
+    <g class="label dim" data-id="web-&gt;orders">
+      <title>Storefront saves orders in Orders store.</title>
+      <text class="t-label" x="60.5" y="292" data-width="87">saves orders in</text>
+    </g>
+  </g>
+  <g class="trail">
+    <g class="step call past" data-step="1">
+      <path class="curve" d="M193.44 63Q225.96 130.75 196.56 192"/>
+      <path class="arrow" d="M197.25 179.02L196.56 192L206.26 183.35"/>
+    </g>
+    <g class="step call now" data-step="2">
+      <path class="curve" d="M196.56 261Q207.24 283.25 193.44 312" pathLength="1"/>
+      <path class="arrow" d="M194.13 299.02L193.44 312L203.14 303.35"/>
+    </g>
+  </g>
+  <g class="badges">
+    <g class="badge" data-step="1" transform="translate(210.48 129.13)">
+      <circle r="9"/>
+      <text class="t-badge" y="4">1</text>
+    </g>
+    <g class="badge now" data-step="2" transform="translate(201.12 284.88)">
+      <circle r="12"/>
+      <text class="t-badge" y="4.5">2</text>
+    </g>
+  </g>
+</svg>

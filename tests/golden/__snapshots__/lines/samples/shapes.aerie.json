@@ -1,0 +1,1134 @@
+{
+  "format": "aerie-model/1",
+  "id": "shapes",
+  "title": {
+    "base": "Every Contour shape",
+    "set": {}
+  },
+  "about": {
+    "base": "One of each shape and icon, so a change to the look shows up in one picture.",
+    "set": {},
+    "add": {}
+  },
+  "audiences": [
+    {
+      "id": "exec",
+      "name": "Executive",
+      "code": false
+    },
+    {
+      "id": "manager",
+      "name": "Manager",
+      "code": false
+    },
+    {
+      "id": "engineer",
+      "name": "Engineer",
+      "code": true
+    }
+  ],
+  "defaultAudience": "manager",
+  "elements": [
+    {
+      "id": "visitor",
+      "parent": null,
+      "name": {
+        "base": "Visitor",
+        "set": {}
+      },
+      "tagline": {
+        "base": "A person, drawn as a pill",
+        "set": {
+          "engineer": "role: visitor"
+        }
+      },
+      "tags": [
+        "person"
+      ],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "outside",
+      "parent": null,
+      "name": {
+        "base": "Outside service",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Hatched, off the edge of the map",
+        "set": {
+          "engineer": "https://example.org/api"
+        }
+      },
+      "tags": [
+        "external"
+      ],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "ground",
+      "parent": null,
+      "name": {
+        "base": "Ground",
+        "set": {}
+      },
+      "tagline": {
+        "base": "An open container at depth 0",
+        "set": {}
+      },
+      "tags": [
+        "system"
+      ],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "ridge",
+      "parent": "ground",
+      "name": {
+        "base": "Ridge",
+        "set": {}
+      },
+      "tagline": {
+        "base": "An open container at depth 1",
+        "set": {}
+      },
+      "tags": [
+        "system"
+      ],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "crest",
+      "parent": "ridge",
+      "name": {
+        "base": "Crest",
+        "set": {}
+      },
+      "tagline": {
+        "base": "At depth 2",
+        "set": {}
+      },
+      "tags": [
+        "system"
+      ],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "summit",
+      "parent": "crest",
+      "name": {
+        "base": "Summit",
+        "set": {}
+      },
+      "tagline": {
+        "base": "At depth 3",
+        "set": {}
+      },
+      "tags": [
+        "system"
+      ],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "peak",
+      "parent": "summit",
+      "name": {
+        "base": "Peak",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Deeper still, on the depth 3 band",
+        "set": {}
+      },
+      "tags": [
+        "system"
+      ],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "cairn",
+      "parent": "peak",
+      "name": {
+        "base": "Cairn",
+        "set": {}
+      },
+      "tagline": {
+        "base": "A leaf at the very top",
+        "set": {
+          "engineer": "cairn.ts"
+        }
+      },
+      "tags": [],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "shed",
+      "parent": "peak",
+      "name": {
+        "base": "Shed",
+        "set": {}
+      },
+      "tagline": {
+        "base": "A closed container",
+        "set": {}
+      },
+      "tags": [
+        "system"
+      ],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "rake",
+      "parent": "shed",
+      "name": {
+        "base": "Rake",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Inside the shed",
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "spade",
+      "parent": "shed",
+      "name": {
+        "base": "Spade",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Inside the shed",
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "icons",
+      "parent": null,
+      "name": {
+        "base": "Icons",
+        "set": {}
+      },
+      "tagline": {
+        "base": "The whole v1 icon set",
+        "set": {}
+      },
+      "tags": [
+        "system"
+      ],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "people",
+      "parent": "icons",
+      "name": {
+        "base": "People and screens",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [
+        "system"
+      ],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "i-person",
+      "parent": "people",
+      "name": {
+        "base": "person",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Head and shoulders",
+        "set": {}
+      },
+      "tags": [],
+      "icon": "person",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "i-web",
+      "parent": "people",
+      "name": {
+        "base": "web",
+        "set": {}
+      },
+      "tagline": {
+        "base": "A browser window",
+        "set": {}
+      },
+      "tags": [],
+      "icon": "web",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "i-monitor",
+      "parent": "people",
+      "name": {
+        "base": "monitor",
+        "set": {}
+      },
+      "tagline": {
+        "base": "A screen on a stand",
+        "set": {}
+      },
+      "tags": [],
+      "icon": "monitor",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "i-api",
+      "parent": "people",
+      "name": {
+        "base": "api",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Lines in, an arrow out",
+        "set": {}
+      },
+      "tags": [],
+      "icon": "api",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "i-route",
+      "parent": "people",
+      "name": {
+        "base": "route",
+        "set": {}
+      },
+      "tagline": {
+        "base": "A point with an arrow leaving",
+        "set": {}
+      },
+      "tags": [],
+      "icon": "route",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "work",
+      "parent": "icons",
+      "name": {
+        "base": "Work",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [
+        "system"
+      ],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "i-gear",
+      "parent": "work",
+      "name": {
+        "base": "gear",
+        "set": {}
+      },
+      "tagline": {
+        "base": "A cog",
+        "set": {}
+      },
+      "tags": [],
+      "icon": "gear",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "i-module",
+      "parent": "work",
+      "name": {
+        "base": "module",
+        "set": {}
+      },
+      "tagline": {
+        "base": "A cube",
+        "set": {}
+      },
+      "tags": [],
+      "icon": "module",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "i-stack",
+      "parent": "work",
+      "name": {
+        "base": "stack",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Three stacked layers",
+        "set": {}
+      },
+      "tags": [],
+      "icon": "stack",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "i-dice",
+      "parent": "work",
+      "name": {
+        "base": "dice",
+        "set": {}
+      },
+      "tagline": {
+        "base": "A die showing five",
+        "set": {}
+      },
+      "tags": [],
+      "icon": "dice",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "i-refresh",
+      "parent": "work",
+      "name": {
+        "base": "refresh",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Two arrows chasing round",
+        "set": {}
+      },
+      "tags": [],
+      "icon": "refresh",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "keeping",
+      "parent": "icons",
+      "name": {
+        "base": "Keeping",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [
+        "system"
+      ],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "i-cylinder",
+      "parent": "keeping",
+      "name": {
+        "base": "cylinder",
+        "set": {}
+      },
+      "tagline": {
+        "base": "A storage drum",
+        "set": {}
+      },
+      "tags": [],
+      "icon": "cylinder",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "i-grid",
+      "parent": "keeping",
+      "name": {
+        "base": "grid",
+        "set": {}
+      },
+      "tagline": {
+        "base": "A table",
+        "set": {}
+      },
+      "tags": [],
+      "icon": "grid",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "i-document",
+      "parent": "keeping",
+      "name": {
+        "base": "document",
+        "set": {}
+      },
+      "tagline": {
+        "base": "A page, folded",
+        "set": {}
+      },
+      "tags": [],
+      "icon": "document",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "i-archive",
+      "parent": "keeping",
+      "name": {
+        "base": "archive",
+        "set": {}
+      },
+      "tagline": {
+        "base": "A box with a lid",
+        "set": {}
+      },
+      "tags": [],
+      "icon": "archive",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "i-books",
+      "parent": "keeping",
+      "name": {
+        "base": "books",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Books on a shelf",
+        "set": {}
+      },
+      "tags": [],
+      "icon": "books",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "places",
+      "parent": "icons",
+      "name": {
+        "base": "Places",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [
+        "system"
+      ],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "i-building",
+      "parent": "places",
+      "name": {
+        "base": "building",
+        "set": {}
+      },
+      "tagline": {
+        "base": "An office block",
+        "set": {}
+      },
+      "tags": [],
+      "icon": "building",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "i-search",
+      "parent": "places",
+      "name": {
+        "base": "search",
+        "set": {}
+      },
+      "tagline": {
+        "base": "A magnifying glass",
+        "set": {}
+      },
+      "tags": [],
+      "icon": "search",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "i-history",
+      "parent": "places",
+      "name": {
+        "base": "history",
+        "set": {}
+      },
+      "tagline": {
+        "base": "A clock turning back",
+        "set": {}
+      },
+      "tags": [],
+      "icon": "history",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "i-box",
+      "parent": "places",
+      "name": {
+        "base": "box",
+        "set": {}
+      },
+      "tagline": {
+        "base": "The default",
+        "set": {}
+      },
+      "tags": [],
+      "icon": "box",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "subject": "visitor",
+      "verb": {
+        "base": "walks up to",
+        "set": {
+          "engineer": "GET /cairn from"
+        }
+      },
+      "object": "cairn",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "cairn",
+      "verb": {
+        "base": "calls on",
+        "set": {}
+      },
+      "object": "outside",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "cairn",
+      "verb": {
+        "base": "keeps tools in",
+        "set": {}
+      },
+      "object": "shed",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "rake",
+      "verb": {
+        "base": "leans on",
+        "set": {}
+      },
+      "object": "spade",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "i-person",
+      "verb": {
+        "base": "uses",
+        "set": {}
+      },
+      "object": "i-web",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "i-web",
+      "verb": {
+        "base": "shows on",
+        "set": {}
+      },
+      "object": "i-monitor",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "i-monitor",
+      "verb": {
+        "base": "calls",
+        "set": {}
+      },
+      "object": "i-api",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "i-api",
+      "verb": {
+        "base": "forwards to",
+        "set": {}
+      },
+      "object": "i-route",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "i-gear",
+      "verb": {
+        "base": "turns",
+        "set": {}
+      },
+      "object": "i-module",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "i-module",
+      "verb": {
+        "base": "sits on",
+        "set": {}
+      },
+      "object": "i-stack",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "i-stack",
+      "verb": {
+        "base": "rolls",
+        "set": {}
+      },
+      "object": "i-dice",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "i-dice",
+      "verb": {
+        "base": "asks for",
+        "set": {}
+      },
+      "object": "i-refresh",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "i-cylinder",
+      "verb": {
+        "base": "fills",
+        "set": {}
+      },
+      "object": "i-grid",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "i-grid",
+      "verb": {
+        "base": "prints",
+        "set": {}
+      },
+      "object": "i-document",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "i-document",
+      "verb": {
+        "base": "goes in",
+        "set": {}
+      },
+      "object": "i-archive",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "i-archive",
+      "verb": {
+        "base": "sits by",
+        "set": {}
+      },
+      "object": "i-books",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "i-building",
+      "verb": {
+        "base": "holds",
+        "set": {}
+      },
+      "object": "i-search",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "i-search",
+      "verb": {
+        "base": "finds",
+        "set": {}
+      },
+      "object": "i-history",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "i-history",
+      "verb": {
+        "base": "keeps",
+        "set": {}
+      },
+      "object": "i-box",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "views": [
+    {
+      "id": "shapes",
+      "title": {
+        "base": "Shapes",
+        "set": {}
+      },
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      },
+      "show": [
+        {
+          "element": "visitor",
+          "depth": 0
+        },
+        {
+          "element": "ground",
+          "depth": 5
+        },
+        {
+          "element": "outside",
+          "depth": 0
+        }
+      ],
+      "kinds": [
+        "runtime"
+      ]
+    },
+    {
+      "id": "icon-set",
+      "title": {
+        "base": "Icons",
+        "set": {}
+      },
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      },
+      "show": [
+        {
+          "element": "icons",
+          "depth": 2
+        }
+      ],
+      "kinds": [
+        "runtime"
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "visit",
+      "title": {
+        "base": "A visit",
+        "set": {}
+      },
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      },
+      "steps": [
+        {
+          "subject": "visitor",
+          "verb": {
+            "base": "walks up to",
+            "set": {}
+          },
+          "object": "cairn",
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "subject": "cairn",
+          "verb": {
+            "base": "calls on",
+            "set": {}
+          },
+          "object": "outside",
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "subject": "outside",
+          "verb": {
+            "base": "answers",
+            "set": {}
+          },
+          "object": "cairn",
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "subject": "cairn",
+          "verb": {
+            "base": "keeps tools in",
+            "set": {}
+          },
+          "object": "shed",
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "subject": "rake",
+          "verb": {
+            "base": "leans on",
+            "set": {}
+          },
+          "object": "spade",
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {}
+          }
+        }
+      ]
+    }
+  ],
+  "walkthroughs": []
+}

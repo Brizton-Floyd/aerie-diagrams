@@ -94,8 +94,9 @@ interface Point {
   asking the browser, so a layout is the same in Node, in every browser and on every system. The width
   of a string is the sum of its advance widths at the font size, rounded up to a whole pixel. A
   character the bundled fonts lack counts one em.
-- **LAYOUT-102** Kerning and ligatures are off when measuring and when drawing, so drawn text is as
-  wide as measured text.
+- **LAYOUT-102** Kerning and ligatures are off when measuring and when drawing, and drawn glyphs are
+  not hinted (each sits at its exact advance), so drawn text is as wide as measured text on every
+  system.
 - **LAYOUT-103** The font, size and wrap width of each text role are set in
   [look.md](look.md#type-scale). Taglines wrap at the tagline width and edge labels at the label width.
   Names never wrap.

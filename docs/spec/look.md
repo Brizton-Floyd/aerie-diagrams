@@ -131,7 +131,8 @@ Requirement ids: `LOOK-nnn`. Conventions are in [overview.md](overview.md#readin
 - **LOOK-303** An open container is a contour band: filled with the band of its depth (`band-0` to
   `band-3`, deeper levels stay on `band-3`), a 1 px `contour` outline, 18 px corners, a dotted
   (`2 3`) `contour-soft` inner line `inset` from the edge, its header at the top, and the control
-  showing a minus.
+  showing a minus. Its header text is drawn above relationship lines, on a 5 px halo of its band,
+  so a line that crosses the header (RULE-007 allows it) never cuts through the words.
 - **LOOK-304** A `person` is a pill: corners as round as its height allows (up to 30 px), a 1.4 px
   `ink` outline.
 - **LOOK-305** An `external` element is hatched: filled with 45 degree `hatch-line` lines, 2 px wide
@@ -144,7 +145,7 @@ Requirement ids: `LOOK-nnn`. Conventions are in [overview.md](overview.md#readin
 ## Icons
 
 - **LOOK-401** Icons are Aerie's own line drawings on a 64-unit grid: strokes only, round caps and
-  joins, dots drawn as small circles, a stroke of 4.2 units (about 1.4 px at 22 px), in `ink`.
+  joins, dots drawn as small filled circles, a stroke of 4.2 units (about 1.4 px at 22 px), in `ink`.
 - **LOOK-402** The v1 set, by name: `person` (head and shoulders), `stack` (three stacked layers),
   `web` (a browser window with code brackets), `api` (a block with lines in and an arrow out), `gear`
   (a cog), `module` (a cube), `route` (a point with an arrow leaving it), `dice` (a die showing five),
