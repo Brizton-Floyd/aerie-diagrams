@@ -7,3 +7,5 @@ docs/spec/examples/*.json
 # Expected canonical models and diagnostics of the language fixtures (ACC-012), byte-exact too.
 tests/unit/lines/examples/*.json
 tests/unit/lines/spec-examples/*.json
+# Glyph advance widths written from the bundled fonts by scripts/font-metrics.ts (LAYOUT-101).
+src/layout/text/advances.json

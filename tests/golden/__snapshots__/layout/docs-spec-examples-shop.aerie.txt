@@ -1,0 +1,37 @@
+view overview, default (no changes)
+  size 320 x 393
+  customer (150 x 46, rim): 105, 12, 150 x 46
+  shop (open, at least 238 wide, header 53): 12, 144, 296 x 237
+    web (220 x 59): 70, 197, 220 x 59
+    orders (150 x 46): 105, 317, 150 x 46
+  customer->web: 180,58 180,197
+    label 93, 88, 83 x 21
+  web->orders: 180,256 180,317
+    label 30, 276, 148 x 21
+
+view overview, all closed (shop closed)
+  size 262 x 230
+  customer (150 x 46, rim): 56, 12, 150 x 46
+  shop (238 x 79): 12, 139, 238 x 79
+  customer->shop: 131,58 131,139
+    label 44, 88, 83 x 21
+
+scenario order as lanes on overview, default
+  size 584 x 209
+  band shop, depth 0: 0, 0, 402 x 28
+  lane web at 110: header 0, 44, 220 x 59, line 103 to 209
+  lane orders at 327: header 252, 44, 150 x 46, line 90 to 209
+  lane customer at 509: header 434, 44, 150 x 46, line 90 to 209
+  step 1 call arrow customer->web, row 119 + 37: 509,152 110,152
+    label 268, 123, 83 x 21, badge 509,152
+  step 2 call arrow web->orders, row 156 + 37: 110,189 327,189
+    label 152.5, 160, 132 x 21, badge 110,189
+
+scenario order as lanes on overview, all closed
+  size 447 x 165
+  lane customer at 75: header 0, 0, 150 x 46, line 46 to 165
+  lane shop at 287: header 182, 0, 210 x 59, line 59 to 165
+  step 1 call arrow customer->shop, row 75 + 37: 75,108 287,108
+    label 139.5, 79, 83 x 21, badge 75,108
+  step 2 call self shop->shop, row 112 + 37: 287,116 311,116 311,145 287,145
+    label 315, 120, 132 x 21, badge 287,116

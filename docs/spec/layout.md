@@ -92,7 +92,8 @@ interface Point {
 
 - **LAYOUT-101** Text is measured from the glyph advance widths in Aerie's bundled font files, not by
   asking the browser, so a layout is the same in Node, in every browser and on every system. The width
-  of a string is the sum of its advance widths at the font size, rounded up to a whole pixel.
+  of a string is the sum of its advance widths at the font size, rounded up to a whole pixel. A
+  character the bundled fonts lack counts one em, wider than any glyph they have.
 - **LAYOUT-102** Kerning and ligatures are off when measuring and when drawing, so drawn text is as
   wide as measured text.
 - **LAYOUT-103** The font, size and wrap width of each text role are set in
@@ -151,10 +152,15 @@ Box anatomy and metric names (`pad`, `icon`, `iconGap`, and so on) are defined i
 - **LAYOUT-302** Each open container gets these options, where `containerPad` is 18:
   - `elk.padding`: `[top=<header>, left=18, bottom=18, right=18]`;
   - `elk.nodeSize.constraints`: `MINIMUM_SIZE`;
-  - `elk.nodeSize.minimum`: `(<minWidth>, <header + 30>)`.
+  - `elk.nodeSize.minimum`: at least `<minWidth>` wide and `<header + 30>` tall. With
+    `INCLUDE_CHILDREN` and `DOWN`, ELK reads a nested container's minimum width for height, so the
+    adapter writes the pair as `(<header + 30>, <minWidth>)`.
 - **LAYOUT-303** Each rim node (MODEL-003) gets `elk.layered.layering.layerConstraint: FIRST`, so
   people and outside systems sit on the top rank of their container, above the system. Top-down
-  layout keeps a long chain readable: a label costs its height, not its width.
+  layout keeps a long chain readable: a label costs its height, not its width. ELK cannot put both
+  ends of an edge on one rank, so rim nodes get the constraint in model order, skipping any that an
+  edge joins, directly or through elements inside them, to one that already has it in the same
+  container.
 - **LAYOUT-304** Every edge label is sent with its reserved width and height and a non-empty `text`
   (ELK ignores a label without text). Options that place a label are set on the label itself, where
   ELK reads them.
@@ -231,8 +237,10 @@ Aerie lays it out with its own algorithm; ELK is not involved.
   next one is the furthest right of these: the previous centre plus half of both headers plus 32 px;
   and, for each step between an earlier lane `i` and this lane, lane `i`'s centre plus that step's
   reserved label width plus 16 px. A self step on the previous lane also needs the previous centre plus
-  24 px plus its label width plus 16 px. The lanes picture is as wide as the right edge of the last
-  header or the end of the last lane's self-step labels, whichever is further.
+  24 px plus its label width plus 16 px. A band is at least as wide as its name needs, and the first
+  lane after a band keeps its header 32 px clear of it. The lanes picture is as wide as the right
+  edge of the last header, the end of the last lane's self-step labels or the right edge of a band,
+  whichever is furthest.
 - **LAYOUT-606** A call or reply is a horizontal arrow at the bottom of its row, from the subject's
   lane to the object's, with its label centred above it and its number badge at its start. A self step
   is a loop to the right of its lane, its label to the right of the loop.

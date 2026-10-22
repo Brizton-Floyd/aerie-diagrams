@@ -1,0 +1,168 @@
+{
+  "samples/lotto.aerie": {
+    "big-picture, default": {
+      "crossings": 0,
+      "bends": 2,
+      "fitScale": 1.15
+    },
+    "big-picture, everything open": {
+      "crossings": 0,
+      "bends": 12,
+      "fitScale": 0.566
+    },
+    "big-picture, all closed": {
+      "crossings": 0,
+      "bends": 2,
+      "fitScale": 1.15
+    },
+    "big-picture, engine opened": {
+      "crossings": 0,
+      "bends": 4,
+      "fitScale": 0.938
+    },
+    "big-picture, store opened": {
+      "crossings": 0,
+      "bends": 10,
+      "fitScale": 0.829
+    },
+    "services, default": {
+      "crossings": 0,
+      "bends": 12,
+      "fitScale": 0.706
+    },
+    "services, everything open": {
+      "crossings": 0,
+      "bends": 12,
+      "fitScale": 0.566
+    },
+    "services, all closed": {
+      "crossings": 0,
+      "bends": 2,
+      "fitScale": 1.15
+    },
+    "services, engine closed": {
+      "crossings": 0,
+      "bends": 10,
+      "fitScale": 0.829
+    },
+    "services, store closed": {
+      "crossings": 0,
+      "bends": 4,
+      "fitScale": 0.938
+    },
+    "engineering, default": {
+      "crossings": 0,
+      "bends": 10,
+      "fitScale": 1.15
+    },
+    "engineering, everything open": {
+      "crossings": 0,
+      "bends": 8,
+      "fitScale": 0.512
+    },
+    "engineering, all closed": {
+      "crossings": 0,
+      "bends": 0,
+      "fitScale": 1.15
+    },
+    "engineering, engine closed": {
+      "crossings": 0,
+      "bends": 0,
+      "fitScale": 1.15
+    },
+    "engineering, engine-service opened": {
+      "crossings": 0,
+      "bends": 8,
+      "fitScale": 1.15
+    }
+  },
+  "docs/spec/examples/lotto.aerie": {
+    "big-picture, default": {
+      "crossings": 0,
+      "bends": 2,
+      "fitScale": 1.15
+    },
+    "big-picture, everything open": {
+      "crossings": 0,
+      "bends": 12,
+      "fitScale": 0.566
+    },
+    "big-picture, all closed": {
+      "crossings": 0,
+      "bends": 2,
+      "fitScale": 1.15
+    },
+    "big-picture, engine opened": {
+      "crossings": 0,
+      "bends": 4,
+      "fitScale": 0.938
+    },
+    "big-picture, store opened": {
+      "crossings": 0,
+      "bends": 10,
+      "fitScale": 0.829
+    },
+    "services, default": {
+      "crossings": 0,
+      "bends": 12,
+      "fitScale": 0.706
+    },
+    "services, everything open": {
+      "crossings": 0,
+      "bends": 12,
+      "fitScale": 0.566
+    },
+    "services, all closed": {
+      "crossings": 0,
+      "bends": 2,
+      "fitScale": 1.15
+    },
+    "services, engine closed": {
+      "crossings": 0,
+      "bends": 10,
+      "fitScale": 0.829
+    },
+    "services, store closed": {
+      "crossings": 0,
+      "bends": 4,
+      "fitScale": 0.938
+    },
+    "engineering, default": {
+      "crossings": 0,
+      "bends": 10,
+      "fitScale": 1.15
+    },
+    "engineering, everything open": {
+      "crossings": 0,
+      "bends": 8,
+      "fitScale": 0.512
+    },
+    "engineering, all closed": {
+      "crossings": 0,
+      "bends": 0,
+      "fitScale": 1.15
+    },
+    "engineering, engine closed": {
+      "crossings": 0,
+      "bends": 0,
+      "fitScale": 1.15
+    },
+    "engineering, engine-service opened": {
+      "crossings": 0,
+      "bends": 8,
+      "fitScale": 1.15
+    }
+  },
+  "docs/spec/examples/shop.aerie": {
+    "overview, default": {
+      "crossings": 0,
+      "bends": 0,
+      "fitScale": 1.15
+    },
+    "overview, all closed": {
+      "crossings": 0,
+      "bends": 0,
+      "fitScale": 1.15
+    }
+  }
+}
