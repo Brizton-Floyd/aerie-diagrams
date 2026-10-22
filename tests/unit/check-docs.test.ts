@@ -82,12 +82,18 @@ describe('checkDocs', () => {
 
   it('reports ids cited but not defined, in documents and in code', () => {
     const missing = id('MODEL', '999');
+    const warning = ['W', '999'].join('');
     expect(
-      check({ 'docs/spec/a.md': `See ${missing} and W999.` }, { 'src/x.ts': `// ${missing}` }),
+      check(
+        { 'docs/spec/a.md': `See ${missing} and ${warning}.`, 'README.md': `Fix ${warning}.` },
+        { 'src/x.ts': `// ${missing} ${warning}` },
+      ),
     ).toEqual([
       `docs/spec/a.md:1:5 ${missing} is cited but not defined in docs/spec/`,
-      'docs/spec/a.md:1:19 W999 is cited but not defined in docs/spec/',
+      `docs/spec/a.md:1:19 ${warning} is cited but not defined in docs/spec/`,
+      `README.md:1:5 ${warning} is cited but not defined in docs/spec/`,
       `src/x.ts:1:4 ${missing} is cited but not defined in docs/spec/`,
+      `src/x.ts:1:14 ${warning} is cited but not defined in docs/spec/`,
     ]);
   });
 

@@ -231,9 +231,7 @@ export function checkDocs(docs: DocSet): DocFinding[] {
       .replace(new RegExp(`\\*\\*${REQUIREMENT}\\b`, 'g'), blankOut)
       .replace(new RegExp(`^\\|\\s*${DIAGNOSTIC}\\s*\\|`, 'gm'), blankOut);
     checkCitations(file, masked, requirement, definitions, findings);
-    if (file.startsWith('docs/')) {
-      checkCitations(file, masked, diagnostic, definitions, findings);
-    }
+    checkCitations(file, masked, diagnostic, definitions, findings);
     if (file.startsWith(SPEC_DIR)) {
       for (const match of masked.matchAll(AVOIDED_WORDS)) {
         findings.push({
@@ -246,6 +244,7 @@ export function checkDocs(docs: DocSet): DocFinding[] {
   }
   for (const [file, text] of docs.code) {
     checkCitations(file, text, requirement, definitions, findings);
+    checkCitations(file, text, diagnostic, definitions, findings);
   }
   return findings.sort(
     (a, b) => a.file.localeCompare(b.file) || a.line - b.line || a.column - b.column,
