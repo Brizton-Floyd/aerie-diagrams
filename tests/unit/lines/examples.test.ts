@@ -1,6 +1,7 @@
 // The language fixtures of ACC-012: each `<id>-<what>.aerie` file in examples/ has its expected
 // canonical model (`.json`) and its expected diagnostics (`.diagnostics.json`) beside it. Update
-// them deliberately with `npx vitest run --project unit -u` and review the difference.
+// them deliberately with `npx vitest run --project unit -u` and review the difference. Fixtures are
+// checked completely, so the model stage's E604 and E703 have fixtures too (LANG-961).
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -12,6 +13,7 @@ import {
   serializeModel,
   type Diagnostic,
 } from '../../../src/lines/index.ts';
+import { check } from '../../../src/model/index.ts';
 
 const DIR = join(import.meta.dirname, 'examples');
 const FIXTURES = readdirSync(DIR)
@@ -39,7 +41,7 @@ const withoutPositions = (diagnostics: Diagnostic[]): string[] =>
 
 describe('language fixtures', () => {
   it.each(FIXTURES.map((file) => [titleOf(file), file]))('%s', async (_title, file) => {
-    const result = parse(source(file));
+    const result = check(source(file));
     const modelFile = expected(file, '.json');
     const diagnosticsFile = expected(file, '.diagnostics.json');
     if (result.model === null) {
@@ -58,17 +60,17 @@ describe('language fixtures', () => {
   it('ACC-012 each diagnostic fixture produces the diagnostic it is named after', () => {
     for (const file of FIXTURES.filter((name) => /^[EW]\d{3}-/.test(name))) {
       const id = file.slice(0, 4);
-      const ids = parse(source(file)).diagnostics.map((found) => found.id);
+      const ids = check(source(file)).diagnostics.map((found) => found.id);
       expect(ids, file).toContain(id);
     }
   });
 
-  it('ACC-012 every catalogue entry has a fixture, apart from the model-stage E604 and E703', () => {
+  it('ACC-012 every catalogue entry has a fixture', () => {
     const covered = new Set(
-      FIXTURES.flatMap((file) => parse(source(file)).diagnostics.map((found) => found.id)),
+      FIXTURES.flatMap((file) => check(source(file)).diagnostics.map((found) => found.id)),
     );
     const missing = Object.keys(CATALOGUE).filter(
-      (id) => !covered.has(id as keyof typeof CATALOGUE) && id !== 'E604' && id !== 'E703',
+      (id) => !covered.has(id as keyof typeof CATALOGUE),
     );
     expect(missing).toEqual([]);
   });

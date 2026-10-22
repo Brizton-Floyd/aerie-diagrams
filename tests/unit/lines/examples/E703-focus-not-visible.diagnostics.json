@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E703",
+    "severity": "error",
+    "line": 10,
+    "column": 11,
+    "endLine": 10,
+    "endColumn": 12,
+    "message": "`x` is not visible in this step's picture of `v`, so the step cannot focus on it. Open its container with `open box`, or choose a view that shows it."
+  }
+]

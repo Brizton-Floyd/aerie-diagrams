@@ -2,6 +2,7 @@
 // (docs/spec/language.md). Pure TypeScript with no DOM or Node dependency.
 export {
   CATALOGUE,
+  diagnostic,
   severityOf,
   sortDiagnostics,
   type Diagnostic,

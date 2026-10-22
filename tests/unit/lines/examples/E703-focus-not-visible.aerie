@@ -1,0 +1,10 @@
+box: Box
+  x: X
+y: Y
+x calls y
+
+view v: V
+  show box, y
+
+walkthrough w: W
+  step v: x

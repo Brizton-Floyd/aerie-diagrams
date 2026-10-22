@@ -1,0 +1,30 @@
+view overview, default (no changes)
+  customer
+  shop (open)
+    web
+    orders
+  customer->web carries 0
+    owner: buys from
+    developer: buys from
+  web->orders carries 1
+    owner: saves orders in
+    developer: INSERTs rows into
+
+view overview, everything open (no changes)
+  customer
+  shop (open)
+    web
+    orders
+  customer->web carries 0
+    owner: buys from
+    developer: buys from
+  web->orders carries 1
+    owner: saves orders in
+    developer: INSERTs rows into
+
+view overview, all closed (shop closed)
+  customer
+  shop (closed, 2 inside)
+  customer->shop carries 0
+    owner: buys from
+    developer: buys from

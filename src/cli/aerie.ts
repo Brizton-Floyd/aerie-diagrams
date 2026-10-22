@@ -3,7 +3,8 @@
 // (docs/spec/language.md, section 14).
 import { readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { format, parse, serializeModel, type Diagnostic } from '../lines/index.ts';
+import { format, serializeModel, type Diagnostic } from '../lines/index.ts';
+import { check as checkSource } from '../model/index.ts';
 
 /** Everything the command touches, so tests can run it without a disk or a terminal. */
 export interface Io {
@@ -95,7 +96,7 @@ function check(args: string[], io: Io): number {
   }
   const files = options.files.map((path) => ({
     path,
-    diagnostics: parse(readFile(io, path)).diagnostics,
+    diagnostics: checkSource(readFile(io, path)).diagnostics,
   }));
   const all = counts(files.flatMap((file) => file.diagnostics));
   if (style === 'json') {
@@ -145,7 +146,7 @@ function model(args: string[], io: Io): number {
   if (path === undefined || rest.length > 0) {
     throw new CannotRun('aerie model prints one file. Name just one.');
   }
-  const result = parse(readFile(io, path));
+  const result = checkSource(readFile(io, path));
   if (result.model === null) {
     const { errors, warnings } = counts(result.diagnostics);
     const lines = result.diagnostics.map((found) => diagnosticLine(path, found));

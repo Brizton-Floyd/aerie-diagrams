@@ -88,6 +88,10 @@ owns each suite replaces its stub.
 - `src/lines/` (the parser, catalogue, formatter and printer) is pure TypeScript: lint rejects Node
   imports and DOM globals there. Every diagnostic message comes from `src/lines/catalogue.ts`, and a
   test holds it word for word to the catalogue table in `docs/spec/language.md`.
+- `src/model/` (model semantics: views, zoom, lifting, scenarios, walkthroughs, the picture) is pure
+  TypeScript too and may import only `src/lines/index.ts`. Its entry point and API notes are in
+  [src/model/index.ts](src/model/index.ts). Diagnostics that need the model's meaning (E604, E703)
+  come from its `check()`, which the CLI and the language fixtures use; `parse()` alone omits them.
 - Playwright builds and serves the app on port 4173 and never reuses a running server. Set
   `AERIE_PREVIEW_PORT` when several checkouts run checks at the same time.
 - Screenshot baselines are shared across platforms (no OS suffix), so screenshot tests must not
