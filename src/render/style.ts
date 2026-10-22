@@ -164,13 +164,15 @@ ${bands}
 .aerie .control circle { fill: ${v('paper')}; stroke: ${v('contour')}; stroke-width: 1px; }
 .aerie .control path { fill: none; stroke: ${v('ink')}; stroke-width: 1.5px; stroke-linecap: round; }
 .aerie .ring { fill: none; stroke: ${v('accent')}; stroke-width: 2px; display: none; }
-.aerie .node:focus { outline: none; }
-.aerie .node:focus-visible > .ring { display: inline; }
+.aerie .shape:focus { outline: none; }
+.aerie .node:has(> .shape:focus-visible) > .ring { display: inline; }
 .aerie .node > * {
   transition: stroke var(--aerie-hover) ease, stroke-width var(--aerie-hover) ease,
     opacity var(--aerie-dimming) ease;
 }
 .aerie .node:hover > .shape { stroke-width: 1.6px; }
+.aerie .node:has(> .shape[role="button"]) { cursor: pointer; }
+.aerie .hit { fill: none; stroke: none; pointer-events: all; }
 
 /* Relationships (LOOK-501, LOOK-502). */
 .aerie .edge .line { fill: none; stroke: ${v('edge')}; stroke-width: 1.3px; }

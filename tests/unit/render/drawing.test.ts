@@ -30,6 +30,7 @@ import {
   child,
   draw,
   group,
+  layouter,
   read,
   semanticsOf,
   translation,
@@ -264,7 +265,7 @@ describe('shapes', () => {
     expect(rule('.aerie .ring')).toBe(
       'fill: none; stroke: var(--aerie-accent); stroke-width: 2px; display: none;',
     );
-    expect(rule('.aerie .node:focus-visible > .ring')).toBe('display: inline;');
+    expect(rule('.aerie .node:has(> .shape:focus-visible) > .ring')).toBe('display: inline;');
   });
 
   it('LOOK-307 the stage texture is a 520 x 360 tile of six soft curves at 1.2 px that join across its edges', () => {
@@ -444,6 +445,102 @@ describe('selection and focus', () => {
     const none = emphasis(LOTTO.tree, drawing, { kind: 'none' });
     expect(new Set(none.nodes.values())).toEqual(new Set(['plain']));
     expect(new Set(none.edges.values())).toEqual(new Set(['plain']));
+  });
+});
+
+describe('selecting a container', () => {
+  it('INT-202 the lines of a selected container are every drawn edge with an end in it or inside it', async () => {
+    // In Services the Analysis engine is open: its lines run to and from what is drawn inside it.
+    const root = await draw(LOTTO, 'services', 'manager', DEFAULT_ZOOM, {
+      focus: { kind: 'select', ids: ['engine'] },
+    });
+    const drawing = LOTTO.drawing('services');
+    const inside = (id: string): boolean => id === 'engine' || LOTTO.tree.contains('engine', id);
+    const lines = drawing.edges.filter((edge) => inside(edge.source) || inside(edge.target));
+    expect(lines.length).toBeGreaterThan(1);
+    for (const edge of drawing.edges) {
+      const on = lines.includes(edge);
+      expect(classes(group(root, 'edge', edge.id)), edge.id).toContain(on ? 'on' : 'dim');
+    }
+    // The other ends outside it are related; the elements inside it keep full strength.
+    expect(classes(group(root, 'node', 'screen-api'))).toContain('rel');
+    expect(classes(group(root, 'node', 'engine-service'))).toContain('full');
+    expect(classes(group(root, 'node', 'user'))).toContain('dim');
+  });
+});
+
+describe('the page a reader explores', () => {
+  /** The button a box is on the page: its outline. */
+  const button = (root: SvgNode, id: string): SvgNode => child(group(root, 'node', id), 'shape');
+
+  it('INT-901 and INT-903 every box can be focused in model order and is announced with its name and tagline', async () => {
+    const root = await draw(LOTTO, 'services', 'engineer', DEFAULT_ZOOM, {
+      interactive: true,
+      focus: { kind: 'select', ids: ['website'] },
+    });
+    expect(root.attrs['role']).toBe('group');
+    const nodes = withClass(root, 'node');
+    expect(nodes.map((node) => node.attrs['data-id'])).toEqual(
+      LOTTO.drawing('services').nodes.map((node) => node.id),
+    );
+    // The outline is the box's button; its text is drawn beside it, hidden from screen readers,
+    // which hear the button's name instead.
+    for (const node of nodes) {
+      const shape = child(node, 'shape');
+      expect(shape.attrs['tabindex']).toBe(0);
+      expect(shape.attrs['role']).toBe('button');
+      for (const text of node.children.filter(
+        (each) => typeof each !== 'string' && each.tag === 'text',
+      ))
+        expect(typeof text !== 'string' && text.attrs['aria-hidden']).toBe('true');
+    }
+    const website = button(root, 'website');
+    expect(website.attrs['aria-label']).toBe('Website: lotto-options-ui, Angular 21');
+    expect(website.attrs['aria-pressed']).toBe('true');
+    expect(button(root, 'user').attrs['aria-pressed']).toBe('false');
+    // A box without a tagline for the audience is announced with its name alone.
+    const plain = semanticsOf('a: A\nb: B | Bee\n');
+    const bare = await draw(plain, 'overview', 'manager', DEFAULT_ZOOM, { interactive: true });
+    expect(button(bare, 'a').attrs['aria-label']).toBe('A');
+    expect(button(bare, 'b').attrs['aria-label']).toBe('B: Bee');
+  });
+
+  it('INT-903 containers say whether they are open; lines, labels and header text are hidden from screen readers', async () => {
+    const root = await draw(LOTTO, 'services', 'manager', DEFAULT_ZOOM, { interactive: true });
+    expect(button(root, 'suite').attrs['aria-expanded']).toBe('true');
+    expect(button(root, 'engine-service').attrs['aria-expanded']).toBe('false');
+    expect(toMarkup(group(root, 'node', 'website'))).not.toContain('aria-expanded');
+    for (const layer of ['edges', 'heads', 'labels']) {
+      expect(withClass(root, layer)[0]?.attrs['aria-hidden'], layer).toBe('true');
+    }
+    // A plain drawing, as a file, is one image with no focusable parts.
+    const still = await draw(LOTTO, 'services', 'manager');
+    expect(still.attrs['role']).toBe('img');
+    expect(toMarkup(still)).not.toContain('tabindex');
+  });
+
+  it('INT-301 the open and close control has its tooltip', async () => {
+    const root = await draw(LOTTO, 'services', 'manager', DEFAULT_ZOOM, { interactive: true });
+    const tip = (id: string): string =>
+      textOf(child(child(group(root, 'node', id), 'control'), 'title'));
+    expect(tip('engine-service')).toBe('Open in place');
+    expect(tip('suite')).toBe('Close in place');
+  });
+
+  it('INT-206 each label has its reserved space to hover, which shows its full sentences', async () => {
+    const lay = await layouter(LOTTO).picture('services', DEFAULT_ZOOM, 'manager');
+    const root = await draw(LOTTO, 'services', 'manager', DEFAULT_ZOOM, { interactive: true });
+    const label = group(root, 'label', 'website->screen-api');
+    const hit = child(label, 'hit');
+    const box = lay.result.edges['website->screen-api']?.label;
+    expect(hit.attrs).toMatchObject({
+      x: box?.x,
+      y: box?.y,
+      width: box?.width,
+      height: box?.height,
+    });
+    expect(textOf(child(label, 'title'))).toBe('Website gets screen data from Screen API.');
+    expect(rule('.aerie .hit')).toBe('fill: none; stroke: none; pointer-events: all;');
   });
 });
 

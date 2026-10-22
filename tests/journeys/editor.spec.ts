@@ -54,14 +54,14 @@ test('INT-801 Edit opens the source where the sidebar was, 40% of the window; Do
   page,
 }) => {
   await openEditor(page);
-  await expect(page.locator('nav.side')).toBeHidden();
+  await expect(page.getByRole('navigation', { name: 'Diagram' })).toBeHidden();
   const pane = page.getByRole('region', { name: 'Split editor' });
   expect((await pane.boundingBox())?.width).toBe(640);
   await expect(page.locator('main.aerie-stage svg.aerie')).toBeVisible();
   await expect(page.locator('aside.panel')).toBeVisible();
   await page.getByRole('button', { name: 'Done' }).click();
   await expect(pane).toBeHidden();
-  await expect(page.locator('nav.side')).toBeVisible();
+  await expect(page.getByRole('navigation', { name: 'Diagram' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Edit' })).toBeVisible();
 });
 

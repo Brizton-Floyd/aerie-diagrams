@@ -130,7 +130,14 @@ has the steps for opening a model and choosing a view and audience with clicks).
   such chrome a fixed width). Drawn text is unhinted (`text-rendering: geometricPrecision`) so it is
   as wide as measured on Linux too. Before pushing new baselines, run the suite on Linux as CI does,
   in `mcr.microsoft.com/playwright:v1.64.1-noble` with a fresh `npm ci` (macOS `node_modules` hold
-  native binaries).
+  native binaries). Screenshot runs also hide the side panel's content, which wraps per platform.
+- The page (`src/app/`): `viewer.ts` holds the picture and the keys, `stage.ts` shows drawings (in
+  place when the layout is the same, else gliding by `transitionPlan`) and runs the camera,
+  `panel.ts` builds the side panel. Motion timings are read from the stylesheet's `--aerie-*`
+  properties, so reduced motion needs no code path of its own. In an interactive drawing each
+  box's `.shape` rect, not its group, is the focusable, named button (the accessibility audit,
+  SCORE-005, rejects a button whose visible text is not in its name). Journeys wait for
+  `document.getAnimations()` to empty (`settled` in `tests/journeys/reader.ts`).
 
 ## Plan
 

@@ -44,19 +44,21 @@ export function emphasis(tree: Tree, drawing: Drawing, focus: Focus): Emphasis {
   };
   if (focus.kind === 'select') {
     const chosen = new Set(focus.ids.filter((id) => drawn.has(id)));
+    const within = (id: Id): boolean =>
+      chosen.has(id) || [...chosen].some((outer) => tree.contains(outer, id));
+    // INT-202: the lines of a selected element are every drawn edge that carries a relationship
+    // with an end in it or inside it. Edges join lifts, so that is an edge with an end there.
     const related = new Set<Id>();
     for (const edge of drawing.edges) {
-      const on = chosen.has(edge.source) || chosen.has(edge.target);
+      const on = within(edge.source) || within(edge.target);
       edges.set(edge.id, on ? 'on' : 'dim');
       if (on) related.add(edge.source).add(edge.target);
     }
     mark(chosen, 'sel');
+    // LOOK-602: elements inside a selected one keep full strength; the other ends of its lines
+    // outside it are its related elements (LOOK-601).
+    mark([...drawn].filter(within), 'full');
     mark(related, 'rel');
-    // LOOK-602: elements inside a selected one keep full strength.
-    mark(
-      [...drawn].filter((id) => [...chosen].some((outer) => tree.contains(outer, id))),
-      'full',
-    );
     mark(
       [...chosen, ...related].flatMap((id) => tree.ancestors(id)),
       'context',

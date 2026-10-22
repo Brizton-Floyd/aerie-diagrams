@@ -1,23 +1,26 @@
-// The viewer page (`npm run dev`): opens a bundled sample or a local .aerie file and draws a chosen
-// view for a chosen audience in the Contour look, with the page grid of LOOK-801. It is the minimal
-// page that shows Aerie drawing; the interactions of docs/spec/interaction.md build on it. The split
-// editor (editing.ts) and watch mode (watching.ts) give it new versions of the model to draw.
+// The viewer page (`npm run dev`; docs/spec/interaction.md): opens a bundled sample or a local .aerie
+// file and lets a reader explore it in the Contour look, with the page grid of LOOK-801. A reader
+// selects an element to read about it in the side panel (INT-201 to INT-206), opens containers in
+// place (INT-301 to INT-304), switches the audience without moving anything (INT-101 to INT-105),
+// moves the camera (INT-351 to INT-353), and does all of it from the keyboard too (INT-901 to
+// INT-905). The navigation sidebar and shared links (A7) and scenario playback (A8) build on it.
+// The split editor (editing.ts) and watch mode (watching.ts) give it new versions of the model.
 import {
   check,
+  closeContainer,
   defaultPicture,
   normalisePicture,
+  openContainer,
   play,
   select,
   stop,
   switchAudience,
   switchView,
-  DEFAULT_ZOOM,
   Semantics,
   type Picture,
-  type Zoom,
 } from '../model/index.ts';
 import type { Id } from '../lines/index.ts';
-import { Layouter, fitScale, trailShapes } from '../layout/index.ts';
+import { CAMERA, Layouter, trailShapes } from '../layout/index.ts';
 import { workerEngine } from '../layout/elk/worker.ts';
 import {
   BADGE_TEXT,
@@ -30,13 +33,13 @@ import {
   type Focus,
   type Theme,
 } from '../render/index.ts';
-import { h, prose } from './dom.ts';
+import { h } from './dom.ts';
 import { KEPT_NOTICE, errorText, type Checked } from './live.ts';
 import { LOGO } from './logo.ts';
+import { Swap } from './motion.ts';
+import { elementPanel, viewPanel, type PanelActions } from './panel.ts';
 import { FIRST_SAMPLE, SAMPLES } from './samples.ts';
-
-/** The zoom presets the page offers (MODEL-211's states). */
-type ZoomPreset = 'default' | 'open' | 'closed';
+import { Stage, type Arrival, type Showing } from './stage.ts';
 
 /**
  * Every face the page draws, loaded before the page says it is ready, so no drawing is ever shown
@@ -50,6 +53,9 @@ const FACES = [
 
 const THEME_KEY = 'aerie.theme';
 const MOTION_KEY = 'aerie.motion';
+
+/** LOOK-802: each audience tab is this wide, so the underline moves by it. */
+const TAB_WIDTH = 104;
 
 function remembered(key: string): string | null {
   try {
@@ -65,6 +71,17 @@ function remember(key: string, value: string): void {
   } catch {
     // Storage may be off; the choice then lasts for this page only.
   }
+}
+
+/** INT-004: keyboard shortcuts never act while the focus is in a text field. */
+function inTextField(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false;
+  if (target.isContentEditable) return true;
+  if (target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement) return true;
+  return (
+    target instanceof HTMLInputElement &&
+    !['checkbox', 'radio', 'button', 'submit', 'reset', 'file'].includes(target.type)
+  );
 }
 
 /** One opened model, ready to draw. */
@@ -83,18 +100,22 @@ export class Viewer {
   private source = '';
   private opened: Opened | null = null;
   private picture: Picture | null = null;
-  private zoomPreset: ZoomPreset = 'default';
   private drawCount = 0;
-  private readonly stage: HTMLElement;
-  private readonly drawingHolder: HTMLElement;
+  /** What the pending draw must honour, gathered over changes that arrive before it lands. */
+  private arrival: Arrival = {};
+  private readonly stage: Stage;
   private readonly notice: HTMLElement;
   private readonly overlay: HTMLElement;
   private readonly body: HTMLElement;
   private readonly sideWrap: HTMLElement;
   private readonly side: HTMLElement;
   private readonly panel: HTMLElement;
+  private readonly panelSwap: Swap;
   private readonly crumb: HTMLElement;
+  private readonly crumbSwap: Swap;
   private readonly tabs: HTMLElement;
+  private readonly thumb: HTMLElement;
+  private readonly spoken: HTMLElement;
   private readonly themeButton: HTMLButtonElement;
   private readonly motionBox: HTMLInputElement;
   /** The split editor's pane while it is open (INT-801), in place of the sidebar. */
@@ -104,7 +125,11 @@ export class Viewer {
     this.root = root;
     this.watching = options.watching ?? false;
     this.crumb = h('div', { class: 'crumb' });
+    this.crumbSwap = new Swap(this.crumb);
     this.tabs = h('div', { class: 'tabs', role: 'tablist', 'aria-label': 'Written for' });
+    this.thumb = h('span', { class: 'thumb', 'aria-hidden': 'true' });
+    // INT-105: a screen reader hears each switch of audience.
+    this.spoken = h('p', { class: 'sr-only', 'aria-live': 'polite' });
     this.themeButton = h('button', {
       type: 'button',
       class: 'tool theme',
@@ -118,10 +143,11 @@ export class Viewer {
       brand,
       this.crumb,
       h('div', { class: 'audience' }, [
-        h('span', { class: 'written' }, ['Written for']),
+        h('span', { class: 'written', 'aria-hidden': 'true' }, ['Written for']),
         this.tabs,
       ]),
       h('div', { class: 'tools' }, [this.themeButton]),
+      this.spoken,
     ]);
     this.motionBox = h('input', {
       type: 'checkbox',
@@ -129,25 +155,29 @@ export class Viewer {
         this.setMotion(this.motionBox.checked ? 'reduce' : 'full', true);
       },
     });
-    this.side = h('nav', { class: 'side', 'aria-label': 'Diagram' });
-    this.drawingHolder = h('div', { class: 'drawing' });
+    this.side = h('div', { class: 'side' });
+    this.stage = new Stage(() => this.opened?.semantics.tree ?? null, {
+      pick: (id) => {
+        this.pick(id);
+      },
+      toggle: (id) => {
+        this.toggle(id);
+      },
+    });
     this.notice = h('p', { class: 'notice', role: 'status', hidden: true });
     this.overlay = h('div', { class: 'overlay', hidden: true });
-    this.stage = h('main', { class: 'aerie-stage' }, [
-      this.drawingHolder,
-      this.notice,
-      this.overlay,
-    ]);
-    this.panel = h('aside', { class: 'panel' });
-    this.sideWrap = h('div', { class: 'side-wrap' }, [
+    this.stage.element.append(this.notice, this.overlay);
+    this.panel = h('aside', { class: 'panel', 'aria-label': 'About' });
+    this.panelSwap = new Swap(this.panel);
+    this.sideWrap = h('nav', { class: 'side-wrap', 'aria-label': 'Diagram' }, [
       this.side,
       h('label', { class: 'motion' }, [this.motionBox, ' Reduce motion']),
     ]);
-    this.body = h('div', { class: 'body' }, [this.sideWrap, this.stage, this.panel]);
+    this.body = h('div', { class: 'body' }, [this.sideWrap, this.stage.element, this.panel]);
     root.replaceChildren(top, this.body);
-    new ResizeObserver(() => {
-      this.fit();
-    }).observe(this.stage);
+    document.addEventListener('keydown', (event) => {
+      this.key(event);
+    });
     const theme = remembered(THEME_KEY);
     this.applyTheme(theme === 'light' || theme === 'dark' ? theme : null);
     const motion = remembered(MOTION_KEY);
@@ -200,7 +230,6 @@ export class Viewer {
     this.source = source;
     this.opened = null;
     this.picture = null;
-    this.zoomPreset = 'default';
     const result = check(source);
     const checked: Checked = {
       source,
@@ -244,7 +273,8 @@ export class Viewer {
     const semantics = new Semantics(checked.model);
     const before = this.picture;
     this.opened = { path: this.path, semantics, layouter: new Layouter(semantics, this.engine) };
-    this.change(before ?? defaultPicture(semantics));
+    this.buildTabs();
+    this.change(before ?? defaultPicture(semantics), before === null ? { fit: true } : {});
   }
 
   /** Words at the top of the stage, over the diagram, or none. */
@@ -279,12 +309,17 @@ export class Viewer {
   }
 
   /** Sets the picture, normalised, and draws it. */
-  private change(picture: Picture): void {
+  private change(picture: Picture, arrival: Arrival = {}): void {
     if (this.opened === null) return;
+    const before = this.picture;
     this.picture = normalisePicture(this.opened.semantics, picture).picture;
+    this.arrival = { ...this.arrival, ...arrival };
+    if (before !== null && before.audience !== this.picture.audience) {
+      this.spoken.textContent = `Now written for ${this.opened.semantics.audience(this.picture.audience).name}`;
+    }
     this.renderControls(this.opened.path);
-    const count = this.drawCount + 1;
-    this.draw().catch((error: unknown) => {
+    const count = ++this.drawCount;
+    this.draw(count).catch((error: unknown) => {
       if (count !== this.drawCount) return;
       this.showProblems('Aerie could not draw this picture:', [
         error instanceof Error ? error.message : String(error),
@@ -294,7 +329,7 @@ export class Viewer {
   }
 
   private showProblems(heading: string, lines: string[]): void {
-    this.drawingHolder.replaceChildren(
+    this.stage.showMessage(
       h('div', { class: 'problems', role: 'alert' }, [
         h('p', {}, [heading]),
         h(
@@ -306,25 +341,111 @@ export class Viewer {
     );
   }
 
-  private zoomFor(preset: ZoomPreset, view: Id): Zoom {
-    if (this.opened === null || preset === 'default') return DEFAULT_ZOOM;
-    const scope = this.opened.semantics.scope(view);
-    return preset === 'open' ? scope.everythingOpen() : scope.allClosed();
+  // ------------------------------------------------------------ what the reader does
+
+  /** INT-201: clicking an element selects it; clicking it again or empty stage clears. */
+  private pick(id: Id | null): void {
+    const opened = this.opened;
+    const picture = this.picture;
+    if (opened === null || picture === null) return;
+    const current = picture.activity.kind === 'selected' ? picture.activity.element : null;
+    const next = id === null || id === current ? null : id;
+    if (next === current) return;
+    this.change(select(opened.semantics, picture, next));
+  }
+
+  /** Selects an element, revealing it if needed (INT-205, MODEL-207). */
+  private choose(id: Id): void {
+    const opened = this.opened;
+    const picture = this.picture;
+    if (opened === null || picture === null) return;
+    this.change(select(opened.semantics, picture, id));
+  }
+
+  /** INT-302: opens a closed container in place, or closes an open one. */
+  private toggle(id: Id): void {
+    const opened = this.opened;
+    const picture = this.picture;
+    if (opened === null || picture === null) return;
+    if (picture.activity.kind === 'presenting') return;
+    const { semantics } = opened;
+    const drawn = semantics.drawn(picture.view, picture.zoom);
+    if (!drawn.has(id) || !semantics.tree.isContainer(id)) return;
+    const open = semantics.scope(picture.view).state(drawn, id) === 'open';
+    this.change(
+      open ? closeContainer(semantics, picture, id) : openContainer(semantics, picture, id),
+      { anchor: id },
+    );
+  }
+
+  /** INT-102: switches the audience; wording changes and nothing moves (INT-103). */
+  private switchTo(audience: Id): void {
+    const opened = this.opened;
+    const picture = this.picture;
+    if (opened === null || picture === null || picture.audience === audience) return;
+    this.change(switchAudience(opened.semantics, picture, audience));
+  }
+
+  /** The keyboard (INT-004, INT-102, INT-201, INT-352, INT-902). */
+  private key(event: KeyboardEvent): void {
+    if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey) return;
+    if (inTextField(event.target)) return;
+    const opened = this.opened;
+    const picture = this.picture;
+    if (opened === null || picture === null) return;
+    const target = event.target instanceof Element ? event.target : null;
+    const node = target?.closest('svg.aerie g.boxes > g.node') ?? null;
+    const nodeId = node?.getAttribute('data-id') ?? null;
+    const tab = target?.closest('[role=tab]') ?? null;
+    let handled = true;
+    if (/^[1-6]$/.test(event.key)) {
+      const audience = opened.semantics.model.audiences[Number(event.key) - 1];
+      if (audience === undefined) return;
+      this.switchTo(audience.id);
+    } else if (tab !== null && (event.key === 'ArrowRight' || event.key === 'ArrowLeft')) {
+      // The tab list's own keys: the arrows move along the tabs and choose them.
+      const all = opened.semantics.model.audiences;
+      const at = all.findIndex((each) => each.id === picture.audience);
+      const next = all[(at + (event.key === 'ArrowRight' ? 1 : all.length - 1)) % all.length];
+      if (next === undefined) return;
+      this.switchTo(next.id);
+      this.tabs.querySelector<HTMLElement>(`[data-audience="${CSS.escape(next.id)}"]`)?.focus();
+    } else if (event.key === 'Escape') {
+      if (picture.activity.kind !== 'selected') return;
+      this.change(select(opened.semantics, picture, null));
+    } else if (nodeId !== null && (event.key === 'Enter' || event.key === ' ')) {
+      if (picture.activity.kind === 'selected' && picture.activity.element === nodeId) return;
+      this.choose(nodeId);
+    } else if (nodeId !== null && event.key === 'o') {
+      this.toggle(nodeId);
+    } else if (event.key === '+' || event.key === '=') {
+      this.stage.magnifyBy(CAMERA.magnify);
+    } else if (event.key === '-') {
+      this.stage.magnifyBy(CAMERA.shrink);
+    } else if (event.key === '0') {
+      this.stage.fit(true);
+    } else {
+      handled = false;
+    }
+    if (handled) event.preventDefault();
   }
 
   // ------------------------------------------------------------ drawing
 
-  private async draw(): Promise<void> {
+  private async draw(count: number): Promise<void> {
     const opened = this.opened;
     const picture = this.picture;
     if (opened === null || picture === null) return;
-    const count = ++this.drawCount;
     const { semantics, layouter } = opened;
     const { view, zoom, audience, activity } = picture;
-    let markup: string;
+    let showing: Showing;
     if (activity.kind === 'playing' && activity.lanes) {
       const lanes = await layouter.lanes(activity.scenario, view, zoom);
-      markup = toMarkup(renderLanes(semantics, lanes, audience, activity.step));
+      showing = {
+        markup: toMarkup(renderLanes(semantics, lanes, audience, activity.step)),
+        layout: null,
+        sentences: [],
+      };
     } else {
       const laid = await layouter.picture(view, zoom, audience);
       let focus: Focus = { kind: 'none' };
@@ -335,34 +456,83 @@ export class Viewer {
         trail = trailShapes(laid.result, steps);
         focus = { kind: 'trail', visited: steps.visited, current: steps.current };
       }
-      markup = toMarkup(
-        renderPicture(semantics, laid, trail === undefined ? { focus } : { focus, trail }),
-      );
+      const scene = semantics.scene(laid.drawing, audience);
+      showing = {
+        markup: toMarkup(
+          renderPicture(
+            semantics,
+            laid,
+            trail === undefined
+              ? { focus, interactive: true }
+              : { focus, trail, interactive: true },
+          ),
+        ),
+        layout: laid,
+        sentences: scene.edges.flatMap((edge) => edge.relationships.map((each) => each.sentence)),
+      };
     }
     if (count !== this.drawCount) return;
-    this.drawingHolder.innerHTML = markup;
-    this.fit();
+    const arrival = this.arrival;
+    this.arrival = {};
+    this.stage.show(showing, arrival);
     await Promise.all(FACES.map((face) => document.fonts.load(face)));
     await document.fonts.ready;
     if (count === this.drawCount) this.root.dataset['ready'] = 'true';
   }
 
-  /** LAYOUT-451: the picture fills the stage less a margin, at no more than 1.15, centred. */
-  private fit(): void {
-    const svg = this.drawingHolder.querySelector<SVGSVGElement>('svg.aerie');
-    if (svg === null) return;
-    const size = { width: svg.width.baseVal.value, height: svg.height.baseVal.value };
-    const stage = { width: this.stage.clientWidth, height: this.stage.clientHeight };
-    const scale = fitScale(size, stage);
-    const width = size.width * scale;
-    const height = size.height * scale;
-    svg.style.width = `${String(width)}px`;
-    svg.style.height = `${String(height)}px`;
-    svg.style.left = `${String((stage.width - width) / 2)}px`;
-    svg.style.top = `${String(Math.max(34, (stage.height - height) / 2))}px`;
+  // ------------------------------------------------------------ controls
+
+  /** INT-101 and INT-105: one tab per audience, in declared order, as an accessible tab list. */
+  private buildTabs(): void {
+    const opened = this.opened;
+    if (opened === null) return;
+    this.tabs.replaceChildren(
+      ...opened.semantics.model.audiences.map((each) =>
+        h(
+          'button',
+          {
+            type: 'button',
+            role: 'tab',
+            'data-audience': each.id,
+            onclick: () => {
+              this.switchTo(each.id);
+            },
+          },
+          [each.name],
+        ),
+      ),
+      this.thumb,
+    );
   }
 
-  // ------------------------------------------------------------ controls
+  /** Marks the current audience's tab; the underline glides to it (LOOK-802). */
+  private markTabs(audience: Id): void {
+    const opened = this.opened;
+    if (opened === null) return;
+    const index = opened.semantics.model.audiences.findIndex((each) => each.id === audience);
+    for (const tab of this.tabs.querySelectorAll<HTMLElement>('[role=tab]')) {
+      const on = tab.dataset['audience'] === audience;
+      tab.setAttribute('aria-selected', on ? 'true' : 'false');
+      tab.tabIndex = on ? 0 : -1;
+    }
+    this.thumb.style.transform = `translateX(${String(index * TAB_WIDTH)}px)`;
+  }
+
+  /** The actions of the side panel's links and buttons, on the picture as it is when used. */
+  private readonly panelActions: PanelActions = {
+    select: (id) => {
+      this.choose(id);
+    },
+    toggle: (id) => {
+      this.toggle(id);
+    },
+    play: (scenario) => {
+      const opened = this.opened;
+      const picture = this.picture;
+      if (opened === null || picture === null) return;
+      this.change(play(opened.semantics, picture, scenario));
+    },
+  };
 
   /**
    * INT-801: while editing, the sidebar is hidden and the breadcrumb's view title opens a menu of
@@ -406,7 +576,6 @@ export class Viewer {
         h('p', { class: 'heading' }, ['Views']),
         ...semantics.views.map((view) =>
           item(semantics.viewTitle(view.id, picture.audience), () => {
-            this.zoomPreset = 'default';
             return switchView(semantics, picture, view.id);
           }),
         ),
@@ -468,8 +637,8 @@ export class Viewer {
     if (opened === null || picture === null) {
       this.side.replaceChildren(...sections);
       this.tabs.replaceChildren();
-      this.crumb.replaceChildren(path);
-      this.panel.replaceChildren();
+      this.crumbSwap.set(h('span', {}, [path]));
+      this.panelSwap.set(h('div', { class: 'panel-content' }));
       return;
     }
     const { semantics } = opened;
@@ -487,8 +656,9 @@ export class Viewer {
               class: view.id === picture.view && activity.kind !== 'playing' ? 'item on' : 'item',
               'data-view': view.id,
               onclick: () => {
-                this.zoomPreset = 'default';
-                this.change(switchView(semantics, picture, view.id));
+                const now = this.picture;
+                if (now === null) return;
+                this.change(switchView(semantics, now, view.id), { fit: true });
               },
             },
             [semantics.viewTitle(view.id, audience)],
@@ -497,55 +667,7 @@ export class Viewer {
       ]),
     );
 
-    const zoom = h(
-      'select',
-      {
-        'aria-label': 'Zoom',
-        name: 'zoom',
-        onchange: (event) => {
-          this.zoomPreset = (event.target as HTMLSelectElement).value as ZoomPreset;
-          this.change({ ...picture, zoom: this.zoomFor(this.zoomPreset, picture.view) });
-        },
-      },
-      (
-        [
-          ['default', 'As the view opens'],
-          ['open', 'Everything open'],
-          ['closed', 'All closed'],
-        ] as const
-      ).map(([value, text]) => h('option', { value, selected: value === this.zoomPreset }, [text])),
-    );
-    const drawn = semantics.drawing(picture.view, picture.zoom).nodes;
-    const highlight = h(
-      'select',
-      {
-        'aria-label': 'Selected element',
-        name: 'select',
-        disabled: activity.kind === 'playing',
-        onchange: (event) => {
-          const id = (event.target as HTMLSelectElement).value;
-          this.change(select(semantics, picture, id === '' ? null : id));
-        },
-      },
-      [
-        h('option', { value: '' }, ['Nothing']),
-        ...drawn.map((node) =>
-          h(
-            'option',
-            {
-              value: node.id,
-              selected: activity.kind === 'selected' && activity.element === node.id,
-            },
-            [semantics.name(node.id, audience)],
-          ),
-        ),
-      ],
-    );
-    sections.push(
-      h('section', {}, [h('h2', {}, ['Zoom']), zoom]),
-      h('section', {}, [h('h2', {}, ['Selection']), highlight]),
-    );
-
+    // Scenario playback is slice A8's; until then the sidebar offers the bare controls.
     if (semantics.model.scenarios.length > 0) {
       const playing = activity.kind === 'playing' ? activity : null;
       const scenarios = semantics.model.scenarios.map((scenario) =>
@@ -556,7 +678,7 @@ export class Viewer {
             class: playing?.scenario === scenario.id ? 'item on' : 'item',
             'data-scenario': scenario.id,
             onclick: () => {
-              this.change(play(semantics, picture, scenario.id));
+              this.panelActions.play(scenario.id);
             },
           },
           [
@@ -611,28 +733,20 @@ export class Viewer {
       }
       sections.push(h('section', {}, [h('h2', {}, ['Scenarios']), ...scenarios, ...controls]));
     }
+    // A reader choosing from the sidebar with the keyboard keeps their place in it.
+    const active = document.activeElement;
+    const kept =
+      active instanceof HTMLElement && this.side.contains(active)
+        ? ['data-view', 'data-scenario', 'name']
+            .map((name) => [name, active.getAttribute(name)] as const)
+            .find(([, value]) => value !== null)
+        : undefined;
     this.side.replaceChildren(...sections);
-
-    // LOOK-802: the audience tabs, with the accent underline under the current one.
-    const index = semantics.model.audiences.findIndex((each) => each.id === audience);
-    this.tabs.replaceChildren(
-      ...semantics.model.audiences.map((each) =>
-        h(
-          'button',
-          {
-            type: 'button',
-            role: 'tab',
-            'aria-selected': each.id === audience ? 'true' : 'false',
-            'data-audience': each.id,
-            onclick: () => {
-              this.change(switchAudience(semantics, picture, each.id));
-            },
-          },
-          [each.name],
-        ),
-      ),
-      h('span', { class: 'thumb', style: `transform: translateX(${String(index * 104)}px)` }),
-    );
+    if (kept !== undefined) {
+      const [name, value] = kept;
+      this.side.querySelector<HTMLElement>(`[${name}="${CSS.escape(value ?? '')}"]`)?.focus();
+    }
+    this.markTabs(audience);
 
     const title = semantics.title(audience);
     const crumbs: string[] = [
@@ -641,23 +755,28 @@ export class Viewer {
     ];
     if (activity.kind === 'playing')
       crumbs.push(scenarioTitle(semantics, activity.scenario, audience));
-    this.crumb.replaceChildren(
-      ...crumbs.flatMap((each, at) => [
-        ...(at === 0 ? [] : [h('span', { class: 'slash', 'aria-hidden': 'true' }, ['/'])]),
-        at === 1 && this.editorPane !== null
-          ? this.viewMenu(each, at === crumbs.length - 1)
-          : h('span', { class: at === crumbs.length - 1 ? 'here' : '' }, [each]),
-      ]),
+    this.crumbSwap.set(
+      h(
+        'span',
+        {},
+        crumbs.flatMap((each, at) => [
+          ...(at === 0 ? [] : [h('span', { class: 'slash', 'aria-hidden': 'true' }, ['/'])]),
+          at === 1 && this.editorPane !== null
+            ? this.viewMenu(each, at === crumbs.length - 1)
+            : h('span', { class: at === crumbs.length - 1 ? 'here' : '' }, [each]),
+        ]),
+      ),
     );
 
-    const about = semantics.scene(semantics.drawing(picture.view, picture.zoom), audience).about;
-    this.panel.replaceChildren(
-      h('p', { class: 'kicker' }, ['View']),
-      h('h1', {}, [semantics.viewTitle(picture.view, audience)]),
-      ...(about === null
-        ? []
-        : about.split(/\n\n+/).map((para) => h('p', { class: 'lead' }, prose(para)))),
-    );
+    // INT-204 and INT-205: the side panel; when the reader was in it, the focus stays in it.
+    const content =
+      activity.kind === 'selected'
+        ? elementPanel(semantics, picture, activity.element, this.panelActions)
+        : viewPanel(semantics, picture, this.panelActions);
+    const hadFocus = this.panel.contains(document.activeElement);
+    this.panelSwap.set(h('div', { class: 'panel-content' }, content), (replaced) => {
+      if (replaced && hadFocus) this.panel.querySelector<HTMLElement>('h1')?.focus();
+    });
   }
 }
 
