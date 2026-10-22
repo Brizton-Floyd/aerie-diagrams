@@ -147,6 +147,8 @@ test('INT-804 completion offers element ids at the end of a sentence', async ({ 
   await page.keyboard.type('website reads from scr');
   const list = page.locator('.cm-tooltip-autocomplete');
   await expect(list.getByRole('option', { name: /^screen-api/ })).toBeVisible();
+  // CodeMirror ignores Enter for 75 ms after the list opens (interactionDelay), as a person would.
+  await page.waitForTimeout(150);
   await page.keyboard.press('Enter');
   await expect(line(page, 'website reads from screen-api')).toHaveCount(1);
 });
