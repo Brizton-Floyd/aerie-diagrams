@@ -1,0 +1,305 @@
+/* The page chrome in the Contour look (docs/spec/look.md, LOOK-801 to LOOK-806). Colours are the
+   tokens the Contour stylesheet defines (src/render/style.ts). */
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+body {
+  background: var(--aerie-bg);
+  color: var(--aerie-ink);
+  font:
+    400 15px 'Source Sans 3',
+    system-ui,
+    sans-serif;
+}
+button,
+select,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+/* LOOK-801: a 58 px top bar; below it a 214 px sidebar, the stage and a 344 px side panel. */
+.page {
+  display: grid;
+  grid-template-rows: 58px minmax(0, 1fr);
+  height: 100vh;
+  min-width: 1280px;
+}
+.body {
+  display: grid;
+  grid-template-columns: 214px minmax(0, 1fr) 344px;
+  min-height: 0;
+}
+
+/* LOOK-802: the top bar. */
+.top {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 0 18px;
+  background: var(--aerie-paper);
+  border-bottom: 3px double var(--aerie-rule);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.logo {
+  fill: none;
+  stroke: var(--aerie-ink);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.logo .summit {
+  fill: var(--aerie-accent);
+  stroke: none;
+}
+.word {
+  font:
+    600 21px 'Source Serif 4',
+    Georgia,
+    serif;
+}
+.crumb {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font:
+    400 15px 'Source Serif 4',
+    Georgia,
+    serif;
+  color: var(--aerie-muted);
+}
+.crumb .here {
+  color: var(--aerie-ink);
+  font-weight: 600;
+}
+.crumb .slash {
+  padding: 0 8px;
+}
+.audience {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.written {
+  font:
+    italic 400 14px 'Source Serif 4',
+    Georgia,
+    serif;
+  color: var(--aerie-muted);
+}
+.tabs {
+  position: relative;
+  display: flex;
+}
+.tabs button {
+  width: 104px;
+  padding: 8px 0 9px;
+  border: 0;
+  background: none;
+  font:
+    600 14px 'Source Sans 3',
+    system-ui,
+    sans-serif;
+  color: var(--aerie-muted);
+  cursor: pointer;
+}
+.tabs button[aria-selected='true'] {
+  color: var(--aerie-ink);
+}
+.tabs .thumb {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 104px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--aerie-accent);
+  transition: transform var(--aerie-glide) var(--aerie-ease);
+}
+.tool {
+  padding: 5px 11px;
+  border: 1px solid var(--aerie-ink);
+  border-radius: 3px;
+  background: var(--aerie-paper);
+  font:
+    600 13px 'Source Sans 3',
+    system-ui,
+    sans-serif;
+  cursor: pointer;
+}
+/* A fixed width, so the bar's geometry is the same in every face and on every system. */
+.tool.theme {
+  width: 64px;
+}
+.tool:hover {
+  background: var(--aerie-ink);
+  color: var(--aerie-paper);
+}
+
+/* LOOK-803: the sidebar. */
+.side-wrap {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--aerie-paper);
+  border-right: 1px solid var(--aerie-rule);
+}
+.side {
+  flex: 1;
+  overflow: auto;
+  padding: 18px 14px;
+}
+.side section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+  margin-bottom: 18px;
+}
+.side h2 {
+  margin: 0 0 4px 8px;
+  font:
+    600 12px 'Source Sans 3',
+    system-ui,
+    sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--aerie-muted);
+}
+.side select {
+  width: 100%;
+  padding: 4px;
+  border: 1px solid var(--aerie-rule);
+  border-radius: 3px;
+  background: var(--aerie-paper);
+  font:
+    400 14px 'Source Serif 4',
+    Georgia,
+    serif;
+}
+.side .item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 3px;
+  background: none;
+  text-align: left;
+  font:
+    400 15px 'Source Serif 4',
+    Georgia,
+    serif;
+  cursor: pointer;
+}
+.side .item:hover {
+  background: var(--aerie-band-0);
+}
+.side .item.on {
+  background: var(--aerie-band-1);
+  box-shadow: inset 3px 0 0 var(--aerie-accent);
+}
+.side .play {
+  flex: none;
+  width: 0;
+  height: 0;
+  border-left: 7px solid var(--aerie-accent);
+  border-top: 4.5px solid transparent;
+  border-bottom: 4.5px solid transparent;
+}
+.side label {
+  font:
+    400 14px 'Source Serif 4',
+    Georgia,
+    serif;
+  color: var(--aerie-muted);
+}
+.side .file {
+  display: grid;
+  gap: 4px;
+  margin-top: 4px;
+}
+.side .file input {
+  font-size: 12px;
+}
+.side .step input {
+  width: 4em;
+}
+.motion {
+  padding: 12px 22px 16px;
+  border-top: 1px solid var(--aerie-rule);
+  font:
+    400 13px 'Source Sans 3',
+    system-ui,
+    sans-serif;
+  color: var(--aerie-muted);
+}
+
+/* The stage: the diagram, fitted (LAYOUT-451), over the texture (LOOK-307). */
+.aerie-stage {
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+}
+.drawing svg.aerie {
+  position: absolute;
+}
+.problems {
+  margin: 34px;
+  padding: 14px 18px;
+  background: var(--aerie-paper);
+  border: 1px solid var(--aerie-rule);
+  border-left: 4px solid var(--aerie-accent);
+  font:
+    400 15px 'Source Serif 4',
+    Georgia,
+    serif;
+}
+
+/* LOOK-804: the side panel. */
+.panel {
+  overflow: auto;
+  padding: 22px;
+  background: var(--aerie-paper);
+  border-left: 1px solid var(--aerie-rule);
+}
+.panel .kicker {
+  margin: 0;
+  font:
+    600 11.5px 'Source Sans 3',
+    system-ui,
+    sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--aerie-accent-ink);
+}
+.panel h1 {
+  margin: 6px 0 10px;
+  font:
+    600 23px/1.2 'Source Serif 4',
+    Georgia,
+    serif;
+}
+.panel .lead {
+  margin: 0 0 12px;
+  font:
+    400 15px/1.5 'Source Serif 4',
+    Georgia,
+    serif;
+}
+.panel code {
+  font:
+    400 14px 'Source Code Pro',
+    ui-monospace,
+    monospace;
+}

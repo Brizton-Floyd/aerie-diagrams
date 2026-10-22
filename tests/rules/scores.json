@@ -76,6 +76,73 @@
       "fitScale": 1.15
     }
   },
+  "samples/shapes.aerie": {
+    "shapes, default": {
+      "crossings": 0,
+      "bends": 4,
+      "fitScale": 1.15
+    },
+    "shapes, everything open": {
+      "crossings": 0,
+      "bends": 4,
+      "fitScale": 0.988
+    },
+    "shapes, all closed": {
+      "crossings": 0,
+      "bends": 2,
+      "fitScale": 1.15
+    },
+    "shapes, ridge closed": {
+      "crossings": 0,
+      "bends": 2,
+      "fitScale": 1.15
+    },
+    "shapes, crest closed": {
+      "crossings": 0,
+      "bends": 2,
+      "fitScale": 1.15
+    },
+    "shapes, summit closed": {
+      "crossings": 0,
+      "bends": 2,
+      "fitScale": 1.15
+    },
+    "shapes, peak closed": {
+      "crossings": 0,
+      "bends": 2,
+      "fitScale": 1.15
+    },
+    "icon-set, default": {
+      "crossings": 0,
+      "bends": 0,
+      "fitScale": 1.109
+    },
+    "icon-set, all closed": {
+      "crossings": 0,
+      "bends": 0,
+      "fitScale": 1.15
+    },
+    "icon-set, people closed": {
+      "crossings": 0,
+      "bends": 0,
+      "fitScale": 1.15
+    },
+    "icon-set, work closed": {
+      "crossings": 0,
+      "bends": 0,
+      "fitScale": 1.15
+    },
+    "icon-set, keeping closed": {
+      "crossings": 0,
+      "bends": 0,
+      "fitScale": 1.15
+    },
+    "icon-set, places closed": {
+      "crossings": 0,
+      "bends": 0,
+      "fitScale": 1.15
+    }
+  },
   "docs/spec/examples/lotto.aerie": {
     "big-picture, default": {
       "crossings": 0,

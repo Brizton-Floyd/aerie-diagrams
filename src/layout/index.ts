@@ -10,6 +10,7 @@
 //   // picture.text: the audience's names, taglines, chips and labels at their places (LAYOUT-204).
 //   const lanes = await layouter.lanes(scenario, stageView, zoom);
 //   const lanesText = placeLanesText(lanes, audience);
+//   const trail = trailShapes(picture.result, semantics.trail(scenario, view, zoom, step));
 //
 // - The engine is behind `LayoutEngine` (LAYOUT-001); only src/layout/elk/ imports `elkjs`
 //   (LAYOUT-002, enforced by lint). The engines live in their own modules so the browser bundle
@@ -80,6 +81,16 @@ export {
   type PlacedText,
   type StructureLayout,
 } from './structure.ts';
+export {
+  TRAIL,
+  curveBetween,
+  leave,
+  loopOn,
+  trailShapes,
+  type TrailCurve,
+  type TrailLoop,
+  type TrailShape,
+} from './trail.ts';
 export {
   DRAWN_TEXT_STYLE,
   ROLES,

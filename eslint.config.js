@@ -94,6 +94,25 @@ export default defineConfig(
     },
   },
   {
+    // The renderer is pure too, so drawings are the same in Node and the browser, built only on the
+    // language, the model and the layout (docs/spec/look.md).
+    files: ['src/render/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [ELK_PATH],
+          patterns: [
+            NODE,
+            { regex: String.raw`^\.\./(?!(?:lines|model|layout)/index\.ts$)` },
+            ELK_PATTERN,
+          ],
+        },
+      ],
+      'no-restricted-globals': PURE_GLOBALS,
+    },
+  },
+  {
     // The ELK adapter is the one place `elkjs` may be imported.
     files: ['src/layout/elk/**/*.ts'],
     rules: {

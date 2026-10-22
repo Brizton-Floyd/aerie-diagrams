@@ -69,9 +69,13 @@ same. The individual suites are the `test:*` scripts in [package.json](package.j
 - Update baselines deliberately: `npx vitest run --project golden -u`, and
   `npx playwright test --project screenshots --update-snapshots`. The language fixtures
   (`tests/unit/lines/examples/`, ACC-012) update the same way with `--project unit -u`; review the
-  diff, since the expected files come from the code under test. The readability baseline
-  (`tests/rules/scores.json`, ACC-004) updates with
-  `AERIE_UPDATE_SCORES=1 npx vitest run --project rules tests/rules/scores.test.ts`.
+  diff, since the expected files come from the code under test. The readability baselines
+  (`tests/rules/scores.json` and `contrast.json`, ACC-004) update with
+  `AERIE_UPDATE_SCORES=1 npx vitest run --project rules tests/rules/scores.test.ts tests/rules/contrast.test.ts`.
+- `npm run dev` serves the viewer page ([src/app/viewer.ts](src/app/viewer.ts)): a bundled sample
+  (`?model=samples/lotto.aerie`) or a local file, drawn for a chosen view, audience, zoom,
+  selection or scenario step. Render goldens are standalone SVGs under
+  `tests/golden/__snapshots__/render/`, viewable in a browser.
 - `npx aerie check|format|model <file>` runs the Lines tools ([src/cli/aerie.ts](src/cli/aerie.ts),
   executed by Node's type stripping, so it imports `.ts` files and uses only erasable syntax).
   `npx aerie` works only inside this checkout: elsewhere npm fetches an unrelated package of the same
@@ -80,8 +84,8 @@ same. The individual suites are the `test:*` scripts in [package.json](package.j
   `tests/unit/skill/` runs every Lines example in it through the CLI and holds its language summary
   to the parser, so a language change that breaks the skill fails `test:unit`.
 
-The screenshots and journeys suites still hold stubs that prove their wiring; the slice that owns
-each suite replaces its stub.
+Each later slice adds its own screenshots and journeys next to A5's (`tests/screenshots/page.ts`
+has the steps for opening a model and choosing a view and audience with clicks).
 
 ## Sharp edges
 
@@ -104,14 +108,23 @@ each suite replaces its stub.
   [src/layout/index.ts](src/layout/index.ts). Only `src/layout/elk/` imports `elkjs` (LAYOUT-002,
   lint-enforced; tests too). Import `inProcessEngine` (Node) and `workerEngine` (browser) from their
   own modules so the browser bundle never pulls in the in-process ELK.
+- `src/render/` (the Contour renderer) is pure TypeScript too, built only on the three entry points
+  above; its API notes are in [src/render/index.ts](src/render/index.ts). Drawings are SVG trees of
+  classes and geometry; every colour, stroke, face and timing is in the stylesheet that
+  `contourStyle()` writes from the tokens, so a theme switch redraws nothing and colours never
+  appear outside `tokens.ts` (a unit test enforces it).
 - Text is measured from `src/layout/text/advances.json`, written from the bundled Fontsource fonts by
   `node scripts/font-metrics.ts`; rerun it when a font package changes (a unit test compares them).
 - Vitest 5 hides the console output of passing tests; a suite that reports (LAYOUT-901) writes to
   `process.stdout`.
 - Playwright builds and serves the app on port 4173 and never reuses a running server. Set
   `AERIE_PREVIEW_PORT` when several checkouts run checks at the same time.
-- Screenshot baselines are shared across platforms (no OS suffix), so screenshot tests must not
-  depend on font rendering differences between macOS and Linux.
+- Screenshot baselines are shared across platforms (no OS suffix) and compared with no tolerance:
+  runs hide text (ACC-006), and nothing the page draws may take its size from rendered text (give
+  such chrome a fixed width). Drawn text is unhinted (`text-rendering: geometricPrecision`) so it is
+  as wide as measured on Linux too. Before pushing new baselines, run the suite on Linux as CI does,
+  in `mcr.microsoft.com/playwright:v1.64.1-noble` with a fresh `npm ci` (macOS `node_modules` hold
+  native binaries).
 
 ## Plan
 

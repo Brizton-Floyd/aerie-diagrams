@@ -1,0 +1,434 @@
+<?xml-stylesheet href="../contour.css" type="text/css"?>
+<svg xmlns="http://www.w3.org/2000/svg" class="aerie" viewBox="0 0 1167 709" width="1167" height="709" overflow="visible" role="img" aria-label="Every Contour shape: Icons" data-view="icon-set" data-audience="exec">
+  <defs>
+    <pattern id="aerie-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect class="hatch-bg" width="7" height="7"/>
+      <path class="hatch-line" d="M0 0V7"/>
+    </pattern>
+  </defs>
+  <g class="boxes">
+    <g class="node open depth-0" data-id="icons" transform="translate(12 12)">
+      <rect class="shape" width="1143" height="685" rx="18"/>
+      <rect class="inner" x="5" y="5" width="1133" height="675" rx="13"/>
+      <rect class="ring" x="-3" y="-3" width="1149" height="691" rx="21"/>
+      <g class="icon" data-icon="stack" transform="translate(12 12) scale(0.34375)">
+        <path d="M32 9 56 21 32 33 8 21Z"/>
+        <path d="M8 31l24 12 24-12"/>
+        <path d="M8 41l24 12 24-12"/>
+      </g>
+      <g class="control" transform="translate(1122 21)">
+        <circle r="9"/>
+        <path d="M-4 0H4"/>
+      </g>
+    </g>
+    <g class="node open depth-1" data-id="people" transform="translate(272 65)">
+      <rect class="shape" width="284" height="614" rx="18"/>
+      <rect class="inner" x="5" y="5" width="274" height="604" rx="13"/>
+      <rect class="ring" x="-3" y="-3" width="290" height="620" rx="21"/>
+      <g class="icon" data-icon="stack" transform="translate(12 12) scale(0.34375)">
+        <path d="M32 9 56 21 32 33 8 21Z"/>
+        <path d="M8 31l24 12 24-12"/>
+        <path d="M8 41l24 12 24-12"/>
+      </g>
+      <g class="control" transform="translate(263 21)">
+        <circle r="9"/>
+        <path d="M-4 0H4"/>
+      </g>
+    </g>
+    <g class="node leaf" data-id="i-person" transform="translate(313 105)">
+      <rect class="shape" width="202" height="59" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="208" height="65" rx="7"/>
+      <g class="icon" data-icon="person" transform="translate(12 12) scale(0.34375)">
+        <circle cx="32" cy="21" r="10"/>
+        <path d="M12 56c0-12 9-20 20-20s20 8 20 20"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="42">person</text>
+      <text class="t-tagline" x="44" y="44" data-width="129">Head and shoulders</text>
+    </g>
+    <g class="node leaf" data-id="i-web" transform="translate(321 225)">
+      <rect class="shape" width="186" height="59" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="192" height="65" rx="7"/>
+      <g class="icon" data-icon="web" transform="translate(12 12) scale(0.34375)">
+        <rect x="8" y="11" width="48" height="42" rx="5"/>
+        <path d="M8 21h48"/>
+        <path d="M27 29l-7 7 7 7"/>
+        <path d="M37 29l7 7-7 7"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="26">web</text>
+      <text class="t-tagline" x="44" y="44" data-width="122">A browser window</text>
+    </g>
+    <g class="node leaf" data-id="i-monitor" transform="translate(309 345)">
+      <rect class="shape" width="210" height="59" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="216" height="65" rx="7"/>
+      <g class="icon" data-icon="monitor" transform="translate(12 12) scale(0.34375)">
+        <rect x="8" y="11" width="48" height="32" rx="3"/>
+        <path d="M32 43v9M21 53h22"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="49">monitor</text>
+      <text class="t-tagline" x="44" y="44" data-width="125">A screen on a stand</text>
+    </g>
+    <g class="node leaf" data-id="i-api" transform="translate(296.5 465)">
+      <rect class="shape" width="235" height="59" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="241" height="65" rx="7"/>
+      <g class="icon" data-icon="api" transform="translate(12 12) scale(0.34375)">
+        <rect x="26" y="18" width="14" height="28" rx="3"/>
+        <path d="M7 25h19M7 39h19"/>
+        <path d="M40 32h16"/>
+        <path d="M50 26l6 6-6 6"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="19">api</text>
+      <text class="t-tagline" x="44" y="44" data-width="141">Lines in, an arrow out</text>
+    </g>
+    <g class="node leaf" data-id="i-route" transform="translate(290 585)">
+      <rect class="shape" width="248" height="76" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="254" height="82" rx="7"/>
+      <g class="icon" data-icon="route" transform="translate(12 12) scale(0.34375)">
+        <circle class="dot" cx="15" cy="41" r="3.6"/>
+        <path d="M21 38c10-4 14-16 27-16h7"/>
+        <path d="M49 16l6 6-6 6"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="33">route</text>
+      <text class="t-tagline" x="44" y="44" data-width="192">A point with an arrow leaving</text>
+    </g>
+    <g class="node open depth-1" data-id="work" transform="translate(576 73.5)">
+      <rect class="shape" width="287" height="597" rx="18"/>
+      <rect class="inner" x="5" y="5" width="277" height="587" rx="13"/>
+      <rect class="ring" x="-3" y="-3" width="293" height="603" rx="21"/>
+      <g class="icon" data-icon="stack" transform="translate(12 12) scale(0.34375)">
+        <path d="M32 9 56 21 32 33 8 21Z"/>
+        <path d="M8 31l24 12 24-12"/>
+        <path d="M8 41l24 12 24-12"/>
+      </g>
+      <g class="control" transform="translate(266 21)">
+        <circle r="9"/>
+        <path d="M-4 0H4"/>
+      </g>
+    </g>
+    <g class="node leaf" data-id="i-gear" transform="translate(644.5 113.5)">
+      <rect class="shape" width="150" height="59" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="156" height="65" rx="7"/>
+      <g class="icon" data-icon="gear" transform="translate(12 12) scale(0.34375)">
+        <path d="M28.1 16.5 29 10.7h6l.9 5.8 4.3 1.8 4.7-3.5 4.3 4.3-3.5 4.7 1.8 4.3 5.8.9v6l-5.8.9-1.8 4.3 3.5 4.7-4.3 4.3-4.7-3.5-4.3 1.8-.9 5.8h-6l-.9-5.8-4.3-1.8-4.7 3.5-4.3-4.3 3.5-4.7-1.8-4.3-5.8-.9v-6l5.8-.9 1.8-4.3-3.5-4.7 4.3-4.3 4.7 3.5Z"/>
+        <circle cx="32" cy="32" r="6"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="27">gear</text>
+      <text class="t-tagline" x="44" y="44" data-width="36">A cog</text>
+    </g>
+    <g class="node leaf" data-id="i-module" transform="translate(644.5 233.5)">
+      <rect class="shape" width="150" height="59" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="156" height="65" rx="7"/>
+      <g class="icon" data-icon="module" transform="translate(12 12) scale(0.34375)">
+        <path d="M32 8 53 20v24L32 56 11 44V20Z"/>
+        <path d="M11 20l21 12 21-12"/>
+        <path d="M32 32v24"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="47">module</text>
+      <text class="t-tagline" x="44" y="44" data-width="44">A cube</text>
+    </g>
+    <g class="node leaf" data-id="i-stack" transform="translate(610.5 353.5)">
+      <rect class="shape" width="218" height="59" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="224" height="65" rx="7"/>
+      <g class="icon" data-icon="stack" transform="translate(12 12) scale(0.34375)">
+        <path d="M32 9 56 21 32 33 8 21Z"/>
+        <path d="M8 31l24 12 24-12"/>
+        <path d="M8 41l24 12 24-12"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="33">stack</text>
+      <text class="t-tagline" x="44" y="44" data-width="133">Three stacked layers</text>
+    </g>
+    <g class="node leaf" data-id="i-dice" transform="translate(618.5 473.5)">
+      <rect class="shape" width="202" height="59" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="208" height="65" rx="7"/>
+      <g class="icon" data-icon="dice" transform="translate(12 12) scale(0.34375)">
+        <rect x="10" y="10" width="44" height="44" rx="9"/>
+        <circle class="dot" cx="22" cy="22" r="3.6"/>
+        <circle class="dot" cx="42" cy="22" r="3.6"/>
+        <circle class="dot" cx="32" cy="32" r="3.6"/>
+        <circle class="dot" cx="22" cy="42" r="3.6"/>
+        <circle class="dot" cx="42" cy="42" r="3.6"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="26">dice</text>
+      <text class="t-tagline" x="44" y="44" data-width="119">A die showing five</text>
+    </g>
+    <g class="node leaf" data-id="i-refresh" transform="translate(594 593.5)">
+      <rect class="shape" width="251" height="59" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="257" height="65" rx="7"/>
+      <g class="icon" data-icon="refresh" transform="translate(12 12) scale(0.34375)">
+        <path d="M49 25A18 18 0 0 0 16 21"/>
+        <path d="M15 39a18 18 0 0 0 33 4"/>
+        <path d="M51 13v12H39"/>
+        <path d="M13 51V39h12"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="43">refresh</text>
+      <text class="t-tagline" x="44" y="44" data-width="172">Two arrows chasing round</text>
+    </g>
+    <g class="node open depth-1" data-id="keeping" transform="translate(30 73.5)">
+      <rect class="shape" width="222" height="597" rx="18"/>
+      <rect class="inner" x="5" y="5" width="212" height="587" rx="13"/>
+      <rect class="ring" x="-3" y="-3" width="228" height="603" rx="21"/>
+      <g class="icon" data-icon="stack" transform="translate(12 12) scale(0.34375)">
+        <path d="M32 9 56 21 32 33 8 21Z"/>
+        <path d="M8 31l24 12 24-12"/>
+        <path d="M8 41l24 12 24-12"/>
+      </g>
+      <g class="control" transform="translate(201 21)">
+        <circle r="9"/>
+        <path d="M-4 0H4"/>
+      </g>
+    </g>
+    <g class="node leaf" data-id="i-cylinder" transform="translate(56 113.5)">
+      <rect class="shape" width="170" height="59" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="176" height="65" rx="7"/>
+      <g class="icon" data-icon="cylinder" transform="translate(12 12) scale(0.34375)">
+        <path d="M14 14c0-3.3 8-6 18-6s18 2.7 18 6-8 6-18 6-18-2.7-18-6Z"/>
+        <path d="M14 14v36c0 3.3 8 6 18 6s18-2.7 18-6V14"/>
+        <path d="M14 26c0 3.3 8 6 18 6s18-2.7 18-6"/>
+        <path d="M14 38c0 3.3 8 6 18 6s18-2.7 18-6"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="49">cylinder</text>
+      <text class="t-tagline" x="44" y="44" data-width="99">A storage drum</text>
+    </g>
+    <g class="node leaf" data-id="i-grid" transform="translate(66 233.5)">
+      <rect class="shape" width="150" height="59" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="156" height="65" rx="7"/>
+      <g class="icon" data-icon="grid" transform="translate(12 12) scale(0.34375)">
+        <rect x="9" y="12" width="46" height="40" rx="3"/>
+        <path d="M9 24h46M9 38h46M32 24v28"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="25">grid</text>
+      <text class="t-tagline" x="44" y="44" data-width="45">A table</text>
+    </g>
+    <g class="node leaf" data-id="i-document" transform="translate(56 353.5)">
+      <rect class="shape" width="170" height="59" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="176" height="65" rx="7"/>
+      <g class="icon" data-icon="document" transform="translate(12 12) scale(0.34375)">
+        <path d="M17 8h21l10 10v38H17Z"/>
+        <path d="M38 8v10h10"/>
+        <path d="M24 31h17M24 40h17M24 49h10"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="62">document</text>
+      <text class="t-tagline" x="44" y="44" data-width="92">A page, folded</text>
+    </g>
+    <g class="node leaf" data-id="i-archive" transform="translate(48 473.5)">
+      <rect class="shape" width="186" height="59" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="192" height="65" rx="7"/>
+      <g class="icon" data-icon="archive" transform="translate(12 12) scale(0.34375)">
+        <rect x="9" y="11" width="46" height="11" rx="2"/>
+        <path d="M13 22v30h38V22"/>
+        <path d="M27 32h10"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="45">archive</text>
+      <text class="t-tagline" x="44" y="44" data-width="100">A box with a lid</text>
+    </g>
+    <g class="node leaf" data-id="i-books" transform="translate(48 593.5)">
+      <rect class="shape" width="186" height="59" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="192" height="65" rx="7"/>
+      <g class="icon" data-icon="books" transform="translate(12 12) scale(0.34375)">
+        <path d="M7 55h50"/>
+        <rect x="12" y="17" width="9" height="38" rx="1.5"/>
+        <rect x="23" y="12" width="9" height="43" rx="1.5"/>
+        <path d="M35.5 19.5l8.7-2.3 9.6 35.6-8.7 2.4Z"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="37">books</text>
+      <text class="t-tagline" x="44" y="44" data-width="104">Books on a shelf</text>
+    </g>
+    <g class="node open depth-1" data-id="places" transform="translate(883 133.5)">
+      <rect class="shape" width="254" height="477" rx="18"/>
+      <rect class="inner" x="5" y="5" width="244" height="467" rx="13"/>
+      <rect class="ring" x="-3" y="-3" width="260" height="483" rx="21"/>
+      <g class="icon" data-icon="stack" transform="translate(12 12) scale(0.34375)">
+        <path d="M32 9 56 21 32 33 8 21Z"/>
+        <path d="M8 31l24 12 24-12"/>
+        <path d="M8 41l24 12 24-12"/>
+      </g>
+      <g class="control" transform="translate(233 21)">
+        <circle r="9"/>
+        <path d="M-4 0H4"/>
+      </g>
+    </g>
+    <g class="node leaf" data-id="i-building" transform="translate(921 173.5)">
+      <rect class="shape" width="178" height="59" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="184" height="65" rx="7"/>
+      <g class="icon" data-icon="building" transform="translate(12 12) scale(0.34375)">
+        <path d="M8 56h48"/>
+        <path d="M16 56V10h32v46"/>
+        <path d="M24 18h4M36 18h4M24 27h4M36 27h4M24 36h4M36 36h4"/>
+        <path d="M29 56V46h6v10"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="50">building</text>
+      <text class="t-tagline" x="44" y="44" data-width="97">An office block</text>
+    </g>
+    <g class="node leaf" data-id="i-search" transform="translate(909 293.5)">
+      <rect class="shape" width="202" height="59" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="208" height="65" rx="7"/>
+      <g class="icon" data-icon="search" transform="translate(12 12) scale(0.34375)">
+        <circle cx="27" cy="27" r="15"/>
+        <path d="M38 38 55 55"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="40">search</text>
+      <text class="t-tagline" x="44" y="44" data-width="123">A magnifying glass</text>
+    </g>
+    <g class="node leaf" data-id="i-history" transform="translate(901 413.5)">
+      <rect class="shape" width="218" height="59" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="224" height="65" rx="7"/>
+      <g class="icon" data-icon="history" transform="translate(12 12) scale(0.34375)">
+        <path d="M14.5 24A19 19 0 1 1 13 34"/>
+        <path d="M8 18l6.5 6.5L21 18"/>
+        <path d="M33 21v12l8 5"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="43">history</text>
+      <text class="t-tagline" x="44" y="44" data-width="134">A clock turning back</text>
+    </g>
+    <g class="node leaf" data-id="i-box" transform="translate(935 533.5)">
+      <rect class="shape" width="150" height="59" rx="4"/>
+      <rect class="ring" x="-3" y="-3" width="156" height="65" rx="7"/>
+      <g class="icon" data-icon="box" transform="translate(12 12) scale(0.34375)">
+        <rect x="12" y="12" width="40" height="40" rx="8"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="23">box</text>
+      <text class="t-tagline" x="44" y="44" data-width="74">The default</text>
+    </g>
+  </g>
+  <g class="edges">
+    <g class="edge" data-id="i-person-&gt;i-web">
+      <path class="line" d="M414 164L414 225"/>
+      <path class="arrow" d="M409 213L414 225L419 213"/>
+    </g>
+    <g class="edge" data-id="i-web-&gt;i-monitor">
+      <path class="line" d="M414 284L414 345"/>
+      <path class="arrow" d="M409 333L414 345L419 333"/>
+    </g>
+    <g class="edge" data-id="i-monitor-&gt;i-api">
+      <path class="line" d="M414 404L414 465"/>
+      <path class="arrow" d="M409 453L414 465L419 453"/>
+    </g>
+    <g class="edge" data-id="i-api-&gt;i-route">
+      <path class="line" d="M414 524L414 585"/>
+      <path class="arrow" d="M409 573L414 585L419 573"/>
+    </g>
+    <g class="edge" data-id="i-gear-&gt;i-module">
+      <path class="line" d="M719.5 172.5L719.5 233.5"/>
+      <path class="arrow" d="M714.5 221.5L719.5 233.5L724.5 221.5"/>
+    </g>
+    <g class="edge" data-id="i-module-&gt;i-stack">
+      <path class="line" d="M719.5 292.5L719.5 353.5"/>
+      <path class="arrow" d="M714.5 341.5L719.5 353.5L724.5 341.5"/>
+    </g>
+    <g class="edge" data-id="i-stack-&gt;i-dice">
+      <path class="line" d="M719.5 412.5L719.5 473.5"/>
+      <path class="arrow" d="M714.5 461.5L719.5 473.5L724.5 461.5"/>
+    </g>
+    <g class="edge" data-id="i-dice-&gt;i-refresh">
+      <path class="line" d="M719.5 532.5L719.5 593.5"/>
+      <path class="arrow" d="M714.5 581.5L719.5 593.5L724.5 581.5"/>
+    </g>
+    <g class="edge" data-id="i-cylinder-&gt;i-grid">
+      <path class="line" d="M141 172.5L141 233.5"/>
+      <path class="arrow" d="M136 221.5L141 233.5L146 221.5"/>
+    </g>
+    <g class="edge" data-id="i-grid-&gt;i-document">
+      <path class="line" d="M141 292.5L141 353.5"/>
+      <path class="arrow" d="M136 341.5L141 353.5L146 341.5"/>
+    </g>
+    <g class="edge" data-id="i-document-&gt;i-archive">
+      <path class="line" d="M141 412.5L141 473.5"/>
+      <path class="arrow" d="M136 461.5L141 473.5L146 461.5"/>
+    </g>
+    <g class="edge" data-id="i-archive-&gt;i-books">
+      <path class="line" d="M141 532.5L141 593.5"/>
+      <path class="arrow" d="M136 581.5L141 593.5L146 581.5"/>
+    </g>
+    <g class="edge" data-id="i-building-&gt;i-search">
+      <path class="line" d="M1010 232.5L1010 293.5"/>
+      <path class="arrow" d="M1005 281.5L1010 293.5L1015 281.5"/>
+    </g>
+    <g class="edge" data-id="i-search-&gt;i-history">
+      <path class="line" d="M1010 352.5L1010 413.5"/>
+      <path class="arrow" d="M1005 401.5L1010 413.5L1015 401.5"/>
+    </g>
+    <g class="edge" data-id="i-history-&gt;i-box">
+      <path class="line" d="M1010 472.5L1010 533.5"/>
+      <path class="arrow" d="M1005 521.5L1010 533.5L1015 521.5"/>
+    </g>
+  </g>
+  <g class="heads">
+    <g class="head depth-0" data-id="icons" transform="translate(12 12)">
+      <text class="t-name" x="44" y="26" data-width="32">Icons</text>
+      <text class="t-tagline" x="44" y="44" data-width="138">The whole v1 icon set</text>
+    </g>
+    <g class="head depth-1" data-id="people" transform="translate(272 65)">
+      <text class="t-name" x="44" y="26" data-width="117">People and screens</text>
+    </g>
+    <g class="head depth-1" data-id="work" transform="translate(576 73.5)">
+      <text class="t-name" x="44" y="26" data-width="32">Work</text>
+    </g>
+    <g class="head depth-1" data-id="keeping" transform="translate(30 73.5)">
+      <text class="t-name" x="44" y="26" data-width="50">Keeping</text>
+    </g>
+    <g class="head depth-1" data-id="places" transform="translate(883 133.5)">
+      <text class="t-name" x="44" y="26" data-width="39">Places</text>
+    </g>
+  </g>
+  <g class="labels">
+    <g class="label" data-id="i-person-&gt;i-web">
+      <title>person uses web.</title>
+      <text class="t-label" x="378" y="200" data-width="25">uses</text>
+    </g>
+    <g class="label" data-id="i-web-&gt;i-monitor">
+      <title>web shows on monitor.</title>
+      <text class="t-label" x="347.5" y="320" data-width="54">shows on</text>
+    </g>
+    <g class="label" data-id="i-monitor-&gt;i-api">
+      <title>monitor calls api.</title>
+      <text class="t-label" x="373" y="440" data-width="27">calls</text>
+    </g>
+    <g class="label" data-id="i-api-&gt;i-route">
+      <title>api forwards to route.</title>
+      <text class="t-label" x="327.5" y="560" data-width="69">forwards to</text>
+    </g>
+    <g class="label" data-id="i-gear-&gt;i-module">
+      <title>gear turns module.</title>
+      <text class="t-label" x="676" y="208.5" data-width="32">turns</text>
+    </g>
+    <g class="label" data-id="i-module-&gt;i-stack">
+      <title>module sits on stack.</title>
+      <text class="t-label" x="665" y="328.5" data-width="38">sits on</text>
+    </g>
+    <g class="label" data-id="i-stack-&gt;i-dice">
+      <title>stack rolls dice.</title>
+      <text class="t-label" x="678.5" y="448.5" data-width="27">rolls</text>
+    </g>
+    <g class="label" data-id="i-dice-&gt;i-refresh">
+      <title>dice asks for refresh.</title>
+      <text class="t-label" x="657.5" y="568.5" data-width="45">asks for</text>
+    </g>
+    <g class="label" data-id="i-cylinder-&gt;i-grid">
+      <title>cylinder fills grid.</title>
+      <text class="t-label" x="102.5" y="208.5" data-width="22">fills</text>
+    </g>
+    <g class="label" data-id="i-grid-&gt;i-document">
+      <title>grid prints document.</title>
+      <text class="t-label" x="91.5" y="328.5" data-width="36">prints</text>
+    </g>
+    <g class="label" data-id="i-document-&gt;i-archive">
+      <title>document goes in archive.</title>
+      <text class="t-label" x="85" y="448.5" data-width="41">goes in</text>
+    </g>
+    <g class="label" data-id="i-archive-&gt;i-books">
+      <title>archive sits by books.</title>
+      <text class="t-label" x="87" y="568.5" data-width="37">sits by</text>
+    </g>
+    <g class="label" data-id="i-building-&gt;i-search">
+      <title>building holds search.</title>
+      <text class="t-label" x="966.5" y="268.5" data-width="32">holds</text>
+    </g>
+    <g class="label" data-id="i-search-&gt;i-history">
+      <title>search finds history.</title>
+      <text class="t-label" x="967.5" y="388.5" data-width="30">finds</text>
+    </g>
+    <g class="label" data-id="i-history-&gt;i-box">
+      <title>history keeps box.</title>
+      <text class="t-label" x="966.5" y="508.5" data-width="32">keeps</text>
+    </g>
+  </g>
+</svg>
