@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E603",
+    "severity": "error",
+    "line": 5,
+    "column": 17,
+    "endLine": 5,
+    "endColumn": 25,
+    "message": "A scenario step has no kind. Remove `[code]`."
+  }
+]

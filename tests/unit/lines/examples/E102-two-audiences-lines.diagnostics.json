@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E102",
+    "severity": "error",
+    "line": 2,
+    "column": 1,
+    "endLine": 2,
+    "endColumn": 10,
+    "message": "There is already an `audiences` line on line 1. List every audience on one line."
+  }
+]

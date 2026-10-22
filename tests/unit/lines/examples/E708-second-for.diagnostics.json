@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E708",
+    "severity": "error",
+    "line": 6,
+    "column": 5,
+    "endLine": 6,
+    "endColumn": 8,
+    "message": "This step already switches the audience, on line 5. Keep one `for` line."
+  }
+]

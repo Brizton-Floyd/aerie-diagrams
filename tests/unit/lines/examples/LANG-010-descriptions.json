@@ -1,0 +1,56 @@
+{
+  "format": "aerie-model/1",
+  "id": null,
+  "title": {
+    "base": null,
+    "set": {}
+  },
+  "about": {
+    "base": null,
+    "set": {},
+    "add": {}
+  },
+  "audiences": [
+    {
+      "id": "exec",
+      "name": "Executive",
+      "code": false
+    },
+    {
+      "id": "manager",
+      "name": "Manager",
+      "code": false
+    },
+    {
+      "id": "engineer",
+      "name": "Engineer",
+      "code": true
+    }
+  ],
+  "defaultAudience": "manager",
+  "elements": [
+    {
+      "id": "web",
+      "parent": null,
+      "name": {
+        "base": "Website",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "about": {
+        "base": "The **website** is where *users* start, built with `Angular`. See [the docs](https://example.com/docs) for more.\n\nA second paragraph.\n\nNo space after the marker.\n\nExtra spaces after the marker are not text.",
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "relationships": [],
+  "views": [],
+  "scenarios": [],
+  "walkthroughs": []
+}

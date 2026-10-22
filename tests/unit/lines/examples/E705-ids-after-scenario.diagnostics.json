@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E705",
+    "severity": "error",
+    "line": 7,
+    "column": 14,
+    "endLine": 7,
+    "endColumn": 17,
+    "message": "`flow` is a scenario, so this step takes step numbers after the colon, such as `flow: 1-3`, not element ids."
+  }
+]

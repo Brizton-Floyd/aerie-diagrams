@@ -1,0 +1,11 @@
+web: Website
+  page: Page
+api: Screen API
+web calls api, , web
+audiences a, , b (default,, code)
+view main: Main
+  show web,, api
+  kind runtime,
+walkthrough tour: Tour
+  step main: , web
+    open web,

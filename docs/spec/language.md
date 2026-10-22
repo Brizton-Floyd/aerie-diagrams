@@ -80,10 +80,17 @@ canonical JSON model is [examples/shop.json](examples/shop.json). The large work
   5. an id followed by a space starts a sentence: a relationship at the top level, a step inside a
      scenario (sections 7 and 9);
   6. anything else cannot be read (E004).
+
+  In rules 4 and 5, a first word that looks meant as an id but breaks LANG-008 (such as `Web` or
+  `screen_api`) still decides what the line is, so it is reported as a wrong id (E005) or an unknown
+  element (E008) rather than an unreadable line. A line of one word is unreadable.
+
 - **LANG-008** An **id** is lowercase ASCII letters, digits and single hyphens, starting with a letter
   and not ending with a hyphen: `web`, `screen-api`, `v2-store`. Anything else is E005. Elements,
   views, scenarios and walkthroughs share one set of ids, and each id is used once (E007). Audience
-  ids are a separate set. Tags and relationship kinds use the same spelling as ids.
+  ids are a separate set. Tags and relationship kinds use the same spelling as ids. E005 is for a
+  word that declares an id; a word that refers to something declared, but names nothing, is reported
+  as unknown instead (E008, E301, E502, E503, E702), with a suggestion.
 - **LANG-009** The keywords of LANG-007 cannot be used as ids (E006).
 - **LANG-010** A **description** line is `>` followed by text. Each description line is one
   paragraph. A paragraph continues on the following lines that are indented deeper than the `>` line;
@@ -259,7 +266,9 @@ name, the new tagline, the unmarked paragraph and then the added one.
   phrases are plain English and lower case by convention; Aerie shows them as written.
 - **LANG-402** Both ends must be declared elements (E008). The object must be the last word, so the
   verb phrase is written to end before the object ("asks for picks from screen-api", never "asks
-  screen-api for picks"). A last word that is not an element id is E401.
+  screen-api for picks"). A last word that is not an element is E401 when it is not spelled as an
+  id, or when a declared element appears in the verb phrase (the object was probably written in the
+  middle); otherwise it is an unknown element, E008, as in the example of section 12.
 - **LANG-403** Several objects separated by commas declare one relationship per object, in order, with
   the same verb phrase, kind, description and rewordings:
   `engine-service depends on strategies, formats, legacy [code]` declares three.
@@ -513,60 +522,64 @@ interface WalkStep {
   than half its length. The closest wins; ties go to the one declared first. When the unknown word is
   within two edits of a keyword and is not an element id, E008 suggests the keyword instead, and it is
   the only diagnostic reported for that line.
-- **LANG-905** Placeholders: `{id}`, `{word}` and similar are the author's text; `{line}` is a line
-  number; `{list}` is a comma-separated list in declaration order; `{suggestion}` is the whole
-  sentence " Did you mean `x`?" or nothing.
+- **LANG-905** Placeholders: `{id}`, `{word}` and similar are the author's text, with runs of spaces
+  written as one; `{line}` is a line number; `{list}` is a comma-separated list in declaration
+  order; `{suggestion}` is the whole sentence " Did you mean `x`?" or nothing.
 
 ### Catalogue
 
-| Id   | Severity | Message                                                                                                                                                                                     | Points at            |
-| ---- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
-| E001 | error    | This line is indented with a tab. Indent with spaces instead.                                                                                                                               | the first tab        |
-| E002 | error    | This line's indent does not line up with the lines above it. Indent it by the same amount as the other lines in its block.                                                                  | the indent           |
-| E003 | error    | One of the out-of-place messages below.                                                                                                                                                     | the first word       |
-| E004 | error    | Aerie cannot read this line. A line starts with an element id and a colon, a keyword such as `view`, `>` for a description, `@` for an audience's wording, or an element id for a sentence. | the first character  |
-| E005 | error    | `{text}` cannot be an id. Ids use lowercase letters, digits and single hyphens, start with a letter, and do not end with a hyphen.                                                          | the id               |
-| E006 | error    | `{id}` is a word Lines uses for itself, so it cannot be an id. Choose another id.                                                                                                           | the id               |
-| E007 | error    | `{id}` is already used on line {line}. Every element, view, scenario and walkthrough needs its own id.                                                                                      | the second id        |
-| E008 | error    | There is no element called `{id}`.{suggestion}                                                                                                                                              | the id               |
-| E009 | error    | This `[` has no closing `]`.                                                                                                                                                                | the `[`              |
-| E010 | error    | There is no text after `{marker}`. Add the wording, or remove the line.                                                                                                                     | the marker           |
-| E011 | error    | Give `{id}` a {name or title} after the colon, as in `{example}`.                                                                                                                           | the end of the line  |
-| E101 | error    | There is already a `model` line on line {line}. A file describes one model.                                                                                                                 | the keyword          |
-| E102 | error    | There is already an `audiences` line on line {line}. List every audience on one line.                                                                                                       | the keyword          |
-| E103 | error    | `{id}` is listed twice.                                                                                                                                                                     | the second one       |
-| E104 | error    | Only one audience can be the default, but `{first}` and `{second}` are both marked `(default)`.                                                                                             | the second flag      |
-| E105 | error    | A model can have at most 6 audiences, and this line lists {count}.                                                                                                                          | the seventh audience |
-| E106 | error    | `({flag})` is not something an audience can be. Use `(default)`, `(code)`, or both, as in `(default, code)`.                                                                                | the flag             |
-| E201 | error    | There is no icon called `{name}`.{suggestion} The icons are: {list}.                                                                                                                        | the name             |
-| E202 | error    | `{id}` already has an icon, on line {line}. Keep one `icon` line.                                                                                                                           | the keyword          |
-| E301 | error    | There is no audience called `{id}`.{suggestion} The audiences are {list}.                                                                                                                   | the audience id      |
-| E302 | error    | There is already `@{audience}:` wording for this on line {line}. Keep one.                                                                                                                  | the `@`              |
-| E303 | error    | One of the rewording messages below.                                                                                                                                                        | the `@`              |
-| E304 | error    | `>>` adds a paragraph for one audience. Name the audience, as in `@{audience} >> {text}`.                                                                                                   | the `>>`             |
-| E401 | error    | A sentence must end with the element it points to, and `{word}` is not an element.{suggestion}{moved}                                                                                       | the last word        |
-| E402 | error    | A sentence needs an element, a verb phrase and another element, as in `web calls api`.                                                                                                      | the line             |
-| E403 | error    | A relationship joins two different elements, but this one starts and ends at `{id}`.                                                                                                        | the line             |
-| E404 | error    | `{inner}` is inside `{outer}`, so a relationship between them would never be drawn. The nesting already shows that `{outer}` holds `{inner}`.                                               | the line             |
-| E405 | error    | This relationship is already declared on line {line}.                                                                                                                                       | the line             |
-| E406 | error    | A relationship has one kind in brackets, such as `[code]`, and this one has {count}.                                                                                                        | the bracket group    |
-| E501 | error    | `{item}` is not something a view can show. Use an element id, an id with a depth such as `{id} +1`, or a tag in brackets such as `[service]`.                                               | the item             |
-| E502 | error    | No element has the tag `[{tag}]`.{suggestion}                                                                                                                                               | the tag              |
-| E503 | error    | No relationship has the kind `{kind}`.{suggestion}                                                                                                                                          | the kind             |
-| E601 | error    | The scenario `{id}` has no steps yet. Add sentences under it, such as `{example}`.                                                                                                          | the keyword          |
-| E602 | error    | A scenario step goes to one element, and this one lists {count}. Write one step for each.                                                                                                   | the second object    |
-| E603 | error    | A scenario step has no kind. Remove `[{kind}]`.                                                                                                                                             | the bracket group    |
-| E604 | error    | No view can show every step of `{id}`, because none shows `{element}` or anything around it. Add `{top}` to a view's `show` line.                                                           | the id               |
-| W601 | warning  | No relationship joins `{subject}` and `{object}` in the model. Add one, such as `{subject} {verb} {object}`, or check this step.                                                            | the line             |
-| E701 | error    | The walkthrough `{id}` has no steps yet. Add a line such as `step {view}`.                                                                                                                  | the keyword          |
-| E702 | error    | There is no view or scenario called `{id}`.{suggestion}                                                                                                                                     | the id               |
-| E703 | error    | `{id}` is not visible in this step's picture of `{view}`, so the step cannot focus on it. Open its container with `open {container}`, or choose a view that shows it.                       | the id               |
-| E704 | error    | `{view}` is a view, so this step takes element ids after the colon, not step numbers.                                                                                                       | the range            |
-| E705 | error    | `{scenario}` is a scenario, so this step takes step numbers after the colon, such as `{scenario}: 1-3`, not element ids.                                                                    | the first id         |
-| E706 | error    | The steps of `{scenario}` run from 1 to {count}, so `{range}` cannot be played.                                                                                                             | the range            |
-| E707 | error    | `{id}` has nothing inside it to open or close.                                                                                                                                              | the id               |
-| E708 | error    | This step already switches the audience, on line {line}. Keep one `for` line.                                                                                                               | the keyword          |
-| W001 | warning  | This file has no elements yet. Start with a line such as `web: Website`.                                                                                                                    | line 1, column 1     |
+| Id   | Severity | Message                                                                                                                                                                                     | Points at              |
+| ---- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| E001 | error    | This line is indented with a tab. Indent with spaces instead.                                                                                                                               | the first tab          |
+| E002 | error    | This line's indent does not line up with the lines above it. Indent it by the same amount as the other lines in its block.                                                                  | the indent             |
+| E003 | error    | One of the out-of-place messages below.                                                                                                                                                     | the first word         |
+| E004 | error    | Aerie cannot read this line. A line starts with an element id and a colon, a keyword such as `view`, `>` for a description, `@` for an audience's wording, or an element id for a sentence. | the first character    |
+| E005 | error    | `{text}` cannot be an id. Ids use lowercase letters, digits and single hyphens, start with a letter, and do not end with a hyphen.                                                          | the id                 |
+| E006 | error    | `{id}` is a word Lines uses for itself, so it cannot be an id. Choose another id.                                                                                                           | the id                 |
+| E007 | error    | `{id}` is already used on line {line}. Every element, view, scenario and walkthrough needs its own id.                                                                                      | the second id          |
+| E008 | error    | There is no element called `{id}`.{suggestion}                                                                                                                                              | the id                 |
+| E009 | error    | This `[` has no closing `]`.                                                                                                                                                                | the `[`                |
+| E010 | error    | There is no text after `{marker}`. Add the wording, or remove the line.                                                                                                                     | the marker             |
+| E011 | error    | Give `{id}` a {name or title} after the colon, as in `{example}`.                                                                                                                           | the end of the line    |
+| E012 | error    | The tags in brackets end the line, so `{text}` cannot come after them. Move it before the `[`, or write `\[` and `\]` to use brackets in the wording.                                       | the text after the `]` |
+| E013 | error    | These brackets are empty. Put a tag inside, such as `[service]`, or remove them.                                                                                                            | the brackets           |
+| E014 | error    | This list has an empty item. Remove the extra comma.                                                                                                                                        | the comma              |
+| E101 | error    | There is already a `model` line on line {line}. A file describes one model.                                                                                                                 | the keyword            |
+| E102 | error    | There is already an `audiences` line on line {line}. List every audience on one line.                                                                                                       | the keyword            |
+| E103 | error    | `{id}` is listed twice.                                                                                                                                                                     | the second one         |
+| E104 | error    | Only one audience can be the default, but `{first}` and `{second}` are both marked `(default)`.                                                                                             | the second flag        |
+| E105 | error    | A model can have at most 6 audiences, and this line lists {count}.                                                                                                                          | the seventh audience   |
+| E106 | error    | `({flag})` is not something an audience can be. Use `(default)`, `(code)`, or both, as in `(default, code)`.                                                                                | the flag               |
+| E107 | error    | Aerie cannot read the audience `{text}`. Write an id, then an optional name in double quotes and optional flags in parentheses, as in `dev "Developer" (code)`.                             | the audience           |
+| E201 | error    | There is no icon called `{name}`.{suggestion} The icons are: {list}.                                                                                                                        | the name               |
+| E202 | error    | `{id}` already has an icon, on line {line}. Keep one `icon` line.                                                                                                                           | the keyword            |
+| E301 | error    | There is no audience called `{id}`.{suggestion} The audiences are {list}.                                                                                                                   | the audience id        |
+| E302 | error    | There is already `@{audience}:` wording for this on line {line}. Keep one.                                                                                                                  | the `@`                |
+| E303 | error    | One of the rewording messages below.                                                                                                                                                        | the `@`                |
+| E304 | error    | `>>` adds a paragraph for one audience. Name the audience, as in `@{audience} >> {text}`.                                                                                                   | the `>>`               |
+| E401 | error    | A sentence must end with the element it points to, and `{word}` is not an element.{suggestion}{moved}                                                                                       | the last word          |
+| E402 | error    | A sentence needs an element, a verb phrase and another element, as in `web calls api`.                                                                                                      | the line               |
+| E403 | error    | A relationship joins two different elements, but this one starts and ends at `{id}`.                                                                                                        | the line               |
+| E404 | error    | `{inner}` is inside `{outer}`, so a relationship between them would never be drawn. The nesting already shows that `{outer}` holds `{inner}`.                                               | the line               |
+| E405 | error    | This relationship is already declared on line {line}.                                                                                                                                       | the line               |
+| E406 | error    | A relationship has one kind in brackets, such as `[code]`, and this one has {count}.                                                                                                        | the bracket group      |
+| E501 | error    | `{item}` is not something a view can show. Use an element id, an id with a depth such as `{id} +1`, or a tag in brackets such as `[service]`.                                               | the item               |
+| E502 | error    | No element has the tag `[{tag}]`.{suggestion}                                                                                                                                               | the tag                |
+| E503 | error    | No relationship has the kind `{kind}`.{suggestion}                                                                                                                                          | the kind               |
+| E601 | error    | The scenario `{id}` has no steps yet. Add sentences under it, such as `{example}`.                                                                                                          | the keyword            |
+| E602 | error    | A scenario step goes to one element, and this one lists {count}. Write one step for each.                                                                                                   | the second object      |
+| E603 | error    | A scenario step has no kind. Remove `[{kind}]`.                                                                                                                                             | the bracket group      |
+| E604 | error    | No view can show every step of `{id}`, because none shows `{element}` or anything around it. Add `{top}` to a view's `show` line.                                                           | the id                 |
+| W601 | warning  | No relationship joins `{subject}` and `{object}` in the model. Add one, such as `{subject} {verb} {object}`, or check this step.                                                            | the line               |
+| E701 | error    | The walkthrough `{id}` has no steps yet. Add a line such as `step {view}`.                                                                                                                  | the keyword            |
+| E702 | error    | There is no view or scenario called `{id}`.{suggestion}                                                                                                                                     | the id                 |
+| E703 | error    | `{id}` is not visible in this step's picture of `{view}`, so the step cannot focus on it. Open its container with `open {container}`, or choose a view that shows it.                       | the id                 |
+| E704 | error    | `{view}` is a view, so this step takes element ids after the colon, not step numbers.                                                                                                       | the range              |
+| E705 | error    | `{scenario}` is a scenario, so this step takes step numbers after the colon, such as `{scenario}: 1-3`, not element ids.                                                                    | the first id           |
+| E706 | error    | The steps of `{scenario}` run from 1 to {count}, so `{range}` cannot be played.                                                                                                             | the range              |
+| E707 | error    | `{id}` has nothing inside it to open or close.                                                                                                                                              | the id                 |
+| E708 | error    | This step already switches the audience, on line {line}. Keep one `for` line.                                                                                                               | the keyword            |
+| W001 | warning  | This file has no elements yet. Start with a line such as `web: Website`.                                                                                                                    | line 1, column 1       |
 
 E003 messages, chosen by the line and its owner:
 
@@ -592,10 +605,13 @@ E303 messages:
 
 Placeholders that need a rule:
 
+- `{marker}` in E010 is what has nothing after it: `>`, `|`, a rewording's `@level:`, `@level >` or
+  `@level >>`, a keyword such as `show`, or a walkthrough step's `step <target>:`.
 - `{example}` in E011 is the line with a name or title made from the id: hyphens become spaces and the
   first letter is upper case (`screen-api` gives `screen-api: Screen api`; `view big-picture` gives
   `view big-picture: Big picture`). In E601 it is `{first element id} uses {second element id}` from
-  the model, or `web calls api` when the model has fewer than two elements.
+  the model, or `web calls api` when the model has fewer than two elements. E011, E601 and E701 are
+  not reported when the line's id is itself in error (E005, E006).
 - `{moved}` in E401 is, when a declared element id appears inside the verb phrase, the sentence " If
   you meant `{that id}`, reword the line so `{that id}` comes last." and otherwise nothing.
 - `{container}` in E703 is the outermost closed ancestor of the element in that picture.
@@ -640,8 +656,8 @@ models, such as a future importer.
   line (always); the elements, depth first, each followed by its `icon` line, descriptions, then for
   each audience in order its `@level:` line, `@level >` lines and `@level >>` lines; the
   relationships, one per line; the views; the scenarios; the walkthroughs. Top-level blocks are
-  separated by one blank line. Each paragraph is printed on one line. Kinds are printed only when not
-  `runtime`; depths only when not 0.
+  separated by one blank line; the relationships are one block. Each paragraph is printed on one
+  line. Kinds are printed only when not `runtime`; depths only when not 0.
 - **LANG-938** Formatting is idempotent: formatting a formatted file changes nothing.
 - **LANG-939** Formatting keeps the meaning: a file and its formatted version have equal canonical
   models, and the same diagnostics apart from positions.
@@ -688,6 +704,7 @@ Claude ([claude-skill.md](claude-skill.md)). The command is `aerie`, run inside 
 
 - **LANG-964** `aerie format <file>...` formats each file in place. With `--check` it changes nothing
   and lists the files that would change. With `--stdout` it prints the formatted text of one file.
+  `aerie fmt` is a short form of `aerie format`.
 - **LANG-965** `aerie model <file>` prints the canonical model (LANG-806) of a valid file.
 - **LANG-966** Exit codes: 0 when there are no errors (warnings are allowed) and, for `--check`, no
   file would change; 1 when there are errors or a file would change; 2 when the command cannot run (a

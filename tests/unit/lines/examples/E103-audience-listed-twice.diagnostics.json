@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E103",
+    "severity": "error",
+    "line": 1,
+    "column": 17,
+    "endLine": 1,
+    "endColumn": 18,
+    "message": "`a` is listed twice."
+  }
+]

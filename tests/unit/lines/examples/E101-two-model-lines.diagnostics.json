@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E101",
+    "severity": "error",
+    "line": 2,
+    "column": 1,
+    "endLine": 2,
+    "endColumn": 6,
+    "message": "There is already a `model` line on line 1. A file describes one model."
+  }
+]

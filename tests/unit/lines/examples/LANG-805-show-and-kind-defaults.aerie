@@ -1,0 +1,7 @@
+web: Website
+view main: Main
+  show web
+view code: Code
+  kind code, code
+api: Screen API
+web uses api [code]

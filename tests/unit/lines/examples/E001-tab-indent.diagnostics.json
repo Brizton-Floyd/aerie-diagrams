@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E001",
+    "severity": "error",
+    "line": 2,
+    "column": 1,
+    "endLine": 2,
+    "endColumn": 2,
+    "message": "This line is indented with a tab. Indent with spaces instead."
+  }
+]

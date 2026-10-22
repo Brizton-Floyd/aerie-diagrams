@@ -1,0 +1,8 @@
+suite: Suite
+  web: Website
+  api: Screen API
+view main: Main
+walkthrough tour: Tour
+  step main
+    close suite
+    open suite

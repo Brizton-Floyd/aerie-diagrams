@@ -1,0 +1,60 @@
+{
+  "format": "aerie-model/1",
+  "id": null,
+  "title": {
+    "base": null,
+    "set": {}
+  },
+  "about": {
+    "base": null,
+    "set": {},
+    "add": {}
+  },
+  "audiences": [
+    {
+      "id": "exec",
+      "name": "Executive",
+      "code": false
+    },
+    {
+      "id": "manager",
+      "name": "Manager",
+      "code": false
+    },
+    {
+      "id": "engineer",
+      "name": "Engineer",
+      "code": true
+    }
+  ],
+  "defaultAudience": "manager",
+  "elements": [
+    {
+      "id": "web",
+      "parent": null,
+      "name": {
+        "base": "Website",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {
+          "exec": "A replaced paragraph that continues on the next line."
+        },
+        "add": {
+          "engineer": "An added paragraph that continues too."
+        }
+      }
+    }
+  ],
+  "relationships": [],
+  "views": [],
+  "scenarios": [],
+  "walkthroughs": []
+}

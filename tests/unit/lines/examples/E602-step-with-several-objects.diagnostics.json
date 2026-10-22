@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E602",
+    "severity": "error",
+    "line": 7,
+    "column": 18,
+    "endLine": 7,
+    "endColumn": 20,
+    "message": "A scenario step goes to one element, and this one lists 2. Write one step for each."
+  }
+]

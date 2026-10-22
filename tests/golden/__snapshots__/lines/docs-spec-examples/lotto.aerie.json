@@ -1,0 +1,1297 @@
+{
+  "format": "aerie-model/1",
+  "id": "lotto",
+  "title": {
+    "base": "The Lotto suite",
+    "set": {}
+  },
+  "about": {
+    "base": "How results come in, how picks are generated, and what each part does.",
+    "set": {},
+    "add": {}
+  },
+  "audiences": [
+    {
+      "id": "exec",
+      "name": "Executive",
+      "code": false
+    },
+    {
+      "id": "manager",
+      "name": "Manager",
+      "code": false
+    },
+    {
+      "id": "engineer",
+      "name": "Engineer",
+      "code": true
+    }
+  ],
+  "defaultAudience": "manager",
+  "elements": [
+    {
+      "id": "user",
+      "parent": null,
+      "name": {
+        "base": "User",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Using a browser",
+        "set": {}
+      },
+      "tags": [
+        "person"
+      ],
+      "icon": null,
+      "about": {
+        "base": "Opens the website, picks a state and game, and asks for numbers. The browser only ever talks to the website.",
+        "set": {},
+        "add": {
+          "engineer": "`localhost:4200`; the Screen API, the Analysis engine and the Results store are never reached from the browser."
+        }
+      }
+    },
+    {
+      "id": "suite",
+      "parent": null,
+      "name": {
+        "base": "Lotto suite",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Runs as one stack on one machine",
+        "set": {
+          "exec": "Our lottery number service"
+        }
+      },
+      "tags": [
+        "system"
+      ],
+      "icon": null,
+      "about": {
+        "base": "The four parts of the suite, started together and wired to each other.",
+        "set": {},
+        "add": {
+          "engineer": "`compose.yaml` in `lotto-options-core` builds the four services from source (`deploy/backend/Dockerfile` for the three JVM services, `deploy/web-ui/Dockerfile` for the website) and publishes each on `127.0.0.1`. The Results store and website sources come from sibling clones."
+        }
+      }
+    },
+    {
+      "id": "website",
+      "parent": "suite",
+      "name": {
+        "base": "Website",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Picks a game, generates numbers",
+        "set": {
+          "engineer": "lotto-options-ui, Angular 21"
+        }
+      },
+      "tags": [
+        "service"
+      ],
+      "icon": "web",
+      "about": {
+        "base": "The screens the user sees: the dashboard, the Smart Generator with its betslip printout, and range analysis. Every request goes to the Screen API.",
+        "set": {},
+        "add": {
+          "engineer": "An Angular 21 single-page app, zoneless and standalone. It calls only relative `/ui/*` URLs. nginx serves the built app on port 80 (published as 4200) and proxies `/ui/*` to `${BFF_URL}` with buffering off and a 300 s read timeout; in development `ng serve` with `proxy.conf.json` does the same."
+        }
+      }
+    },
+    {
+      "id": "screen-api",
+      "parent": "suite",
+      "name": {
+        "base": "Screen API",
+        "set": {
+          "exec": "Website back end"
+        }
+      },
+      "tagline": {
+        "base": "Prepares data for each screen",
+        "set": {
+          "exec": "Gets each screen its data",
+          "engineer": "lotto-options-core-bff, WebFlux :8080"
+        }
+      },
+      "tags": [
+        "service",
+        "module"
+      ],
+      "icon": "api",
+      "about": {
+        "base": "Takes what the Analysis engine returns and shapes it into exactly what one screen needs. Holds no lottery logic of its own.",
+        "set": {},
+        "add": {
+          "engineer": "Spring WebFlux on `127.0.0.1:8080` (ADR-0001, ADR-0003). Endpoints under `/ui`: `ping`, `catalog/states`, `dashboard/{state}/{game}` (plus `/matrix`, `/position-trend`, `/pattern-edge`), `POST dashboard/{state}/{game}/generate`, `POST dashboard/{state}/{game}/betslip/pdf`, `POST range-analysis`. `CoreApiClient` calls five engine endpoints on `core-api.base-url` (`http://localhost:8002`). OpenAPI at `/v3/api-docs`, from which the website generates its types."
+        }
+      }
+    },
+    {
+      "id": "engine",
+      "parent": "suite",
+      "name": {
+        "base": "Analysis engine",
+        "set": {
+          "exec": "Number engine"
+        }
+      },
+      "tagline": {
+        "base": "Generates and scores picks",
+        "set": {
+          "exec": "Turns past draws into suggested picks",
+          "engineer": "lotto-options-core-server :8002"
+        }
+      },
+      "tags": [
+        "service"
+      ],
+      "icon": "gear",
+      "about": {
+        "base": "The brains of the suite: dashboards, number generation, range analysis, game-out advice and betslip printing. Only the Screen API talks to it.",
+        "set": {
+          "exec": "Where the value is: it studies every past draw and suggests numbers to play."
+        },
+        "add": {
+          "engineer": "Spring Boot on port 8002, one jar (`lotto-options-core-service.jar`) built from the modules in the Engineering view. Health at `/api/v1/gameout/health`."
+        }
+      }
+    },
+    {
+      "id": "engine-service",
+      "parent": "engine",
+      "name": {
+        "base": "Engine service",
+        "set": {
+          "engineer": "core-server"
+        }
+      },
+      "tagline": {
+        "base": "The running program",
+        "set": {
+          "engineer": "Spring Boot module"
+        }
+      },
+      "tags": [
+        "module"
+      ],
+      "icon": null,
+      "about": {
+        "base": "The part of the engine that runs: it takes requests, generates picks and looks up draw history.",
+        "set": {},
+        "add": {
+          "engineer": "Inbound REST controllers, the application services and the outbound client to the Results store."
+        }
+      }
+    },
+    {
+      "id": "request-handling",
+      "parent": "engine-service",
+      "name": {
+        "base": "Request handling",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Receives requests from the Screen API",
+        "set": {}
+      },
+      "tags": [
+        "part"
+      ],
+      "icon": "route",
+      "about": {
+        "base": "Accepts each request and hands it to the right service.",
+        "set": {},
+        "add": {
+          "engineer": "`AnalysisController` (`/api/v1/analysis`: `GET /{state}/{game}/dashboard`, `POST /generate/numbers`, `POST /range-analysis`), `CatalogController` (`GET /api/v1/catalog/states`), `GameOutController` (`/api/v1/gameout/*`) and `BetslipController` (`POST /api/v1/betslip/pdf`)."
+        }
+      }
+    },
+    {
+      "id": "pick-generation",
+      "parent": "engine-service",
+      "name": {
+        "base": "Pick generation",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Runs the chosen strategy",
+        "set": {}
+      },
+      "tags": [
+        "part"
+      ],
+      "icon": "dice",
+      "about": {
+        "base": "Gets the game's draw history, runs the strategy the user chose, and scores the resulting tickets against past draws.",
+        "set": {},
+        "add": {
+          "engineer": "`LotteryNumberGenerationService.getRandomNumberGeneratedData`. It loads history through `LotteryStateService`, picks a generator from `RandomNumberGeneratorFactory` by the request's `numberGenerator`, and returns `GeneratedNumberData` with prize-level results."
+        }
+      }
+    },
+    {
+      "id": "history-lookup",
+      "parent": "engine-service",
+      "name": {
+        "base": "Draw history lookup",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Fetches past draws from the Results store",
+        "set": {}
+      },
+      "tags": [
+        "part"
+      ],
+      "icon": "search",
+      "about": {
+        "base": "The engine's only way to get draw data: it asks the Results store for a game's full history.",
+        "set": {},
+        "add": {
+          "engineer": "`WebClientLotteryStateService`, built from `persistence-service.host` (`http://localhost:8001/`) and `persistence-service.games` (`api/v1/state/games`). The catalog comes from `GET api/v1/all/v2/state-games`."
+        }
+      }
+    },
+    {
+      "id": "strategies",
+      "parent": "engine",
+      "name": {
+        "base": "Strategies library",
+        "set": {
+          "engineer": "core-result-analyzer"
+        }
+      },
+      "tagline": {
+        "base": "The number-picking methods",
+        "set": {
+          "engineer": "Generators and scorer"
+        }
+      },
+      "tags": [
+        "module"
+      ],
+      "icon": "books",
+      "about": {
+        "base": "The three ways to pick numbers: Balanced Spread (matches the game's hot low/high and odd/even mix), Secure Random and Fast Random. Also the dashboard analyzers and the ticket scorer.",
+        "set": {},
+        "add": {
+          "engineer": "`LowOddLowEvenHighOddHighEvenLotteryNumberGenerator` and `TemplateMatrixLotteryNumberGenerator` (categorical), `UniformLotteryNumberGenerator` (`SecureRandom`, `ThreadLocalRandom`), and `LotteryResultsComparator`."
+        }
+      }
+    },
+    {
+      "id": "formats",
+      "parent": "engine",
+      "name": {
+        "base": "Shared data formats",
+        "set": {
+          "engineer": "core-model"
+        }
+      },
+      "tagline": {
+        "base": "The shapes of requests and results",
+        "set": {
+          "engineer": "Request and result types"
+        }
+      },
+      "tags": [
+        "module"
+      ],
+      "icon": "grid",
+      "about": {
+        "base": "The definitions of what a request and a result look like, shared by the engine and the Screen API so both sides agree.",
+        "set": {},
+        "add": {
+          "engineer": "Such as `RandomNumberGeneratorRequest` and `GeneratedNumberData`. It pulls in the Results store's `lottery-result-persistence-service-models`."
+        }
+      }
+    },
+    {
+      "id": "legacy",
+      "parent": "engine",
+      "name": {
+        "base": "Legacy desktop support",
+        "set": {
+          "engineer": "core-legacy-desktop"
+        }
+      },
+      "tagline": {
+        "base": "Kept for the old desktop app",
+        "set": {
+          "engineer": "Quarantined by ADR-0009"
+        }
+      },
+      "tags": [
+        "module",
+        "legacy"
+      ],
+      "icon": "monitor",
+      "about": {
+        "base": "Code kept only until the old desktop app is retired. Nothing else uses it.",
+        "set": {},
+        "add": {
+          "engineer": "`TicketGenerationController` (`/api/v2/generate-tickets` with its SSE status) and `LottoOptionsCoreController` (`/api/v1/lotto-options-core/games/*`). Deleted with the desktop client."
+        }
+      }
+    },
+    {
+      "id": "store",
+      "parent": "suite",
+      "name": {
+        "base": "Results store",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Keeps every past draw",
+        "set": {
+          "engineer": "lottery-result-persistence-service :8001"
+        }
+      },
+      "tags": [
+        "service"
+      ],
+      "icon": "cylinder",
+      "about": {
+        "base": "Downloads winning numbers, keeps every past draw, and answers the engine's questions about them.",
+        "set": {
+          "exec": "Keeps every winning number on file and refreshes itself every two hours."
+        },
+        "add": {
+          "engineer": "Spring Boot on port 8001. Modules `lottery-result-persistence-server` (the API), `lottery-result-aggregator` (updating, reading, saving) and `lottery-result-persistence-service-models`."
+        }
+      }
+    },
+    {
+      "id": "history-service",
+      "parent": "store",
+      "name": {
+        "base": "Draw history service",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Answers requests for past draws",
+        "set": {}
+      },
+      "tags": [
+        "part"
+      ],
+      "icon": "history",
+      "about": {
+        "base": "Lists the states and games on file and returns a game's full draw history on request.",
+        "set": {},
+        "add": {
+          "engineer": "`PersistenceServiceController` under `/api/v1`: `GET /states`, `GET /states/{stateName}/games`, `GET /all/state-games`, `GET /all/v2/state-games` (the catalog the engine reads), `GET /state-games/{state}` and `POST /state/games` (`{stateName, gameName}` in, the full `LotteryGame` out)."
+        }
+      }
+    },
+    {
+      "id": "updater",
+      "parent": "store",
+      "name": {
+        "base": "Results updater",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Checks for new draws every 2 hours",
+        "set": {}
+      },
+      "tags": [
+        "part"
+      ],
+      "icon": "refresh",
+      "about": {
+        "base": "Every two hours, and once at start-up, downloads the latest results for every game, a few at a time and politely.",
+        "set": {},
+        "add": {
+          "engineer": "`DrawResultJob` on cron `0 0 */2 * * ?`. `LotteryResultPollingService` fans out over a 4-thread pool with resilience4j retry (3 attempts) and a rate limit of 4 downloads a second, then publishes `PollCompletedEvent`."
+        }
+      }
+    },
+    {
+      "id": "reader",
+      "parent": "store",
+      "name": {
+        "base": "Results reader",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Turns downloaded files into draws",
+        "set": {}
+      },
+      "tags": [
+        "part"
+      ],
+      "icon": "document",
+      "about": {
+        "base": "Reads each downloaded file and turns its rows into draws for the game.",
+        "set": {},
+        "add": {
+          "engineer": "`CsvFileReader` downloads each game's CSV export; `TexasLotteryHistoryProcessor` parses it into a `LotteryGame`. The 17 Texas games are listed under `urls.states` in `application.yml`. A Louisiana PDF reader exists but its source is commented out."
+        }
+      }
+    },
+    {
+      "id": "saved-draws",
+      "parent": "store",
+      "name": {
+        "base": "Saved draws",
+        "set": {}
+      },
+      "tagline": {
+        "base": "One file per game",
+        "set": {}
+      },
+      "tags": [
+        "store"
+      ],
+      "icon": "archive",
+      "about": {
+        "base": "Where the draws live: one file per game, replaced whole each time new results come in, so a half-written file is never read.",
+        "set": {},
+        "add": {
+          "engineer": "`LotteryGameSerializer` writes one Java-serialized `LotteryGame` at `{lottery.storage.base-dir}/{STATE}/{Game}.ser` (temp file plus rename). `base-dir` is `tmp` locally and `/data` in the container, the `draw-data` volume."
+        }
+      }
+    },
+    {
+      "id": "texas",
+      "parent": null,
+      "name": {
+        "base": "Texas Lottery website",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Publishes winning numbers per game",
+        "set": {}
+      },
+      "tags": [
+        "external"
+      ],
+      "icon": null,
+      "about": {
+        "base": "The official source of results. The suite downloads one file per game from it.",
+        "set": {},
+        "add": {
+          "engineer": "Per-game CSV exports under `texaslottery.com/export/sites/lottery/Games/.../Winning_Numbers/`. The only live external source."
+        }
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "subject": "user",
+      "verb": {
+        "base": "uses",
+        "set": {}
+      },
+      "object": "website",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "website",
+      "verb": {
+        "base": "gets screen data from",
+        "set": {
+          "exec": "works through",
+          "engineer": "calls /ui/* on"
+        }
+      },
+      "object": "screen-api",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "screen-api",
+      "verb": {
+        "base": "requests analysis from",
+        "set": {
+          "exec": "asks for numbers from",
+          "engineer": "POSTs /api/v1/analysis/* to"
+        }
+      },
+      "object": "request-handling",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "request-handling",
+      "verb": {
+        "base": "hands requests to",
+        "set": {}
+      },
+      "object": "pick-generation",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "pick-generation",
+      "verb": {
+        "base": "gets past draws from",
+        "set": {}
+      },
+      "object": "history-lookup",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "pick-generation",
+      "verb": {
+        "base": "picks and scores tickets with",
+        "set": {}
+      },
+      "object": "strategies",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "history-lookup",
+      "verb": {
+        "base": "fetches draw history from",
+        "set": {
+          "engineer": "POSTs /api/v1/state/games to"
+        }
+      },
+      "object": "history-service",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "history-service",
+      "verb": {
+        "base": "reads",
+        "set": {}
+      },
+      "object": "saved-draws",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "updater",
+      "verb": {
+        "base": "downloads new results from",
+        "set": {
+          "engineer": "polls CSV exports every 2 h from"
+        }
+      },
+      "object": "texas",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "updater",
+      "verb": {
+        "base": "hands the files to",
+        "set": {}
+      },
+      "object": "reader",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "reader",
+      "verb": {
+        "base": "saves draws into",
+        "set": {
+          "engineer": "writes {STATE}/{Game}.ser to"
+        }
+      },
+      "object": "saved-draws",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "updater",
+      "verb": {
+        "base": "announces new draws to",
+        "set": {}
+      },
+      "object": "history-service",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "engine-service",
+      "verb": {
+        "base": "depends on",
+        "set": {}
+      },
+      "object": "strategies",
+      "kind": "code",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "engine-service",
+      "verb": {
+        "base": "depends on",
+        "set": {}
+      },
+      "object": "formats",
+      "kind": "code",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "engine-service",
+      "verb": {
+        "base": "depends on",
+        "set": {}
+      },
+      "object": "legacy",
+      "kind": "code",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "strategies",
+      "verb": {
+        "base": "depends on",
+        "set": {}
+      },
+      "object": "formats",
+      "kind": "code",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "legacy",
+      "verb": {
+        "base": "depends on",
+        "set": {}
+      },
+      "object": "formats",
+      "kind": "code",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "screen-api",
+      "verb": {
+        "base": "uses the shapes in",
+        "set": {
+          "engineer": "depends on"
+        }
+      },
+      "object": "formats",
+      "kind": "code",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "views": [
+    {
+      "id": "big-picture",
+      "title": {
+        "base": "Big picture",
+        "set": {}
+      },
+      "about": {
+        "base": "The suite in one line: the user uses the **website**, the website asks the **Screen API**, the Screen API asks the **Analysis engine**, and the engine gets its draw history from the **Results store**, which keeps itself current from the **Texas Lottery website**.\n\nClick any part for what it does; the other views go one level deeper.",
+        "set": {},
+        "add": {}
+      },
+      "show": [
+        {
+          "element": "user",
+          "depth": 0
+        },
+        {
+          "element": "suite",
+          "depth": 1
+        },
+        {
+          "element": "texas",
+          "depth": 0
+        }
+      ],
+      "kinds": [
+        "runtime"
+      ]
+    },
+    {
+      "id": "services",
+      "title": {
+        "base": "Services",
+        "set": {}
+      },
+      "about": {
+        "base": "The same suite one level down: what each part contains and which parts talk to each other.\n\nRequests flow from the top down. Draw data flows the other way: the **Results updater** downloads it and the **Draw history service** hands it to the engine.",
+        "set": {},
+        "add": {}
+      },
+      "show": [
+        {
+          "element": "user",
+          "depth": 0
+        },
+        {
+          "element": "suite",
+          "depth": 2
+        },
+        {
+          "element": "texas",
+          "depth": 0
+        }
+      ],
+      "kinds": [
+        "runtime"
+      ]
+    },
+    {
+      "id": "engineering",
+      "title": {
+        "base": "Engineering: code modules",
+        "set": {
+          "exec": "How the code is organised"
+        }
+      },
+      "about": {
+        "base": "The Maven modules of **lotto-options-core** by dependency. The Screen API shares only the data formats with the engine.",
+        "set": {},
+        "add": {
+          "engineer": "ADR-0009 names the target: a hexagonal `core-domain`, `core-application`, `core-api-contract` and `core-server`, enforced by ArchUnit rules (ADR-0010). That refactor is in progress and not drawn here."
+        }
+      },
+      "show": [
+        {
+          "tag": "module"
+        }
+      ],
+      "kinds": [
+        "code"
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "generate-picks",
+      "title": {
+        "base": "Generate picks",
+        "set": {}
+      },
+      "about": {
+        "base": "What happens when the user clicks **Generate** on the Smart Generator, step by step. The strategy runs in the engine; the Results store only supplies the past draws.",
+        "set": {},
+        "add": {}
+      },
+      "steps": [
+        {
+          "subject": "user",
+          "verb": {
+            "base": "clicks Generate on",
+            "set": {}
+          },
+          "object": "website",
+          "about": {
+            "base": "The user has chosen a game, a strategy and how many tickets.",
+            "set": {},
+            "add": {
+              "engineer": "The Smart Generator screen posts a `numberGenerator` (`LOW_ODD_LOW_EVEN_HIGH_ODD_HIGH_EVEN`, `SecureRandom` or `ThreadLocalRandom`) and `numberSetsPerPattern`."
+            }
+          }
+        },
+        {
+          "subject": "website",
+          "verb": {
+            "base": "asks for picks from",
+            "set": {
+              "engineer": "POSTs /ui/dashboard/{state}/{game}/generate to"
+            }
+          },
+          "object": "screen-api",
+          "about": {
+            "base": "The website sends the request on; nginx passes it through without waiting for the whole answer.",
+            "set": {},
+            "add": {
+              "engineer": "Proxied to `BFF_URL` with buffering off. `DashboardController` hands it to `SmartGeneratorService`, which maps it to the engine's request and calls `CoreApiClient.generateNumbers`."
+            }
+          }
+        },
+        {
+          "subject": "screen-api",
+          "verb": {
+            "base": "requests analysis from",
+            "set": {
+              "engineer": "POSTs /api/v1/analysis/generate/numbers to"
+            }
+          },
+          "object": "request-handling",
+          "about": {
+            "base": "The Screen API asks the engine to generate numbers.",
+            "set": {},
+            "add": {
+              "engineer": "With a `RandomNumberGeneratorRequest` from `core-model`."
+            }
+          }
+        },
+        {
+          "subject": "request-handling",
+          "verb": {
+            "base": "hands the request to",
+            "set": {}
+          },
+          "object": "pick-generation",
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {
+              "engineer": "`LotteryNumberGenerationService.getRandomNumberGeneratedData`."
+            }
+          }
+        },
+        {
+          "subject": "pick-generation",
+          "verb": {
+            "base": "asks for past draws from",
+            "set": {}
+          },
+          "object": "history-lookup",
+          "about": {
+            "base": "Pick generation needs the game's full history first.",
+            "set": {},
+            "add": {
+              "engineer": "`LotteryStateService.getLottoGameDrawData(game, state)`, implemented by `WebClientLotteryStateService`."
+            }
+          }
+        },
+        {
+          "subject": "history-lookup",
+          "verb": {
+            "base": "fetches draw history from",
+            "set": {}
+          },
+          "object": "history-service",
+          "about": {
+            "base": "The Results store returns every past draw of the game from its saved file.",
+            "set": {},
+            "add": {
+              "engineer": "`POST /api/v1/state/games` with `{stateName, gameName}`; the full `LotteryGame` comes back."
+            }
+          }
+        },
+        {
+          "subject": "history-service",
+          "verb": {
+            "base": "returns the full history to",
+            "set": {}
+          },
+          "object": "history-lookup",
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "subject": "history-lookup",
+          "verb": {
+            "base": "hands the past draws to",
+            "set": {}
+          },
+          "object": "pick-generation",
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "subject": "pick-generation",
+          "verb": {
+            "base": "generates and scores tickets with",
+            "set": {}
+          },
+          "object": "strategies",
+          "about": {
+            "base": "The chosen strategy picks the numbers, and each ticket is checked against past draws to show what it would have won.",
+            "set": {},
+            "add": {
+              "engineer": "The generator chosen by `numberGenerator` through `RandomNumberGeneratorFactory`; `LotteryResultsComparator` scores the tickets into prize-level results."
+            }
+          }
+        },
+        {
+          "subject": "strategies",
+          "verb": {
+            "base": "returns scored tickets to",
+            "set": {}
+          },
+          "object": "pick-generation",
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "subject": "pick-generation",
+          "verb": {
+            "base": "returns the picks to",
+            "set": {}
+          },
+          "object": "request-handling",
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {
+              "engineer": "A `GeneratedNumberData` with the tickets and their prize-level results."
+            }
+          }
+        },
+        {
+          "subject": "request-handling",
+          "verb": {
+            "base": "returns the picks to",
+            "set": {}
+          },
+          "object": "screen-api",
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {
+              "engineer": "200 with `GeneratedNumberData`."
+            }
+          }
+        },
+        {
+          "subject": "screen-api",
+          "verb": {
+            "base": "sends picks ready to show to",
+            "set": {}
+          },
+          "object": "website",
+          "about": {
+            "base": "The Screen API reshapes the picks into exactly what the Smart Generator screen shows.",
+            "set": {},
+            "add": {
+              "engineer": "`SmartGeneratorService` maps the data to a `GeneratedNumbersViewModel`."
+            }
+          }
+        },
+        {
+          "subject": "website",
+          "verb": {
+            "base": "shows the picks to",
+            "set": {}
+          },
+          "object": "user",
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "results-poll",
+      "title": {
+        "base": "Results poll",
+        "set": {}
+      },
+      "about": {
+        "base": "How the suite keeps its draw history current: every two hours, and once at start-up, so a fresh install fills itself before anyone asks for a game.",
+        "set": {},
+        "add": {}
+      },
+      "steps": [
+        {
+          "subject": "updater",
+          "verb": {
+            "base": "downloads new results from",
+            "set": {}
+          },
+          "object": "texas",
+          "about": {
+            "base": "One file per game, a few at a time, with retries.",
+            "set": {},
+            "add": {
+              "engineer": "17 games, 4 at a time, at most 4 downloads a second, 3 attempts each."
+            }
+          }
+        },
+        {
+          "subject": "texas",
+          "verb": {
+            "base": "returns one file per game to",
+            "set": {}
+          },
+          "object": "updater",
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "subject": "updater",
+          "verb": {
+            "base": "hands the files to",
+            "set": {}
+          },
+          "object": "reader",
+          "about": {
+            "base": "Each file becomes the game's list of draws.",
+            "set": {},
+            "add": {
+              "engineer": "Each CSV becomes a `LotteryGame` with its draws."
+            }
+          }
+        },
+        {
+          "subject": "reader",
+          "verb": {
+            "base": "returns the draws to",
+            "set": {}
+          },
+          "object": "updater",
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "subject": "updater",
+          "verb": {
+            "base": "saves draws into",
+            "set": {}
+          },
+          "object": "saved-draws",
+          "about": {
+            "base": "The game's file is replaced whole.",
+            "set": {},
+            "add": {
+              "engineer": "Written to `{STATE}/{Game}.ser` through a temp file and a rename."
+            }
+          }
+        },
+        {
+          "subject": "updater",
+          "verb": {
+            "base": "announces new draws to",
+            "set": {}
+          },
+          "object": "history-service",
+          "about": {
+            "base": "The history service forgets what it had cached, so the next request sees the new draws.",
+            "set": {},
+            "add": {
+              "engineer": "`PollCompletedEvent`; `CatalogCacheEvictor` clears the read caches."
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "walkthroughs": [
+    {
+      "id": "tour",
+      "title": {
+        "base": "A tour of the Lotto suite",
+        "set": {}
+      },
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      },
+      "steps": [
+        {
+          "target": "big-picture",
+          "focus": [
+            "website"
+          ],
+          "range": null,
+          "open": [],
+          "close": [],
+          "audience": null,
+          "about": {
+            "base": "The user opens the **website** in a browser and picks a state and a game.",
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "target": "big-picture",
+          "focus": [
+            "screen-api"
+          ],
+          "range": null,
+          "open": [],
+          "close": [],
+          "audience": null,
+          "about": {
+            "base": "The **Screen API** prepares the data for each screen. It has no lottery logic of its own.",
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "target": "big-picture",
+          "focus": [
+            "engine"
+          ],
+          "range": null,
+          "open": [],
+          "close": [],
+          "audience": null,
+          "about": {
+            "base": "The **Analysis engine** does the thinking: dashboards, generated picks, scoring and betslips.",
+            "set": {
+              "exec": "The **engine** is where the value is: it turns past draws into suggested picks."
+            },
+            "add": {
+              "engineer": "One Spring Boot jar on port 8002, built from the modules in the Engineering view."
+            }
+          }
+        },
+        {
+          "target": "services",
+          "focus": [
+            "pick-generation"
+          ],
+          "range": null,
+          "open": [
+            "engine-service"
+          ],
+          "close": [],
+          "audience": null,
+          "about": {
+            "base": "Inside the engine, **Pick generation** runs the strategy the user chose and scores the tickets against past draws.",
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "target": "big-picture",
+          "focus": [
+            "store"
+          ],
+          "range": null,
+          "open": [],
+          "close": [],
+          "audience": null,
+          "about": {
+            "base": "The **Results store** keeps every past draw and refreshes them from the Texas Lottery website every two hours.",
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "target": "services",
+          "focus": [
+            "store"
+          ],
+          "range": null,
+          "open": [],
+          "close": [],
+          "audience": null,
+          "about": {
+            "base": "Inside the store, the updater downloads new results, the reader turns them into draws, and the history service answers the engine.",
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "target": "generate-picks",
+          "focus": [],
+          "range": null,
+          "open": [],
+          "close": [],
+          "audience": null,
+          "about": {
+            "base": "Now follow one request: what happens when the user clicks **Generate**.",
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "target": "big-picture",
+          "focus": [],
+          "range": null,
+          "open": [],
+          "close": [],
+          "audience": null,
+          "about": {
+            "base": "The whole suite again.",
+            "set": {},
+            "add": {}
+          }
+        }
+      ]
+    }
+  ]
+}

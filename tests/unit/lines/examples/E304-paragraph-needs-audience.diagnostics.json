@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E304",
+    "severity": "error",
+    "line": 2,
+    "column": 3,
+    "endLine": 2,
+    "endColumn": 5,
+    "message": "`>>` adds a paragraph for one audience. Name the audience, as in `@engineer >> An added paragraph.`."
+  }
+]

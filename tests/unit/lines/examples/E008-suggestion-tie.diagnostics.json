@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E008",
+    "severity": "error",
+    "line": 4,
+    "column": 1,
+    "endLine": 4,
+    "endColumn": 7,
+    "message": "There is no element called `alpha3`. Did you mean `alpha1`?"
+  }
+]

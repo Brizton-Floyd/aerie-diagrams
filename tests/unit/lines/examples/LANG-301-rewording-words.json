@@ -1,0 +1,181 @@
+{
+  "format": "aerie-model/1",
+  "id": "shop",
+  "title": {
+    "base": "Shop",
+    "set": {
+      "exec": "The business"
+    }
+  },
+  "about": {
+    "base": null,
+    "set": {},
+    "add": {}
+  },
+  "audiences": [
+    {
+      "id": "exec",
+      "name": "Executive",
+      "code": false
+    },
+    {
+      "id": "manager",
+      "name": "Manager",
+      "code": false
+    },
+    {
+      "id": "engineer",
+      "name": "Engineer",
+      "code": true
+    }
+  ],
+  "defaultAudience": "manager",
+  "elements": [
+    {
+      "id": "web",
+      "parent": null,
+      "name": {
+        "base": "Website",
+        "set": {
+          "exec": "Our site",
+          "manager": "Web front"
+        }
+      },
+      "tagline": {
+        "base": "Shows pages",
+        "set": {
+          "manager": "The pages",
+          "engineer": "Angular app"
+        }
+      },
+      "tags": [],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "api",
+      "parent": null,
+      "name": {
+        "base": "Screen API",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "subject": "web",
+      "verb": {
+        "base": "calls",
+        "set": {
+          "engineer": "GETs /ui/* on"
+        }
+      },
+      "object": "api",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "views": [
+    {
+      "id": "main",
+      "title": {
+        "base": "Main",
+        "set": {
+          "exec": "Big picture"
+        }
+      },
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      },
+      "show": [],
+      "kinds": [
+        "runtime"
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "flow",
+      "title": {
+        "base": "Flow",
+        "set": {
+          "exec": "How it works"
+        }
+      },
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      },
+      "steps": [
+        {
+          "subject": "web",
+          "verb": {
+            "base": "asks",
+            "set": {
+              "engineer": "POSTs to"
+            }
+          },
+          "object": "api",
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {}
+          }
+        }
+      ]
+    }
+  ],
+  "walkthroughs": [
+    {
+      "id": "tour",
+      "title": {
+        "base": "Tour",
+        "set": {
+          "exec": "A short tour"
+        }
+      },
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      },
+      "steps": [
+        {
+          "target": "main",
+          "focus": [],
+          "range": null,
+          "open": [],
+          "close": [],
+          "audience": null,
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {}
+          }
+        }
+      ]
+    }
+  ]
+}

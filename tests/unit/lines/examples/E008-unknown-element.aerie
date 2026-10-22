@@ -1,0 +1,6 @@
+website: Website
+screen-api: Screen API
+website gets screen data from screen-apu
+webstie calls screen-api
+view main: Main
+  show screen-api, nothing

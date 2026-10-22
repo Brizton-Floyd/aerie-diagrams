@@ -1,0 +1,83 @@
+[
+  {
+    "id": "E005",
+    "severity": "error",
+    "line": 1,
+    "column": 1,
+    "endLine": 1,
+    "endColumn": 4,
+    "message": "`Web` cannot be an id. Ids use lowercase letters, digits and single hyphens, start with a letter, and do not end with a hyphen."
+  },
+  {
+    "id": "E005",
+    "severity": "error",
+    "line": 2,
+    "column": 1,
+    "endLine": 2,
+    "endColumn": 11,
+    "message": "`screen_api` cannot be an id. Ids use lowercase letters, digits and single hyphens, start with a letter, and do not end with a hyphen."
+  },
+  {
+    "id": "E005",
+    "severity": "error",
+    "line": 3,
+    "column": 1,
+    "endLine": 3,
+    "endColumn": 5,
+    "message": "`api-` cannot be an id. Ids use lowercase letters, digits and single hyphens, start with a letter, and do not end with a hyphen."
+  },
+  {
+    "id": "E005",
+    "severity": "error",
+    "line": 4,
+    "column": 1,
+    "endLine": 4,
+    "endColumn": 13,
+    "message": "`two--hyphens` cannot be an id. Ids use lowercase letters, digits and single hyphens, start with a letter, and do not end with a hyphen."
+  },
+  {
+    "id": "E005",
+    "severity": "error",
+    "line": 5,
+    "column": 1,
+    "endLine": 5,
+    "endColumn": 4,
+    "message": "`2fa` cannot be an id. Ids use lowercase letters, digits and single hyphens, start with a letter, and do not end with a hyphen."
+  },
+  {
+    "id": "E005",
+    "severity": "error",
+    "line": 6,
+    "column": 11,
+    "endLine": 6,
+    "endColumn": 18,
+    "message": "`Service` cannot be an id. Ids use lowercase letters, digits and single hyphens, start with a letter, and do not end with a hyphen."
+  },
+  {
+    "id": "E005",
+    "severity": "error",
+    "line": 7,
+    "column": 14,
+    "endLine": 7,
+    "endColumn": 18,
+    "message": "`Code` cannot be an id. Ids use lowercase letters, digits and single hyphens, start with a letter, and do not end with a hyphen."
+  },
+  {
+    "id": "E005",
+    "severity": "error",
+    "line": 8,
+    "column": 6,
+    "endLine": 8,
+    "endColumn": 10,
+    "message": "`Main` cannot be an id. Ids use lowercase letters, digits and single hyphens, start with a letter, and do not end with a hyphen."
+  },
+  {
+    "id": "E005",
+    "severity": "error",
+    "line": 9,
+    "column": 11,
+    "endLine": 9,
+    "endColumn": 15,
+    "message": "`Exec` cannot be an id. Ids use lowercase letters, digits and single hyphens, start with a letter, and do not end with a hyphen."
+  }
+]

@@ -1,0 +1,5 @@
+web: Website
+api: Screen API
+web calls api
+scenario flow: How a page loads
+  web calls api

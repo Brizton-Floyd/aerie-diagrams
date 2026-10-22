@@ -1,0 +1,3 @@
+user: User [person]
+bank: Bank [external]
+db: Database [store]

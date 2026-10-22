@@ -1,0 +1,18 @@
+model shop: Shop
+  @exec: The business
+web: Website | Shows pages
+  @exec: Our site
+  @engineer: | Angular app
+  @manager: Web front | The pages
+api: Screen API
+web calls api
+  @engineer: GETs /ui/* on
+view main: Main
+  @exec: Big picture
+scenario flow: Flow
+  @exec: How it works
+  web asks api
+    @engineer: POSTs to
+walkthrough tour: Tour
+  @exec: A short tour
+  step main

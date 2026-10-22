@@ -1,0 +1,4 @@
+web: Website
+view main: Main
+walkthrough tour: Tour
+  step main: 1-2

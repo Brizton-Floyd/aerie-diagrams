@@ -1,0 +1,5 @@
+web: Website [service
+api: Screen API
+web calls api [code
+view main: Main
+  show [service

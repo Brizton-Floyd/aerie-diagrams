@@ -1,0 +1,6 @@
+web: Website
+  > The **website** is where *users* start, built with `Angular`.
+    See [the docs](https://example.com/docs) for more.
+  > A second paragraph.
+  >No space after the marker.
+  >    Extra spaces after the marker are not text.

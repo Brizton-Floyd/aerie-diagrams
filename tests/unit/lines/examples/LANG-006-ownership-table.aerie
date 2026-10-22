@@ -1,0 +1,38 @@
+model shop: Shop
+  > About the model.
+  @exec: The shop
+audiences exec "Executive", engineer "Engineer" (default, code)
+
+shop: Shop [system]
+  icon stack
+  > About the shop.
+  @exec: Our shop
+  web: Storefront
+  db: Orders [store]
+
+web saves orders in db
+  > About the relationship.
+  @exec: keeps orders in
+
+view main: Main
+  show shop +1
+  kind runtime
+  > About the view.
+  @exec: Overview
+
+scenario order: Order
+  > About the scenario.
+  @exec: Placing an order
+  web saves orders in db
+    > About the step.
+    @exec: keeps the order in
+
+walkthrough tour: Tour
+  > About the walkthrough.
+  @exec: Quick tour
+  step main: web
+    open shop
+    close shop
+    for exec
+    > About the step.
+    @exec > For executives.

@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E003",
+    "severity": "error",
+    "line": 2,
+    "column": 3,
+    "endLine": 2,
+    "endColumn": 8,
+    "message": "A sentence goes at the top level, as a relationship, or inside a scenario, as a step."
+  }
+]

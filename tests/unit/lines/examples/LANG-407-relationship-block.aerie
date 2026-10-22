@@ -1,0 +1,6 @@
+web: Website
+api: Screen API
+web calls api
+  > The only way in.
+  @engineer: GETs /ui/* on
+  @engineer >> Over HTTP/1.1.

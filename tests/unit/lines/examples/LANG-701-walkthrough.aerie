@@ -1,0 +1,5 @@
+web: Website
+view main: Main
+walkthrough tour: A tour
+  > What the tour is for.
+  step main

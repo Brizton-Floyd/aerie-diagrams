@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E002",
+    "severity": "error",
+    "line": 4,
+    "column": 1,
+    "endLine": 4,
+    "endColumn": 4,
+    "message": "This line's indent does not line up with the lines above it. Indent it by the same amount as the other lines in its block."
+  }
+]

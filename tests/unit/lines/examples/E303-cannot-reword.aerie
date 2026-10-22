@@ -1,0 +1,9 @@
+web: Website
+api: Screen API
+web calls api
+  @exec: uses | the API
+view main: Main
+  @exec: Big | picture
+walkthrough tour: Tour
+  step main
+    @exec: Step title

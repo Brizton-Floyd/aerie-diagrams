@@ -1,0 +1,29 @@
+[
+  {
+    "id": "E301",
+    "severity": "error",
+    "line": 2,
+    "column": 4,
+    "endLine": 2,
+    "endColumn": 8,
+    "message": "There is no audience called `exce`. Did you mean `exec`? The audiences are `exec`, `manager`, `engineer`."
+  },
+  {
+    "id": "E301",
+    "severity": "error",
+    "line": 3,
+    "column": 4,
+    "endLine": 3,
+    "endColumn": 9,
+    "message": "There is no audience called `board`. The audiences are `exec`, `manager`, `engineer`."
+  },
+  {
+    "id": "E301",
+    "severity": "error",
+    "line": 7,
+    "column": 9,
+    "endLine": 7,
+    "endColumn": 16,
+    "message": "There is no audience called `enginer`. Did you mean `engineer`? The audiences are `exec`, `manager`, `engineer`."
+  }
+]

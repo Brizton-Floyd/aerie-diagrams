@@ -1,0 +1,5 @@
+model words: Words   with    spaces
+web:   Website  \| main  |   Shows \[things\] and a \\ backslash
+api: Screen API
+web   calls   \[v2\]   on    api
+  > Descriptions keep \| and \[ as written.

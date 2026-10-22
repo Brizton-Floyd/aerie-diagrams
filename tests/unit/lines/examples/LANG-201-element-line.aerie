@@ -1,0 +1,4 @@
+web: Website
+api: Screen API | Prepares data for each screen
+db: Database | Keeps everything [store]
+cache: Cache [store fast]

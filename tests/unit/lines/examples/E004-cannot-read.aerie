@@ -1,0 +1,8 @@
+web: Website
+| a stray tagline
+[service]
+web
+  child: never read, the block is skipped
+api: Screen API
+@: no audience
+@exec what

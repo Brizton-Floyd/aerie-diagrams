@@ -1,0 +1,162 @@
+{
+  "format": "aerie-model/1",
+  "id": null,
+  "title": {
+    "base": null,
+    "set": {}
+  },
+  "about": {
+    "base": null,
+    "set": {},
+    "add": {}
+  },
+  "audiences": [
+    {
+      "id": "exec",
+      "name": "Executive",
+      "code": false
+    },
+    {
+      "id": "manager",
+      "name": "Manager",
+      "code": false
+    },
+    {
+      "id": "engineer",
+      "name": "Engineer",
+      "code": true
+    }
+  ],
+  "defaultAudience": "manager",
+  "elements": [
+    {
+      "id": "engine",
+      "parent": null,
+      "name": {
+        "base": "Engine",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "strategies",
+      "parent": null,
+      "name": {
+        "base": "Strategies",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "formats",
+      "parent": null,
+      "name": {
+        "base": "Formats",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "legacy",
+      "parent": null,
+      "name": {
+        "base": "Legacy",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "subject": "engine",
+      "verb": {
+        "base": "depends on",
+        "set": {
+          "engineer": "links against"
+        }
+      },
+      "object": "strategies",
+      "kind": "code",
+      "about": {
+        "base": "Build-time dependencies.",
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "engine",
+      "verb": {
+        "base": "depends on",
+        "set": {
+          "engineer": "links against"
+        }
+      },
+      "object": "formats",
+      "kind": "code",
+      "about": {
+        "base": "Build-time dependencies.",
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "engine",
+      "verb": {
+        "base": "depends on",
+        "set": {
+          "engineer": "links against"
+        }
+      },
+      "object": "legacy",
+      "kind": "code",
+      "about": {
+        "base": "Build-time dependencies.",
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "views": [],
+  "scenarios": [],
+  "walkthroughs": []
+}

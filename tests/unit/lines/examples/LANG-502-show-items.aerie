@@ -1,0 +1,8 @@
+suite: Suite
+  web: Website
+    page: Page
+  api: Screen API
+user: User
+view main: Main
+  show user, suite +1
+  show web +0, suite +99

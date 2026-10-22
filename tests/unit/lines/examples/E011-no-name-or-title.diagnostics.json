@@ -1,0 +1,56 @@
+[
+  {
+    "id": "E011",
+    "severity": "error",
+    "line": 1,
+    "column": 5,
+    "endLine": 1,
+    "endColumn": 5,
+    "message": "Give `web` a name after the colon, as in `web: Web`."
+  },
+  {
+    "id": "E011",
+    "severity": "error",
+    "line": 2,
+    "column": 22,
+    "endLine": 2,
+    "endColumn": 22,
+    "message": "Give `api` a name after the colon, as in `api: Api`."
+  },
+  {
+    "id": "E011",
+    "severity": "error",
+    "line": 4,
+    "column": 17,
+    "endLine": 4,
+    "endColumn": 17,
+    "message": "Give `big-picture` a title after the colon, as in `view big-picture: Big picture`."
+  },
+  {
+    "id": "E011",
+    "severity": "error",
+    "line": 5,
+    "column": 15,
+    "endLine": 5,
+    "endColumn": 15,
+    "message": "Give `flow` a title after the colon, as in `scenario flow: Flow`."
+  },
+  {
+    "id": "E011",
+    "severity": "error",
+    "line": 7,
+    "column": 18,
+    "endLine": 7,
+    "endColumn": 18,
+    "message": "Give `tour` a title after the colon, as in `walkthrough tour: Tour`."
+  },
+  {
+    "id": "E011",
+    "severity": "error",
+    "line": 9,
+    "column": 11,
+    "endLine": 9,
+    "endColumn": 11,
+    "message": "Give `shop` a title after the colon, as in `model shop: Shop`."
+  }
+]

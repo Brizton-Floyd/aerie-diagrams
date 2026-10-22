@@ -1,0 +1,29 @@
+[
+  {
+    "id": "E702",
+    "severity": "error",
+    "line": 8,
+    "column": 8,
+    "endLine": 8,
+    "endColumn": 12,
+    "message": "There is no view or scenario called `mian`. Did you mean `main`?"
+  },
+  {
+    "id": "E702",
+    "severity": "error",
+    "line": 9,
+    "column": 8,
+    "endLine": 9,
+    "endColumn": 12,
+    "message": "There is no view or scenario called `flwo`. Did you mean `flow`?"
+  },
+  {
+    "id": "E702",
+    "severity": "error",
+    "line": 10,
+    "column": 8,
+    "endLine": 10,
+    "endColumn": 15,
+    "message": "There is no view or scenario called `nowhere`."
+  }
+]

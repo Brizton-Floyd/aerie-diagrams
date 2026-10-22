@@ -22,7 +22,15 @@ export default defineConfig(
     languageOptions: { globals: globals.browser },
   },
   {
-    files: ['scripts/**/*.ts', 'tests/**/*.ts', '*.config.{ts,js}'],
+    files: ['scripts/**/*.ts', 'tests/**/*.ts', 'src/cli/**/*.ts', '*.config.{ts,js}'],
     languageOptions: { globals: globals.node },
+  },
+  {
+    // The Lines language is pure TypeScript: no DOM and no Node (docs/spec/language.md).
+    files: ['src/lines/**/*.ts'],
+    rules: {
+      'no-restricted-imports': ['error', { patterns: ['node:*', '../*'] }],
+      'no-restricted-globals': ['error', 'window', 'document', 'navigator', 'process', 'require'],
+    },
   },
 );

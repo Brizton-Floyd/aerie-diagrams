@@ -1,0 +1,9 @@
+web: Website
+api: Screen API
+db: Database
+web calls api
+api reads db
+scenario flow: Flow
+  web calls api
+  api returns data to web
+  web reads db

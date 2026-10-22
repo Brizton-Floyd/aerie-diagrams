@@ -1,0 +1,56 @@
+{
+  "format": "aerie-model/1",
+  "id": null,
+  "title": {
+    "base": null,
+    "set": {}
+  },
+  "about": {
+    "base": null,
+    "set": {},
+    "add": {}
+  },
+  "audiences": [
+    {
+      "id": "exec",
+      "name": "Executive",
+      "code": false
+    },
+    {
+      "id": "manager",
+      "name": "Manager",
+      "code": false
+    },
+    {
+      "id": "engineer",
+      "name": "Engineer",
+      "code": true
+    }
+  ],
+  "defaultAudience": "manager",
+  "elements": [
+    {
+      "id": "cafe",
+      "parent": null,
+      "name": {
+        "base": "Café",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Crème brûlée, 24/7 ☕",
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "about": {
+        "base": "Serves ünïcödé guests 😀.",
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "relationships": [],
+  "views": [],
+  "scenarios": [],
+  "walkthroughs": []
+}

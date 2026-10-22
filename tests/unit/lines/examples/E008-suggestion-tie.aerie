@@ -1,0 +1,4 @@
+// `alpha3` is one edit from both; the one declared first is suggested.
+alpha1: First
+alpha2: Second
+alpha3 calls alpha1

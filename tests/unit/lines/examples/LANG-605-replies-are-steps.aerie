@@ -1,0 +1,6 @@
+web: Website
+api: Screen API
+web calls api
+scenario flow: Flow
+  web calls api
+  api returns the page to web

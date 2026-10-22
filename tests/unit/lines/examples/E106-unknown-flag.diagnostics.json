@@ -1,0 +1,29 @@
+[
+  {
+    "id": "E106",
+    "severity": "error",
+    "line": 1,
+    "column": 14,
+    "endLine": 1,
+    "endColumn": 19,
+    "message": "`(fancy)` is not something an audience can be. Use `(default)`, `(code)`, or both, as in `(default, code)`."
+  },
+  {
+    "id": "E106",
+    "severity": "error",
+    "line": 1,
+    "column": 24,
+    "endLine": 1,
+    "endColumn": 26,
+    "message": "`()` is not something an audience can be. Use `(default)`, `(code)`, or both, as in `(default, code)`."
+  },
+  {
+    "id": "E106",
+    "severity": "error",
+    "line": 1,
+    "column": 40,
+    "endLine": 1,
+    "endColumn": 44,
+    "message": "`(Code)` is not something an audience can be. Use `(default)`, `(code)`, or both, as in `(default, code)`."
+  }
+]

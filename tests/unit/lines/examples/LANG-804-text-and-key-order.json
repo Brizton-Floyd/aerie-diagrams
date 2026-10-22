@@ -1,0 +1,65 @@
+{
+  "format": "aerie-model/1",
+  "id": "order",
+  "title": {
+    "base": "Order",
+    "set": {}
+  },
+  "about": {
+    "base": null,
+    "set": {},
+    "add": {}
+  },
+  "audiences": [
+    {
+      "id": "one",
+      "name": "One",
+      "code": false
+    },
+    {
+      "id": "two",
+      "name": "Two",
+      "code": false
+    },
+    {
+      "id": "three",
+      "name": "Three",
+      "code": false
+    }
+  ],
+  "defaultAudience": "one",
+  "elements": [
+    {
+      "id": "web",
+      "parent": null,
+      "name": {
+        "base": "Website",
+        "set": {
+          "one": "First",
+          "three": "Third"
+        }
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "about": {
+        "base": null,
+        "set": {
+          "one": "First replaced.",
+          "two": "Second replaced."
+        },
+        "add": {
+          "one": "First added.",
+          "three": "Third added."
+        }
+      }
+    }
+  ],
+  "relationships": [],
+  "views": [],
+  "scenarios": [],
+  "walkthroughs": []
+}

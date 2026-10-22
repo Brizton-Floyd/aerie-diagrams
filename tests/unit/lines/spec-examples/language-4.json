@@ -1,0 +1,70 @@
+{
+  "model": {
+    "format": "aerie-model/1",
+    "id": null,
+    "title": {
+      "base": null,
+      "set": {}
+    },
+    "about": {
+      "base": null,
+      "set": {},
+      "add": {}
+    },
+    "audiences": [
+      {
+        "id": "exec",
+        "name": "Executive",
+        "code": false
+      },
+      {
+        "id": "manager",
+        "name": "Manager",
+        "code": false
+      },
+      {
+        "id": "engineer",
+        "name": "Engineer",
+        "code": true
+      }
+    ],
+    "defaultAudience": "manager",
+    "elements": [
+      {
+        "id": "engine",
+        "parent": null,
+        "name": {
+          "base": "Analysis engine",
+          "set": {
+            "exec": "Number engine"
+          }
+        },
+        "tagline": {
+          "base": "Generates and scores picks",
+          "set": {
+            "exec": "Turns past draws into suggested picks",
+            "engineer": "lotto-options-core-server :8002"
+          }
+        },
+        "tags": [
+          "service"
+        ],
+        "icon": null,
+        "about": {
+          "base": "The brains of the suite.",
+          "set": {
+            "exec": "Where the value is: it studies every past draw and suggests numbers to play."
+          },
+          "add": {
+            "engineer": "Spring Boot on port 8002, one jar built from the modules in the Engineering view."
+          }
+        }
+      }
+    ],
+    "relationships": [],
+    "views": [],
+    "scenarios": [],
+    "walkthroughs": []
+  },
+  "diagnostics": []
+}

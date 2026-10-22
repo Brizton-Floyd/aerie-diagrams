@@ -67,9 +67,14 @@ same. The individual suites are the `test:*` scripts in [package.json](package.j
 - `test:screenshots`, `test:journeys` are Playwright projects (`tests/<suite>/**/*.spec.ts`), run
   against the production build served by `vite preview`.
 - Update baselines deliberately: `npx vitest run --project golden -u`, and
-  `npx playwright test --project screenshots --update-snapshots`.
+  `npx playwright test --project screenshots --update-snapshots`. The language fixtures
+  (`tests/unit/lines/examples/`, ACC-012) update the same way with `--project unit -u`; review the
+  diff, since the expected files come from the code under test.
+- `npx aerie check|format|model <file>` runs the Lines tools ([src/cli/aerie.ts](src/cli/aerie.ts),
+  executed by Node's type stripping, so it imports `.ts` files and uses only erasable syntax).
 
-Each suite currently holds a stub that proves its wiring; the slice that owns the suite replaces it.
+The rules, screenshots and journeys suites still hold stubs that prove their wiring; the slice that
+owns each suite replaces its stub.
 
 ## Sharp edges
 
@@ -78,7 +83,11 @@ Each suite currently holds a stub that proves its wiring; the slice that owns th
 - `lint` also runs `scripts/check-text.ts`, which fails on any em dash in the repo (use a plain
   hyphen), and `scripts/check-docs.ts`, which fails on broken Markdown links and on spec ids
   (`LANG-012`, `E008`) that are defined twice or cited in docs or tests without being defined.
-- `docs/spec/examples/*.json` are byte-exact canonical models, so Prettier skips them.
+- `docs/spec/examples/*.json` and the language fixtures' `.json` files are byte-exact canonical
+  models and diagnostics, so Prettier skips them.
+- `src/lines/` (the parser, catalogue, formatter and printer) is pure TypeScript: lint rejects Node
+  imports and DOM globals there. Every diagnostic message comes from `src/lines/catalogue.ts`, and a
+  test holds it word for word to the catalogue table in `docs/spec/language.md`.
 - Playwright builds and serves the app on port 4173 and never reuses a running server. Set
   `AERIE_PREVIEW_PORT` when several checkouts run checks at the same time.
 - Screenshot baselines are shared across platforms (no OS suffix), so screenshot tests must not

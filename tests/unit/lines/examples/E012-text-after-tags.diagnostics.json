@@ -1,0 +1,20 @@
+[
+  {
+    "id": "E012",
+    "severity": "error",
+    "line": 1,
+    "column": 24,
+    "endLine": 1,
+    "endColumn": 29,
+    "message": "The tags in brackets end the line, so `extra` cannot come after them. Move it before the `[`, or write `\\[` and `\\]` to use brackets in the wording."
+  },
+  {
+    "id": "E012",
+    "severity": "error",
+    "line": 2,
+    "column": 21,
+    "endLine": 2,
+    "endColumn": 30,
+    "message": "The tags in brackets end the line, so `| tagline` cannot come after them. Move it before the `[`, or write `\\[` and `\\]` to use brackets in the wording."
+  }
+]

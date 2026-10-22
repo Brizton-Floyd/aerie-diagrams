@@ -1,0 +1,32 @@
+{
+  "model": null,
+  "diagnostics": [
+    {
+      "id": "E008",
+      "severity": "error",
+      "line": 1,
+      "column": 1,
+      "endLine": 1,
+      "endColumn": 15,
+      "message": "There is no element called `history-lookup`."
+    },
+    {
+      "id": "W001",
+      "severity": "warning",
+      "line": 1,
+      "column": 1,
+      "endLine": 1,
+      "endColumn": 1,
+      "message": "This file has no elements yet. Start with a line such as `web: Website`."
+    },
+    {
+      "id": "E008",
+      "severity": "error",
+      "line": 1,
+      "column": 42,
+      "endLine": 1,
+      "endColumn": 57,
+      "message": "There is no element called `history-service`."
+    }
+  ]
+}

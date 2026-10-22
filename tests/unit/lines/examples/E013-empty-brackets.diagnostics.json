@@ -1,0 +1,20 @@
+[
+  {
+    "id": "E013",
+    "severity": "error",
+    "line": 1,
+    "column": 14,
+    "endLine": 1,
+    "endColumn": 16,
+    "message": "These brackets are empty. Put a tag inside, such as `[service]`, or remove them."
+  },
+  {
+    "id": "E013",
+    "severity": "error",
+    "line": 3,
+    "column": 8,
+    "endLine": 3,
+    "endColumn": 11,
+    "message": "These brackets are empty. Put a tag inside, such as `[service]`, or remove them."
+  }
+]

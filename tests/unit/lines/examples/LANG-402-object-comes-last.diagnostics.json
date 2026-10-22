@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E401",
+    "severity": "error",
+    "line": 3,
+    "column": 29,
+    "endLine": 3,
+    "endColumn": 34,
+    "message": "A sentence must end with the element it points to, and `picks` is not an element. If you meant `screen-api`, reword the line so `screen-api` comes last."
+  }
+]

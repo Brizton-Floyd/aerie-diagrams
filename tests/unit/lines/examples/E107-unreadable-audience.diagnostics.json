@@ -1,0 +1,29 @@
+[
+  {
+    "id": "E107",
+    "severity": "error",
+    "line": 1,
+    "column": 11,
+    "endLine": 1,
+    "endColumn": 20,
+    "message": "Aerie cannot read the audience `c \"C\" \"D\"`. Write an id, then an optional name in double quotes and optional flags in parentheses, as in `dev \"Developer\" (code)`."
+  },
+  {
+    "id": "E107",
+    "severity": "error",
+    "line": 1,
+    "column": 22,
+    "endLine": 1,
+    "endColumn": 26,
+    "message": "Aerie cannot read the audience `d \"\"`. Write an id, then an optional name in double quotes and optional flags in parentheses, as in `dev \"Developer\" (code)`."
+  },
+  {
+    "id": "E107",
+    "severity": "error",
+    "line": 1,
+    "column": 28,
+    "endLine": 1,
+    "endColumn": 35,
+    "message": "Aerie cannot read the audience `b (code`. Write an id, then an optional name in double quotes and optional flags in parentheses, as in `dev \"Developer\" (code)`."
+  }
+]

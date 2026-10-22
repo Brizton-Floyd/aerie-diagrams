@@ -1,0 +1,59 @@
+{
+  "model": null,
+  "diagnostics": [
+    {
+      "id": "W001",
+      "severity": "warning",
+      "line": 1,
+      "column": 1,
+      "endLine": 1,
+      "endColumn": 1,
+      "message": "This file has no elements yet. Start with a line such as `web: Website`."
+    },
+    {
+      "id": "E008",
+      "severity": "error",
+      "line": 2,
+      "column": 8,
+      "endLine": 2,
+      "endColumn": 12,
+      "message": "There is no element called `user`."
+    },
+    {
+      "id": "E008",
+      "severity": "error",
+      "line": 2,
+      "column": 14,
+      "endLine": 2,
+      "endColumn": 19,
+      "message": "There is no element called `suite`."
+    },
+    {
+      "id": "E008",
+      "severity": "error",
+      "line": 2,
+      "column": 24,
+      "endLine": 2,
+      "endColumn": 29,
+      "message": "There is no element called `texas`."
+    },
+    {
+      "id": "E502",
+      "severity": "error",
+      "line": 4,
+      "column": 9,
+      "endLine": 4,
+      "endColumn": 15,
+      "message": "No element has the tag `[module]`."
+    },
+    {
+      "id": "E503",
+      "severity": "error",
+      "line": 5,
+      "column": 8,
+      "endLine": 5,
+      "endColumn": 12,
+      "message": "No relationship has the kind `code`."
+    }
+  ]
+}
