@@ -163,6 +163,11 @@ describe('the canonical model', () => {
       endLine: 26,
       endColumn: 21,
     });
+    // Declared ids have their own spans, for diagnostics that point at the id (E604).
+    expect(map['/elements/2/id']).toEqual({ line: 9, column: 3, endLine: 9, endColumn: 6 });
+    expect(map['/views/0/id']).toEqual({ line: 17, column: 6, endLine: 17, endColumn: 14 });
+    expect(map['/scenarios/0/id']).toEqual({ line: 20, column: 10, endLine: 20, endColumn: 15 });
+    expect(map['/walkthroughs/0/id']).toEqual({ line: 25, column: 13, endLine: 25, endColumn: 18 });
     const multiLine = parse('web: Website\n  > One\n    two\n').sourceMap['/elements/0/about'];
     expect(multiLine).toEqual({ line: 2, column: 5, endLine: 3, endColumn: 8 });
   });

@@ -33,4 +33,15 @@ export default defineConfig(
       'no-restricted-globals': ['error', 'window', 'document', 'navigator', 'process', 'require'],
     },
   },
+  {
+    // Model semantics are pure TypeScript too, built only on the Lines language (docs/spec/model.md).
+    files: ['src/model/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        { patterns: [{ group: ['node:*'] }, { regex: String.raw`^\.\./(?!lines/index\.ts$)` }] },
+      ],
+      'no-restricted-globals': ['error', 'window', 'document', 'navigator', 'process', 'require'],
+    },
+  },
 );

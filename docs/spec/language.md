@@ -614,11 +614,16 @@ Placeholders that need a rule:
   not reported when the line's id is itself in error (E005, E006).
 - `{moved}` in E401 is, when a declared element id appears inside the verb phrase, the sentence " If
   you meant `{that id}`, reword the line so `{that id}` comes last." and otherwise nothing.
-- `{container}` in E703 is the outermost closed ancestor of the element in that picture.
+- `{container}` in E703 is the outermost closed ancestor of the element in that picture. In general it
+  is the first container that revealing the element would open (MODEL-207), which also covers a
+  container open only partly; when nothing around the element is drawn, it is the element's top-level
+  ancestor (or the element itself when it is top level).
 - `{audience}` in E304 is the last declared audience; in E303 it is the audience of the line.
 - `{verb}` in W601 is the step's own verb phrase.
 - `{element}` in E604 is the first participant, in step order, that no view can hold, and `{top}` is
-  its top-level ancestor (or itself when it is top level).
+  its top-level ancestor (or itself when it is top level). When every participant fits some view but
+  no view fits them all, `{element}` is the first participant missing from the view that holds the
+  most participants (the first such view in declaration order).
 
 Two examples as the command line prints them (LANG-962), from the Lotto sample with `screen-api`
 misspelled `screen-apu` on line 168:

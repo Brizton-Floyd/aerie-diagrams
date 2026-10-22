@@ -1,0 +1,13 @@
+a: A
+b: B
+outer: Outer
+  c: C
+a calls b
+b calls c
+
+view v: V
+  show a, b
+
+scenario flow: Flow
+  a calls b
+  b calls c

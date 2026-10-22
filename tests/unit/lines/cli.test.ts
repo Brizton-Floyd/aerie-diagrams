@@ -36,6 +36,9 @@ function fakeIo(files: Record<string, string>): Io & {
 }
 
 const BROKEN = 'website: Website\nscreen-api: Screen API\nwebsite gets data from screen-apu\n';
+/** Valid for the parser, but its walkthrough focuses on an element its view never draws. */
+const UNSEEN =
+  'box: Box\n  x: X\ny: Y\nx calls y\nview v: V\n  show y\nwalkthrough w: W\n  step v: x\n';
 
 describe('aerie check', () => {
   it('LANG-961 LANG-962 prints one line per diagnostic and a summary', () => {
@@ -52,6 +55,15 @@ describe('aerie check', () => {
     expect(run(['check', 'a.aerie', 'b.aerie'], io)).toBe(1);
     expect(io.out).toBe(
       'a.aerie:3:24: error E008: There is no element called `screen-apu`. Did you mean `screen-api`?\n' +
+        '1 error.\n',
+    );
+  });
+
+  it('LANG-961 reports the diagnostics that need the model meaning, such as E703', () => {
+    const io = fakeIo({ 'a.aerie': UNSEEN });
+    expect(run(['check', 'a.aerie'], io)).toBe(1);
+    expect(io.out).toBe(
+      "a.aerie:8:11: error E703: `x` is not visible in this step's picture of `v`, so the step cannot focus on it. Open its container with `open box`, or choose a view that shows it.\n" +
         '1 error.\n',
     );
   });
@@ -146,6 +158,13 @@ describe('aerie model', () => {
     const io = fakeIo({ 'shop.aerie': shop });
     expect(run(['model', 'shop.aerie'], io)).toBe(0);
     expect(io.out).toBe(readFileSync(join(ROOT, 'docs/spec/examples/shop.json'), 'utf8'));
+  });
+
+  it('LANG-965 a file with a model-stage error has no model', () => {
+    const io = fakeIo({ 'a.aerie': UNSEEN });
+    expect(run(['model', 'a.aerie'], io)).toBe(1);
+    expect(io.out).toBe('');
+    expect(io.err).toContain('a.aerie:8:11: error E703:');
   });
 
   it('LANG-965 prints the diagnostics instead for a file with errors', () => {

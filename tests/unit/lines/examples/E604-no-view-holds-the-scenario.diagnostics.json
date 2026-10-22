@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E604",
+    "severity": "error",
+    "line": 11,
+    "column": 10,
+    "endLine": 11,
+    "endColumn": 14,
+    "message": "No view can show every step of `flow`, because none shows `c` or anything around it. Add `outer` to a view's `show` line."
+  }
+]

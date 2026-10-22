@@ -123,6 +123,7 @@ interface ElementB {
   id: string;
   parent: string | null;
   span: Span;
+  idSpan: Span;
   name: WordsB;
   tagline: WordsB;
   tags: Located[];
@@ -148,6 +149,7 @@ type ShowPending =
 interface ViewB {
   id: string;
   span: Span;
+  idSpan: Span;
   title: WordsB;
   about: ProseB;
   /** Items and kinds, checked once every element and relationship is known. */
@@ -174,6 +176,7 @@ interface ScenarioB {
   valid: boolean;
   head: Located;
   span: Span;
+  idSpan: Span;
   title: WordsB;
   about: ProseB;
   steps: StepB[];
@@ -196,6 +199,7 @@ interface WalkthroughB {
   valid: boolean;
   head: Located;
   span: Span;
+  idSpan: Span;
   title: WordsB;
   about: ProseB;
   steps: WalkStepB[];
@@ -552,6 +556,7 @@ class Parser {
       id,
       parent: parent?.id ?? null,
       span: this.lineSpan(statement),
+      idSpan: this.span(statement, read.id),
       name: newWords(),
       tagline: newWords(),
       tags: [],
@@ -647,11 +652,13 @@ class Parser {
     }
     const head = this.located(statement, read.head);
     const span = this.lineSpan(statement);
+    const idSpan = read.id === null ? head.span : this.span(statement, read.id);
     const holder = owner(read.kind, { words: title, prose: about });
     if (read.kind === 'view') {
       this.views.push({
         id,
         span,
+        idSpan,
         title,
         about,
         pendingShow: [],
@@ -660,9 +667,19 @@ class Parser {
         kinds: [],
       });
     } else if (read.kind === 'scenario') {
-      this.scenarios.push({ id, valid, head, span, title, about, steps: [], stepCount: 0 });
+      this.scenarios.push({
+        id,
+        valid,
+        head,
+        span,
+        idSpan,
+        title,
+        about,
+        steps: [],
+        stepCount: 0,
+      });
     } else {
-      this.walkthroughs.push({ id, valid, head, span, title, about, steps: [] });
+      this.walkthroughs.push({ id, valid, head, span, idSpan, title, about, steps: [] });
     }
     this.visitChildren(statement, holder);
   }
@@ -1379,6 +1396,7 @@ class ModelWriter {
   element(element: ElementB, index: number): Element {
     const at = `/elements/${String(index)}`;
     this.put(at, element.span);
+    this.put(`${at}/id`, element.idSpan);
     this.put(`${at}/tags`, element.tagsSpan);
     this.put(`${at}/icon`, element.icon?.span);
     return {
@@ -1417,6 +1435,7 @@ class ModelWriter {
   view(view: ViewB, index: number): View {
     const at = `/views/${String(index)}`;
     this.put(at, view.span);
+    this.put(`${at}/id`, view.idSpan);
     view.show.forEach((item, j) => {
       this.put(`${at}/show/${String(j)}`, item.span);
     });
@@ -1435,6 +1454,7 @@ class ModelWriter {
   scenario(scenario: ScenarioB, index: number): Scenario {
     const at = `/scenarios/${String(index)}`;
     this.put(at, scenario.span);
+    this.put(`${at}/id`, scenario.idSpan);
     return {
       id: scenario.id,
       title: this.words(`${at}/title`, scenario.title),
@@ -1457,6 +1477,7 @@ class ModelWriter {
   walkthrough(walkthrough: WalkthroughB, index: number): Walkthrough {
     const at = `/walkthroughs/${String(index)}`;
     this.put(at, walkthrough.span);
+    this.put(`${at}/id`, walkthrough.idSpan);
     return {
       id: walkthrough.id,
       title: this.words(`${at}/title`, walkthrough.title),
