@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`golden suite is wired 1`] = `
+{
+  "compares": "committed snapshot",
+  "suite": "golden",
+}
+`;
