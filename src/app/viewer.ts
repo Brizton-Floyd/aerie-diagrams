@@ -134,7 +134,8 @@ export class Viewer {
     new ResizeObserver(() => {
       this.fit();
     }).observe(this.stage);
-    this.applyTheme((remembered(THEME_KEY) as Theme | null) ?? null);
+    const theme = remembered(THEME_KEY);
+    this.applyTheme(theme === 'light' || theme === 'dark' ? theme : null);
     const motion = remembered(MOTION_KEY);
     this.setMotion(motion === 'reduce' || motion === 'full' ? motion : null, false);
   }
@@ -185,21 +186,14 @@ export class Viewer {
     if (result.model === null) {
       this.opened = null;
       this.picture = null;
-      this.drawingHolder.replaceChildren(
-        h('div', { class: 'problems', role: 'alert' }, [
-          h('p', {}, [`${path} has problems, so Aerie cannot draw it:`]),
-          h(
-            'ul',
-            {},
-            result.diagnostics
-              .filter((each) => each.severity === 'error')
-              .map((each) =>
-                h('li', {}, [
-                  `Line ${String(each.line)}, column ${String(each.column)}: ${each.message}`,
-                ]),
-              ),
+      this.drawCount++;
+      this.showProblems(
+        `${path} has problems, so Aerie cannot draw it:`,
+        result.diagnostics
+          .filter((each) => each.severity === 'error')
+          .map(
+            (each) => `Line ${String(each.line)}, column ${String(each.column)}: ${each.message}`,
           ),
-        ]),
       );
       this.renderControls(path);
       this.root.dataset['ready'] = 'true';
@@ -216,7 +210,27 @@ export class Viewer {
     if (this.opened === null) return;
     this.picture = normalisePicture(this.opened.semantics, picture).picture;
     this.renderControls(this.opened.path);
-    void this.draw();
+    const count = this.drawCount + 1;
+    this.draw().catch((error: unknown) => {
+      if (count !== this.drawCount) return;
+      this.showProblems('Aerie could not draw this picture:', [
+        error instanceof Error ? error.message : String(error),
+      ]);
+      this.root.dataset['ready'] = 'true';
+    });
+  }
+
+  private showProblems(heading: string, lines: string[]): void {
+    this.drawingHolder.replaceChildren(
+      h('div', { class: 'problems', role: 'alert' }, [
+        h('p', {}, [heading]),
+        h(
+          'ul',
+          {},
+          lines.map((line) => h('li', {}, [line])),
+        ),
+      ]),
+    );
   }
 
   private zoomFor(preset: ZoomPreset, view: Id): Zoom {
