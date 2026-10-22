@@ -75,8 +75,10 @@ Each suite currently holds a stub that proves its wiring; the slice that owns th
 
 - Dependencies are pinned to exact versions (`.npmrc` has `save-exact`). TypeScript stays on 6.0.x
   until `typescript-eslint` supports 7.
-- `lint` also runs `scripts/check-text.ts`, which fails on any em dash in the repo. Use a plain
-  hyphen.
+- `lint` also runs `scripts/check-text.ts`, which fails on any em dash in the repo (use a plain
+  hyphen), and `scripts/check-docs.ts`, which fails on broken Markdown links and on spec ids
+  (`LANG-012`, `E008`) that are defined twice or cited in docs or tests without being defined.
+- `docs/spec/examples/*.json` are byte-exact canonical models, so Prettier skips them.
 - Playwright builds and serves the app on port 4173 and never reuses a running server. Set
   `AERIE_PREVIEW_PORT` when several checkouts run checks at the same time.
 - Screenshot baselines are shared across platforms (no OS suffix), so screenshot tests must not
@@ -86,8 +88,9 @@ Each suite currently holds a stub that proves its wiring; the slice that owns th
 
 v1 is built in the slices listed in [docs/slice-plan.md](docs/slice-plan.md) (source:
 `/Users/briztonfloyd/Desktop/firstmate/data/ilo-own-map/tickets/11-rebuild-plan.md`). Settled
-decisions live in [docs/decisions/](docs/decisions/). This repository holds no product code until A1
-writes the spec.
+decisions live in [docs/decisions/](docs/decisions/). The functional spec is
+[docs/spec/](docs/spec/overview.md): build from it, cite its requirement ids at the start of test
+titles, and map your slice's tests through [docs/spec/acceptance.md](docs/spec/acceptance.md).
 
 ## Maintaining this file
 
