@@ -181,31 +181,36 @@ function route(edge: ElkExtendedEdge): Point[] {
   return points;
 }
 
-/** How far apart, at most, two coordinates of one straight segment may be before straightening. */
-const JOG = 1;
+/** How close, at most, two points of a route may be before they count as one. */
+const JOG = 0.5;
 
 const near = (a: number, b: number): boolean => Math.abs(a - b) < JOG;
 
 /**
  * ELK routes every edge as horizontal and vertical segments, but where a route crosses a container
  * border its points can disagree by a fraction of a pixel, which would draw as a slight slant. This
- * straightens such jogs: points on one straight run are merged, and the run is aligned to its
- * anchored end. The first and last points only slide along the outline they lie on, so the route
- * still starts on its source and ends on its target (LAYOUT-006).
+ * straightens such jogs: points that nearly coincide are merged, each segment is read as horizontal
+ * or vertical by its longer side, segments on one straight run are merged, and every segment is
+ * aligned to the point before it. The first and last points only slide along the outline they lie
+ * on, so the route still starts on its source and ends on its target (LAYOUT-006).
  */
 export function straighten(points: readonly Point[], source: Box, target: Box): Point[] {
-  const out = points.map((at) => ({ ...at }));
-  // Merge the middle point of three on one straight run, and a bend that nearly coincides with the
-  // point before it or with the end.
-  const close = (a: Point, b: Point): boolean => near(a.x, b.x) && near(a.y, b.y);
+  const out: Point[] = [];
+  for (const at of points) {
+    const last = out.at(-1);
+    if (last !== undefined && near(last.x, at.x) && near(last.y, at.y)) {
+      if (out.length > 1 && at === points.at(-1)) out[out.length - 1] = { ...at };
+      continue;
+    }
+    out.push({ ...at });
+  }
+  const vertical = (a: Point, b: Point): boolean => Math.abs(b.x - a.x) <= Math.abs(b.y - a.y);
   for (let i = 1; i < out.length - 1;) {
     const a = out[i - 1];
     const b = out[i];
     const c = out[i + 1];
     if (a === undefined || b === undefined || c === undefined) break;
-    const coincide = close(a, b) || (i === out.length - 2 && close(b, c));
-    const run = (near(a.x, b.x) && near(b.x, c.x)) || (near(a.y, b.y) && near(b.y, c.y));
-    if (coincide || run) out.splice(i, 1);
+    if (vertical(a, b) === vertical(b, c)) out.splice(i, 1);
     else i += 1;
   }
   const last = out.length - 1;
@@ -213,21 +218,20 @@ export function straighten(points: readonly Point[], source: Box, target: Box): 
     const a = out[i];
     const b = out[i + 1];
     if (a === undefined || b === undefined) continue;
-    for (const axis of ['x', 'y'] as const) {
-      if (a[axis] === b[axis] || !near(a[axis], b[axis])) continue;
-      if (i + 1 < last) {
-        b[axis] = a[axis];
-      } else if (i > 0) {
-        a[axis] = b[axis];
-      } else {
-        // One segment from outline to outline: keep whichever end the other box also spans.
-        const span = (box: Box, at: number): boolean =>
-          axis === 'x'
-            ? at >= box.x && at <= box.x + box.width
-            : at >= box.y && at <= box.y + box.height;
-        if (span(target, a[axis])) b[axis] = a[axis];
-        else if (span(source, b[axis])) a[axis] = b[axis];
-      }
+    const axis = vertical(a, b) ? 'x' : 'y';
+    if (a[axis] === b[axis]) continue;
+    if (i + 1 < last) {
+      b[axis] = a[axis];
+    } else if (i > 0) {
+      a[axis] = b[axis];
+    } else {
+      // One segment from outline to outline: keep whichever end the other box also spans.
+      const span = (box: Box, at: number): boolean =>
+        axis === 'x'
+          ? at >= box.x && at <= box.x + box.width
+          : at >= box.y && at <= box.y + box.height;
+      if (span(target, a[axis])) b[axis] = a[axis];
+      else if (span(source, b[axis])) a[axis] = b[axis];
     }
   }
   return out;

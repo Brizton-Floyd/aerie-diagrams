@@ -43,7 +43,7 @@ describe('measuring text', () => {
     expect(measure('', ROLES.name)).toBe(0);
   });
 
-  it('LAYOUT-101 counts a character the bundled face lacks as one em, so the reserve is never short', () => {
+  it('LAYOUT-101 counts a character the bundled face lacks as one em', () => {
     // U+4E00 is in none of the bundled subsets.
     expect(measure('一', ROLES.name)).toBe(14);
     expect(measure('一一', ROLES.tagline)).toBe(27);
@@ -106,6 +106,13 @@ describe('wrapping text', () => {
       'Gets the game draw history, runs the strategy the user chose, and scores tickets';
     for (const line of wrap(tagline, ROLES.tagline)) expect(line.width).toBeLessThanOrEqual(230);
     expect(wrap(tagline, ROLES.tagline).length).toBeGreaterThan(1);
+  });
+
+  it('LAYOUT-104 never breaks or rewrites a no-break space', () => {
+    const text = Array.from({ length: 12 }, () => '10\u00a0ms').join(' ');
+    const lines = wrap(text, ROLES.tagline);
+    expect(lines.length).toBeGreaterThan(1);
+    for (const line of lines) expect(line.text).toMatch(/^10\u00a0ms( 10\u00a0ms)*$/);
   });
 
   it('LAYOUT-104 splits a word that is too wide after the last / . - _ : or , that fits', () => {

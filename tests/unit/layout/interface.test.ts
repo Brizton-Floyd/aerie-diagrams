@@ -149,7 +149,9 @@ describe('the layout interface', () => {
       ),
     ).toEqual(graph);
     const pictures = await Promise.all(
-      LOTTO.model.audiences.map((audience) => lay.picture('services', DEFAULT_ZOOM, audience.id)),
+      LOTTO.model.audiences.map((audience) =>
+        new Layouter(LOTTO, ENGINE).picture('services', DEFAULT_ZOOM, audience.id),
+      ),
     );
     for (const picture of pictures) {
       expect(picture.graph).toEqual(pictures[0]?.graph);

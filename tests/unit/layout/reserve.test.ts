@@ -148,9 +148,11 @@ describe('the reserve', () => {
         expect(edge.label.width).toBe(Math.max(...labels.map((label) => label.width)));
         expect(edge.label.height).toBe(Math.max(...labels.map((label) => label.height)));
       });
-      // Switching audience: the same graph and the same result for every audience.
+      // Switching audience: each audience laid out on its own gives the same graph and result.
       const pictures = await Promise.all(
-        LOTTO.model.audiences.map((audience) => lay.picture(view, DEFAULT_ZOOM, audience.id)),
+        LOTTO.model.audiences.map((audience) =>
+          layouter(LOTTO).picture(view, DEFAULT_ZOOM, audience.id),
+        ),
       );
       for (const picture of pictures) {
         expect(picture.graph).toEqual(graph);

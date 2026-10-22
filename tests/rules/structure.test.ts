@@ -2,7 +2,7 @@
 // every view, every tested zoom state (pictures.ts) and every audience.
 import { describe, expect, it } from 'vitest';
 import { inProcessEngine } from '../../src/layout/elk/in-process.ts';
-import { checkStructure, textLargeEnough } from '../../src/layout/index.ts';
+import { Layouter, checkStructure, textLargeEnough } from '../../src/layout/index.ts';
 import { SOURCES, pictures } from './pictures.ts';
 
 describe.each(SOURCES)('$path', (source) => {
@@ -22,7 +22,9 @@ describe.each(SOURCES)('$path', (source) => {
 
     it('RULE-005 switching audience moves nothing', async () => {
       const [first, ...others] = await Promise.all(
-        audiences.map((audience) => layouter.picture(view, state.zoom, audience)),
+        audiences.map((audience) =>
+          new Layouter(semantics, layouter.engine).picture(view, state.zoom, audience),
+        ),
       );
       for (const other of others) {
         expect(other.graph).toEqual(first?.graph);

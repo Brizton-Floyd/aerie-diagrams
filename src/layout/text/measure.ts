@@ -65,7 +65,7 @@ function metricsOf(face: FaceName): Metrics {
 
 /**
  * The advance widths of a string's code points in font units, summed. A code point the bundled
- * face lacks counts one em, more than any glyph it has, so the reserve never comes up short.
+ * face lacks counts one em.
  */
 function units(text: string, face: Metrics): number {
   let sum = 0;
@@ -118,10 +118,7 @@ function splitPoint(chars: readonly string[], role: TextRole, wrap: number): num
  * never cut short. Text that never wraps, or fits, is one line; empty text is no lines.
  */
 export function wrap(text: string, role: TextRole): TextLine[] {
-  const words = text
-    .trim()
-    .split(/\s+/)
-    .filter((word) => word !== '');
+  const words = text.split(/[^\S\u00a0\u2007\u202f]+/).filter((word) => word !== '');
   if (words.length === 0) return [];
   const width = role.wrap;
   if (width === null) {

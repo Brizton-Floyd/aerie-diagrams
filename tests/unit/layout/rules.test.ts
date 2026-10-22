@@ -218,6 +218,23 @@ describe('structure rule checks', () => {
     );
   });
 
+  it('LAYOUT-006 catches a label lying on its own route', () => {
+    const on = copy();
+    const edge = on.result.edges['user->website'];
+    const [a, b] = edge?.points ?? [];
+    if (edge === undefined || a === undefined || b === undefined)
+      throw new Error('user->website is drawn');
+    const middle = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+    edge.label = {
+      ...edge.label,
+      x: middle.x - edge.label.width / 2,
+      y: middle.y - edge.label.height / 2,
+    };
+    expect(check(on).find((each) => each.rule === 'LAYOUT-006')?.message).toMatch(
+      /^the label of user->website .* lies on its route$/,
+    );
+  });
+
   it('RULE-008 holds every text role at 13.5 px or more and catches a smaller one', () => {
     expect(textLargeEnough()).toEqual([]);
     expect(textLargeEnough({ ...ROLES, tiny: { ...ROLES.label, size: 12 } })).toEqual([

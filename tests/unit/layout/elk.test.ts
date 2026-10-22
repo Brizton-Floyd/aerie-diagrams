@@ -315,6 +315,26 @@ describe('reading routes back', () => {
       { x: 0, y: 0 },
       { x: 0, y: 50.3 },
     ]);
+    // A real 1 px step is kept square, and offsets along a run never add up into a slant.
+    const stepped = straighten(
+      [
+        { x: 0, y: 0 },
+        { x: 0, y: 40 },
+        { x: 0.9, y: 40 },
+        { x: 1.2, y: 200 },
+        { x: 1.2, y: 230 },
+        { x: -100, y: 230 },
+        { x: -100, y: 300 },
+      ],
+      box(-5, -5, 10, 5),
+      box(-110, 300, 20, 5),
+    );
+    for (const [i, a] of stepped.entries()) {
+      const b = stepped[i + 1];
+      if (b === undefined) continue;
+      expect(a.x === b.x || a.y === b.y, JSON.stringify(stepped)).toBe(true);
+      expect(a.x === b.x && a.y === b.y).toBe(false);
+    }
     // Real corners are kept as they are.
     const corners = [
       { x: 0, y: 0 },

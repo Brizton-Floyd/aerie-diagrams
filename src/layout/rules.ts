@@ -348,11 +348,24 @@ export function distanceToRoute(box: Box, points: readonly Point[]): number {
   return best;
 }
 
+/** Whether a route passes through the inside of a box. */
+function onRoute(box: Box, points: readonly Point[]): boolean {
+  return points.some((a, i) => {
+    const b = points[i + 1];
+    return b !== undefined && crossesInside(a, b, box);
+  });
+}
+
 /** LAYOUT-006: every label box sits beside its route. */
 function labelsBeside(picture: Picture, findings: Finding[]): void {
   for (const [id, edge] of Object.entries(picture.layout.result.edges)) {
     const distance = distanceToRoute(edge.label, edge.points);
-    if (distance > BESIDE + TOLERANCE) {
+    if (distance === 0 && onRoute(edge.label, edge.points)) {
+      findings.push({
+        rule: 'LAYOUT-006',
+        message: `the label of ${id} ${describe(edge.label)} lies on its route`,
+      });
+    } else if (distance > BESIDE + TOLERANCE) {
       findings.push({
         rule: 'LAYOUT-006',
         message: `the label of ${id} ${describe(edge.label)} is ${String(round(distance))} px from its route`,

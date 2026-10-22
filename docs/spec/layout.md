@@ -93,7 +93,7 @@ interface Point {
 - **LAYOUT-101** Text is measured from the glyph advance widths in Aerie's bundled font files, not by
   asking the browser, so a layout is the same in Node, in every browser and on every system. The width
   of a string is the sum of its advance widths at the font size, rounded up to a whole pixel. A
-  character the bundled fonts lack counts one em, wider than any glyph they have.
+  character the bundled fonts lack counts one em.
 - **LAYOUT-102** Kerning and ligatures are off when measuring and when drawing, so drawn text is as
   wide as measured text.
 - **LAYOUT-103** The font, size and wrap width of each text role are set in
