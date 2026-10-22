@@ -2,3 +2,5 @@ package-lock.json
 **/__snapshots__/
 **/__screenshots__/
 .claude/
+# Canonical JSON models are byte-exact output of the Aerie serializer (docs/spec/language.md).
+docs/spec/examples/*.json

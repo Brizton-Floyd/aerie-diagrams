@@ -1,0 +1,27 @@
+// A small complete model. Its canonical JSON model is shop.json, next to this file.
+
+model shop: Corner shop
+audiences owner "Owner" (default), developer "Developer" (code)
+
+customer: Customer [person]
+
+shop: Shop | Sells things online [system]
+  web: Storefront | Where customers browse
+    @developer: | Next.js app
+  orders: Orders store [store]
+
+customer buys from web
+web saves orders in orders
+  @developer: INSERTs rows into
+
+view overview: Overview
+  show customer, shop +1
+
+scenario order: Placing an order
+  customer buys from web
+  web saves orders in orders
+    > The order is stored.
+
+walkthrough intro: Introduction
+  step overview: web
+    > This is the storefront.
