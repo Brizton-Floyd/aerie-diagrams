@@ -1,0 +1,41 @@
+version: "3.9"
+services:
+  web:
+    image: nginx:1.27
+    ports:
+      - 80
+      - "8443:443"
+      - "127.0.0.1:9000-9001:9000-9001"
+      - "[::1]:6001:6001/udp"
+      - target: 8080
+        published: "18080"
+        host_ip: 0.0.0.0
+        protocol: tcp
+        mode: host
+    expose:
+      - "3000"
+      - 4000/udp
+    volumes:
+      - ./site:/usr/share/nginx/html:ro
+      - logs:/var/log/nginx
+      - /var/cache/nginx
+      - type: bind
+        source: ./conf
+        target: /etc/nginx/conf.d
+      - type: tmpfs
+        target: /tmp
+    healthcheck:
+      test: curl -f http://localhost/ || exit 1
+  worker:
+    image: shop/worker
+    profiles:
+      - batch
+      - nightly
+    healthcheck:
+      test: ["NONE"]
+  probe:
+    image: shop/probe
+    healthcheck:
+      disable: true
+volumes:
+  logs:

@@ -17,6 +17,9 @@ const PURE_GLOBALS = ['error', 'window', 'document', 'navigator', 'process', 're
 // Layout builds only on the entry points of the language and the model.
 const LAYOUT_UP = { regex: String.raw`^\.\./(?!(?:lines|model)/index\.ts$)` };
 const LAYOUT_UP_TWO = { regex: String.raw`^\.\./\.\./(?!(?:lines|model)/index\.ts$)` };
+// The extractor builds only on the entry point of the language.
+const EXTRACT_UP = { regex: String.raw`^\.\./(?!lines/index\.ts$)` };
+const EXTRACT_UP_TWO = { regex: String.raw`^\.\./\.\./(?!lines/index\.ts$)` };
 
 export default defineConfig(
   { ignores: ['dist/', 'coverage/', 'test-results/', 'playwright-report/', 'blob-report/'] },
@@ -108,6 +111,28 @@ export default defineConfig(
             ELK_PATTERN,
           ],
         },
+      ],
+      'no-restricted-globals': PURE_GLOBALS,
+    },
+  },
+  {
+    // The extractor is pure too, so it reads a project only through `ProjectFiles`, built only on
+    // the language (docs/spec/drift.md, DRIFT-001).
+    files: ['src/extract/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        { paths: [ELK_PATH], patterns: [NODE, EXTRACT_UP, ELK_PATTERN] },
+      ],
+      'no-restricted-globals': PURE_GLOBALS,
+    },
+  },
+  {
+    files: ['src/extract/*/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        { paths: [ELK_PATH], patterns: [NODE, EXTRACT_UP_TWO, ELK_PATTERN] },
       ],
       'no-restricted-globals': PURE_GLOBALS,
     },

@@ -1,0 +1,3 @@
+warning  platform/compose.yaml:21  Service `remote` is built from `https://github.com/example/remote.git#main`, outside the system, so its source is not checked.
+warning  platform/compose.yaml:24  The Dockerfile `nowhere/Dockerfile` of service `missing` does not exist, so the source its image is built from is not checked.
+warning  platform/compose.yaml:27  Service `inline` writes its Dockerfile inline, so the source its image is built from is not checked.

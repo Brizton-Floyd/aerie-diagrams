@@ -1,0 +1,8 @@
+services:
+  billing:
+    image: shop/billing:${BILLING_TAG}
+    environment:
+      LEDGER_HOST: ledger
+      ORDERS_CALLBACK: http://orders:8080/callbacks
+  ledger:
+    image: shop/ledger

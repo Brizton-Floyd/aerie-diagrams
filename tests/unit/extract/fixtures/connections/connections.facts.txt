@@ -1,0 +1,48 @@
+stack/deploy/compose.yml:1  Compose project folder: deploy
+stack/deploy/compose.yml:2  Compose service: compose:web
+stack/deploy/compose.yml:3  Compose build context: compose:web builds in stack/deploy/web (stack/deploy/web/Dockerfile)
+stack/deploy/compose.yml:9  Compose environment URL: compose:web to compose:api (OVERRIDDEN=http://api:8080/v2)
+stack/deploy/compose.yml:13  Compose service: compose:api
+stack/deploy/compose.yml:14  Compose image: compose:api runs shop/api
+stack/deploy/compose.yml:22  Compose environment JDBC URL: compose:api to compose:db (SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shop)
+stack/deploy/compose.yml:24  Compose environment JDBC URL: compose:api to compose:reports (REPORTS_DB=jdbc:sqlserver://reports:1433;databaseName=r;password=***)
+stack/deploy/compose.yml:25  Compose environment JDBC URL: compose:api to compose:legacy-db (LEGACY_DB=jdbc:oracle:thin:@legacy-db:1521:orcl)
+stack/deploy/compose.yml:26  Compose environment host name: compose:api to compose:rabbit (SPRING_RABBITMQ_HOST=rabbit)
+stack/deploy/compose.yml:27  Compose environment host name: compose:api to compose:kafka (KAFKA_BOOTSTRAP_SERVERS=kafka:9092,kafka-2:9092)
+stack/deploy/compose.yml:27  Compose environment host name: compose:api to compose:kafka-2 (KAFKA_BOOTSTRAP_SERVERS=kafka:9092,kafka-2:9092)
+stack/deploy/compose.yml:28  Compose environment URL: compose:api to compose:cache (CACHE=redis://:***@cache:6379/0)
+stack/deploy/compose.yml:29  Compose environment host name: compose:api to compose:cache (REDIS_HOST=redis-cache)
+stack/deploy/compose.yml:30  Compose environment URL: compose:api to compose:mongo-1 (MONGO_URL=mongodb://app:***@mongo-1:27017,mongo-2:27017/shop?replicaSet=rs0)
+stack/deploy/compose.yml:30  Compose environment URL: compose:api to compose:mongo-2 (MONGO_URL=mongodb://app:***@mongo-1:27017,mongo-2:27017/shop?replicaSet=rs0)
+stack/deploy/compose.yml:31  Compose environment URL: compose:api to host api.payments.example.com (PAYMENTS_URL=https://api.payments.example.com/v1)
+stack/deploy/compose.yml:35  Compose depends_on: compose:api to compose:db
+stack/deploy/compose.yml:36  Compose depends_on: compose:api to compose:rabbit
+stack/deploy/compose.yml:38  Compose links: compose:api to compose:cache
+stack/deploy/compose.yml:39  Compose service: compose:worker
+stack/deploy/compose.yml:40  Compose image: compose:worker runs shop/worker
+stack/deploy/compose.yml:42  Compose environment URL: compose:worker to compose:api (API=http://shop-api:8080)
+stack/deploy/compose.yml:43  Compose environment URL: compose:worker to compose:api (API2=http://API-HOST:8080)
+stack/deploy/compose.yml:44  Compose environment URL: compose:worker to compose:api (API3=http://api.internal:8080)
+stack/deploy/compose.yml:47  Compose depends_on: compose:worker to compose:api
+stack/deploy/compose.yml:49  Compose service: compose:db
+stack/deploy/compose.yml:50  Compose image: compose:db runs postgres:16
+stack/deploy/compose.yml:51  Compose service: compose:reports
+stack/deploy/compose.yml:52  Compose image: compose:reports runs mcr.microsoft.com/mssql/server:2022-latest
+stack/deploy/compose.yml:53  Compose service: compose:legacy-db
+stack/deploy/compose.yml:54  Compose image: compose:legacy-db runs container-registry.example.com/oracle/db:19
+stack/deploy/compose.yml:55  Compose service: compose:rabbit
+stack/deploy/compose.yml:56  Compose image: compose:rabbit runs rabbitmq:3
+stack/deploy/compose.yml:57  Compose service: compose:kafka
+stack/deploy/compose.yml:58  Compose image: compose:kafka runs apache/kafka:3.9.0
+stack/deploy/compose.yml:59  Compose service: compose:kafka-2
+stack/deploy/compose.yml:60  Compose image: compose:kafka-2 runs apache/kafka:3.9.0
+stack/deploy/compose.yml:61  Compose service: compose:cache
+stack/deploy/compose.yml:62  Compose image: compose:cache runs redis:7
+stack/deploy/compose.yml:63  Compose service: compose:mongo-1
+stack/deploy/compose.yml:64  Compose image: compose:mongo-1 runs mongo:7
+stack/deploy/compose.yml:65  Compose service: compose:mongo-2
+stack/deploy/compose.yml:66  Compose image: compose:mongo-2 runs mongo:7
+stack/deploy/web.env:2  Compose environment URL: compose:web to compose:api (API_URL=http://api:8080)
+stack/deploy/web/Dockerfile:4  Dockerfile COPY: compose:web is built from stack/deploy/web (stage build)
+stack/deploy/web/Dockerfile:8  Compose environment URL: compose:web to compose:api (UPSTREAM=http://api:8080)
+stack/deploy/web/Dockerfile:11  Dockerfile EXPOSE: compose:web exposes 80/tcp

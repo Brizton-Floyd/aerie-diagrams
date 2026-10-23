@@ -1,0 +1,96 @@
+# Local stack: every service the Web UI needs, built from source and wired together.
+#   docker compose up --build -d --wait   start and wait until every service is healthy
+#   docker compose down                   stop; draw data is kept in the draw-data volume
+#   docker compose down -v                stop and delete the draw data
+# The results service and Web UI sources come from sibling clones; see "Local stack" in README.md.
+
+name: lotto-stack
+
+x-backend-build: &backend-build
+  context: .
+  dockerfile: deploy/backend/Dockerfile
+  additional_contexts:
+    results-service-src: ${RESULTS_SERVICE_SRC:-../lottery-result-persistence-service}
+
+services:
+  results-service:
+    build:
+      <<: *backend-build
+      target: results-service
+    ports:
+      - "127.0.0.1:${RESULTS_SERVICE_PORT:-8001}:8001"
+    volumes:
+      - draw-data:/data
+    # Ready once the catalog Core reads lists at least one game: on a first run the service
+    # starts empty and fills the volume from the lottery sites before it can serve draws.
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8001/api/v1/all/v2/state-games | grep -q '\"fullName\"'"]
+      start_period: 10m
+      start_interval: 5s
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  core:
+    build:
+      <<: *backend-build
+      target: core
+    environment:
+      PERSISTENCESERVICE_HOST: http://results-service:8001/
+    ports:
+      - "127.0.0.1:${CORE_PORT:-8002}:8002"
+    depends_on:
+      results-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8002/api/v1/gameout/health"]
+      start_period: 2m
+      start_interval: 3s
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  bff:
+    build:
+      <<: *backend-build
+      target: bff
+    environment:
+      # application.yaml binds the BFF to 127.0.0.1; inside a container it must listen on
+      # every interface for the Web UI container (and the published port) to reach it.
+      SERVER_ADDRESS: 0.0.0.0
+      COREAPI_BASEURL: http://core:8002
+    ports:
+      - "127.0.0.1:${BFF_PORT:-8080}:8080"
+    depends_on:
+      core:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8080/ui/ping"]
+      start_period: 2m
+      start_interval: 3s
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  web-ui:
+    build:
+      context: deploy/web-ui
+      additional_contexts:
+        ui-src: ${LOTTO_UI_SRC:-../lotto-options-ui}
+    environment:
+      BFF_URL: http://bff:8080
+    ports:
+      - "127.0.0.1:${WEB_UI_PORT:-4200}:80"
+    depends_on:
+      bff:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost/"]
+      start_period: 30s
+      start_interval: 2s
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  draw-data:

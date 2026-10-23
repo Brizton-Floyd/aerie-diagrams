@@ -53,6 +53,24 @@ licence. The full licence texts follow the list.
 - Source: <https://codemirror.net> and <https://github.com/codemirror>; the exact releases are the
   npm packages named above, for example <https://www.npmjs.com/package/@codemirror/view/v/6.43.15>.
 
+## The extractor's parsers
+
+- What: the parsers drift detection reads a project with ([drift.md](docs/spec/drift.md), section 4),
+  each used unmodified and only by `aerie` on the command line, never in the page:
+  - `yaml` 2.9.1 - Copyright Eemeli Aro; licence ISC, text below. Reads Compose files with their
+    positions. Source: <https://github.com/eemeli/yaml>, release
+    <https://www.npmjs.com/package/yaml/v/2.9.1>.
+  - `dockerfile-ast` 0.7.1 - Copyright (c) 2017-2021 Remy Suen; licence MIT, text below. Reads
+    Dockerfiles. Source: <https://github.com/rcjsuen/dockerfile-ast>, release
+    <https://www.npmjs.com/package/dockerfile-ast/v/0.7.1>.
+  - `vscode-languageserver-types` 3.18.5 and `vscode-languageserver-textdocument` 1.0.16, which
+    `dockerfile-ast` depends on - Copyright (c) Microsoft Corporation; licence MIT, text below.
+    Source: <https://github.com/Microsoft/vscode-languageserver-node>, releases
+    <https://www.npmjs.com/package/vscode-languageserver-types/v/3.18.5> and
+    <https://www.npmjs.com/package/vscode-languageserver-textdocument/v/1.0.16>.
+- Aerie writes the rest itself: Compose interpolation and the `.env` format, which never run
+  `$(...)`.
+
 ## Eclipse Public License 2.0
 
 ```text
@@ -439,4 +457,22 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+```
+
+## ISC License
+
+```text
+Copyright Eemeli Aro <eemeli@gmail.com>
+
+Permission to use, copy, modify, and/or distribute this software for any purpose
+with or without fee is hereby granted, provided that the above copyright notice
+and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
+OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
+THIS SOFTWARE.
 ```

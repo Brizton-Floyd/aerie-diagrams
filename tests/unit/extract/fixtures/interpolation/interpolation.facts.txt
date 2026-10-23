@@ -1,0 +1,15 @@
+app/compose.yaml:1  Compose project folder: app
+app/compose.yaml:2  Compose service: compose:orders-api
+app/compose.yaml:3  Compose image: compose:orders-api runs registry.example.com/orders-api:latest
+app/compose.yaml:5  Compose port: compose:orders-api publishes 8080/tcp on 9000
+app/compose.yaml:6  Compose port: compose:orders-api publishes 9100/tcp on 9100
+app/compose.yaml:8  Compose environment JDBC URL: compose:orders-api to compose:db (DATABASE_URL=jdbc:postgresql://db:5432/shop)
+app/compose.yaml:9  Compose environment URL: compose:orders-api to compose:pricing (PRICING_URL=http://pricing:8081/api)
+app/compose.yaml:12  Compose environment URL: compose:orders-api to compose:pricing (FALLBACK=http://pricing:8081)
+app/compose.yaml:14  Compose environment URL: compose:orders-api to compose:pricing (ALTERNATE=http://pricing:8081)
+app/compose.yaml:15  Compose environment URL: compose:orders-api to compose:pricing (NESTED=http://pricing:8081)
+app/compose.yaml:16  Compose service: compose:pricing
+app/compose.yaml:17  Compose image: compose:pricing runs registry.example.com/pricing
+app/compose.yaml:19  Compose environment URL: compose:pricing to compose:orders-api (ORDERS=http://orders-api:9000)
+app/compose.yaml:21  Compose service: compose:db
+app/compose.yaml:22  Compose image: compose:db runs postgres:16

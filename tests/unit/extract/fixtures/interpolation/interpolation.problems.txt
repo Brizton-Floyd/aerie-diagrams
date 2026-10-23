@@ -1,0 +1,1 @@
+warning  app/compose.yaml:20  `AUDIT_HOST` has no value here or in the `.env` file and no default, so it reads as empty: the value it sets is not checked.

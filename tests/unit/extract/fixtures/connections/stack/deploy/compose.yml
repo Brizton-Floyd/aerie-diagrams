@@ -1,0 +1,66 @@
+services:
+  web:
+    build: ./web
+    env_file:
+      - web.env
+      - path: local.env
+        required: false
+    environment:
+      OVERRIDDEN: http://api:8080/v2
+      SELF_URL: http://web:3000
+      LOCAL_URL: http://localhost:3000
+      SPRING_PROFILES_ACTIVE: worker
+  api:
+    image: shop/api
+    container_name: shop-api
+    hostname: api-host
+    networks:
+      default:
+        aliases:
+          - api.internal
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shop
+      - SPRING_DATASOURCE_PASSWORD=hunter2
+      - REPORTS_DB=jdbc:sqlserver://reports:1433;databaseName=r;password=s3cret
+      - LEGACY_DB=jdbc:oracle:thin:@legacy-db:1521:orcl
+      - SPRING_RABBITMQ_HOST=rabbit
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092,kafka-2:9092
+      - CACHE=redis://:topsecret@cache:6379/0
+      - REDIS_HOST=redis-cache
+      - MONGO_URL=mongodb://app:pw@mongo-1:27017,mongo-2:27017/shop?replicaSet=rs0
+      - PAYMENTS_URL=https://api.payments.example.com/v1
+      - WORKER_NAME=worker
+      - SHELL_ONLY
+    depends_on:
+      - db
+      - rabbit
+    links:
+      - "cache:redis-cache"
+  worker:
+    image: shop/worker
+    environment:
+      API: http://shop-api:8080
+      API2: http://API-HOST:8080
+      API3: http://api.internal:8080
+      CACHE_HOST: redis-cache
+    depends_on:
+      api:
+        condition: service_healthy
+  db:
+    image: postgres:16
+  reports:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+  legacy-db:
+    image: container-registry.example.com/oracle/db:19
+  rabbit:
+    image: rabbitmq:3
+  kafka:
+    image: apache/kafka:3.9.0
+  kafka-2:
+    image: apache/kafka:3.9.0
+  cache:
+    image: redis:7
+  mongo-1:
+    image: mongo:7
+  mongo-2:
+    image: mongo:7

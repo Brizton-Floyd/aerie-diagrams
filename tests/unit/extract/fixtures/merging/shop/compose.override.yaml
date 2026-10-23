@@ -1,0 +1,13 @@
+services:
+  orders:
+    ports:
+      - "18080:8080"
+    environment:
+      DEBUG_URL: http://debugger:5005
+  legacy:
+    ports: !override
+      - "7001:7000"
+    environment: !reset {}
+  debugger:
+    image: shop/debugger
+    profiles: [debug]

@@ -1,0 +1,7 @@
+model shop: Corner shop
+
+system
+  repo stack
+  compose stack/deploy/compose.yml
+
+web: Storefront

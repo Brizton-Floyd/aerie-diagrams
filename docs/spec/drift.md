@@ -82,8 +82,8 @@ package name and the `class:` package are only illustrations.
   each. Without `repo` lines the system is the repository that holds the model file. `compose`
   lines name the authoritative Compose files, which matters because a project may hold stale ones
   (Lotto has a second, stale Compose file). Without a `compose` line, drift reads the Compose file
-  that `docker compose` would pick by default in each repo's root, if there is one (D2 confirms the
-  file names it tries).
+  that `docker compose` would pick by default in each repo's root, if there is one (DRIFT-007
+  lists the file names it tries).
 - **Code lines** (#52): optional source hints. Each element may list the code units it stands for.
   An element drawn above the level of the code lists all its units (#53), and drift then compares at
   that level and never asks for finer detail. Parts (elements inside a module) are checked only when
@@ -136,6 +136,134 @@ How reliable it was on Lotto (n is small; the point is that no technique invente
 
 Matching HTTP calls to endpoints also found calls that no endpoint answers (14 on Lotto, which the
 sample's author had noted by hand), and the class graph surfaced one real undrawn connection.
+
+### The extractor core (slice D2)
+
+The extractor is `src/extract/`, pure TypeScript like the language and the model; its entry point and
+API notes are in `src/extract/index.ts`.
+
+- **DRIFT-001** `extract` takes a model's system root, the folder that holds the model file, the
+  repository that holds it, and read access to the project's files, and returns **facts**: what the
+  code shows, each with its technique and its evidence. It reads files only through that access, never
+  lists folders, runs a command, opens the network or writes, and reads only what the system root
+  leads it to (the Compose files, the `.env` and env files, included and extended files, and the
+  Dockerfiles they build with). A fact is one of: a Compose project, a code unit (a service), an
+  image, a port, a build, a source an image is built from, a connection (one unit naming another, or
+  a host outside the system), a volume, a profile or a healthcheck.
+- **DRIFT-002** Evidence is a line of a file, printed `repo/path:line`, with lines counting from 1. A
+  fact prints as one line, `repo/path:line  technique: detail`, with code units as `kind:name`; this
+  is the evidence line of a report (section 7).
+- **DRIFT-003** Every fact names its technique from one catalogue (`TECHNIQUES`), with the name a
+  report prints and whether it only **corroborates**: `depends_on` and `links` are start-up order, so
+  matching (D5) never counts them as evidence on their own.
+- **DRIFT-004** Facts come once each, in a stable order: by repo, path and line, then by what they
+  say. The same project always gives the same facts.
+- **DRIFT-005** What stops or limits extraction is a **problem**, in plain English with the project's
+  own names in backticks. An error means drift cannot run (exit code 2): a repo or Compose file the
+  system root names does not exist, or a Compose file is not valid YAML or not a mapping. A warning
+  names what is not checked: a variable with no value and no default, a missing env, included or
+  extended file, an unknown `extends` service or a loop, a service an include declares twice, and a
+  build whose source cannot be read (a remote context, an inline Dockerfile, a missing Dockerfile).
+- **DRIFT-006** The repos are the system root's `repo` paths, read from the model file's folder; with
+  no `repo` line the system is the repository that holds the model file (the command finds it as the
+  nearest folder up with a `.git`). Evidence names a repo by its folder's name, or by its path as
+  written when two repos share a folder name. A file outside every repo keeps its absolute path.
+- **DRIFT-007** The Compose files read are the system root's `compose` lines, merged in order as one
+  project whose folder is the first file's. Without a `compose` line, each repo's root gives one
+  project of the file `docker compose` picks by default (the first of `compose.yaml`, `compose.yml`,
+  `docker-compose.yml`, `docker-compose.yaml`) merged with the first override file
+  (`compose.override.yml`, `compose.override.yaml`, `docker-compose.override.yml`,
+  `docker-compose.override.yaml`), as the Compose tooling chooses them. Compose's search of parent
+  folders does not apply. A repo with neither has no Compose facts and no problem.
+- **DRIFT-008** YAML is read with the `yaml` package (YAML 1.2, merge keys on) into a tree that keeps
+  the file and line of every key and value, with aliases resolved, so a value that comes through an
+  anchor or a merge key is evidenced where it is written.
+- **DRIFT-009** The parsers it uses, `yaml` and `dockerfile-ast` (with the two packages
+  `dockerfile-ast` needs), are pinned to exact versions, unpatched, and recorded with their licences
+  and sources in `THIRD_PARTY_NOTICES.md`; nothing else is added for D2.
+
+### Docker Compose (slice D2)
+
+The Compose extractor reads a project as `docker compose config` would show it, from the files alone;
+`docker compose config` served as the oracle for the fixture projects.
+
+- **DRIFT-101** Each service is a code unit `compose:<name>` (technique "Compose service"). The project
+  is named by its last `name`, or else by its folder's name as Compose writes it (lower case letters,
+  digits, `-` and `_`; technique "Compose project folder").
+- **DRIFT-102** Values are interpolated as the Compose specification says, file by file before
+  merging: `$VAR`, `${VAR}`, `${VAR:-default}`, `${VAR-default}`, `${VAR:?error}`, `${VAR?error}`,
+  `${VAR:+replacement}`, `${VAR+replacement}`, defaults nested inside defaults, and `$$` for a `$`.
+  Keys are never interpolated. A variable's value comes only from the project's `.env` file (an
+  include's own `.env`, under the including project's), never from the environment drift runs in, so
+  a run in CI reads what a reader of the repo reads. A variable with no value and no default reads as
+  empty, as in Compose, with a warning.
+- **DRIFT-103** `.env` and `env_file` files follow the Compose format: `VAR=VAL`, `export VAR=VAL`,
+  `#` comments and comments after a space in an unquoted value, single quotes taken literally, double
+  quotes with `\n`, `\r`, `\t`, `\\` and `\"`, quoted values over several lines, interpolation of
+  unquoted and double-quoted values from the lines above, `VAR=` for empty and `VAR` alone for unset,
+  and `format: raw`. Aerie reads them itself and never runs `$(...)`.
+- **DRIFT-104** Merge keys (`<<: *anchor`, `<<: [*a, *b]`) apply with a key written in the map
+  winning. Several files merge as the specification says: mappings key by key, scalars replaced (the
+  healthcheck command too), ports kept unique by host address,
+  target, published port and protocol, volumes by target, other lists appended; `!reset` removes an
+  attribute (or one environment variable) and `!override` replaces it. Short and long syntaxes merge
+  alike. Relative paths start from the project folder.
+- **DRIFT-105** `extends` takes a service from the same file or another file (its relative paths start
+  from that file's folder), recursively, before the file merges with the others. `include` (short and
+  long syntax: `path` as one file or several, `project_directory`, `env_file`) loads each included
+  project on its own and adds its services; a service declared again is a warning, and the first is
+  kept.
+- **DRIFT-106** A service's `build` gives a build fact: the context as a place in the system (or a
+  remote context as written), the Dockerfile (`dockerfile` from the context, `Dockerfile` by default)
+  and the target. Named contexts (`additional_contexts`, map or list) that are folders are resolved
+  from the project folder.
+- **DRIFT-107** The Dockerfile, read with `dockerfile-ast`, leads to the **source** the image is built
+  from: the target stage (the last stage without a target), every stage it starts from, and every
+  stage they copy from (by name, case-insensitively, or by index), recursively. Each `COPY` and `ADD`
+  source path and each `RUN --mount=type=bind` source in those stages, from the build context or a
+  named context that is a folder, is a source fact at the line that copies it, with its stage. Build
+  arguments are filled in from `build.args`, then `ARG` defaults (a global `ARG` reaches a stage only
+  where the stage declares it again). Copies from images, URLs and heredocs are not sources.
+- **DRIFT-108** The image's own `EXPOSE` and `ENV` are those of the target stage and the stages it
+  starts from (not of the stages it only copies from). `EXPOSE` gives ports ("Dockerfile EXPOSE");
+  an `ENV` value counts as part of the service's environment, unless Compose gives the same variable a value (a variable Compose lists with no value leaves the image's).
+- **DRIFT-109** A service's environment is its `env_file` files in order, then `environment` (map or
+  list) over them; a variable `environment` names without a value is unset. Each value that names
+  another service gives a connection at the line that sets it: a URL ("Compose environment URL",
+  every host of a multi-host URL), a JDBC URL ("Compose environment JDBC URL", Oracle's
+  `@host:port` form included) or a bare host name, alone or in a list ("Compose environment host
+  name").
+- **DRIFT-110** A host names a service by its name, its `container_name`, its `hostname` or a network
+  alias, in any case, and through a `links` alias only from the service that declares the link.
+  `localhost`, `127.0.0.1`, `0.0.0.0`, `::1` and `::` and the service's own names are the container
+  itself and give nothing; a healthcheck is never a connection. A bare name counts only when a port
+  follows it or the variable's name says it holds a host (`HOST`, `ADDR`, `SERVER`, `BROKER`,
+  `ENDPOINT`, `URL`, `URI`, `BOOTSTRAP`, `NODE`, `PEER`, `UPSTREAM`, `BACKEND`, `TARGET`, `DSN`,
+  `CONTACT` or `CLUSTER`), so `SPRING_PROFILES_ACTIVE: worker` never names the service `worker`. A
+  URL whose host is no service names a host outside the system.
+- **DRIFT-111** A connection keeps the variable and its value as evidence, with passwords hidden: the
+  password of a URL's user, and `password`, `passwd`, `pwd`, `secret`, `token`, `apikey` and `api_key`
+  parameters, print as `***`.
+- **DRIFT-112** `depends_on` (list or map) and `links` give connections only to services of the
+  project, with techniques that only corroborate (DRIFT-003).
+- **DRIFT-113** Details for phase 2 and for matching: each `image`; each port (short syntax with host
+  address, IPv6 in brackets, ranges and protocol, or long syntax; a port with no host port is
+  published on a free port; `expose` ports are open only to the other services); each volume (a
+  folder of the system for a bind mount, a named or anonymous volume, tmpfs and the rest by type);
+  each profile; and the healthcheck command (`CMD`, `CMD-SHELL` or a string; none when `NONE` or
+  `disable: true`).
+- **DRIFT-114** On copies of the Lotto Compose files, with a system root that names Lotto's three
+  repos and `lotto-options-core/compose.yaml`, the extractor finds the
+  four services and the three service connections Compose shows (#51), through the shared
+  `x-backend-build` anchor and the Dockerfile's stages to each repo's sources; without the `compose`
+  line it also reads the stale `docker-compose.yml` of the Results store, which is why the system
+  root names the authoritative file.
+
+Choices D2 made, where this document left them open: the default Compose files are those of
+DRIFT-007; variables come only from `.env` files (DRIFT-102); the top-level `jobs` element (new in the
+specification) and `dockerfile_inline` are not read; a port range is one fact; the image's `ENV`
+counts as environment (DRIFT-108); and nginx configuration, which the research read as glue between
+Compose and the Web UI, belongs with the Node and Angular extractor (D4).
 
 ## 5. Matching and lifting (slice D5)
 

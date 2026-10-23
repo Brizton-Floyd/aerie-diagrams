@@ -186,6 +186,20 @@ lines and `ignore` lines in the Lines language. No extraction yet.
 | unit  | The skill's language summary lists the new keywords, ownership rows and diagnostics                                                        | SKILL-101, SKILL-206         |
 | rules | Adding code lines, a system root and ignore lines to every sample changes no drawing, for every view, audience and zoom state              | MODEL-006                    |
 
+### After v1: D2, the extractor core and Docker Compose
+
+Slice D2 of drift detection ([drift.md](drift.md#the-extractor-core-slice-d2), read log
+`d2-compose.md`): facts with evidence and technique, and the Docker Compose extractor. No matching or
+reports yet.
+
+| Suite | What it proves                                                                                                                                                    | Requirements                      |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| unit  | Facts carry their technique and `repo/path:line` evidence, print as report lines, come sorted and once each; the parsers are pinned and noticed                   | DRIFT-001 to DRIFT-004, DRIFT-009 |
+| unit  | Problems name what stops drift and what is not checked; the system root gives the repos and the Compose files read; YAML keeps positions                          | DRIFT-005 to DRIFT-008            |
+| unit  | Each Compose rule, from interpolation and the `.env` format to hosts, secrets, builds and details                                                                 | DRIFT-101 to DRIFT-113            |
+| unit  | Fixture projects with known facts (interpolation, merging, connections, builds, details): every fact found, nothing more, checked against `docker compose config` | DRIFT-102 to DRIFT-113            |
+| unit  | Copies of the Lotto Compose files give its four services and three Compose connections, and only from the file the system root names                              | DRIFT-114                         |
+
 ## Browser journeys
 
 Journeys run against the production build with the Lotto sample, at 1600 x 900, as a reader would use

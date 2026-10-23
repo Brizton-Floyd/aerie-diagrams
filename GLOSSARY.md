@@ -62,6 +62,13 @@ Maven module, an npm package or a class.
 
 **Ignore line**: `ignore drift <subject> - <reason>`: a difference between the model and the code that is meant.
 
+**Fact**: Something the extractor found in the code, such as a Compose service or one service naming another, with
+its evidence and technique.
+
+**Evidence**: Where a fact was found: a line of a file, written `repo/path:line`.
+
+**Technique**: The way a fact was found, such as "Compose environment URL". Drift counts how many agree.
+
 ## Words to avoid
 
 - "resource", "perspective" and "sequence": another product's terms. Say element, view and scenario.

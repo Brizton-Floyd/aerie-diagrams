@@ -1,0 +1,20 @@
+model lotto: Lotto suite
+
+system
+  repo lotto-options-core
+  repo lotto-options-ui
+  repo lottery-result-persistence-service
+  compose lotto-options-core/compose.yaml
+
+website: Website | Where players pick numbers [service]
+  code compose:web-ui
+screen-api: Screen API | Shapes data for the screens [service]
+  code compose:bff
+engine: Analysis engine | Generates and scores picks [service]
+  code compose:core
+store: Results store | Keeps every draw [service]
+  code compose:results-service
+
+website gets screen data from screen-api
+screen-api requests analysis from engine
+engine reads draws from store

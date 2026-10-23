@@ -1,0 +1,22 @@
+details/docker-compose.override.yml:4  Compose healthcheck: compose:web checks itself with wget -qO- http://localhost/health || exit 1
+details/docker-compose.yml:1  Compose project folder: details
+details/docker-compose.yml:3  Compose service: compose:web
+details/docker-compose.yml:4  Compose image: compose:web runs nginx:1.27
+details/docker-compose.yml:6  Compose port: compose:web publishes 80/tcp on a free port
+details/docker-compose.yml:7  Compose port: compose:web publishes 443/tcp on 8443
+details/docker-compose.yml:8  Compose port: compose:web publishes 9000-9001/tcp on 127.0.0.1:9000-9001
+details/docker-compose.yml:9  Compose port: compose:web publishes 6001/udp on [::1]:6001
+details/docker-compose.yml:10  Compose port: compose:web publishes 8080/tcp on 0.0.0.0:18080
+details/docker-compose.yml:16  Compose port: compose:web exposes 3000/tcp
+details/docker-compose.yml:17  Compose port: compose:web exposes 4000/udp
+details/docker-compose.yml:19  Compose volume: compose:web mounts folder details/site at /usr/share/nginx/html
+details/docker-compose.yml:20  Compose volume: compose:web mounts volume logs at /var/log/nginx
+details/docker-compose.yml:21  Compose volume: compose:web mounts volume at /var/cache/nginx
+details/docker-compose.yml:22  Compose volume: compose:web mounts folder details/conf at /etc/nginx/conf.d
+details/docker-compose.yml:25  Compose volume: compose:web mounts tmpfs at /tmp
+details/docker-compose.yml:29  Compose service: compose:worker
+details/docker-compose.yml:30  Compose image: compose:worker runs shop/worker
+details/docker-compose.yml:32  Compose profile: compose:worker is in profile batch
+details/docker-compose.yml:33  Compose profile: compose:worker is in profile nightly
+details/docker-compose.yml:36  Compose service: compose:probe
+details/docker-compose.yml:37  Compose image: compose:probe runs shop/probe

@@ -1,0 +1,6 @@
+model shop: Corner shop
+
+system
+  repo app
+
+api: Orders API

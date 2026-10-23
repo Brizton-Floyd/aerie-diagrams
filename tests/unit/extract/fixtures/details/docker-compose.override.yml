@@ -1,0 +1,4 @@
+services:
+  web:
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/health || exit 1"]
