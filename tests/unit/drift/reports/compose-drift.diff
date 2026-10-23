@@ -1,0 +1,30 @@
+--- a/tests/unit/drift/fixtures/compose/shop-drift.aerie
++++ b/tests/unit/drift/fixtures/compose/shop-drift.aerie
+@@ -21,21 +21,22 @@
+   api: Orders API [service]
+     code compose:api
+   payments: Payments [service]
+-    code compose:payment
++    code compose:payments
+   worker: Worker [service]
+     code compose:worker
+   db: Database [store]
+     code compose:db
+-  search: Search [service]
+-    code compose:search
++  cache: cache [service]
++    code compose:cache
+ 
+ bank: Bank | Takes card payments [external]
+ 
+ customer uses web
+ web calls api
+-web calls payments
+ api charges cards through payments
+ payments charges cards at bank
++api calls cache
++worker calls api
++api calls db
+ 
+ ignore drift compose:queue - run by the platform team, outside this diagram
+-ignore drift web to db - the storefront read the database before the API existed

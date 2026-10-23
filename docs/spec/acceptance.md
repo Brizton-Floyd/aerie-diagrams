@@ -245,6 +245,19 @@ fixtures with planted drifts and the Lotto benchmark. No reports or CLI yet.
 | unit  | Fixture projects per stack: the matching model gives no finding, the planted one exactly its planted findings, and its patch none                      | DRIFT-432              |
 | unit  | The Lotto benchmark: every finding labelled by hand, precision, recall, drift precision, lines confirmed and planted drifts no worse                   | DRIFT-433              |
 
+### After v1: D6, the reports and `aerie drift`
+
+Slice D6 of drift detection ([drift.md](drift.md#aerie-drift-and-the-four-forms-slice-d6), read log
+`d6-report.md`): the command, its exit codes and the four forms of the report.
+
+| Suite | What it proves                                                                                                               | Requirements           |
+| ----- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| unit  | `aerie drift` runs on the disk, stops with exit code 2 on a bad model, system root or option, and fails on drift (or likely) | DRIFT-501 to DRIFT-503 |
+| unit  | The text report: header, sections, findings with evidence and edits, what is not checked collapsed per element, colour       | DRIFT-504, DRIFT-505   |
+| unit  | The unified diff applies with `git apply`, and the patched fixtures and benchmark report no drift                            | DRIFT-506              |
+| unit  | The `aerie-drift/1` document and the PR comment with its marker                                                              | DRIFT-507, DRIFT-508   |
+| unit  | Golden reports of every fixture project and of the Lotto benchmark, in every form                                            | DRIFT-509              |
+
 ## Browser journeys
 
 Journeys run against the production build with the Lotto sample, at 1600 x 900, as a reader would use

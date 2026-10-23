@@ -1,10 +1,24 @@
 #!/usr/bin/env node
 // The `aerie` command: check, format and print the model of Lines files
-// (docs/spec/language.md, section 15), and watch one (docs/spec/interaction.md, INT-851).
+// (docs/spec/language.md, section 15), watch one (docs/spec/interaction.md, INT-851), and check one
+// against its code (docs/spec/drift.md, section 7).
 import { readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { format, serializeModel, type Diagnostic } from '../lines/index.ts';
+import {
+  allEdits,
+  compare,
+  jsonReport,
+  prComment,
+  summarise,
+  textReport,
+  unifiedDiff,
+  type Level,
+  type Run,
+} from '../drift/index.ts';
+import { evidenceText, extract, loadJava, type ExtractInput } from '../extract/index.ts';
+import { format, parse, serializeModel, type Diagnostic, type System } from '../lines/index.ts';
 import { check as checkSource } from '../model/index.ts';
+import { modelInput, patchPath } from './project.ts';
 import { CannotWatch, WATCH_PORT, openInBrowser, watch, type Watching } from './watch.ts';
 
 /** Everything the command touches, so tests can run it without a disk or a terminal. */
@@ -19,6 +33,15 @@ export interface Io {
    * the author stops it (Ctrl+C). Without it, the command cannot watch.
    */
   watch?: (start: (pages: string) => Promise<Watching>) => Promise<void>;
+  /**
+   * `aerie drift`: what the extractor reads for a model file and its system root (the project on
+   * the disk). Without it, the command cannot check a model against its code.
+   */
+  project?: (file: string, system: System | null) => ExtractInput;
+  /** Milliseconds from any fixed start, to time a drift run; without it no time is printed. */
+  now?: () => number;
+  /** Whether stdout shows colour: a terminal, without `NO_COLOR`. */
+  color?: boolean;
 }
 
 const USAGE = `Usage:
@@ -26,6 +49,8 @@ const USAGE = `Usage:
   aerie format <file>... [--check | --stdout]  format each file in place (also: aerie fmt)
   aerie model <file>                           print the canonical model of a file
   aerie watch <file> [--port <n>] [--no-open]  show the file's diagram, updated on every save
+  aerie drift <file> [--format text|diff|json|pr] [--fail-on drift|likely]
+                                               report where the model and its code differ
 `;
 
 /** Thrown for a command that cannot run (exit code 2, LANG-966). */
@@ -198,13 +223,102 @@ async function watchFile(args: string[], io: Io): Promise<number> {
   }
 }
 
+const DRIFT_FORMATS = ['text', 'diff', 'json', 'pr'] as const;
+
+/**
+ * DRIFT-501: `aerie drift <file>`, which compares a model with its code and prints the finding
+ * model in one of four forms. Exit codes (DRIFT-503): 0 for no drift, 1 for drift (or likely, with
+ * `--fail-on likely`), 2 when drift cannot run.
+ */
+async function driftFile(args: string[], io: Io): Promise<number> {
+  try {
+    const options = readOptions('drift', args, [], ['--format', '--fail-on']);
+    const [path, ...others] = options.files;
+    if (path === undefined || others.length > 0) {
+      throw new CannotRun('aerie drift checks one file. Name just one.');
+    }
+    const style = options.values.get('--format') ?? 'text';
+    if (!(DRIFT_FORMATS as readonly string[]).includes(style)) {
+      throw new CannotRun(`--format is text, diff, json or pr, not ${style}.`);
+    }
+    const failOn = options.values.get('--fail-on') ?? 'drift';
+    if (failOn !== 'drift' && failOn !== 'likely') {
+      throw new CannotRun(`--fail-on is drift or likely, not ${failOn}.`);
+    }
+    if (io.project === undefined)
+      throw new CannotRun('aerie drift needs a disk to read code from.');
+    const started = io.now?.();
+    const source = readFile(io, path);
+    const errors = checkSource(source).diagnostics.filter((found) => found.severity === 'error');
+    const parsed = parse(source);
+    if (errors.length > 0 || parsed.model === null) {
+      const lines = errors.map((found) => diagnosticLine(path, found));
+      throw new CannotRun(
+        [...lines, `Drift cannot run until ${path} has no errors (aerie check ${path}).`].join(
+          '\n',
+        ),
+      );
+    }
+    const extraction = extract({
+      ...io.project(path, parsed.model.system),
+      java: await loadJava(),
+    });
+    const stops = extraction.problems.filter((problem) => problem.level === 'error');
+    if (stops.length > 0) {
+      const lines = stops.map(
+        (problem) => `${problem.at === null ? path : evidenceText(problem.at)}: ${problem.message}`,
+      );
+      throw new CannotRun(
+        [...lines, 'Drift cannot run until the system root is fixed.'].join('\n'),
+      );
+    }
+    const drift = compare({
+      source,
+      model: parsed.model,
+      sourceMap: parsed.sourceMap,
+      extraction,
+    });
+    const ended = io.now?.();
+    const report: Run = {
+      file: path,
+      source,
+      model: parsed.model,
+      extraction,
+      drift,
+      failOn: failOn satisfies Level,
+      seconds: started === undefined || ended === undefined ? null : (ended - started) / 1000,
+    };
+    switch (style) {
+      case 'diff':
+        io.stdout(unifiedDiff(patchPath(path), source, allEdits(drift)));
+        break;
+      case 'json':
+        io.stdout(jsonReport(report));
+        break;
+      case 'pr':
+        io.stdout(prComment(report));
+        break;
+      default:
+        io.stdout(textReport(report, { color: io.color === true }));
+    }
+    return summarise(report).exitCode;
+  } catch (error) {
+    if (error instanceof CannotRun) {
+      io.stderr(`${error.message}\n`);
+      return 2;
+    }
+    throw error;
+  }
+}
+
 /**
  * Runs the command with its arguments and returns the exit code (LANG-966); `aerie watch` returns
- * it once the author stops watching.
+ * it once the author stops watching, and `aerie drift` once it has read the code.
  */
 export function run(args: string[], io: Io): number | Promise<number> {
   const [command, ...rest] = args;
   if (command === 'watch') return watchFile(rest, io);
+  if (command === 'drift') return driftFile(rest, io);
   try {
     switch (command) {
       case 'check':
@@ -248,6 +362,9 @@ export const nodeIo: Io = {
   },
   stdout: (text) => process.stdout.write(text),
   stderr: (text) => process.stderr.write(text),
+  project: modelInput,
+  now: () => performance.now(),
+  color: process.stdout.isTTY && (process.env['NO_COLOR'] ?? '') === '',
   watch: async (start) => {
     const watching = await start(fileURLToPath(new URL('../../dist/', import.meta.url)));
     await new Promise<void>((stopped) => {

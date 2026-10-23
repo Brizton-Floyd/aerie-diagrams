@@ -1,0 +1,625 @@
+{
+  "format": "aerie-drift/1",
+  "model": "tests/unit/drift/fixtures/compose/shop-drift.aerie",
+  "repos": [
+    "stack"
+  ],
+  "summary": {
+    "drift": 4,
+    "likely": 3,
+    "suggestions": 0,
+    "notChecked": 3,
+    "ignored": 1,
+    "excused": 1,
+    "elements": 9,
+    "confirmedElements": 6,
+    "lines": 5,
+    "confirmedLines": 3,
+    "failOn": "drift",
+    "exitCode": 1
+  },
+  "findings": [
+    {
+      "id": "D01",
+      "key": "renamed-code:payments:compose:payment>compose:payments",
+      "level": "drift",
+      "kind": "renamed-code",
+      "title": "The code line of Payments names `compose:payment`, which the code no longer has; it has `compose:payments` instead, which no element names.",
+      "detail": "An exact check: the code has no Compose service of that name, and `compose:payments` is the closest one no element names.",
+      "elements": [
+        "payments"
+      ],
+      "diagram": 24,
+      "techniques": [
+        "compose-service"
+      ],
+      "evidence": [
+        {
+          "technique": "compose-service",
+          "name": "Compose service",
+          "at": "stack/compose.yaml:19",
+          "detail": "compose:payments",
+          "corroborates": false
+        }
+      ],
+      "edits": [
+        {
+          "at": 24,
+          "remove": [
+            "    code compose:payment"
+          ],
+          "add": [
+            "    code compose:payments"
+          ]
+        }
+      ],
+      "instead": [
+        {
+          "at": 42,
+          "remove": [],
+          "add": [
+            "ignore drift compose:payment - why this difference is meant"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "D02",
+      "key": "missing-code:search:compose:search",
+      "level": "drift",
+      "kind": "missing-code",
+      "title": "The code line of Search names `compose:search`, which the code does not have.",
+      "detail": "An exact check: the code has no Compose service of that name.",
+      "elements": [
+        "search"
+      ],
+      "diagram": 30,
+      "techniques": [],
+      "evidence": [],
+      "edits": [
+        {
+          "at": 29,
+          "remove": [
+            "  search: Search [service]",
+            "    code compose:search"
+          ],
+          "add": []
+        }
+      ],
+      "instead": [
+        {
+          "at": 42,
+          "remove": [],
+          "add": [
+            "ignore drift compose:search - why this difference is meant"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "D03",
+      "key": "undrawn-code:compose:cache",
+      "level": "drift",
+      "kind": "undrawn-code",
+      "title": "The code has the Compose service `compose:cache`, but no element stands for it.",
+      "detail": "2 techniques found it: Compose service and Compose environment host name. Compose depends_on agrees too, but only corroborates.",
+      "elements": [],
+      "diagram": null,
+      "techniques": [
+        "compose-service",
+        "env-host",
+        "compose-depends-on"
+      ],
+      "evidence": [
+        {
+          "technique": "compose-service",
+          "name": "Compose service",
+          "at": "stack/compose.yaml:34",
+          "detail": "compose:cache",
+          "corroborates": false
+        },
+        {
+          "technique": "env-host",
+          "name": "Compose environment host name",
+          "at": "stack/compose.yaml:17",
+          "detail": "compose:api to compose:cache (CACHE_HOST=cache:6379)",
+          "corroborates": false
+        },
+        {
+          "technique": "compose-depends-on",
+          "name": "Compose depends_on",
+          "at": "stack/compose.yaml:18",
+          "detail": "compose:api to compose:cache",
+          "corroborates": true
+        }
+      ],
+      "edits": [
+        {
+          "at": 31,
+          "remove": [],
+          "add": [
+            "  cache: cache [service]",
+            "    code compose:cache"
+          ]
+        },
+        {
+          "at": 39,
+          "remove": [],
+          "add": [
+            "api calls cache"
+          ]
+        }
+      ],
+      "instead": [
+        {
+          "at": 42,
+          "remove": [],
+          "add": [
+            "ignore drift compose:cache - why this difference is meant"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "D04",
+      "key": "undrawn-connection:worker>api",
+      "level": "drift",
+      "kind": "undrawn-connection",
+      "title": "Worker calls Orders API in the code, but no line in the diagram joins them.",
+      "detail": "2 techniques found it: Compose environment URL and Compose environment host name. Compose depends_on agrees too, but only corroborates.",
+      "elements": [
+        "api",
+        "worker"
+      ],
+      "diagram": null,
+      "techniques": [
+        "env-url",
+        "env-host",
+        "compose-depends-on"
+      ],
+      "evidence": [
+        {
+          "technique": "env-url",
+          "name": "Compose environment URL",
+          "at": "stack/compose.yaml:26",
+          "detail": "compose:worker to compose:api (API_URL=http://api:3000)",
+          "corroborates": false
+        },
+        {
+          "technique": "env-host",
+          "name": "Compose environment host name",
+          "at": "stack/compose.yaml:27",
+          "detail": "compose:worker to compose:api (API_HOST=api)",
+          "corroborates": false
+        },
+        {
+          "technique": "compose-depends-on",
+          "name": "Compose depends_on",
+          "at": "stack/compose.yaml:29",
+          "detail": "compose:worker to compose:api",
+          "corroborates": true
+        }
+      ],
+      "edits": [
+        {
+          "at": 39,
+          "remove": [],
+          "add": [
+            "worker calls api"
+          ]
+        }
+      ],
+      "instead": [
+        {
+          "at": 42,
+          "remove": [],
+          "add": [
+            "ignore drift worker to api - why this difference is meant"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "L01",
+      "key": "missing-connection:web>payments:calls",
+      "level": "likely",
+      "kind": "missing-connection",
+      "title": "The diagram says Storefront calls Payments, but the code shows no call from Storefront to Payments.",
+      "detail": "No technique found a call between them, and reading the code cannot rule one out, so this is only likely.",
+      "elements": [
+        "web",
+        "payments"
+      ],
+      "diagram": 36,
+      "techniques": [],
+      "evidence": [],
+      "edits": [
+        {
+          "at": 36,
+          "remove": [
+            "web calls payments"
+          ],
+          "add": []
+        }
+      ],
+      "instead": [
+        {
+          "at": 42,
+          "remove": [],
+          "add": [
+            "ignore drift web to payments - why this difference is meant"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "L02",
+      "key": "unused-ignore:web to db",
+      "level": "likely",
+      "kind": "unused-ignore",
+      "title": "The ignore line for `web to db` excuses nothing: the diagram and the code agree there.",
+      "detail": "Nothing it names differs any more, so it can go.",
+      "elements": [
+        "web",
+        "db"
+      ],
+      "diagram": 41,
+      "techniques": [],
+      "evidence": [],
+      "edits": [
+        {
+          "at": 41,
+          "remove": [
+            "ignore drift web to db - the storefront read the database before the API existed"
+          ],
+          "add": []
+        }
+      ],
+      "instead": []
+    },
+    {
+      "id": "L03",
+      "key": "undrawn-connection:api>db",
+      "level": "likely",
+      "kind": "undrawn-connection",
+      "title": "Orders API calls Database in the code, but no line in the diagram joins them.",
+      "detail": "One technique found it: Compose environment JDBC URL. Compose depends_on agrees too, but only corroborates.",
+      "elements": [
+        "api",
+        "db"
+      ],
+      "diagram": null,
+      "techniques": [
+        "env-jdbc",
+        "compose-depends-on"
+      ],
+      "evidence": [
+        {
+          "technique": "env-jdbc",
+          "name": "Compose environment JDBC URL",
+          "at": "stack/compose.yaml:15",
+          "detail": "compose:api to compose:db (DATABASE_URL=jdbc:postgresql://db:5432/shop)",
+          "corroborates": false
+        },
+        {
+          "technique": "compose-depends-on",
+          "name": "Compose depends_on",
+          "at": "stack/compose.yaml:18",
+          "detail": "compose:api to compose:db",
+          "corroborates": true
+        }
+      ],
+      "edits": [
+        {
+          "at": 39,
+          "remove": [],
+          "add": [
+            "api calls db"
+          ]
+        }
+      ],
+      "instead": [
+        {
+          "at": 42,
+          "remove": [],
+          "add": [
+            "ignore drift api to db - why this difference is meant"
+          ]
+        }
+      ]
+    }
+  ],
+  "suggestions": [],
+  "notChecked": [
+    {
+      "subject": {
+        "relationship": 0
+      },
+      "reason": "end",
+      "text": "The line “Customer uses Storefront” is not checked: Customer stands for no code drift can read.",
+      "elements": [
+        "customer",
+        "web"
+      ],
+      "diagram": 34,
+      "evidence": []
+    },
+    {
+      "subject": {
+        "element": "customer"
+      },
+      "reason": "person",
+      "text": "Customer is a person, which code cannot show.",
+      "elements": [
+        "customer"
+      ],
+      "diagram": 16,
+      "evidence": []
+    },
+    {
+      "subject": {
+        "wording": true
+      },
+      "reason": "wording",
+      "text": "The wording (names, taglines and descriptions) is not checked: wrong details are checked in phase 2.",
+      "elements": [],
+      "diagram": null,
+      "evidence": []
+    }
+  ],
+  "ignored": [
+    {
+      "subject": "compose:queue",
+      "reason": "run by the platform team, outside this diagram",
+      "diagram": 40,
+      "excused": [
+        {
+          "id": null,
+          "key": "undrawn-code:compose:queue",
+          "level": "drift",
+          "kind": "undrawn-code",
+          "title": "The code has the Compose service `compose:queue`, but no element stands for it.",
+          "detail": "2 techniques found it: Compose service and Compose environment host name. Compose depends_on agrees too, but only corroborates.",
+          "elements": [],
+          "diagram": null,
+          "techniques": [
+            "compose-service",
+            "env-host",
+            "compose-depends-on"
+          ],
+          "evidence": [
+            {
+              "technique": "compose-service",
+              "name": "Compose service",
+              "at": "stack/compose.yaml:30",
+              "detail": "compose:queue",
+              "corroborates": false
+            },
+            {
+              "technique": "env-host",
+              "name": "Compose environment host name",
+              "at": "stack/compose.yaml:28",
+              "detail": "compose:worker to compose:queue (QUEUE_HOST=queue)",
+              "corroborates": false
+            },
+            {
+              "technique": "compose-depends-on",
+              "name": "Compose depends_on",
+              "at": "stack/compose.yaml:29",
+              "detail": "compose:worker to compose:queue",
+              "corroborates": true
+            }
+          ],
+          "edits": [
+            {
+              "at": 31,
+              "remove": [],
+              "add": [
+                "  queue: queue [service]",
+                "    code compose:queue"
+              ]
+            },
+            {
+              "at": 39,
+              "remove": [],
+              "add": [
+                "worker calls queue"
+              ]
+            }
+          ],
+          "instead": [
+            {
+              "at": 42,
+              "remove": [],
+              "add": [
+                "ignore drift compose:queue - why this difference is meant"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "confirmed": [
+    {
+      "subject": {
+        "relationship": 1
+      },
+      "text": "The line “Storefront calls Orders API” is in the code.",
+      "diagram": 35,
+      "techniques": [
+        "env-url",
+        "compose-depends-on"
+      ],
+      "evidence": [
+        {
+          "technique": "env-url",
+          "name": "Compose environment URL",
+          "at": "stack/compose.yaml:8",
+          "detail": "compose:web to compose:api (API_URL=http://api:3000)",
+          "corroborates": false
+        },
+        {
+          "technique": "compose-depends-on",
+          "name": "Compose depends_on",
+          "at": "stack/compose.yaml:9",
+          "detail": "compose:web to compose:api",
+          "corroborates": true
+        }
+      ]
+    },
+    {
+      "subject": {
+        "relationship": 3
+      },
+      "text": "The line “Orders API charges cards through Payments” is in the code.",
+      "diagram": 37,
+      "techniques": [
+        "env-url"
+      ],
+      "evidence": [
+        {
+          "technique": "env-url",
+          "name": "Compose environment URL",
+          "at": "stack/compose.yaml:16",
+          "detail": "compose:api to compose:payments (PAYMENTS_URL=http://payments:8080/v1)",
+          "corroborates": false
+        }
+      ]
+    },
+    {
+      "subject": {
+        "relationship": 4
+      },
+      "text": "The line “Payments charges cards at Bank” is in the code.",
+      "diagram": 38,
+      "techniques": [
+        "env-url"
+      ],
+      "evidence": [
+        {
+          "technique": "env-url",
+          "name": "Compose environment URL",
+          "at": "stack/compose.yaml:22",
+          "detail": "compose:payments to host api.bank.example (BANK_URL=https://api.bank.example/v2)",
+          "corroborates": false
+        }
+      ]
+    },
+    {
+      "subject": {
+        "element": "web"
+      },
+      "text": "Storefront stands for `compose:web`, which the code has.",
+      "diagram": 19,
+      "techniques": [
+        "compose-service"
+      ],
+      "evidence": [
+        {
+          "technique": "compose-service",
+          "name": "Compose service",
+          "at": "stack/compose.yaml:5",
+          "detail": "compose:web",
+          "corroborates": false
+        }
+      ]
+    },
+    {
+      "subject": {
+        "element": "api"
+      },
+      "text": "Orders API stands for `compose:api`, which the code has.",
+      "diagram": 21,
+      "techniques": [
+        "compose-service"
+      ],
+      "evidence": [
+        {
+          "technique": "compose-service",
+          "name": "Compose service",
+          "at": "stack/compose.yaml:12",
+          "detail": "compose:api",
+          "corroborates": false
+        }
+      ]
+    },
+    {
+      "subject": {
+        "element": "payments"
+      },
+      "text": "Payments stands for `compose:payments`, which the code has.",
+      "diagram": 23,
+      "techniques": [
+        "compose-service"
+      ],
+      "evidence": [
+        {
+          "technique": "compose-service",
+          "name": "Compose service",
+          "at": "stack/compose.yaml:19",
+          "detail": "compose:payments",
+          "corroborates": false
+        }
+      ]
+    },
+    {
+      "subject": {
+        "element": "worker"
+      },
+      "text": "Worker stands for `compose:worker`, which the code has.",
+      "diagram": 25,
+      "techniques": [
+        "compose-service"
+      ],
+      "evidence": [
+        {
+          "technique": "compose-service",
+          "name": "Compose service",
+          "at": "stack/compose.yaml:23",
+          "detail": "compose:worker",
+          "corroborates": false
+        }
+      ]
+    },
+    {
+      "subject": {
+        "element": "db"
+      },
+      "text": "Database stands for `compose:db`, which the code has.",
+      "diagram": 27,
+      "techniques": [
+        "compose-service"
+      ],
+      "evidence": [
+        {
+          "technique": "compose-service",
+          "name": "Compose service",
+          "at": "stack/compose.yaml:32",
+          "detail": "compose:db",
+          "corroborates": false
+        }
+      ]
+    },
+    {
+      "subject": {
+        "element": "bank"
+      },
+      "text": "Bank stands for the host `api.bank.example`, which the code has.",
+      "diagram": 32,
+      "techniques": [
+        "env-url"
+      ],
+      "evidence": [
+        {
+          "technique": "env-url",
+          "name": "Compose environment URL",
+          "at": "stack/compose.yaml:22",
+          "detail": "compose:payments to host api.bank.example (BANK_URL=https://api.bank.example/v2)",
+          "corroborates": false
+        }
+      ]
+    }
+  ],
+  "problems": []
+}

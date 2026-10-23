@@ -1,0 +1,18 @@
+--- a/tests/unit/drift/fixtures/angular/shop-drift.aerie
++++ b/tests/unit/drift/fixtures/angular/shop-drift.aerie
+@@ -14,7 +14,7 @@
+ shopper: Shopper [person]
+ 
+ storefront: Storefront [service]
+-  code compose:web npm:shop-site
++  code compose:web npm:shop-web
+ ui-kit: UI kit [module]
+   code npm:@shop/ui-kit
+ api: Orders API [service]
+@@ -22,4 +22,5 @@
+ pay: Payment provider [external]
+ 
+ shopper uses storefront
+-api notifies storefront
++storefront calls api
++storefront calls pay

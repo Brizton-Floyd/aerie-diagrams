@@ -1,0 +1,31 @@
+--- a/tests/unit/drift/fixtures/spring/shop-drift.aerie
++++ b/tests/unit/drift/fixtures/spring/shop-drift.aerie
+@@ -29,18 +29,26 @@
+   listener: Order listener
+     code class:com.shop.billing.events.OrderListener
+   ledger: Ledger
+-    code class:com.shop.billing.Ledger
++    code class:com.shop.billing.ledger.Ledger
+   audit: Audit trail
+ 
+ catalog: Catalog [module]
+   code maven:shop-catalog
++
++shop-common: shop-common [module]
++  code maven:shop-common
+ 
+ service prices items with catalog
+ service asks for invoices through billing-client
+ service announces orders to listener
+ invoices records charges in ledger
+ listener writes orders to audit
++billing-client calls invoices
++web calls service
+ 
+-billing depends on catalog [code]
++billing depends on shop-common [code]
++catalog depends on shop-common [code]
++orders depends on shop-common [code]
++orders depends on catalog [code]
+ 
+ ignore drift maven:shop-legacy - retiring with the old reports

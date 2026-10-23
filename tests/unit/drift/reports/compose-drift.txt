@@ -1,0 +1,108 @@
+aerie drift tests/unit/drift/fixtures/compose/shop-drift.aerie
+Checked against stack (7 Compose services) in 0.9 s.
+
+Drift (4): the diagram and the code disagree: several techniques agree, or an exact check failed
+
+D01 The code line of Payments names `compose:payment`, which the code no longer has; it has
+    `compose:payments` instead, which no element names.
+    Diagram: tests/unit/drift/fixtures/compose/shop-drift.aerie:24
+    An exact check: the code has no Compose service of that name, and `compose:payments` is the
+    closest one no element names.
+    Code:
+      stack/compose.yaml:19  Compose service: compose:payments
+    Suggested edit:
+      tests/unit/drift/fixtures/compose/shop-drift.aerie:24
+      -     code compose:payment
+      +     code compose:payments
+    Or, if it is meant to differ:
+      tests/unit/drift/fixtures/compose/shop-drift.aerie, after line 41
+      + ignore drift compose:payment - why this difference is meant
+
+D02 The code line of Search names `compose:search`, which the code does not have.
+    Diagram: tests/unit/drift/fixtures/compose/shop-drift.aerie:30
+    An exact check: the code has no Compose service of that name.
+    Suggested edit:
+      tests/unit/drift/fixtures/compose/shop-drift.aerie:29-30
+      -   search: Search [service]
+      -     code compose:search
+    Or, if it is meant to differ:
+      tests/unit/drift/fixtures/compose/shop-drift.aerie, after line 41
+      + ignore drift compose:search - why this difference is meant
+
+D03 The code has the Compose service `compose:cache`, but no element stands for it.
+    2 techniques found it: Compose service and Compose environment host name. Compose depends_on
+    agrees too, but only corroborates.
+    Code:
+      stack/compose.yaml:34  Compose service: compose:cache
+      stack/compose.yaml:17  Compose environment host name: compose:api to compose:cache (CACHE_HOST=cache:6379)
+      stack/compose.yaml:18  Compose depends_on: compose:api to compose:cache
+    Suggested edit:
+      tests/unit/drift/fixtures/compose/shop-drift.aerie, after line 30
+      +   cache: cache [service]
+      +     code compose:cache
+      tests/unit/drift/fixtures/compose/shop-drift.aerie, after line 38
+      + api calls cache
+    Or, if it is meant to differ:
+      tests/unit/drift/fixtures/compose/shop-drift.aerie, after line 41
+      + ignore drift compose:cache - why this difference is meant
+
+D04 Worker calls Orders API in the code, but no line in the diagram joins them.
+    2 techniques found it: Compose environment URL and Compose environment host name. Compose
+    depends_on agrees too, but only corroborates.
+    Code:
+      stack/compose.yaml:26  Compose environment URL: compose:worker to compose:api (API_URL=http://api:3000)
+      stack/compose.yaml:27  Compose environment host name: compose:worker to compose:api (API_HOST=api)
+      stack/compose.yaml:29  Compose depends_on: compose:worker to compose:api
+    Suggested edit:
+      tests/unit/drift/fixtures/compose/shop-drift.aerie, after line 38
+      + worker calls api
+    Or, if it is meant to differ:
+      tests/unit/drift/fixtures/compose/shop-drift.aerie, after line 41
+      + ignore drift worker to api - why this difference is meant
+
+Likely (3): one technique found it, or reading the code cannot rule it out; worth a look
+
+L01 The diagram says Storefront calls Payments, but the code shows no call from Storefront to
+    Payments.
+    Diagram: tests/unit/drift/fixtures/compose/shop-drift.aerie:36
+    No technique found a call between them, and reading the code cannot rule one out, so this is
+    only likely.
+    Suggested edit:
+      tests/unit/drift/fixtures/compose/shop-drift.aerie:36
+      - web calls payments
+    Or, if it is meant to differ:
+      tests/unit/drift/fixtures/compose/shop-drift.aerie, after line 41
+      + ignore drift web to payments - why this difference is meant
+
+L02 The ignore line for `web to db` excuses nothing: the diagram and the code agree there.
+    Diagram: tests/unit/drift/fixtures/compose/shop-drift.aerie:41
+    Nothing it names differs any more, so it can go.
+    Suggested edit:
+      tests/unit/drift/fixtures/compose/shop-drift.aerie:41
+      - ignore drift web to db - the storefront read the database before the API existed
+
+L03 Orders API calls Database in the code, but no line in the diagram joins them.
+    One technique found it: Compose environment JDBC URL. Compose depends_on agrees too, but only
+    corroborates.
+    Code:
+      stack/compose.yaml:15  Compose environment JDBC URL: compose:api to compose:db (DATABASE_URL=jdbc:postgresql://db:5432/shop)
+      stack/compose.yaml:18  Compose depends_on: compose:api to compose:db
+    Suggested edit:
+      tests/unit/drift/fixtures/compose/shop-drift.aerie, after line 38
+      + api calls db
+    Or, if it is meant to differ:
+      tests/unit/drift/fixtures/compose/shop-drift.aerie, after line 41
+      + ignore drift api to db - why this difference is meant
+
+Not checked (2): code cannot show these, or drift could not read them
+  tests/unit/drift/fixtures/compose/shop-drift.aerie:16  Customer is a person, which code cannot
+    show. The line “Customer uses Storefront” (line 34) is not checked either.
+  The wording (names, taglines and descriptions) is not checked: wrong details are checked in phase
+    2.
+
+Ignored (1): differences the model marks as meant
+  tests/unit/drift/fixtures/compose/shop-drift.aerie:40  compose:queue - run by the platform team,
+    outside this diagram (excused 1 difference)
+
+6 of 9 elements and 3 of 5 lines confirmed by the code.
+4 drift, 3 likely. Exit code 1. `aerie drift --format diff` prints every suggested edit as a patch.

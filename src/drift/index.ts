@@ -18,6 +18,10 @@
 //   calls matched to endpoints, events to listeners, messages to receivers.
 // - The comparison (compare.ts) lifts links to elements and sets them against the diagram's
 //   lines; edits are operations on the model file's lines (file.ts), so they combine into a patch.
+// - The reports (slice D6) print one `Run` (report.ts: the file, its model, the extraction, the
+//   drift and `--fail-on`) in four forms: `textReport` (text.ts), `unifiedDiff` of `allEdits`
+//   (patch.ts), `jsonReport` (json.ts, `aerie-drift/1`) and `prComment` (comment.ts); `summarise`
+//   gives the counts and the exit code. `aerie drift` (src/cli/aerie.ts) runs them.
 export { compare, type CompareInput } from './compare.ts';
 export { applyHunks, IGNORE_REASON, VERBS, type Hunk } from './file.ts';
 export type {
@@ -31,3 +35,8 @@ export type {
   Suggestion,
 } from './findings.ts';
 export { evidenceLine, MATCHES, type EvidenceLine, type MatchId } from './links.ts';
+export { commentMarker, prComment } from './comment.ts';
+export { driftDocument, FORMAT, jsonReport, type DriftDocument, type JsonFinding } from './json.ts';
+export { diffHunks, unifiedDiff } from './patch.ts';
+export { allEdits, summarise, type Run, type Summary } from './report.ts';
+export { textReport, type TextOptions } from './text.ts';

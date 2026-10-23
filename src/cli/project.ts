@@ -1,7 +1,7 @@
 // The extractor's file access on a real disk (src/extract/index.ts): absolute, forward-slash paths,
 // read only. `aerie drift` (slice D6) builds its extractor input with `modelInput`.
 import { readdirSync, readFileSync, statSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 import type { ExtractInput, ProjectFiles } from '../extract/index.ts';
 import type { System } from '../lines/index.ts';
 
@@ -59,6 +59,17 @@ export function repositoryOf(folder: string): string {
       if (dirname(at) === at) return resolve(folder);
     }
   }
+}
+
+/**
+ * DRIFT-506: the model file's path in a patch's headers, so `git apply` takes the patch run from
+ * here: relative to this folder when the file is inside it, else to the top of its repository.
+ */
+export function patchPath(file: string): string {
+  const path = resolve(file);
+  const here = relative(process.cwd(), path);
+  if (here !== '' && !isAbsolute(here) && here.split(sep)[0] !== '..') return slashes(here);
+  return slashes(relative(repositoryOf(dirname(path)), path));
 }
 
 /** The extractor's input for a model file and its system root. */

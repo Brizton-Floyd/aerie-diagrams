@@ -1,0 +1,22 @@
+aerie drift tests/unit/drift/fixtures/compose/shop.aerie
+Checked against stack (7 Compose services) in 0.9 s.
+
+Not checked (2): code cannot show these, or drift could not read them
+  tests/unit/drift/fixtures/compose/shop.aerie:8  Customer is a person, which code cannot show. The
+    line “Customer uses Storefront” (line 28) is not checked either.
+  The wording (names, taglines and descriptions) is not checked: wrong details are checked in phase
+    2.
+
+Suggestions (1): pin a name match with a code line; these never fail
+
+S01 Payments may stand for `compose:payments`: add `code compose:payments`?
+    Its name matches, so drift compares it as standing for that unit already; a code line makes it
+    certain.
+    Code:
+      stack/compose.yaml:19  Compose service: compose:payments
+    Suggested edit:
+      tests/unit/drift/fixtures/compose/shop.aerie, after line 16
+      +     code compose:payments
+
+8 of 10 elements and 7 of 8 lines confirmed by the code.
+No drift. Exit code 0.

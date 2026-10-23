@@ -1,0 +1,11 @@
+aerie drift tests/unit/drift/fixtures/angular/shop.aerie
+Checked against web, deploy (2 Compose services, 2 npm packages, 1 app) in 0.9 s.
+
+Not checked (2): code cannot show these, or drift could not read them
+  tests/unit/drift/fixtures/angular/shop.aerie:10  Shopper is a person, which code cannot show. The
+    line “Shopper uses Storefront” (line 20) is not checked either.
+  The wording (names, taglines and descriptions) is not checked: wrong details are checked in phase
+    2.
+
+4 of 5 elements and 2 of 3 lines confirmed by the code.
+No drift. Exit code 0.
