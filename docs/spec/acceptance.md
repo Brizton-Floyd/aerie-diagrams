@@ -258,6 +258,20 @@ Slice D6 of drift detection ([drift.md](drift.md#aerie-drift-and-the-four-forms-
 | unit  | The `aerie-drift/1` document and the PR comment with its marker                                                              | DRIFT-507, DRIFT-508   |
 | unit  | Golden reports of every fixture project and of the Lotto benchmark, in every form                                            | DRIFT-509              |
 
+### After v1: D7, the GitHub Action
+
+Slice D7 of drift detection ([drift.md](drift.md#the-github-action-slice-d7), read log
+`d7-action.md`): the Action that runs `aerie drift` on pull requests. `.github/workflows/drift.yml`
+runs it on this repository's own pull requests, against a fixture with planted drifts.
+
+| Suite | What it proves                                                                                                                    | Requirements |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| unit  | The inputs, their defaults and their plain messages, and the pull request from the event                                          | DRIFT-601    |
+| unit  | Sibling repos: which `repo` lines are checked out and from where, a shallow clone from a remote on the disk, and drift reading it | DRIFT-602    |
+| unit  | One sticky comment per model file: posted, edited in place, found past the first page, `on-findings` and `never`                  | DRIFT-603    |
+| unit  | Suggestions on the lines a pull request adds, left out elsewhere, posted once as one review                                       | DRIFT-604    |
+| unit  | Whole runs against a GitHub in memory: exit codes, the cannot-run comment, no pull request, and a comment the token cannot post   | DRIFT-605    |
+
 ## Browser journeys
 
 Journeys run against the production build with the Lotto sample, at 1600 x 900, as a reader would use

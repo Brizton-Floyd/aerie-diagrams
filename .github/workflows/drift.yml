@@ -1,0 +1,76 @@
+# The GitHub Action end to end (docs/spec/drift.md, section 8): runs this repository's action.yml on
+# a matching fixture and on one with planted drift, then checks the exit codes and, on a pull
+# request, that each model file has exactly one comment, of the right colour, and that a pull
+# request adding the planted fixture gets its suggestions once.
+name: Drift action
+
+on:
+  pull_request:
+    paths:
+      - action.yml
+      - src/action/**
+      - src/cli/**
+      - src/drift/**
+      - tests/unit/action/**
+      - .github/workflows/drift.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: drift-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  action:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: A matching model passes
+        id: clean
+        uses: ./
+        with:
+          models: tests/unit/drift/fixtures/compose/shop.aerie
+      - name: A model with planted drift fails
+        id: drift
+        continue-on-error: true
+        uses: ./
+        with:
+          models: tests/unit/action/fixtures/shop-drift.aerie
+      - name: Run again, which keeps one comment
+        id: again
+        continue-on-error: true
+        uses: ./
+        with:
+          models: tests/unit/action/fixtures/shop-drift.aerie
+      - name: Check the exit codes, the comments and the suggestions
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          CLEAN: ${{ steps.clean.outputs.exit-code }}
+          DRIFT: ${{ steps.drift.outputs.exit-code }}
+          DRIFT_OUTCOME: ${{ steps.drift.outcome }}
+          AGAIN: ${{ steps.again.outputs.exit-code }}
+        run: |
+          set -euo pipefail
+          echo "exit codes: clean $CLEAN, drift $DRIFT ($DRIFT_OUTCOME), again $AGAIN"
+          test "$CLEAN" = 0 && test "$DRIFT" = 1 && test "$DRIFT_OUTCOME" = failure && test "$AGAIN" = 1
+          if [ -z "$PR" ]; then exit 0; fi
+          clean=tests/unit/drift/fixtures/compose/shop.aerie
+          drift=tests/unit/action/fixtures/shop-drift.aerie
+          comments=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --jq '.[].body')
+          count() { grep -cxF -- "$1" <<<"$comments" || true; }
+          test "$(count "<!-- aerie-drift: $clean -->")" = 1
+          test "$(count "<!-- aerie-drift: $drift -->")" = 1
+          test "$(count "### 🟢 Aerie drift: \`$clean\`")" = 1
+          test "$(count "### 🔴 Aerie drift: \`$drift\`")" = 1
+          status=$(gh api --paginate "repos/$GITHUB_REPOSITORY/pulls/$PR/files" \
+            --jq ".[] | select(.filename == \"$drift\") | .status")
+          suggestions=$(gh api --paginate "repos/$GITHUB_REPOSITORY/pulls/$PR/comments" --jq '.[].body' |
+            grep -cF -- "<!-- aerie-drift-suggestion: $drift " || true)
+          echo "the pull request's $drift: ${status:-unchanged}, $suggestions suggestions"
+          if [ "$status" = added ]; then test "$suggestions" = 8; fi

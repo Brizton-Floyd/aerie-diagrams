@@ -863,6 +863,67 @@ Decided in #55.
   a sibling repo may also run it, and comments when it changes the architecture. D7 decides how CI
   finds each sibling's remote and records it here.
 
+### The GitHub Action (slice D7)
+
+The Action is this repository's `action.yml`, a composite action that sets up Node, installs Aerie's
+runtime dependencies and runs `src/action/main.ts`, which runs `aerie drift` in its own process (so
+it reports exactly what the command line does) and talks to GitHub through its REST API.
+
+- **DRIFT-601** Inputs: `models` (one or more model files, from the top of the checkout, one per line
+  or separated by spaces; required), `fail-on` (`drift`, the default, or `likely`), `comment`
+  (`always`, the default; `on-findings`, which creates the comment only when drift or likely is
+  found but always brings an existing one up to date, for a sibling repo's pull requests; or
+  `never`), `token` (posts the comments; `github.token` by default, which needs `pull-requests:
+write`), `repos-token` (reads the sibling repos; `token` when empty) and `repos` (below). A wrong
+  input stops the action with a plain message and exit code 2. The pull request is the one of a
+  `pull_request` or `pull_request_target` event; on any other event the action only reports.
+- **DRIFT-602** Sibling repos: each `repo` line of the system root that points outside the model's
+  own repository, at a folder that is not there, is checked out there before drift runs: a shallow
+  clone of the default branch, with `repos-token` sent as a header for that command only, never
+  stored in the clone and never pushed to. The remote is the repository named like the folder under
+  the same owner as the repository the workflow runs in (`repo ../lotto-options-core` in
+  `acme/lotto-diagram` is `acme/lotto-options-core`), on the same GitHub server; a line of the
+  `repos` input, `<repo line or folder>=<owner>/<name>[@<branch or tag>]`, names another. A folder
+  that is already there is used as it is, so a workflow can check a sibling out itself (a sibling
+  repo's own pull request checks itself out where the model expects it, and the diagram's repo
+  beside it); a folder an earlier run cloned (marked in its `.git`) is cloned again, so a
+  self-hosted runner never reads a stale one. A clone that fails stops that model file (exit code
+  2), with git's message.
+- **DRIFT-603** One sticky comment per model file: the body `aerie drift --format pr` prints, found
+  again on the next run by its first line, the hidden marker (DRIFT-508), and edited in place only
+  when it reads differently; a model file drift cannot check gets the same comment with a white dot
+  and the reason. A comment the token may not post (a pull request from a fork) is a warning, never
+  a failure.
+- **DRIFT-604** Suggestions: each edit of a drift or likely finding whose lines the pull request
+  adds, as they read at its head (from the pull request's patch of the model file), becomes a GitHub
+  `suggestion` review comment: an edit replaces its lines; a line inserted before line `n` is
+  suggested together with the added line above it, else the one below it. They are posted as one
+  review on the head commit; each carries a hidden marker (file, line and finding key), so a later
+  run posts only the new ones. Edits on lines the pull request does not add are only in the comment.
+- **DRIFT-605** Each model file's report is also added to the job's summary. The action's exit code,
+  and its `exit-code` output, is the worst of the model files': 0 for no drift, 1 for drift (or
+  likely, with `fail-on: likely`), 2 when drift cannot run. The job fails on 1 or 2, so a workflow
+  that should only report sets `continue-on-error`.
+
+`.github/workflows/drift.yml` runs the Action on this repository's pull requests that change it: a
+matching fixture must pass with a green comment, and the Compose fixture's planted drifts (copied to
+`tests/unit/action/fixtures/shop-drift.aerie`) must fail with exit code 1 and one red comment
+however often it runs; a pull request that adds that file gets its eight suggestions once.
+
+Any other CI runs the command in the repository that holds the model, with the sibling repos
+checked out where its system root points, and uses the exit code; the JSON is for tools:
+
+```sh
+npx aerie drift docs/architecture.aerie --format json > drift.json
+```
+
+Choices D7 made, where this document left them open: a sibling's remote is its folder's name under
+the same owner unless the `repos` input says otherwise; the action needs the repository it runs in
+checked out (`actions/checkout`), and checks out only the siblings; suggestions go only on added
+lines, as the pull request's head reads them, never on lines it does not touch; and the Action
+writes the job summary and its comments through the REST API, with no third-party actions beyond
+`actions/setup-node`.
+
 ## 9. The Claude skill (slice D8)
 
 Decided in #56. The Aerie skill ([claude-skill.md](claude-skill.md)):

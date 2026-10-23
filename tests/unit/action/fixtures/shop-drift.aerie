@@ -1,0 +1,35 @@
+// The Action's end-to-end check (.github/workflows/drift.yml): the Compose fixture's shop with its
+// planted drifts (tests/unit/drift/fixtures/compose/shop-drift.aerie), so the job fails, its pull
+// request gets the red comment, and a pull request that adds this file gets suggestions on it.
+model shop: Corner shop
+
+system
+  repo ../../drift/fixtures/compose/stack
+  compose ../../drift/fixtures/compose/stack/compose.yaml
+
+customer: Customer [person]
+
+shop: Corner shop [system]
+  web: Storefront [service]
+    code compose:web
+  api: Orders API [service]
+    code compose:api
+  payments: Payments [service]
+    code compose:payment
+  worker: Worker [service]
+    code compose:worker
+  db: Database [store]
+    code compose:db
+  search: Search [service]
+    code compose:search
+
+bank: Bank | Takes card payments [external]
+
+customer uses web
+web calls api
+web calls payments
+api charges cards through payments
+payments charges cards at bank
+
+ignore drift compose:queue - run by the platform team, outside this diagram
+ignore drift web to db - the storefront read the database before the API existed

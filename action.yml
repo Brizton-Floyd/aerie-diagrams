@@ -1,0 +1,54 @@
+# Aerie drift on every pull request (docs/spec/drift.md, section 8): runs `aerie drift` on each
+# model file, posts one sticky comment per model file and suggestions on the lines the pull request
+# adds, and fails on drift. The code is src/action/.
+name: Aerie drift
+description: Check Aerie models against their code, comment on the pull request, and fail on drift.
+inputs:
+  models:
+    description: The model files to check, one per line or separated by spaces.
+    required: true
+  fail-on:
+    description: What fails the check, drift (the default) or likely.
+    default: drift
+  comment:
+    description: When to post the sticky comment, always, on-findings or never.
+    default: always
+  token:
+    description: The token that posts the comments; it needs pull-requests write.
+    default: ${{ github.token }}
+  repos-token:
+    description: The token that reads the sibling repos of a multi-repo system; the token input if empty.
+    default: ''
+  repos:
+    description: Where sibling repos come from, one per line, <repo line or folder>=<owner>/<name>[@<branch>].
+    default: ''
+outputs:
+  exit-code:
+    description: 0 for no drift, 1 for drift (or likely, with fail-on likely), 2 when drift cannot run.
+    value: ${{ steps.drift.outputs.exit-code }}
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with:
+        node-version: 24
+    - run: npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+      shell: bash
+      working-directory: ${{ github.action_path }}
+    # The exit code is kept as an output, so it is set even when the check then fails.
+    - id: drift
+      run: |
+        code=0
+        node "$GITHUB_ACTION_PATH/src/action/main.ts" || code=$?
+        echo "exit-code=$code" >> "$GITHUB_OUTPUT"
+      shell: bash
+      env:
+        AERIE_MODELS: ${{ inputs.models }}
+        AERIE_FAIL_ON: ${{ inputs.fail-on }}
+        AERIE_COMMENT: ${{ inputs.comment }}
+        AERIE_TOKEN: ${{ inputs.token }}
+        AERIE_REPOS_TOKEN: ${{ inputs.repos-token }}
+        AERIE_REPOS: ${{ inputs.repos }}
+    - if: steps.drift.outputs.exit-code != '0'
+      run: exit ${{ steps.drift.outputs.exit-code }}
+      shell: bash

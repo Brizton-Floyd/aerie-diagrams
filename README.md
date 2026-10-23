@@ -61,6 +61,45 @@ npx aerie model samples/lotto.aerie     # the canonical JSON model
 
 The language is described in [docs/spec/language.md](docs/spec/language.md).
 
+### Check a model against its code
+
+```sh
+npx aerie drift docs/architecture.aerie                # where the diagram and the code differ
+npx aerie drift docs/architecture.aerie --format diff  # every suggested edit, as a patch
+```
+
+On GitHub, this repository is also an Action that checks every pull request: it posts one comment
+per model file (edited in place on each run), suggests edits on the lines the pull request adds,
+and fails the check on drift.
+
+```yaml
+on: pull_request
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  drift:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: Brizton-Floyd/aerie-diagrams@main # or a commit SHA
+        with:
+          models: docs/architecture.aerie # one or more, one per line
+          # fail-on: likely               # fail on likely findings too
+          # repos-token: ${{ secrets.AERIE_REPOS_TOKEN }} # reads private sibling repos
+```
+
+A model whose system root names other repos (`repo ../lotto-options-core`) gets each checked out
+beside the repository, read only, from the repository of that folder's name under the same owner
+(the `repos` input names others). Any other CI runs the command and uses its exit code (0 no
+drift, 1 drift, 2 drift cannot run):
+
+```sh
+npx aerie drift docs/architecture.aerie --format json > drift.json
+```
+
+Drift is described in [docs/spec/drift.md](docs/spec/drift.md), the Action in its section 8.
+
 ### Let Claude write the model
 
 [skills/aerie/](skills/aerie/SKILL.md) is a skill for Claude: it reads a project, writes its model
