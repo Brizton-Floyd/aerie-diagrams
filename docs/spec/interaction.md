@@ -1,8 +1,9 @@
 # Interaction
 
 How a reader explores a diagram and how an author edits one: the audience switch, selecting and the
-side panel, opening in place, the camera, the navigation sidebar, shared links, scenario playback,
-presenter-mode walkthroughs, the live split editor and watch mode. What is drawn is defined in
+side panel, opening in place, the camera, the navigation sidebar, shared links, Back and Forward
+through the reader's visits, scenario playback, presenter-mode walkthroughs, the live split editor and
+watch mode. What is drawn is defined in
 [model.md](model.md), where it is drawn in [layout.md](layout.md), and how it looks in
 [look.md](look.md).
 
@@ -92,7 +93,7 @@ depth.
   and returns the camera to fit mode, following nothing (LAYOUT-404). The keys `+`, `-` and `0` do the
   same.
 - **INT-353** The scale stays between 0.2 and 2.5. The camera is not part of the picture: a shared link
-  opens fitted.
+  opens fitted. Back and Forward bring back the camera of a visit (INT-554).
 - **INT-354** Selecting an element, by a click, a key or a link in the side panel, gently brings it and
   its connections into view without shrinking the picture (LAYOUT-454). An element reached with the
   keyboard is brought into view the same way, on its own. The browser never scrolls the stage itself;
@@ -142,9 +143,47 @@ walkthrough step.
 - **INT-505** Opening a link shows its picture directly, without a glide. A part that no longer fits
   the model (a view, element or step that is gone) is dropped (MODEL-603), and the stage shows, for six
   seconds, "Part of this link no longer matches the diagram, so Aerie is showing the closest picture."
-- **INT-506** Choosing a view, and starting or ending a scenario or walkthrough, adds an entry to the
-  browser's history, so Back and Forward step between them. Other changes replace the current entry.
+- **INT-506** Every visit (INT-551) adds an entry to the browser's history, so Back and Forward step
+  between visits. Moving the camera, and moving within a playing scenario or a presented walkthrough,
+  replace the current entry.
 - **INT-507** The "Copy link" button copies the full address and reads "Link copied" for a moment.
+
+## Back and Forward
+
+Choosing an element can take the camera to another part of the diagram. Back returns the reader to
+where they were, as they left it, so they never have to find their place again.
+
+- **INT-551** A **visit** is a picture the reader went to, with the camera where they left it. Every
+  change the reader makes to the picture is a new visit: selecting an element (by a click, a key or a
+  link in the side panel) or clearing the selection, opening or closing a container, switching the
+  audience or the view, starting or ending a scenario or walkthrough, and an address typed by hand.
+  Moving the camera alone is not a visit: the current visit keeps the camera wherever the reader
+  leaves it, so a run of drags, wheel turns and camera buttons is one visit's camera, never a visit
+  each.
+- **INT-552** Each visit is one entry in the browser's history (INT-506), so the page's Back and
+  Forward, the list of recent visits (INT-555) and the browser's own Back and Forward all move between
+  the same visits. A new visit after going back forgets the visits that were ahead, as the browser
+  does.
+- **INT-553** At the stage's top left are a Back button ("‹") and a Forward button ("›"), with the
+  tooltips "Back (Alt+Left)" and "Forward (Alt+Right)". Alt+Left and Alt+Right do the same (INT-004).
+  Back on the first visit and Forward on the last are marked unavailable and do nothing.
+- **INT-554** Going back or forward shows the visit's exact picture: its view, audience, zoom state,
+  selection and side panel, or its scenario at the step it was left on. The picture changes with the
+  glide of LAYOUT-402, and the camera returns to where the reader left it, at the same scale, following
+  what it followed (LAYOUT-453). A shared link and a reloaded page still open fitted (INT-353).
+- **INT-555** Beside the buttons, the list of recent visits names the latest five visits, oldest first,
+  with the current one marked; after going back further than those, it names five from the current one
+  on, so the visits ahead stay in reach. A visit is named, for the current audience, by its selected
+  element, its playing scenario or presented walkthrough, the container opened or closed to reach it,
+  or else its view. Choosing a name goes straight to that visit, as several Backs or Forwards would.
+  The list names fewer visits when the stage is too narrow for five beside the camera buttons, and
+  hides while it would name only one.
+- **INT-556** The visits last as long as the browser tab: a reload keeps them, and going back to an
+  earlier diagram's entries finds its visits again. Choosing another diagram, or opening a file,
+  starts its visits afresh.
+- **INT-557** Moving within a playing scenario (its steps, Play, the lanes and the audience switch) or
+  a presented walkthrough stays in the same visit; they keep their own controls (INT-605, INT-703).
+  While presenting, Back, Forward and the list hide with the rest of the chrome (INT-701).
 
 ## Scenario playback
 

@@ -215,6 +215,12 @@ Requirement ids: `LOOK-nnn`. Conventions are in [overview.md](overview.md#readin
   buttons with a `rule` border.
 - **LOOK-807** The logo is three nested, slightly irregular closed contours, like a hill seen from
   above, stroked in `ink`, with a small `accent` dot near the summit.
+- **LOOK-808** Back and Forward (INT-553) sit at the stage's top left, 14 px from its edges, as small
+  `paper` buttons with a `rule` border like the camera buttons; one that leads nowhere has `muted`
+  arrows. After them the recent visits (INT-555) are one `paper` bar with a `rule` border: each name
+  112 px wide in Source Sans 3 13 px `muted`, cut short with an ellipsis (its full name in the
+  tooltip), separated by a small `muted` chevron, and the current one `ink`, 600, on `band-1`. The stage's
+  notice sits below them.
 
 ## Motion
 

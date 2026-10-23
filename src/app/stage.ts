@@ -3,7 +3,8 @@
 // change from one picture to the next (LAYOUT-402, LAYOUT-403, LOOK-901), the clicks a reader makes
 // on it (INT-201, INT-302), the sentences a screen reader hears after it (INT-903), a playing
 // scenario's caption bar (INT-603, LOOK-805) and cross-fade between the map and lanes (INT-604),
-// and a presented walkthrough's narration bar and camera framing its focus (INT-701, INT-702).
+// a presented walkthrough's narration bar and camera framing its focus (INT-701, INT-702), and the
+// camera a visit gone back or forward to brings back (INT-554).
 import type { Id } from '../lines/index.ts';
 import type { Tree } from '../model/index.ts';
 import {
@@ -33,6 +34,7 @@ import { h } from './dom.ts';
 import { Choreography, Swap, glideEase, timing } from './motion.ts';
 import { narrationContent, type Narration } from './presenter.ts';
 import { captionText, type Caption } from './scenario.ts';
+import type { CameraState } from './visits.ts';
 
 /** What the stage is asked to show. */
 export interface Showing {
@@ -65,6 +67,8 @@ export interface Arrival {
   closing?: boolean;
   /** The element selected, brought into view with its connections (LAYOUT-454). */
   reveal?: Id;
+  /** INT-554: a visit gone back or forward to: the camera returns to where the reader left it. */
+  camera?: CameraState;
 }
 
 /** LAYOUT-455: where a fitted camera was before a container was opened. */
@@ -85,6 +89,8 @@ export interface StageActions {
   pick(id: Id | null): void;
   /** The open and close control, or a double click on a container (INT-302). */
   toggle(id: Id): void;
+  /** The camera moved, by the reader or a change of picture, so the visit can keep it (INT-554). */
+  moved(camera: CameraState): void;
 }
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -282,17 +288,27 @@ export class Stage {
       this.follow = null;
       this.returns = [];
     }
+    // INT-554: a visit's camera follows and frames what it did when the reader left it.
+    const back = arrival.camera;
+    if (back !== undefined) {
+      this.framing = back.framing;
+      this.follow = back.follow;
+    }
     const samePlaces =
       (before !== null && after !== null && before.result === after.result) ||
       (wasLanes !== null && wasLanes === showing.lanes);
     if (old !== null && samePlaces && this.morph(old, next, after === null ? 'lanes' : 'map')) {
       // The caption or narration bar's room changes the fitted picture (LAYOUT-451).
-      if (arrival.fit === true || (roomMoved && this.camera.mode === 'fit')) this.refit(true);
+      if (back !== undefined) this.place(back.camera, true);
+      else if (arrival.fit === true || (roomMoved && this.camera.mode === 'fit')) this.refit(true);
       else if (arrival.reveal !== undefined) this.reveal(arrival.reveal);
+      this.actions.moved(this.cameraState());
       return;
     }
     const was = this.camera;
-    if (arrival.fit === true || old === null) {
+    if (back !== undefined) {
+      this.camera = back.camera;
+    } else if (arrival.fit === true || old === null) {
       this.camera = this.fitted(next, after);
     } else if (this.camera.mode === 'fit') {
       this.camera = this.followed(arrival, before, after, next);
@@ -320,6 +336,7 @@ export class Stage {
       this.glide(old, next, tree, before, after, was);
     }
     this.restoreFocus(focused);
+    this.actions.moved(this.cameraState());
   }
 
   /**
@@ -528,10 +545,16 @@ export class Stage {
     return { width: svg.width.baseVal.value, height: svg.height.baseVal.value };
   }
 
+  /** INT-554: where the camera is, and what a fitted camera follows or frames. */
+  cameraState(): CameraState {
+    return { camera: this.camera, follow: this.follow, framing: this.framing };
+  }
+
   private place(camera: Camera, glide: boolean): void {
     const was = this.camera;
     this.camera = camera;
     if (this.svg === null) return;
+    this.actions.moved(this.cameraState());
     this.svg.style.transform = cameraTransform(camera);
     if (glide) {
       this.motion.finish();

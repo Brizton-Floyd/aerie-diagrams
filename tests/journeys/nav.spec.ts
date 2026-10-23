@@ -108,6 +108,13 @@ test.describe('SCOPE-005 the navigation sidebar', () => {
       'aria-selected',
       'true',
     );
+    // Switching the audience was a visit of its own (INT-551).
+    await page.goBack();
+    await expect(page.getByRole('tab', { name: 'Manager' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    await shows(page, 'services');
     await page.goBack();
     await shows(page, 'big-picture');
     await expect(current).toHaveText(['Big picture']);
@@ -236,22 +243,24 @@ test.describe('the address', () => {
     await expect.poll(() => fragment(page)).toBe('view=services&aud=engineer');
   });
 
-  test('INT-506 choosing a view or an activity adds a history entry; other changes replace it', async ({
+  test('INT-506 every visit adds a history entry; the camera and steps within an activity replace it', async ({
     page,
   }) => {
     await openLotto(page);
     const start = await page.evaluate(() => history.length);
     await view(page, 'services').click();
     await shows(page, 'services');
-    // Audience, opening and selecting change the address but stay in the same entry.
+    // The audience, opening and selecting are each a visit (INT-551); the camera is not.
     await page.keyboard.press('3');
     await button(page, 'engine-service').focus();
     await page.keyboard.press('o');
     await clickElement(page, 'pick-generation');
     await settled(page);
+    await page.getByRole('button', { name: 'Magnify' }).click();
+    await page.getByRole('button', { name: 'Fit all' }).click();
     const services = 'view=services&aud=engineer&open=engine-service&sel=pick-generation';
     expect(fragment(page)).toBe(services);
-    expect(await page.evaluate(() => history.length)).toBe(start + 1);
+    expect(await page.evaluate(() => history.length)).toBe(start + 4);
     // The scenario plays on Services, as it is (MODEL-404), so the selection is all that goes.
     await scenario(page, 'generate-picks').click();
     const playing = 'view=services&aud=engineer&open=engine-service&play=generate-picks.1';
@@ -260,7 +269,7 @@ test.describe('the address', () => {
     await expect.poll(() => fragment(page)).toBe('aud=engineer&present=tour.1');
     await page.keyboard.press('Escape');
     await expect.poll(() => fragment(page)).toBe('aud=engineer');
-    expect(await page.evaluate(() => history.length)).toBe(start + 4);
+    expect(await page.evaluate(() => history.length)).toBe(start + 7);
 
     // Back steps through them, each showing its exact picture.
     await page.goBack();
@@ -278,6 +287,13 @@ test.describe('the address', () => {
       'aria-selected',
       'true',
     );
+    // Then the visits that led there, one by one, back to the first picture.
+    await page.goBack();
+    expect(fragment(page)).toBe('view=services&aud=engineer&open=engine-service');
+    await page.goBack();
+    expect(fragment(page)).toBe('view=services&aud=engineer');
+    await page.goBack();
+    expect(fragment(page)).toBe('view=services');
     await page.goBack();
     expect(new URL(page.url()).hash).toBe('');
     await shows(page, 'big-picture');
@@ -288,11 +304,11 @@ test.describe('the address', () => {
     );
 
     // Forward returns, and the picture with it.
-    await page.goForward();
+    for (let at = 0; at < 4; at++) await page.goForward();
     expect(fragment(page)).toBe(services);
     await shows(page, 'services');
     await expect(panel(page).locator('h1')).toHaveText('Pick generation');
-    expect(await page.evaluate(() => history.length)).toBe(start + 4);
+    expect(await page.evaluate(() => history.length)).toBe(start + 7);
   });
 
   test('INT-507 Copy link copies the full address and reads "Link copied" for a moment', async ({
@@ -345,7 +361,12 @@ test.describe('opening a shared link', () => {
     }
     await settled(page);
     await settled(other);
-    const shot = { animations: 'disabled' as const, caret: 'hide' as const };
+    // The visits are the reader's own, not the picture's (INT-551): the new page has only one.
+    const shot = {
+      animations: 'disabled' as const,
+      caret: 'hide' as const,
+      style: '.travel { visibility: hidden; }',
+    };
     const [mine, theirs] = [await page.screenshot(shot), await other.screenshot(shot)];
     expect(await differentPixels(other, mine, theirs)).toBe(0);
   });

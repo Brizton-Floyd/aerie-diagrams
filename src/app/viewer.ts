@@ -4,10 +4,12 @@
 // place (INT-301 to INT-304), switches the audience without moving anything (INT-101 to INT-105),
 // moves the camera (INT-351 to INT-353), and does all of it from the keyboard too (INT-901 to
 // INT-905). The navigation sidebar lists the views, scenarios and walkthroughs (INT-401 to INT-404),
-// and the address always holds the picture as a shared link, with Back and Forward stepping between
-// views and activities (INT-501 to INT-507, link.ts). A reader plays a scenario on the architecture
-// or as lanes, step by step or by itself (INT-601 to INT-606, scenario.ts), started with
-// `playScenario`, and presents a walkthrough full screen, step by step, with its narration
+// and the address always holds the picture as a shared link (INT-501 to INT-507, link.ts). Every
+// change the reader makes is a visit, one per history entry, so the page's Back and Forward, its
+// list of recent visits and the browser's own Back and Forward return to each picture with its
+// camera (INT-551 to INT-557, visits.ts and travel.ts). A reader plays a scenario on the
+// architecture or as lanes, step by step or by itself (INT-601 to INT-606, scenario.ts), started
+// with `playScenario`, and presents a walkthrough full screen, step by step, with its narration
 // (INT-701 to INT-707, presenter.ts), started with `presentWalkthrough`. The split editor
 // (editing.ts) and watch mode (watching.ts) give it new versions of the model.
 import {
@@ -57,6 +59,8 @@ import {
 import { FIRST_SAMPLE, SAMPLES } from './samples.ts';
 import { Autoplay, ScenarioPanel, captionOf, type ScenarioActions } from './scenario.ts';
 import { Stage, type Arrival, type Showing } from './stage.ts';
+import { TravelControls, namesThatFit, type TravelActions } from './travel.ts';
+import { Visits, entryOf, visitKey, visitName, type CameraState, type Shelf } from './visits.ts';
 
 /**
  * Every face the page draws, loaded before the page says it is ready, so no drawing is ever shown
@@ -81,18 +85,35 @@ const COPIED_FOR = 1400;
 const STALE_FOR = 6000;
 
 /**
- * INT-506: the history entry a picture belongs to. Choosing a view, and starting or ending a
- * scenario or walkthrough, moves to another entry; every other change stays in the same one.
+ * Whether a change of picture is the reader's, which makes a new visit and history entry when it
+ * reaches another visit (INT-506, INT-551), or replaces the current one.
  */
-function entry(picture: Picture): string {
-  const { activity } = picture;
-  if (activity.kind === 'playing') return `play ${activity.scenario}`;
-  if (activity.kind === 'presenting') return `present ${activity.walkthrough}`;
-  return `view ${picture.view}`;
-}
-
-/** Whether a change of picture adds a history entry or replaces the current one (INT-506). */
 type HistoryMove = 'navigate' | 'replace';
+
+/** INT-556: how long the camera rests before the visits are put on the shelf again. */
+const SAVE_AFTER = 250;
+
+/** INT-556: the tab's session storage; when it is off the visits last for this page only. */
+const SESSION: Shelf = {
+  get: (key) => {
+    try {
+      return sessionStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  },
+  set: (key, value) => {
+    try {
+      sessionStorage.setItem(key, value);
+    } catch {
+      // Storage may be off or full; the visits then last for this page only.
+    }
+  },
+};
+
+/** A name for a new run of visits, unique enough within one tab. */
+const visitsId = (): string =>
+  `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 
 function remembered(key: string): string | null {
   try {
@@ -182,6 +203,11 @@ export class Viewer {
   private readonly presenterControls: PresenterControls;
   /** True while the page is in full screen because a presentation asked for it (INT-701). */
   private ownsFullScreen = false;
+  /** INT-551: the reader's visits of the model shown, one per history entry. */
+  private visits: Visits | null = null;
+  private saveTimer = 0;
+  /** INT-553 and INT-555: Back, Forward and the recent visits, at the stage's top left. */
+  private readonly travel: TravelControls;
 
   constructor(root: HTMLElement, options: { watching?: boolean } = {}) {
     this.root = root;
@@ -236,11 +262,24 @@ export class Viewer {
       toggle: (id) => {
         this.toggle(id);
       },
+      moved: (camera) => {
+        this.keepCamera(camera);
+      },
     });
     this.notice = h('p', { class: 'notice', role: 'status', hidden: true });
     this.overlay = h('div', { class: 'overlay', hidden: true });
     this.presenterControls = new PresenterControls(this.presenterActions);
-    this.stage.element.append(this.notice, this.overlay, this.presenterControls.element);
+    this.travel = new TravelControls(this.travelActions);
+    this.stage.element.append(
+      this.notice,
+      this.overlay,
+      this.presenterControls.element,
+      this.travel.element,
+    );
+    // INT-555: as many recent visits are named as fit beside the camera buttons.
+    new ResizeObserver(() => {
+      this.refreshTravel();
+    }).observe(this.stage.element);
     this.panel = h('aside', { class: 'panel', 'aria-label': 'About' });
     this.panelSwap = new Swap(this.panel);
     this.sideWrap = h('nav', { class: 'side-wrap', 'aria-label': 'Diagram' }, [
@@ -254,6 +293,9 @@ export class Viewer {
     });
     window.addEventListener('popstate', () => {
       this.follow();
+    });
+    window.addEventListener('pagehide', () => {
+      this.save();
     });
     // INT-703: leaving full screen, as the browser's own Esc does, ends the presentation.
     document.addEventListener('fullscreenchange', () => {
@@ -312,7 +354,12 @@ export class Viewer {
     const url = new URL(location.href);
     url.search = SAMPLES.has(path) && !this.watching ? `?model=${encodeURI(path)}` : '';
     url.hash = link;
-    history.replaceState(null, '', url);
+    // INT-556: a reload, or an entry of another diagram gone back to, finds its visits again; any
+    // other diagram starts afresh in the current entry.
+    this.save();
+    this.visits =
+      Visits.resume(SESSION, path, history.state) ?? Visits.start(visitsId(), path, link);
+    history.replaceState(this.visits.entry(), '', url);
     this.path = path;
     this.source = source;
     this.link = link;
@@ -418,11 +465,16 @@ export class Viewer {
    * Sets the picture, normalised, writes it into the address and draws it. A change the reader
    * makes navigates: it adds a history entry when it moves to another view or activity (INT-506).
    */
-  private change(picture: Picture, arrival: Arrival = {}, move: HistoryMove = 'navigate'): void {
+  private change(
+    picture: Picture,
+    arrival: Arrival = {},
+    move: HistoryMove = 'navigate',
+    about: Id | null = null,
+  ): void {
     if (this.opened === null) return;
     const before = this.picture;
     this.picture = normalisePicture(this.opened.semantics, picture).picture;
-    this.writeAddress(before, move);
+    this.writeAddress(before, move, about);
     this.arrival = { ...this.arrival, ...arrival };
     // INT-606: Play stops with the scenario it plays.
     if (playingOf(before)?.scenario !== playingOf(this.picture)?.scenario) this.autoplay.stop();
@@ -442,24 +494,40 @@ export class Viewer {
     });
   }
 
-  /** INT-501: the address always shows the current picture, in its fragment. */
-  private writeAddress(before: Picture | null, move: HistoryMove): void {
+  /**
+   * INT-501: the address always shows the current picture, in its fragment. INT-506 and INT-551: a
+   * change the reader makes that reaches another visit adds a visit and a history entry; any other
+   * change replaces the current ones.
+   */
+  private writeAddress(before: Picture | null, move: HistoryMove, about: Id | null): void {
     const opened = this.opened;
     const picture = this.picture;
-    if (opened === null || picture === null) return;
+    const visits = this.visits;
+    if (opened === null || picture === null || visits === null) return;
+    const fragment = writeFragment(opened.semantics, picture);
     const url = new URL(location.href);
-    url.hash = writeFragment(opened.semantics, picture);
-    if (url.href === location.href) return;
-    if (move === 'navigate' && before !== null && entry(before) !== entry(picture)) {
-      history.pushState(null, '', url);
+    url.hash = fragment;
+    if (
+      move === 'navigate' &&
+      before !== null &&
+      visitKey(before, visits.current.fragment) !== visitKey(picture, fragment)
+    ) {
+      visits.push(fragment, about);
+      history.pushState(visits.entry(), '', url);
     } else {
-      history.replaceState(null, '', url);
+      visits.replace(fragment);
+      const stamped = entryOf(history.state);
+      if (url.href !== location.href || stamped?.visits !== visits.id || stamped.at !== visits.at) {
+        history.replaceState(visits.entry(), '', url);
+      }
     }
+    this.saveSoon();
   }
 
   /**
-   * INT-506: Back and Forward, or a fragment typed into the address, show that picture. An entry
-   * from before another bundled model was chosen opens that model again.
+   * INT-506 and INT-552: Back and Forward, or a fragment typed into the address, show that picture,
+   * with the camera the reader left there (INT-554). An entry from before another bundled model was
+   * chosen opens that model again.
    */
   private follow(): void {
     const asked = new URL(location.href).searchParams.get('model');
@@ -471,9 +539,88 @@ export class Viewer {
     const opened = this.opened;
     const before = this.picture;
     if (opened === null || before === null) return;
+    const camera = this.arrive(history.state, location.hash);
     const read = readFragment(opened.semantics, location.hash);
     if (read.dropped.length > 0) this.warnStale();
-    this.change(read.picture, read.picture.view === before.view ? {} : { fit: true }, 'replace');
+    const arrival: Arrival =
+      camera !== null ? { camera } : read.picture.view === before.view ? {} : { fit: true };
+    this.change(read.picture, arrival, 'replace');
+  }
+
+  /**
+   * INT-552: the visit of the history entry the browser moved to, and the camera the reader left
+   * there, or null when it has none to bring back. An address typed by hand is a new visit after
+   * the current one, as it is a new entry after the current one; an entry whose visits are lost
+   * starts afresh.
+   */
+  private arrive(state: unknown, fragment: string): CameraState | null {
+    const visits = this.visits;
+    if (visits === null) return null;
+    const entry = entryOf(state);
+    if (entry === null) {
+      visits.push(fragment, null);
+      return null;
+    }
+    if (entry.visits === visits.id && visits.moveTo(entry.at)) return visits.current.camera;
+    this.save();
+    const resumed = Visits.resume(SESSION, visits.model, state);
+    this.visits = resumed ?? Visits.start(visitsId(), visits.model, fragment);
+    return resumed?.current.camera ?? null;
+  }
+
+  /** INT-554: the current visit keeps the camera where the reader leaves it. */
+  private keepCamera(camera: CameraState): void {
+    if (this.visits === null) return;
+    this.visits.keepCamera(camera);
+    this.saveSoon();
+  }
+
+  /** INT-556: puts the visits on the shelf once the camera has rested. */
+  private saveSoon(): void {
+    window.clearTimeout(this.saveTimer);
+    this.saveTimer = window.setTimeout(() => {
+      this.save();
+    }, SAVE_AFTER);
+  }
+
+  private save(): void {
+    window.clearTimeout(this.saveTimer);
+    this.visits?.save(SESSION);
+  }
+
+  /** INT-553 and INT-555: the browser's history moves, and `follow` shows where it arrives. */
+  private readonly travelActions: TravelActions = {
+    back: () => {
+      if (this.visits?.canBack === true) history.back();
+    },
+    forward: () => {
+      if (this.visits?.canForward === true) history.forward();
+    },
+    go: (at) => {
+      const visits = this.visits;
+      if (visits?.get(at) !== undefined && at !== visits.at) history.go(at - visits.at);
+    },
+  };
+
+  /** INT-553 and INT-555: Back and Forward say whether they lead anywhere; the visits are named. */
+  private refreshTravel(): void {
+    const opened = this.opened;
+    const picture = this.picture;
+    const visits = this.visits;
+    this.travel.element.hidden = opened === null || picture === null || visits === null;
+    if (opened === null || picture === null || visits === null) return;
+    const recent = visits.recent(namesThatFit(this.stage.element.clientWidth)).flatMap((at) => {
+      const visit = visits.get(at);
+      return visit === undefined
+        ? []
+        : [{ at, name: visitName(opened.semantics, visit, picture.audience) }];
+    });
+    this.travel.update({
+      canBack: visits.canBack,
+      canForward: visits.canForward,
+      recent,
+      at: visits.at,
+    });
   }
 
   /** INT-507: copies the full address; the button reads "Link copied" for a moment. */
@@ -544,6 +691,8 @@ export class Viewer {
     this.change(
       open ? closeContainer(semantics, picture, id) : openContainer(semantics, picture, id),
       { anchor: id, closing: open },
+      'navigate',
+      id,
     );
   }
 
@@ -555,10 +704,19 @@ export class Viewer {
     this.change(switchAudience(opened.semantics, picture, audience));
   }
 
-  /** The keyboard (INT-004, INT-102, INT-201, INT-352, INT-605, INT-703, INT-902). */
+  /** The keyboard (INT-004, INT-102, INT-201, INT-352, INT-553, INT-605, INT-703, INT-902). */
   private key(event: KeyboardEvent): void {
-    if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey) return;
+    if (event.defaultPrevented || event.ctrlKey || event.metaKey) return;
     if (inTextField(event.target)) return;
+    if (event.altKey) {
+      // INT-553: Alt+Left and Alt+Right go back and forward a visit. Arrows are matched by `key`,
+      // which Option leaves alone on macOS.
+      if (event.shiftKey || (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight')) return;
+      event.preventDefault();
+      if (event.key === 'ArrowLeft') this.travelActions.back();
+      else this.travelActions.forward();
+      return;
+    }
     const opened = this.opened;
     const picture = this.picture;
     if (opened === null || picture === null) return;
@@ -1078,6 +1236,7 @@ export class Viewer {
             h('label', { class: 'file' }, ['Open a file', file]),
           ]),
         ];
+    this.refreshTravel();
     if (opened === null || picture === null) {
       this.root.classList.remove('presenting');
       this.presenterControls.update(null);

@@ -42,6 +42,9 @@ any scenario or walkthrough step. A shared link carries the picture.
 
 **Camera**: Magnifying and moving the picture on screen. The camera is not zoom: it changes size, never depth.
 
+**Visit**: A picture the reader went to, with the camera where they left it. Back and Forward move between visits,
+and the list of recent visits names the latest ones.
+
 **Trail**: A scenario drawn on the architecture as a red line with numbered steps.
 
 **Lanes**: A scenario laid out with one column per element and one row per step.
