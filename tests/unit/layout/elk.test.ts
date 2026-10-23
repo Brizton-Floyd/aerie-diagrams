@@ -75,11 +75,12 @@ describe('the ELK graph', () => {
       'engine',
       'store',
     ]);
-    expect(graph.edges?.map((edge) => edge.id)).toEqual(['user->website', 'updater->texas']);
+    expect(graph.edges?.map((edge) => edge.id)).toEqual(['user->website', 'reader->texas']);
     expect(nodes.get('suite')?.edges?.map((edge) => edge.id)).toEqual([
       'website->screen-api',
       'screen-api->engine-service',
       'engine-service->history-service',
+      'legacy->history-service',
     ]);
     expect(nodes.get('store')?.edges?.map((edge) => edge.id)).toEqual([
       'history-service->saved-draws',

@@ -20,7 +20,7 @@ describe.each(SOURCES)('$path', (source) => {
       expect(checkStructure(semantics, layout, texts)).toEqual([]);
     });
 
-    it('RULE-005 switching audience moves nothing', async () => {
+    it('RULE-005 and SCOPE-003 switching audience moves nothing', async () => {
       const [first, ...others] = await Promise.all(
         audiences.map((audience) =>
           new Layouter(semantics, layouter.engine).picture(view, state.zoom, audience),

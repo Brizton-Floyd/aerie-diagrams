@@ -1,6 +1,6 @@
 {
   "name": "aerie-diagrams",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Aerie Diagrams - one model, every audience.",
   "license": "UNLICENSED",
@@ -16,7 +16,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json",
-    "lint": "eslint . && prettier --check . && node scripts/check-text.ts && node scripts/check-docs.ts",
+    "lint": "eslint . && prettier --check . && node scripts/check-text.ts && node scripts/check-docs.ts && node scripts/check-coverage.ts",
     "format": "prettier --write .",
     "test:unit": "vitest run --project unit",
     "test:rules": "vitest run --project rules",

@@ -38,7 +38,7 @@ const MERGED = semanticsOf(
   ].join('\n') + '\n',
 );
 
-describe('lifting', () => {
+describe('SCOPE-002 lifting', () => {
   it('MODEL-301 lifts an element to itself, its nearest drawn ancestor, or nothing', () => {
     const drawn = LOTTO.drawn('big-picture');
     expect(lift(LOTTO.tree, drawn, 'website')).toBe('website');

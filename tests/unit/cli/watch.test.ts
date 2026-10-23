@@ -18,7 +18,11 @@ import {
 } from '../../../src/cli/watch.ts';
 import type { WatchEvent } from '../../../src/app/watching.ts';
 
-const LOTTO = readFileSync(join(import.meta.dirname, '../../../samples/lotto.aerie'), 'utf8');
+/** The spec's worked example keeps one W601, so it shows how a warning is printed. */
+const WARNED = readFileSync(
+  join(import.meta.dirname, '../../../docs/spec/examples/lotto.aerie'),
+  'utf8',
+);
 const GOOD = 'web: Web\napi: API\nweb calls api\n';
 const RENAMED = 'web: Web shop\napi: API\nweb calls api\n';
 const BROKEN = 'web: Web\napi: API\nweb calls apu\n';
@@ -218,8 +222,8 @@ describe('following the file', () => {
     await until(() => printed !== '', 'the broken version');
     expect(printed).toBe(`${typo}\nShowing the last version without errors.\n`);
     printed = '';
-    writeFileSync(file, LOTTO);
-    await until(() => printed !== '', 'the Lotto sample');
+    writeFileSync(file, WARNED);
+    await until(() => printed !== '', 'the Lotto example');
     expect(printed).toBe(
       `${file}:281:3: warning W601: No relationship joins \`updater\` and \`saved-draws\` in the model. Add one, such as \`updater saves draws into saved-draws\`, or check this step.\nUpdated.\n`,
     );

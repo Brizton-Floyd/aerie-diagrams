@@ -86,7 +86,7 @@ function tableAfter(text: string, heading: string): string[][] {
   return rows.slice(1);
 }
 
-describe('the skill is self-contained and well formed', () => {
+describe('SCOPE-009 the skill is self-contained and well formed', () => {
   it('SKILL-001 SKILL.md names the skill aerie and says when to use it', () => {
     const front = /^---\n([\s\S]*?)\n---\n/.exec(read('SKILL.md'))?.[1] ?? '';
     expect(front).toMatch(/^name: aerie$/m);

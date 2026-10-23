@@ -64,7 +64,7 @@ const TOUR: {
     view: 'big-picture',
     focus: ['screen-api'],
     narration:
-      'The Screen API prepares the data for each screen. It has no lottery logic of its own.',
+      "The Screen API prepares the data for each screen, mostly by reshaping the engine's answers.",
     fragment: 'present=tour.2',
   },
   {
@@ -78,7 +78,7 @@ const TOUR: {
     view: 'services',
     focus: ['pick-generation'],
     narration:
-      'Inside the engine, Pick generation runs the strategy the user chose and scores the tickets against past draws.',
+      'Inside the engine, Pick generation runs the strategy the user chose and checks each set against past draws until it finds one worth playing.',
     fragment: 'present=tour.4',
     zoom: 'pick-generation',
   },
@@ -86,7 +86,7 @@ const TOUR: {
     view: 'big-picture',
     focus: ['store'],
     narration:
-      'The Results store keeps every past draw and refreshes them from the Texas Lottery website every two hours.',
+      "The Results store keeps each game's past draws and refreshes them from the Texas Lottery website every two hours.",
     fragment: 'present=tour.5',
   },
   {
@@ -94,13 +94,13 @@ const TOUR: {
     view: 'services',
     focus: ['store'],
     narration:
-      'Inside the store, the updater downloads new results, the reader turns them into draws, and the history service answers the engine.',
+      "Inside the store, the updater has every game refreshed, the reader downloads and saves each game's results, and the history service answers the engine.",
     fragment: 'present=tour.6',
     zoom: '!pick-generation',
   },
 ];
 
-test.describe('presenter mode', () => {
+test.describe('SCOPE-007 presenter mode', () => {
   test('INT-701 presenting fills the screen with the stage, the narration bar, the audience tabs and the controls', async ({
     page,
   }) => {
@@ -148,7 +148,7 @@ test.describe('presenter mode', () => {
     await expect(controls(page)).toHaveCSS('opacity', '1');
   });
 
-  test('JOURNEY-005 and MODEL-501 to MODEL-503 every step of the tour shows its picture, then the scenario plays through', async ({
+  test('JOURNEY-005, INT-706 and MODEL-501 to MODEL-503 every step of the tour shows its picture, then the scenario plays through', async ({
     page,
   }) => {
     await openLotto(page);
@@ -183,7 +183,7 @@ test.describe('presenter mode', () => {
       '7 / 8A tour of the Lotto suiteGenerate picks 1/14',
     );
     await expect(bar(page).locator('.narration-text')).toHaveText(
-      'Now follow one request: what happens when the user clicks Generate.',
+      'Now follow one request: what happens when the user clicks Generate Numbers.',
     );
     expect(fragment(page)).toBe('present=tour.7.1');
     // MODEL-504: forward plays the next scenario step until the end of the range.

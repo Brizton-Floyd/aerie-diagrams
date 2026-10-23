@@ -1,0 +1,73 @@
+# Changelog
+
+All notable changes to Aerie. Versions follow [Semantic Versioning](https://semver.org/); the
+functional spec for each version is [docs/spec/](docs/spec/overview.md).
+
+## 1.0.0 - 2026-10-23
+
+The first version: one model, every audience. Built in the slices of
+[docs/slice-plan.md](docs/slice-plan.md), each a clean-room build with its read log in
+[docs/clean-room/read-log/](docs/clean-room/read-log/README.md).
+
+### The Lines language (A2)
+
+- A plain text format for architecture: elements and their nesting, relationships as sentences,
+  wording for each audience, views, scenarios and walkthroughs.
+- A parser to one canonical JSON model, a plain-English error catalogue with line, column and
+  suggestions, and a formatter that changes only spacing.
+- The `aerie` command: `aerie check`, `aerie format` and `aerie model`.
+
+### Model semantics (A3)
+
+- Containment, relationships declared once and lifted to whatever is drawn, audience resolution,
+  views with opening and closing in place, scenario replies and stage views, and walkthrough
+  pictures.
+
+### Layout (A4)
+
+- Structure views laid out by ELK behind Aerie's own layout interface, with space reserved for the
+  longest wording of every audience, so switching audience never moves anything.
+- Rule checks on every view, audience and zoom state, and readability scores (edge crossings,
+  bends, fit scale, contrast, accessibility) that may never get worse.
+
+### The Contour look (A5)
+
+- Light and dark themes from one set of tokens, Aerie's own icons, bands for nested containers,
+  relationship labels, and an SVG renderer whose every colour and timing lives in one stylesheet.
+
+### Reading (A6, A7)
+
+- The audience switch, select with the side panel, highlight and dim, open and close in place with
+  a glide, the camera, keyboard use and screen reader text, and reduced motion.
+- The navigation sidebar, and an address that always holds the exact picture: Back and Forward,
+  Copy link, and a link that reopens what its sender saw.
+
+### Scenarios (A8)
+
+- Scenarios played on the architecture as a red trail, or shown as lanes, with a step list, Play,
+  Next and Back.
+
+### Presenter mode (A9)
+
+- Walkthroughs presented full screen with narration, moving through views and scenarios, with the
+  audience switch live while presenting.
+
+### Live editor and watch mode (A10)
+
+- A split editor beside the diagram that updates as you type, keeps the last good picture on an
+  error and lists the errors in plain words, with Format, Download and Discard.
+- `aerie watch <file>`: the diagram follows a file saved in any editor.
+
+### The Aerie skill for Claude (A12)
+
+- `skills/aerie/`: teaches Claude to read a project, write its model in Lines with wording for each
+  audience, and run the checker until the file is clean.
+
+### The Lotto sample and v1 acceptance (A11)
+
+- `samples/lotto.aerie`, the flagship sample, refined with the Aerie skill against the real Lotto
+  code, with a record of how it was drafted ([samples/lotto.md](samples/lotto.md)).
+- The v1 browser journeys on the Lotto sample, one per acceptance journey.
+- The readability baseline for the final sample.
+- A coverage check: every requirement of the spec is cited by a test title, and every slice has
+  its read log.

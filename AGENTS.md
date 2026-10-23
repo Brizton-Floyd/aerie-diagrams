@@ -93,8 +93,14 @@ has the steps for opening a model and choosing a view and audience with clicks).
 - Dependencies are pinned to exact versions (`.npmrc` has `save-exact`). TypeScript stays on 6.0.x
   until `typescript-eslint` supports 7.
 - `lint` also runs `scripts/check-text.ts`, which fails on any em dash in the repo (use a plain
-  hyphen), and `scripts/check-docs.ts`, which fails on broken Markdown links and on spec ids
-  (`LANG-012`, `E008`) that are defined twice or cited in docs or tests without being defined.
+  hyphen), `scripts/check-docs.ts`, which fails on broken Markdown links and on spec ids
+  (`LANG-012`, `E008`) that are defined twice or cited in docs or tests without being defined, and
+  `scripts/check-coverage.ts`, which fails when a spec requirement is cited by no test title or a
+  slice has no read log (ACC-101, ACC-102): a new requirement lands with its test.
+- `samples/lotto.aerie` is the flagship sample (refined with the skill in A11; how is in
+  `samples/lotto.md`, which a unit test holds to it). `docs/spec/examples/lotto.aerie` is the spec's
+  worked example: the model tests' Lotto tables and the tests that print a W601 use it, so leave it
+  as the spec says. Changing the sample moves goldens, screenshots, scores and journey wording.
 - `docs/spec/examples/*.json` and the language fixtures' `.json` files are byte-exact canonical
   models and diagnostics, so Prettier skips them.
 - `src/lines/` (the parser, catalogue, formatter and printer) is pure TypeScript: lint rejects Node

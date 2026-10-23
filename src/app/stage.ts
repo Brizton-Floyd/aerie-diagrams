@@ -159,21 +159,24 @@ export class Stage {
         this.fit(true);
       }),
     ]);
-    // INT-904: captions are announced as they change.
+    // INT-904: captions are announced as they change. The bar scrolls a caption longer than its
+    // fixed height, so Tab reaches it and the keys scroll it (INT-901).
     this.captionBar = h('div', {
       class: 'caption-bar',
       role: 'status',
       'aria-live': 'polite',
       'aria-label': 'Step',
+      tabindex: '0',
       hidden: true,
     });
     this.captionSwap = new Swap(this.captionBar);
-    // INT-904: so is a walkthrough's narration.
+    // INT-904: so is a walkthrough's narration, which scrolls the same way.
     this.narrationBar = h('div', {
       class: 'narration-bar',
       role: 'status',
       'aria-live': 'polite',
       'aria-label': 'Narration',
+      tabindex: '0',
       hidden: true,
     });
     this.narrationSwap = new Swap(this.narrationBar);

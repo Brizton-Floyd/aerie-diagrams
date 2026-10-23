@@ -22,7 +22,7 @@ import {
 import { LOTTO, layouter } from './helpers.ts';
 
 const OPEN_ENGINE_SERVICE: Zoom = new Map([['engine-service', 'open']]);
-const ENGINE_PARTS = ['request-handling', 'pick-generation', 'history-lookup'];
+const ENGINE_PARTS = ['request-handling', 'game-analysis', 'pick-generation', 'history-lookup'];
 
 describe('the transition plan', () => {
   it('LAYOUT-401 opening a container lays the new picture out from scratch', async () => {

@@ -7,7 +7,7 @@ import { expect, test, type Locator, type Page } from '@playwright/test';
 const LOTTO = readFileSync(join(import.meta.dirname, '../../samples/lotto.aerie'), 'utf8');
 const RELATIONSHIP = 'website gets screen data from screen-api';
 const TYPO_MESSAGE =
-  'Line 168, column 31: There is no element called `screen-apu`. Did you mean `screen-api`?';
+  'Line 213, column 31: There is no element called `screen-apu`. Did you mean `screen-api`?';
 
 test.use({ viewport: { width: 1600, height: 900 } });
 
@@ -183,7 +183,7 @@ test('JOURNEY-007 INT-806 an error keeps the last diagram and lists the error in
   const errors = page.getByRole('list', { name: 'Problems' });
   await expect(errors.locator('li').first()).toHaveText(TYPO_MESSAGE);
   await expect(errors.locator('li.error')).toHaveCount(1);
-  await expect(errors.locator('li.warning')).toHaveCount(3);
+  await expect(errors.locator('li.warning')).toHaveCount(2);
   await expect(page.locator('.notice')).toHaveText('Showing the last version without errors');
   expect(await page.locator('svg.aerie').innerHTML()).toBe(before);
 
@@ -219,10 +219,16 @@ test('INT-806 warnings are listed after errors and never stop the diagram from u
 }) => {
   await openEditor(page);
   const errors = page.getByRole('list', { name: 'Problems' });
+  await expect(errors.locator('li')).toHaveCount(0);
+  // Make a step name the wrong sender: no relationship joins the updater and the saved draws.
+  await goToLine(page, 'reader saves the latest draws into saved-draws');
+  await page.keyboard.press('Home');
+  for (const key of Array.from('reader', () => 'Delete')) await page.keyboard.press(key);
+  await page.keyboard.type('updater');
   await expect(errors.locator('li')).toHaveText([
-    'Line 281, column 3: No relationship joins `updater` and `saved-draws` in the model. Add one, such as `updater saves draws into saved-draws`, or check this step.',
+    'Line 336, column 3: No relationship joins `updater` and `saved-draws` in the model. Add one, such as `updater saves the latest draws into saved-draws`, or check this step.',
   ]);
-  await goToLine(page, 'updater saves draws into saved-draws');
+  await expect(page.locator('.notice')).toBeHidden();
   await expect(page.locator('.editor-host .cm-lintRange-warning')).toHaveCount(1);
   await expect(page.locator('.editor-host .cm-lint-marker-warning')).toHaveCount(1);
   await goToLine(page, 'website: Website | Picks a game, generates numbers [service]');

@@ -96,7 +96,8 @@ new decision.
   is retired, never reused, and new requirements take new ids in the gaps or at the end of their
   section. Tests cite ids in their titles ([acceptance.md](acceptance.md#rules-for-every-slice)).
 - **The docs check** (`npm run lint`) fails on a broken link between documents, a requirement id
-  defined twice, or a cited id that is not defined.
+  defined twice, or a cited id that is not defined. **The coverage check** (`npm run lint` too) fails
+  on a requirement no test title cites (ACC-101).
 - **Changing the spec** is a pull request like any other. A change that contradicts a settled decision
   needs a new decision record first.
 

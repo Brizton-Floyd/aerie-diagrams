@@ -35,7 +35,7 @@ const PREFIXES = [
   'JOURNEY',
   'SKILL',
 ];
-const REQUIREMENT = `(?:${PREFIXES.join('|')})-\\d{3}`;
+export const REQUIREMENT = `(?:${PREFIXES.join('|')})-\\d{3}`;
 const DIAGNOSTIC = '[EW]\\d{3}';
 const AVOIDED_WORDS = /\b(?:resources?|perspectives?|sequences?|detail levels?)\b/gi;
 const EXTERNAL_LINK = /^[a-z][a-z0-9+.-]*:/i;

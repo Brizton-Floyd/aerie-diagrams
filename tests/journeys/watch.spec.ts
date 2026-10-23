@@ -20,6 +20,9 @@ const TYPO = LOTTO.replace(
   'website gets screen data from screen-apu',
 );
 
+const TYPO_MESSAGE =
+  'Line 213, column 31: There is no element called `screen-apu`. Did you mean `screen-api`?';
+
 test.use({ viewport: { width: 1600, height: 900 } });
 
 let folder = '';
@@ -69,6 +72,36 @@ async function openPage(page: Page): Promise<void> {
   await expect(websiteName(page)).toHaveText('Website');
 }
 
+test('JOURNEY-009 and SCOPE-008 watch a file: saves update the page, an error keeps the picture, Ctrl+C stops', async ({
+  page,
+}) => {
+  await openPage(page);
+  await page.locator('button[data-view="services"]').click();
+  await page.getByRole('tab', { name: 'Engineer' }).click();
+  await expect(page.locator('svg.aerie')).toHaveAttribute('data-audience', 'engineer');
+
+  writeFileSync(file, LOTTO.replace('website: Website |', 'website: Web shop |'));
+  await expect(websiteName(page)).toHaveText('Web shop');
+  await expect(page.locator('svg.aerie')).toHaveAttribute('data-view', 'services');
+  await expect(page.locator('svg.aerie')).toHaveAttribute('data-audience', 'engineer');
+
+  const before = await page.locator('svg.aerie').innerHTML();
+  writeFileSync(file, TYPO);
+  await expect(page.locator('.overlay')).toHaveText(TYPO_MESSAGE);
+  await expect(page.locator('.notice')).toHaveText('Showing the last version without errors');
+  expect(await page.locator('svg.aerie').innerHTML()).toBe(before);
+
+  writeFileSync(file, LOTTO);
+  await expect(websiteName(page)).toHaveText('Website');
+  await expect(page.locator('.overlay')).toBeHidden();
+  await expect(page.locator('.notice')).toBeHidden();
+
+  const stopped = new Promise<number | null>((done) => server?.on('close', done));
+  server?.kill('SIGINT');
+  expect(await stopped).toBe(0);
+  expect(printed).toMatch(/Stopped watching\.\n$/);
+});
+
 test('INT-851 INT-855 the page shows the file, offers no other model and has no Edit button', async ({
   page,
 }) => {
@@ -102,13 +135,11 @@ test('INT-852 an error keeps the last picture and shows the error list over the 
   const before = await page.locator('svg.aerie').innerHTML();
   writeFileSync(file, TYPO);
   await expect(page.locator('.notice')).toHaveText('Showing the last version without errors');
-  await expect(page.locator('.overlay')).toHaveText(
-    'Line 168, column 31: There is no element called `screen-apu`. Did you mean `screen-api`?',
-  );
+  await expect(page.locator('.overlay')).toHaveText(TYPO_MESSAGE);
   expect(await page.locator('svg.aerie').innerHTML()).toBe(before);
   await expect.poll(() => printed).toContain('Showing the last version without errors.\n');
   expect(printed).toContain(
-    `${file}:168:31: error E008: There is no element called \`screen-apu\`. Did you mean \`screen-api\`?\n`,
+    `${file}:213:31: error E008: There is no element called \`screen-apu\`. Did you mean \`screen-api\`?\n`,
   );
 
   writeFileSync(file, LOTTO.replace('website: Website |', 'website: Web shop |'));

@@ -64,7 +64,56 @@ async function differentPixels(page: Page, one: Buffer, two: Buffer): Promise<nu
 const STALE =
   'Part of this link no longer matches the diagram, so Aerie is showing the closest picture.';
 
-test.describe('the navigation sidebar', () => {
+test.describe('SCOPE-005 the navigation sidebar', () => {
+  test('JOURNEY-008 find your way with the sidebar, then step back with the browser', async ({
+    page,
+  }) => {
+    await openLotto(page);
+    const side = sidebar(page);
+    await expect(side.locator('[data-view]')).toHaveText([
+      'Big picture',
+      'Services',
+      'Engineering: code modules',
+    ]);
+    await expect(side.locator('[data-scenario]')).toHaveText(['Generate picks', 'Results poll']);
+    await expect(side.locator('[data-walkthrough]')).toHaveText(['A tour of the Lotto suite']);
+    const current = side.locator('[aria-current="true"]');
+    await expect(current).toHaveText(['Big picture']);
+
+    await view(page, 'services').click();
+    await shows(page, 'services');
+    await expect(current).toHaveText(['Services']);
+    expect(fragment(page)).toBe('view=services');
+    // The whole view fits the stage.
+    const stage = await page.locator('main.aerie-stage').boundingBox();
+    expect(stage).not.toBeNull();
+    for (const [key, box] of Object.entries(await boxes(page))) {
+      expect(box.x, key).toBeGreaterThanOrEqual(stage?.x ?? 0);
+      expect(box.y, key).toBeGreaterThanOrEqual(stage?.y ?? 0);
+      expect(box.x + box.width, key).toBeLessThanOrEqual((stage?.x ?? 0) + (stage?.width ?? 0));
+      expect(box.y + box.height, key).toBeLessThanOrEqual((stage?.y ?? 0) + (stage?.height ?? 0));
+    }
+
+    await page.keyboard.press('1');
+    await expect(view(page, 'engineering')).toHaveText('How the code is organised');
+    await scenario(page, 'results-poll').click();
+    await expect(current).toHaveText(['Results poll']);
+    await expect(page.locator('.caption-bar .count')).toHaveText('1/6');
+
+    await page.goBack();
+    await shows(page, 'services');
+    await expect(current).toHaveText(['Services']);
+    await expect(page.locator('svg.aerie .trail')).toHaveCount(0);
+    await expect(page.getByRole('tab', { name: 'Executive' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    await page.goBack();
+    await shows(page, 'big-picture');
+    await expect(current).toHaveText(['Big picture']);
+    expect(new URL(page.url()).hash).toBe('');
+  });
+
   test('INT-401 lists views, scenarios and walkthroughs in declared order, titled for the audience', async ({
     page,
   }) => {

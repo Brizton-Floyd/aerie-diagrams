@@ -330,16 +330,17 @@ describe('the lanes', () => {
         }
       }
     }
-    // Four times the steps and lanes take about four times as long, not sixteen.
+    // Four times the steps and lanes take about four times as long, not sixteen. The fastest of
+    // seven runs is the time least disturbed by other work on the machine.
     const time = (count: number): number => {
       const { semantics, structure: fake } = chain(count);
       const runs: number[] = [];
-      for (let run = 0; run < 5; run++) {
+      for (let run = 0; run < 7; run++) {
         const start = performance.now();
         layoutLanes(semantics, 'long', fake);
         runs.push(performance.now() - start);
       }
-      return runs.sort((a, b) => a - b)[2] ?? 0;
+      return Math.min(...runs);
     };
     time(50);
     const ratio = time(800) / time(200);

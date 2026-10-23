@@ -7,6 +7,9 @@ import { run, summary, type Io } from '../../../src/cli/aerie.ts';
 
 const ROOT = join(import.meta.dirname, '../../..');
 const LOTTO = readFileSync(join(ROOT, 'samples/lotto.aerie'), 'utf8');
+/** The spec's worked example keeps one W601, so it shows how a warning is printed. */
+const EXAMPLE = 'docs/spec/examples/lotto.aerie';
+const WARNED = readFileSync(join(ROOT, EXAMPLE), 'utf8');
 
 function fakeIo(files: Record<string, string>): Io & {
   out: string;
@@ -40,12 +43,12 @@ const BROKEN = 'website: Website\nscreen-api: Screen API\nwebsite gets data from
 const UNSEEN =
   'box: Box\n  x: X\ny: Y\nx calls y\nview v: V\n  show y\nwalkthrough w: W\n  step v: x\n';
 
-describe('aerie check', () => {
+describe('SCOPE-001 aerie check', () => {
   it('LANG-961 LANG-962 prints one line per diagnostic and a summary', () => {
-    const io = fakeIo({ 'samples/lotto.aerie': LOTTO });
-    expect(run(['check', 'samples/lotto.aerie'], io)).toBe(0);
+    const io = fakeIo({ [EXAMPLE]: WARNED });
+    expect(run(['check', EXAMPLE], io)).toBe(0);
     expect(io.out).toBe(
-      'samples/lotto.aerie:281:3: warning W601: No relationship joins `updater` and `saved-draws` in the model. Add one, such as `updater saves draws into saved-draws`, or check this step.\n' +
+      'docs/spec/examples/lotto.aerie:281:3: warning W601: No relationship joins `updater` and `saved-draws` in the model. Add one, such as `updater saves draws into saved-draws`, or check this step.\n' +
         '1 warning.\n',
     );
   });
@@ -76,15 +79,18 @@ describe('aerie check', () => {
     const io = fakeIo({ 'ok.aerie': 'web: Website\n' });
     expect(run(['check', 'ok.aerie'], io)).toBe(0);
     expect(io.out).toBe('No problems found.\n');
+    const sample = fakeIo({ 'samples/lotto.aerie': LOTTO });
+    expect(run(['check', 'samples/lotto.aerie'], sample)).toBe(0);
+    expect(sample.out).toBe('No problems found.\n');
   });
 
   it('LANG-963 --format json prints one document with every diagnostic and the counts', () => {
-    const io = fakeIo({ 'samples/lotto.aerie': LOTTO });
-    expect(run(['check', 'samples/lotto.aerie', '--format', 'json'], io)).toBe(0);
+    const io = fakeIo({ [EXAMPLE]: WARNED });
+    expect(run(['check', EXAMPLE, '--format', 'json'], io)).toBe(0);
     expect(JSON.parse(io.out)).toEqual({
       files: [
         {
-          path: 'samples/lotto.aerie',
+          path: EXAMPLE,
           diagnostics: [
             {
               id: 'W601',
@@ -206,15 +212,17 @@ describe('exit codes', () => {
   });
 
   it('LANG-966 is 0 with only warnings and 1 with errors', () => {
-    expect(run(['check', 'lotto.aerie'], fakeIo({ 'lotto.aerie': LOTTO }))).toBe(0);
+    expect(run(['check', 'lotto.aerie'], fakeIo({ 'lotto.aerie': WARNED }))).toBe(0);
     expect(run(['check', 'a.aerie'], fakeIo({ 'a.aerie': BROKEN }))).toBe(1);
   });
 
   it('LANG-961 the installed command runs as `npx aerie` from the repository', () => {
-    const output = execFileSync('npx', ['aerie', 'check', 'samples/lotto.aerie'], {
+    const output = execFileSync('npx', ['aerie', 'check', EXAMPLE, 'samples/lotto.aerie'], {
       cwd: ROOT,
       encoding: 'utf8',
     });
-    expect(output).toMatch(/^samples\/lotto\.aerie:281:3: warning W601: .*\n1 warning\.\n$/);
+    expect(output).toMatch(
+      /^docs\/spec\/examples\/lotto\.aerie:281:3: warning W601: .*\n1 warning\.\n$/,
+    );
   });
 });

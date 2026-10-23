@@ -32,7 +32,7 @@ are in [overview.md](overview.md#reading-this-spec).
 
 - **ACC-011** `samples/` holds the models Aerie is tested on. Slice A2 adds `samples/lotto.aerie`, a
   copy of [examples/lotto.aerie](examples/lotto.aerie). Slice A11 replaces it with the version drafted
-  with the Aerie skill and re-baselines on purpose.
+  with the Aerie skill and re-baselines on purpose; the example stays as the spec's worked example.
 - **ACC-012** Language fixtures live in `tests/unit/lines/examples/`: for each requirement, one or more
   `<id>-<what>.aerie` files with either the expected canonical model (`<same name>.json`) or the
   expected diagnostics (`<same name>.diagnostics.json`: id, severity, message, and span, LANG-901).
@@ -142,18 +142,20 @@ are in [overview.md](overview.md#reading-this-spec).
 SKILL-201, SKILL-202, SKILL-209 and SKILL-210 (agreeing scope, reading the project, reporting, and
 editing rather than rewriting) have no unit test: they are verified by human review of the skill and
 by the dry run recorded in [voting-app.md](../skill-dry-runs/voting-app.md), and again by A11's record
-(SKILL-301).
+(SKILL-301), [samples/lotto.md](../../samples/lotto.md), which a unit test holds to the sample.
 
 The skill's behaviour on a real project is shown in A11, where it drafts the Lotto sample; the
 transcript summary is committed with that slice (SKILL-301).
 
 ### A11: Lotto sample, browser journeys, readability baseline, v1
 
-| Suite    | What it proves                                                                                   | Requirements               |
-| -------- | ------------------------------------------------------------------------------------------------ | -------------------------- |
-| journeys | The seven journeys below, on the new Lotto sample                                                | JOURNEY-001 to JOURNEY-007 |
-| rules    | The readability baseline for the new Lotto sample is committed and every score is at or above it | SCORE-001 to SCORE-005     |
-| all      | Goldens and screenshots of the new sample are re-baselined on purpose                            | ACC-003                    |
+| Suite    | What it proves                                                                                   | Requirements                                          |
+| -------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------- |
+| journeys | The nine journeys below, on the new Lotto sample                                                 | JOURNEY-001 to JOURNEY-009                            |
+| rules    | The readability baseline for the new Lotto sample is committed and every score is at or above it | SCORE-001 to SCORE-005                                |
+| all      | Goldens and screenshots of the new sample are re-baselined on purpose                            | ACC-003                                               |
+| unit     | The record of drafting the sample with the skill matches the sample                              | SKILL-201, SKILL-202, SKILL-209, SKILL-210, SKILL-301 |
+| unit     | Every requirement id is cited by a test title, and every slice has its read log                  | ACC-101, ACC-102                                      |
 
 - **ACC-101** Before the v1 tag, a check lists every requirement id in this spec and fails if any is
   not cited by a test title (ACC-002).
@@ -163,17 +165,18 @@ transcript summary is committed with that slice (SKILL-301).
 
 Journeys run against the production build with the Lotto sample, at 1600 x 900, as a reader would use
 it: real clicks and keys, no calls into the page's code. Each slice adds the journeys for its own
-features as soon as it lands; A11 runs them all on the final sample. Wording below is from
-[examples/lotto.aerie](examples/lotto.aerie); A11 updates it to the final sample.
+features as soon as it lands; A11 runs them all on the final sample, and adds the last two. Wording
+below is from the final sample, `samples/lotto.aerie`.
 
 - **JOURNEY-001 Switch audience.** Open the Services view. Record every element's and label's on-screen
   box. Press 3. The Website's tagline reads "lotto-options-ui, Angular 21" and the label between
   Website and Screen API reads "calls /ui/\* on". Every recorded box is unchanged. The address holds
   `aud=engineer`. Press 1: the Screen API is named "Website back end".
 - **JOURNEY-002 Open in place.** On Services, click the open control on Engine service. Request
-  handling, Pick generation and Draw history lookup appear inside it, and the address holds
+  handling, Game analysis, Pick generation and Draw history lookup appear inside it, and the address
+  holds
   `open=engine-service`. The line from Screen API now ends at Request handling. Click the control
-  again: the three disappear and the line ends at Engine service again.
+  again: the four disappear and the line ends at Engine service again.
 - **JOURNEY-003 Select and read.** Click the Results store. It is outlined, unrelated parts dim, and the
   side panel shows "Service in Lotto suite", the name, the tagline, "At every level" and its
   connections as sentences. Click "Saved draws" in a sentence: it is revealed if needed and selected.
@@ -191,6 +194,18 @@ features as soon as it lands; A11 runs them all on the final sample. Wording bel
   panel, same boxes, same screenshot). Open the link with `sel=nothing-here` added: the notice of
   INT-505 appears and the rest of the picture is shown.
 - **JOURNEY-007 Edit live.** Open the editor and change `screen-api` to `screen-apu` in the line
-  `website gets screen data from screen-api`. The error list reads "Line 168, column 31: There is no
+  `website gets screen data from screen-api`. The error list reads "Line 213, column 31: There is no
   element called `screen-apu`. Did you mean `screen-api`?", and the diagram is unchanged. Undo the
   change: the error list empties and the diagram is current.
+- **JOURNEY-008 Find your way.** Open the page: the sidebar lists the views "Big picture", "Services"
+  and "Engineering: code modules", the scenarios "Generate picks" and "Results poll", and the
+  walkthrough "A tour of the Lotto suite", with Big picture marked. Choose Services: it is marked, the
+  address holds `view=services`, and the whole view fits the stage. Press 1: the Engineering view is
+  listed as "How the code is organised". Choose "Results poll": it is marked and shows "1/6". Press
+  the browser's Back: Services again, for the Executive, with nothing playing. Back again: the Big
+  picture, with no fragment in the address.
+- **JOURNEY-009 Watch a file.** Run `aerie watch` on a copy of the sample and open the address it
+  prints. Choose Services and Engineer. Rename the Website in the file and save: the page shows the
+  new name, still on Services for the Engineer. Save the change of JOURNEY-007: the last picture
+  stays and the error list over the stage reads the same message. Save the sample again: the error
+  list goes. Press Ctrl+C in the terminal: the server stops and says "Stopped watching."

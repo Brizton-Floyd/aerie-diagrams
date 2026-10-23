@@ -153,7 +153,7 @@ describe('structure rule checks', () => {
     const findings = check(missing).filter((each) => each.rule === 'RULE-006');
     expect(findings.map((each) => each.message)).toEqual([
       'updater->reader has no route of two or more points',
-      'relationship 9 (updater to reader) has no edge updater->reader',
+      'relationship 11 (updater to reader) has no edge updater->reader',
     ]);
     const off = copy();
     const edge = off.result.edges['website->screen-api'];

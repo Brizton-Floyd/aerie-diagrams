@@ -12,7 +12,7 @@ import { THEMES, lowestTextContrast, type Theme } from '../../src/render/index.t
 const BASELINE = join(import.meta.dirname, 'contrast.json');
 const UPDATE = process.env['AERIE_UPDATE_SCORES'] === '1';
 
-it('SCORE-004 the lowest text contrast of each theme is at least 4.5 and no worse than the baseline', () => {
+it('SCORE-004 and ACC-004 the lowest text contrast of each theme is at least 4.5 and no worse than the baseline', () => {
   const now = Object.fromEntries(
     THEMES.map((theme) => [theme, lowestTextContrast(theme)]),
   ) as Record<Theme, number>;
