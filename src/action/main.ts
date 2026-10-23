@@ -125,7 +125,12 @@ async function checkModel(
     );
     const patch = files.find((each) => each.filename === path)?.patch;
     if (patch !== undefined) {
-      const comments = suggestionComments(document, path, addedLines(patch));
+      const comments = suggestionComments(
+        document,
+        path,
+        addedLines(patch),
+        readFileSync(model, 'utf8'),
+      );
       const posted = await postSuggestions(api, pr, model, comments);
       log(`Suggestions posted for ${model}: ${String(posted)} of ${String(comments.length)}`);
     }

@@ -30,6 +30,7 @@ import { commentMarker, type DriftDocument } from '../../../src/drift/index.ts';
 
 const ROOT = join(import.meta.dirname, '../../..');
 const MODEL = relative(ROOT, join(import.meta.dirname, 'fixtures', 'shop-drift.aerie'));
+const SOURCE = readFileSync(join(ROOT, MODEL), 'utf8');
 const CLEAN = relative(ROOT, join(ROOT, 'tests/unit/drift/fixtures/compose/shop.aerie'));
 const PR: PullRequest = { owner: 'o', repo: 'r', number: 7, head: 'abc123' };
 
@@ -350,8 +351,8 @@ describe('DRIFT-604 suggestions on the lines a pull request adds', () => {
 
   it('DRIFT-604 every edit of a model the pull request adds becomes a suggestion', async () => {
     const document = await documentOf(MODEL);
-    const added = addedLines(addingPatch(readFileSync(join(ROOT, MODEL), 'utf8')));
-    const comments = suggestionComments(document, MODEL, added);
+    const added = addedLines(addingPatch(SOURCE));
+    const comments = suggestionComments(document, MODEL, added, SOURCE);
     const key = (at: number, id: string): string =>
       suggestionMarker(MODEL, document.findings.find((each) => each.id === id)?.key ?? '', at);
     expect(comments).toEqual([
@@ -419,22 +420,29 @@ describe('DRIFT-604 suggestions on the lines a pull request adds', () => {
       [23, '  search: Search [service] '],
       [24, '    code compose:search'],
     ]);
-    const comments = suggestionComments(document, MODEL, added);
+    const comments = suggestionComments(document, MODEL, added, SOURCE);
     expect(comments.map((each) => each.body.split('\n')[1]?.slice(0, 7))).toEqual([
       '**D01**',
       '**D03**',
     ]);
-    expect(suggestionComments(document, MODEL, new Map())).toEqual([]);
+    expect(suggestionComments(document, MODEL, new Map(), SOURCE)).toEqual([]);
+  });
+
+  it('DRIFT-604 an insertion whose anchor line is added but reads otherwise at its head is left out', async () => {
+    const document = await documentOf(MODEL);
+    const added = new Map(addedLines(addingPatch(SOURCE)));
+    const all = suggestionComments(document, MODEL, added, SOURCE);
+    added.set(32, 'api calls web');
+    added.set(33, 'web calls api');
+    const kept = suggestionComments(document, MODEL, added, SOURCE);
+    expect(kept).toEqual(all.filter((each) => each.line !== 32));
+    expect(kept.length).toBe(all.length - 3);
   });
 
   it('DRIFT-604 they are posted as one review on the head commit, each only once', async () => {
     const github = memoryGithub();
     const document = await documentOf(MODEL);
-    const comments = suggestionComments(
-      document,
-      MODEL,
-      addedLines(addingPatch(readFileSync(join(ROOT, MODEL), 'utf8'))),
-    );
+    const comments = suggestionComments(document, MODEL, addedLines(addingPatch(SOURCE)), SOURCE);
     expect(await postSuggestions(github.api, PR, MODEL, comments)).toBe(8);
     expect(await postSuggestions(github.api, PR, MODEL, comments)).toBe(0);
     expect(github.reviews).toEqual([
@@ -449,9 +457,7 @@ describe('DRIFT-604 suggestions on the lines a pull request adds', () => {
 
 describe('DRIFT-605 a run of the action', () => {
   it('DRIFT-605 fails on drift, comments once per model file, and suggests on added lines', async () => {
-    const github = memoryGithub([
-      { filename: MODEL, patch: addingPatch(readFileSync(join(ROOT, MODEL), 'utf8')) },
-    ]);
+    const github = memoryGithub([{ filename: MODEL, patch: addingPatch(SOURCE) }]);
     const log: string[] = [];
     const summary: string[] = [];
     const deps = {

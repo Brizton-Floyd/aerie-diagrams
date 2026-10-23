@@ -77,25 +77,29 @@ export function suggestionMarker(path: string, key: string, at: number): string 
 /**
  * DRIFT-604: a `suggestion` for each edit of a drift or likely finding whose lines the pull request
  * adds, as the model file reads at its head: an edit replaces its lines, and a line added before
- * line `at` is suggested with the added line above it (or, failing that, below it).
+ * line `at` is suggested with the added line above it (or, failing that, below it), when that line
+ * reads at the head as it does in `source`, the model text drift ran on.
  */
 export function suggestionComments(
   document: DriftDocument,
   path: string,
   added: ReadonlyMap<number, string>,
+  source: string,
 ): ReviewComment[] {
   const comments: ReviewComment[] = [];
   const same = (line: number, text: string): boolean => added.get(line) === text.replace(/\r$/, '');
+  const lines = source.split('\n');
+  const anchor = (line: number): boolean => same(line, lines[line - 1] ?? '\0');
   for (const finding of document.findings) {
     for (const hunk of finding.edits) {
       let from = hunk.at;
       let lines = hunk.add;
       if (hunk.remove.length > 0) {
         if (!hunk.remove.every((text, i) => same(hunk.at + i, text))) continue;
-      } else if (added.has(hunk.at - 1)) {
+      } else if (anchor(hunk.at - 1)) {
         from = hunk.at - 1;
         lines = [added.get(from) ?? '', ...hunk.add];
-      } else if (added.has(hunk.at)) {
+      } else if (anchor(hunk.at)) {
         lines = [...hunk.add, added.get(hunk.at) ?? ''];
       } else {
         continue;
