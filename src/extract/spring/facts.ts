@@ -19,6 +19,7 @@ import {
   type ConfigEntry,
   type Filled,
 } from './config.ts';
+import { classFacts } from './classes.ts';
 import { channelFacts, eventFacts, scheduleFacts } from './messaging.ts';
 import { Values, type Settings, type Text } from './values.ts';
 import { clientCallFacts, endpointFacts, interfaceCallFacts, type Analysis } from './web.ts';
@@ -137,6 +138,7 @@ export function springFacts(
     }),
     ...eventFacts(analysis),
     ...scheduleFacts(analysis),
+    ...classFacts(code, loading),
   );
   return facts;
 }

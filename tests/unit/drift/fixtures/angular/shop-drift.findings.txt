@@ -1,0 +1,55 @@
+# Findings
+D01 drift renamed-code renamed-code:storefront:npm:shop-site>npm:shop-web (line 17)
+    The code line of Storefront names `npm:shop-site`, which the code no longer has; it has `npm:shop-web` instead, which no element names.
+    An exact check: the code has no npm package of that name, and `npm:shop-web` is the closest one no element names.
+    web/package.json:2  package.json name: npm:shop-web
+    edit at 17
+      -   code compose:web npm:shop-site
+      +   code compose:web npm:shop-web
+    instead at 26
+      + 
+      + ignore drift npm:shop-site - why this difference is meant
+D02 drift undrawn-connection undrawn-connection:storefront>api
+    Storefront calls Orders API in the code, but no line in the diagram joins them.
+    4 techniques found it: nginx proxy_pass, Angular dev-server proxy, Angular HttpClient through nginx and Angular HttpClient through the dev proxy.
+    web/nginx/templates/default.conf.template:5  nginx proxy_pass: compose:web to compose:api (/api/=http://api:8080)
+    web/proxy.conf.json:2  Angular dev-server proxy: npm:shop-web to compose:api (/api=http://localhost:8080)
+    web/src/app/orders.service.ts:9  Angular HttpClient through nginx: npm:shop-web to compose:api (GET /api/orders)
+    web/src/app/orders.service.ts:9  Angular HttpClient through the dev proxy: npm:shop-web to compose:api (GET /api/orders)
+    edit at 26
+      + storefront calls api
+    instead at 26
+      + 
+      + ignore drift storefront to api - why this difference is meant
+L01 likely missing-connection missing-connection:api>storefront:notifies (line 25)
+    The diagram says Orders API notifies Storefront, but the code shows no call from Orders API to Storefront.
+    No technique found a call between them, and reading the code cannot rule one out, so this is only likely.
+    edit at 25
+      - api notifies storefront
+    instead at 26
+      + 
+      + ignore drift api to storefront - why this difference is meant
+L02 likely undrawn-connection undrawn-connection:storefront>pay
+    Storefront calls Payment provider in the code, but no line in the diagram joins them.
+    One technique found it: Angular HttpClient.
+    web/src/app/orders.service.ts:13  Angular HttpClient: npm:shop-web to host pay.example.com (POST https://pay.example.com/v1/charges)
+    edit at 26
+      + storefront calls pay
+    instead at 26
+      + 
+      + ignore drift storefront to pay - why this difference is meant
+
+# Suggestions
+
+# Not checked
+[end] The line “Shopper uses Storefront” is not checked: Shopper stands for no code drift can read.
+[person] Shopper is a person, which code cannot show.
+[wording] The wording (names, taglines and descriptions) is not checked: wrong details are checked in phase 2.
+
+# Ignored
+
+# Confirmed
+Storefront stands for `compose:web` and `npm:shop-web`, which the code has. [compose-service, npm-package]
+UI kit stands for `npm:@shop/ui-kit`, which the code has. [npm-package]
+Orders API stands for `compose:api`, which the code has. [compose-service]
+Payment provider stands for the host `pay.example.com`, which the code has. [angular-http]

@@ -1,0 +1,35 @@
+# The corner shop's stack: every connection is an environment value that names another service.
+name: shop
+
+services:
+  web:
+    image: shop/web:1.4
+    environment:
+      API_URL: http://api:3000
+    depends_on: [api]
+    ports:
+      - "8080:80"
+  api:
+    image: shop/api:2.0
+    environment:
+      DATABASE_URL: jdbc:postgresql://db:5432/shop
+      PAYMENTS_URL: http://payments:8080/v1
+      CACHE_HOST: cache:6379
+    depends_on: [db, cache]
+  payments:
+    image: shop/payments:1.1
+    environment:
+      BANK_URL: https://api.bank.example/v2
+  worker:
+    image: shop/worker:2.0
+    environment:
+      API_URL: http://api:3000
+      API_HOST: api
+      QUEUE_HOST: queue
+    depends_on: [api, queue]
+  queue:
+    image: rabbitmq:4
+  db:
+    image: postgres:17
+  cache:
+    image: redis:8

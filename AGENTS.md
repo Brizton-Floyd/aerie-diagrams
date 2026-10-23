@@ -134,6 +134,16 @@ has the steps for opening a model and choosing a view and audience with clicks).
   `npx vitest run --project unit -u`; check a new one against `docker compose config`, run with
   `env -i PATH=$PATH HOME=$HOME` so no shell variable leaks in. Copies of real repos there (Lotto's)
   have their em dashes written as hyphens, for `check-text`.
+- `src/drift/` (drift's comparison, D5 on) is pure TypeScript too, built only on the entry points of
+  the language, the model and the extractor; API notes in [src/drift/index.ts](src/drift/index.ts).
+  It returns the finding model (D6 prints it); edits are operations on the model file's lines
+  (`file.ts`) so several findings combine into one patch. Its fixture projects in
+  `tests/unit/drift/fixtures/` (skipped by Prettier, ESLint and `tsc`) each pair a model that
+  matches its code with one whose planted drifts its opening comment lists; `<model>.findings.txt`
+  updates with `npx vitest run --project unit -u`. The Lotto benchmark (`tests/unit/drift/lotto/`)
+  labels every finding by hand in `truth.txt` (a new finding fails until labelled) and keeps its
+  scores in `benchmark.json`, which may never get worse: update it with
+  `AERIE_UPDATE_DRIFT=1 npx vitest run --project unit tests/unit/drift/lotto.test.ts`.
 - Text is measured from `src/layout/text/advances.json`, written from the bundled Fontsource fonts by
   `node scripts/font-metrics.ts`; rerun it when a font package changes (a unit test compares them).
 - The split editor (A10) is CodeMirror 6 in `src/app/editor.ts`, loaded only when "Edit" is pressed

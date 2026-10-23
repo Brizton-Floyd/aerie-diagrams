@@ -4,11 +4,17 @@ shop/billing/pom.xml:12  Maven dependency: maven:shop-billing depends on maven:s
 shop/billing/pom.xml:17  Maven dependency: maven:shop-billing depends on org.springframework.boot:spring-boot-starter-web (compile)
 shop/billing/pom.xml:21  Maven dependency: maven:shop-billing depends on org.springframework.boot:spring-boot-starter-amqp (compile)
 shop/billing/pom.xml:25  Maven dependency: maven:shop-billing depends on org.junit.jupiter:junit-jupiter (test)
+shop/billing/src/main/java/com/shop/billing/BillingApplication.java:5  Java type: maven:shop-billing declares class com.shop.billing.BillingApplication
 shop/billing/src/main/java/com/shop/billing/BillingApplication.java:5  Spring Boot application: maven:shop-billing runs the Spring Boot app com.shop.billing.BillingApplication
+shop/billing/src/main/java/com/shop/billing/ChargeApi.java:6  Java type: maven:shop-billing declares interface com.shop.billing.ChargeApi
 shop/billing/src/main/java/com/shop/billing/ChargeApi.java:7  Spring request mapping: maven:shop-billing answers DELETE /api/charges/{charge} (ChargeController.refund)
+shop/billing/src/main/java/com/shop/billing/ChargeController.java:7  Java type: maven:shop-billing declares class com.shop.billing.ChargeController, a subtype of com.shop.billing.ChargeApi
+shop/billing/src/main/java/com/shop/billing/ChargeController.java:9  Java type reference: maven:shop-billing com.shop.billing.ChargeController uses com.shop.common.Paths in maven:shop-common
 shop/billing/src/main/java/com/shop/billing/ChargeController.java:9  Spring request mapping: maven:shop-billing answers POST /api/charges (ChargeController.charge)
 shop/billing/src/main/java/com/shop/billing/ChargeController.java:9  Spring request mapping: maven:shop-billing answers POST /api/v2/charges (ChargeController.charge)
+shop/billing/src/main/java/com/shop/billing/LedgerApi.java:6  Java type: maven:shop-billing declares interface com.shop.billing.LedgerApi
 shop/billing/src/main/java/com/shop/billing/LedgerApi.java:8  HTTP interface: maven:shop-billing calls GET http://ledger.example.com/api/entries/{id} on host ledger.example.com (LedgerApi.entry)
+shop/billing/src/main/java/com/shop/billing/PaymentsListener.java:12  Java type: maven:shop-billing declares class com.shop.billing.PaymentsListener
 shop/billing/src/main/java/com/shop/billing/PaymentsListener.java:22  Kafka listener: maven:shop-billing receives from kafka payments.settled (PaymentsListener.settled)
 shop/billing/src/main/java/com/shop/billing/PaymentsListener.java:24  RabbitMQ template: maven:shop-billing sends to rabbit billing, routing key charge.done (PaymentsListener.settled)
 shop/billing/src/main/java/com/shop/billing/PaymentsListener.java:27  Kafka listener: maven:shop-billing receives from kafka orders.cancelled (PaymentsListener.orders)
@@ -17,8 +23,11 @@ shop/billing/src/main/java/com/shop/billing/PaymentsListener.java:29  RabbitMQ t
 shop/billing/src/main/java/com/shop/billing/PaymentsListener.java:32  RabbitMQ listener: maven:shop-billing receives from rabbit refunds (PaymentsListener.refund)
 shop/billing/src/main/java/com/shop/billing/PaymentsListener.java:36  RabbitMQ listener: maven:shop-billing receives from rabbit billing, routing key charge.* (PaymentsListener.audit)
 shop/billing/src/main/java/com/shop/billing/PaymentsListener.java:40  JMS listener: maven:shop-billing receives from jms ledger.entries (PaymentsListener.ledger)
+shop/billing/src/main/java/com/shop/billing/RefundJob.java:7  Java type: maven:shop-billing declares class com.shop.billing.RefundJob
 shop/billing/src/main/java/com/shop/billing/RefundJob.java:9  Spring schedule: maven:shop-billing runs RefundJob.sweep PT30S after each run
 shop/billing/src/main/java/com/shop/billing/RefundJob.java:13  Spring event listener: maven:shop-billing listens for com.shop.billing.RefundRequested (RefundJob.onApplicationEvent)
+shop/billing/src/main/java/com/shop/billing/RefundJob.java:14  Java type reference: maven:shop-billing com.shop.billing.RefundJob uses com.shop.billing.RefundRequested
+shop/billing/src/main/java/com/shop/billing/RefundRequested.java:5  Java type: maven:shop-billing declares class com.shop.billing.RefundRequested
 shop/billing/src/main/resources/application.properties:1  Spring property: maven:shop-billing sets server.port=8082 (env SERVER_PORT)
 shop/billing/src/main/resources/application.properties:2  Spring property: maven:shop-billing sets spring.application.name=billing (env SPRING_APPLICATION_NAME)
 shop/billing/src/main/resources/application.properties:3  Spring configuration host name: maven:shop-billing to host rabbit (spring.rabbitmq.host=rabbit)
@@ -30,6 +39,8 @@ shop/billing/src/main/resources/application.properties:10  Spring property: mave
 shop/billing/src/main/resources/config/application.yml:3  Spring property: maven:shop-billing sets management.server.port=9082 (env MANAGEMENT_SERVER_PORT)
 shop/common/pom.xml:9  Maven module: maven:shop-common
 shop/common/pom.xml:9  Maven module: maven:shop-common is packaged as jar in shop/common (parent maven:shop)
+shop/common/src/main/java/com/shop/common/Paths.java:4  Java type: maven:shop-common declares class com.shop.common.Paths
+shop/common/src/main/java/com/shop/common/Paths.java:12  Java type: maven:shop-common declares class com.shop.common.Paths.Topics
 shop/compose.yaml:1  Compose project: shop
 shop/compose.yaml:4  Compose service: compose:orders
 shop/compose.yaml:5  Compose image: compose:orders runs shop/orders:1.0
@@ -55,23 +66,41 @@ shop/orders/pom.xml:16  Maven dependency: maven:shop-orders depends on maven:sho
 shop/orders/pom.xml:23  Maven dependency: maven:shop-orders depends on org.springframework.boot:spring-boot-starter-webflux (compile)
 shop/orders/pom.xml:27  Maven dependency: maven:shop-orders depends on org.springframework.kafka:spring-kafka (compile)
 shop/orders/pom.xml:31  Maven dependency: maven:shop-orders depends on org.springframework.cloud:spring-cloud-starter-openfeign (compile)
+shop/orders/src/main/java/com/shop/orders/BillingClient.java:7  Java type: maven:shop-orders declares interface com.shop.orders.BillingClient
 shop/orders/src/main/java/com/shop/orders/BillingClient.java:9  Feign client: maven:shop-orders calls POST http://localhost:8082/api/charges on maven:shop-billing (BillingClient.charge)
+shop/orders/src/main/java/com/shop/orders/BillingClient.java:9  Java type reference: maven:shop-orders com.shop.orders.BillingClient uses com.shop.common.Paths in maven:shop-common
+shop/orders/src/main/java/com/shop/orders/InventoryClient.java:6  Java type: maven:shop-orders declares class com.shop.orders.InventoryClient
+shop/orders/src/main/java/com/shop/orders/InventoryClient.java:9  Java type reference: maven:shop-orders com.shop.orders.InventoryClient uses com.shop.orders.InventoryProperties
 shop/orders/src/main/java/com/shop/orders/InventoryClient.java:18  WebClient call: maven:shop-orders calls GET http://inventory.example.com/v1/stock/{sku} on host inventory.example.com (InventoryClient.stock)
 shop/orders/src/main/java/com/shop/orders/InventoryClient.java:22  WebClient call: maven:shop-orders calls POST http://inventory.example.com/v1/reservations on host inventory.example.com (InventoryClient.reserve)
+shop/orders/src/main/java/com/shop/orders/InventoryProperties.java:6  Java type: maven:shop-orders declares record com.shop.orders.InventoryProperties
+shop/orders/src/main/java/com/shop/orders/OrderController.java:7  Java type: maven:shop-orders declares class com.shop.orders.OrderController
+shop/orders/src/main/java/com/shop/orders/OrderController.java:10  Java type reference: maven:shop-orders com.shop.orders.OrderController uses com.shop.orders.OrderEvents
 shop/orders/src/main/java/com/shop/orders/OrderController.java:16  Spring request mapping: maven:shop-orders answers GET /api/orders/{id} (OrderController.get)
 shop/orders/src/main/java/com/shop/orders/OrderController.java:21  Spring request mapping: maven:shop-orders answers POST /api/orders (OrderController.create)
 shop/orders/src/main/java/com/shop/orders/OrderController.java:27  Spring request mapping: maven:shop-orders answers PATCH /api/orders/{id} (OrderController.update)
 shop/orders/src/main/java/com/shop/orders/OrderController.java:27  Spring request mapping: maven:shop-orders answers PUT /api/orders/{id} (OrderController.update)
+shop/orders/src/main/java/com/shop/orders/OrderEvents.java:9  Java type: maven:shop-orders declares class com.shop.orders.OrderEvents
+shop/orders/src/main/java/com/shop/orders/OrderEvents.java:22  Java type reference: maven:shop-orders com.shop.orders.OrderEvents uses com.shop.common.Paths.Topics in maven:shop-common
 shop/orders/src/main/java/com/shop/orders/OrderEvents.java:22  Kafka template: maven:shop-orders sends to kafka orders.created (OrderEvents.created)
+shop/orders/src/main/java/com/shop/orders/OrderEvents.java:23  Java type reference: maven:shop-orders com.shop.orders.OrderEvents uses com.shop.orders.OrderPlaced
 shop/orders/src/main/java/com/shop/orders/OrderEvents.java:23  Spring event publisher: maven:shop-orders publishes com.shop.orders.OrderPlaced (OrderEvents.created)
 shop/orders/src/main/java/com/shop/orders/OrderEvents.java:24  Spring Cloud Stream bridge: maven:shop-orders sends to stream audit-trail (OrderEvents.created)
+shop/orders/src/main/java/com/shop/orders/OrderPlaced.java:3  Java type: maven:shop-orders declares record com.shop.orders.OrderPlaced
+shop/orders/src/main/java/com/shop/orders/OrdersApplication.java:8  Java type: maven:shop-orders declares class com.shop.orders.OrdersApplication
 shop/orders/src/main/java/com/shop/orders/OrdersApplication.java:8  Spring Boot application: maven:shop-orders runs the Spring Boot app com.shop.orders.OrdersApplication
+shop/orders/src/main/java/com/shop/orders/Reminders.java:8  Java type: maven:shop-orders declares class com.shop.orders.Reminders
 shop/orders/src/main/java/com/shop/orders/Reminders.java:10  Spring schedule: maven:shop-orders runs Reminders.remind every 5 min
 shop/orders/src/main/java/com/shop/orders/Reminders.java:14  Spring schedule: maven:shop-orders runs Reminders.weekly on cron 0 0 9 * * MON-FRI
 shop/orders/src/main/java/com/shop/orders/Reminders.java:18  Spring event listener: maven:shop-orders listens for com.shop.orders.OrderPlaced (Reminders.onPlaced)
+shop/orders/src/main/java/com/shop/orders/Reminders.java:19  Java type reference: maven:shop-orders com.shop.orders.Reminders uses com.shop.orders.OrderPlaced
+shop/orders/src/main/java/com/shop/orders/ShippingClient.java:10  Java type: maven:shop-orders declares class com.shop.orders.ShippingClient
 shop/orders/src/main/java/com/shop/orders/ShippingClient.java:20  RestTemplate call: maven:shop-orders calls POST http://shipping:8090/api/shipments on host shipping (ShippingClient.ship)
 shop/orders/src/main/java/com/shop/orders/ShippingClient.java:21  RestTemplate call: maven:shop-orders calls DELETE http://shipping:8090/api/shipments/{?} on host shipping (ShippingClient.ship)
+shop/orders/src/main/java/com/shop/orders/StripeClient.java:6  Java type: maven:shop-orders declares class com.shop.orders.StripeClient
 shop/orders/src/main/java/com/shop/orders/StripeClient.java:15  RestClient call: maven:shop-orders calls POST https://api.stripe.example.com/v1/charges on host api.stripe.example.com (StripeClient.charge)
+shop/orders/src/main/java/com/shop/orders/WebConfig.java:7  Java type: maven:shop-orders declares class com.shop.orders.WebConfig
+shop/orders/src/main/java/com/shop/orders/WebConfig.java:10  Java type reference: maven:shop-orders com.shop.orders.WebConfig uses com.shop.orders.InventoryProperties
 shop/orders/src/main/resources/application-dev.properties:2  Spring configuration URL: maven:shop-orders to host sandbox.shipping.example.com (shipping.base-url=http://sandbox.shipping.example.com)
 shop/orders/src/main/resources/application-dev.properties:2  Spring property: maven:shop-orders sets shipping.base-url=http://sandbox.shipping.example.com in profile dev (env SHIPPING_BASEURL)
 shop/orders/src/main/resources/application-dev.properties:3  Spring configuration URL: maven:shop-orders to host vault.example.com (shipping.password-url=https://ops:***@vault.example.com/shipping)

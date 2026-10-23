@@ -1,7 +1,7 @@
 // The techniques that find facts (docs/spec/drift.md, section 4, DRIFT-003). Each fact names the
 // one that found it; matching (slice D5) counts how many techniques agree on a connection, and a
 // technique that only corroborates (`depends_on` is start-up order, not a call) never counts alone.
-// Maven and Spring (slice D3) add theirs after Compose's.
+// Maven and Spring (slice D3) add theirs after Compose's, and the class graph (slice D5) comes last.
 
 export interface Technique {
   /** How a report names it, before the fact's detail: "Compose environment URL: ...". */
@@ -77,6 +77,8 @@ export const TECHNIQUES = {
   'spring-event-publish': { name: 'Spring event publisher', stack: 'spring', corroborates: false },
   'spring-event-listener': { name: 'Spring event listener', stack: 'spring', corroborates: false },
   'spring-scheduled': { name: 'Spring schedule', stack: 'spring', corroborates: false },
+  'java-class': { name: 'Java type', stack: 'spring', corroborates: false },
+  'java-reference': { name: 'Java type reference', stack: 'spring', corroborates: false },
 } as const satisfies Record<string, Technique>;
 
 export type TechniqueId = keyof typeof TECHNIQUES;

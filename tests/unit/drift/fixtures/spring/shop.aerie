@@ -1,0 +1,42 @@
+// The control: the shop's Maven modules, the parts of its two apps by their classes, and how they
+// call each other. Drift finds nothing to report.
+model shop: Shop
+
+system
+  repo shop
+
+orders: Orders [service module]
+  code maven:shop-orders
+  web: Order API
+    code class:com.shop.orders.web.*
+  service: Ordering
+    code class:com.shop.orders.service.*
+  billing-client: Billing client
+    code class:com.shop.orders.billing.BillingClient
+
+billing: Billing [service module]
+  code maven:shop-billing
+  invoices: Invoices
+    code class:com.shop.billing.web.*
+  listener: Order listener
+    code class:com.shop.billing.events.OrderListener
+  ledger: Ledger
+    code class:com.shop.billing.ledger.Ledger
+
+catalog: Catalog [module]
+  code maven:shop-catalog
+common: Common types [module]
+  code maven:shop-common
+legacy: Old reports [module]
+  code maven:shop-legacy
+
+web takes orders to service
+service prices items with catalog
+service asks for invoices through billing-client
+billing-client posts invoices to invoices
+service announces orders to listener
+invoices records charges in ledger
+
+orders depends on catalog, common [code]
+billing depends on common [code]
+catalog depends on common [code]

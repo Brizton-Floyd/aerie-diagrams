@@ -23,6 +23,8 @@
 // - Maven and Spring (D3): each repo's root `pom.xml` and its modules (maven/), then each module's
 //   configuration and Java (spring/). Java is read with a WebAssembly parser that loads
 //   asynchronously, so a caller passes `java: await loadJava()`; without it the Java is not read.
+// - The class graph (D5): each Java type and the types of the system it names (spring/classes.ts),
+//   which drift (src/drift/) lifts to the parts of a diagram that carry `class:` hints.
 export { extract, type Extraction } from './extract.ts';
 export {
   evidenceText,
@@ -37,6 +39,7 @@ export {
   type BuildFact,
   type CallFact,
   type ChannelFact,
+  type ClassFact,
   type ConnectionFact,
   type DependencyFact,
   type EndpointFact,
@@ -52,6 +55,7 @@ export {
   type ProfileFact,
   type ProjectFact,
   type PropertyFact,
+  type ReferenceFact,
   type ScheduleFact,
   type SourceFact,
   type SpringAppFact,

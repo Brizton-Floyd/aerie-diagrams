@@ -25,4 +25,4 @@ export { ICON_NAMES, type IconName } from './icons.ts';
 export * from './model.ts';
 export { DEFAULT_AUDIENCES, parse, type ParseResult } from './parse.ts';
 export { print } from './print.ts';
-export { KEYWORDS, type Keyword } from './text.ts';
+export { KEYWORDS, editDistance, encodeWords, isId, type Keyword } from './text.ts';

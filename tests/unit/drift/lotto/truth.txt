@@ -1,0 +1,14 @@
+# What lotto.aerie gets right and wrong about the copies of the Lotto repos, checked by hand against
+# their code (docs/spec/drift.md, DRIFT-433). One finding key a line: `real` for a difference drift
+# reports and the code bears out, `false` for one it reports that the code does not, `missed` for a
+# real difference it does not report yet, then why. Every finding drift reports must be listed.
+real    missing-dependency:strategies>formats  core-result-analyzer now depends on core-domain, not core-model
+real    missing-dependency:screen-api>formats  the BFF now depends on core-api-contract, not core-model
+real    undrawn-code:maven:lotto-options-core-api-contract  a module added since the sample: the BFF's and the engine's request and response types
+real    undrawn-code:maven:lotto-options-core-application  a module added since the sample: the engine's use cases
+real    undrawn-code:maven:lotto-options-core-domain  a module added since the sample: the engine's domain types and ports
+real    undrawn-dependency:engine-service>store  core-server depends on the Results store's models module, which the sample's wording says but no line draws
+real    undrawn-dependency:legacy>store  core-legacy-desktop depends on the Results store's models module too
+real    unanswered-calls:legacy  HttpLotteryPersistenceClient calls /api/v1/lottery-targeting/*, which nothing in the system offers any more (the sample's own note)
+false   missing-connection:history-service>saved-draws:reads  LotteryDataService reads the saved .ser files with an ObjectInputStream of its own, which no class reference shows
+missed  undrawn-connection:request-handling>history-lookup  CatalogController reads the catalog through ListCatalog, a class no hint names, and ResultsServiceCatalogAdapter

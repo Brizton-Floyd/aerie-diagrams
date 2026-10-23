@@ -5,6 +5,23 @@ functional spec for each version is [docs/spec/](docs/spec/overview.md).
 
 ## Unreleased
 
+### Checking against the code: matching, lifting and levels (D5)
+
+- Drift compares a model with its code ([docs/spec/drift.md](docs/spec/drift.md), sections 5 and 6):
+  each element's code line first, then its name against the Compose services, Maven modules and
+  apps (anything uncertain only a suggestion); the code's connections, calls, events, messages and
+  type references lifted to the elements that stand for them; each line of the diagram confirmed or
+  missing; and the services, modules, packages and connections the diagram does not draw.
+- Findings are drift (several techniques agree, or an exact check fails: a code line naming code
+  that does not exist, a drawn module depending on an undrawn one) or likely (one technique), with
+  their evidence, a suggested Lines edit as hunks, and the ignore line to add instead; ignore lines
+  excuse what they name, and one that excuses nothing is reported. Calls are matched to the
+  endpoints that answer them, and those no endpoint answers are reported too.
+- The extractor reads a class graph from the Java (each type and the types it names), so parts with
+  `class:` hints are checked. Fixture projects per stack with planted drifts, and a benchmark on the
+  Lotto repos (precision 0.889, recall 0.889, every drift-level finding real) that may never get
+  worse. The reports and `aerie drift` come in D6.
+
 ### Checking against the code: Node and Angular (D4)
 
 - The extractor reads Node and Angular code too ([docs/spec/drift.md](docs/spec/drift.md)): each

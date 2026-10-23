@@ -1,0 +1,97 @@
+# Findings
+D01 drift renamed-code renamed-code:ledger:class:com.shop.billing.Ledger>class:com.shop.billing.ledger.Ledger (line 32)
+    The code line of Ledger names `class:com.shop.billing.Ledger`, which the code no longer has; it has `class:com.shop.billing.ledger.Ledger` instead, which no element names.
+    An exact check: the code has no Java type of that name, and `class:com.shop.billing.ledger.Ledger` is the closest one no element names.
+    shop/billing/src/main/java/com/shop/billing/ledger/Ledger.java:7  Java type: maven:shop-billing declares class com.shop.billing.ledger.Ledger, a subtype of com.shop.common.LedgerPort
+    edit at 32
+      -     code class:com.shop.billing.Ledger
+      +     code class:com.shop.billing.ledger.Ledger
+    instead at 47
+      + ignore drift class:com.shop.billing.Ledger - why this difference is meant
+D02 drift missing-dependency missing-dependency:billing>catalog (line 44)
+    The diagram says Billing depends on Catalog, but in the code Billing does not depend on Catalog.
+    An exact check: the Maven poms list every dependency between modules, and none runs this way.
+    edit at 44
+      - billing depends on catalog [code]
+    instead at 47
+      + ignore drift billing to catalog - why this difference is meant
+D03 drift undrawn-code undrawn-code:maven:shop-common
+    Orders depends on the Maven module `maven:shop-common`, but no element stands for it.
+    An exact check: a drawn module depends on it, and the Maven poms list every dependency.
+    shop/common/pom.xml:9  Maven module: maven:shop-common
+    shop/billing/pom.xml:12  Maven dependency: maven:shop-billing depends on maven:shop-common (compile)
+    shop/catalog/pom.xml:12  Maven dependency: maven:shop-catalog depends on maven:shop-common (compile)
+    shop/orders/pom.xml:16  Maven dependency: maven:shop-orders depends on maven:shop-common (compile)
+    shop/testkit/pom.xml:12  Maven dependency: maven:shop-testkit depends on maven:shop-common (compile)
+    edit at 37
+      + 
+      + shop-common: shop-common [module]
+      +   code maven:shop-common
+    edit at 45
+      + billing depends on shop-common [code]
+      + catalog depends on shop-common [code]
+      + orders depends on shop-common [code]
+    instead at 47
+      + ignore drift maven:shop-common - why this difference is meant
+D04 drift undrawn-connection undrawn-connection:billing-client>invoices
+    Billing client calls Invoices in the code, but no line in the diagram joins them.
+    2 techniques found it: HTTP call matched to an endpoint and WebClient call.
+    shop/orders/src/main/java/com/shop/orders/billing/BillingClient.java:17  HTTP call matched to an endpoint: maven:shop-orders calls POST http://localhost:8082/invoices, which maven:shop-billing answers (InvoiceController.invoice) at shop/billing/src/main/java/com/shop/billing/web/InvoiceController.java:16
+    shop/orders/src/main/java/com/shop/orders/billing/BillingClient.java:17  WebClient call: maven:shop-orders calls POST http://localhost:8082/invoices on maven:shop-billing (BillingClient.invoice)
+    edit at 43
+      + billing-client calls invoices
+    instead at 47
+      + ignore drift billing-client to invoices - why this difference is meant
+D05 drift undrawn-dependency undrawn-dependency:orders>catalog
+    Orders depends on Catalog in the code, but no `[code]` line in the diagram joins them.
+    An exact check: the Maven poms list every dependency between modules.
+    shop/orders/pom.xml:12  Maven dependency: maven:shop-orders depends on maven:shop-catalog (compile)
+    edit at 45
+      + orders depends on catalog [code]
+    instead at 47
+      + ignore drift orders to catalog - why this difference is meant
+L01 likely undrawn-connection undrawn-connection:web>service
+    Order API uses the code of Ordering in the code, but no line in the diagram joins them.
+    One technique found it: Java type reference.
+    shop/orders/src/main/java/com/shop/orders/web/OrderController.java:12  Java type reference: maven:shop-orders com.shop.orders.web.OrderController uses com.shop.orders.service.OrderService
+    edit at 43
+      + web calls service
+    instead at 47
+      + ignore drift web to service - why this difference is meant
+
+# Suggestions
+
+# Not checked
+[same-code] The line “Order listener writes orders to Audit trail” is not checked: its ends are checked as Order listener and Billing, which holds it, so drift cannot tell them apart.
+[test-support] The Maven module `maven:shop-testkit` is used only by tests, so it is not checked.
+    shop/orders/pom.xml:20  Maven dependency: maven:shop-orders depends on maven:shop-testkit (test)
+[part] Audit trail has no `class:` hints, so it is not checked, and its lines are checked as Billing's.
+[wording] The wording (names, taglines and descriptions) is not checked: wrong details are checked in phase 2.
+
+# Ignored
+maven:shop-legacy - retiring with the old reports
+  - likely undrawn-code undrawn-code:maven:shop-legacy
+      The code has the Maven module `maven:shop-legacy`, but no element stands for it.
+      One technique found it: Maven module.
+      shop/legacy/pom.xml:9  Maven module: maven:shop-legacy
+      edit at 37
+        + 
+        + shop-legacy: shop-legacy [module]
+        +   code maven:shop-legacy
+      instead at 47
+        + ignore drift maven:shop-legacy - why this difference is meant
+
+# Confirmed
+The line “Ordering prices items with Catalog” is in the code. [java-reference]
+The line “Ordering asks for invoices through Billing client” is in the code. [java-reference]
+The line “Ordering announces orders to Order listener” is in the code. [spring-config-url, channel-match]
+The line “Invoices records charges in Ledger” is in the code. [java-reference]
+Orders stands for `maven:shop-orders`, which the code has. [maven-module]
+Order API stands for `class:com.shop.orders.web.*`, which the code has. [java-class]
+Ordering stands for `class:com.shop.orders.service.*`, which the code has. [java-class]
+Billing client stands for `class:com.shop.orders.billing.BillingClient`, which the code has. [java-class]
+Billing stands for `maven:shop-billing`, which the code has. [maven-module]
+Invoices stands for `class:com.shop.billing.web.*`, which the code has. [java-class]
+Order listener stands for `class:com.shop.billing.events.OrderListener`, which the code has. [java-class]
+Ledger stands for `class:com.shop.billing.ledger.Ledger`, which the code has. [java-class]
+Catalog stands for `maven:shop-catalog`, which the code has. [maven-module]

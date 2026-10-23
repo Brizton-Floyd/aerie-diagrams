@@ -1,0 +1,18 @@
+# Findings
+
+# Suggestions
+
+# Not checked
+[end] The line “Shopper uses Storefront” is not checked: Shopper stands for no code drift can read.
+[person] Shopper is a person, which code cannot show.
+[wording] The wording (names, taglines and descriptions) is not checked: wrong details are checked in phase 2.
+
+# Ignored
+
+# Confirmed
+The line “Storefront calls Orders API” is in the code. [nginx-proxy-pass, angular-proxy, http-nginx, http-dev-proxy]
+The line “Storefront takes payments through Payment provider” is in the code. [angular-http]
+Storefront stands for `compose:web` and `npm:shop-web`, which the code has. [compose-service, npm-package]
+UI kit stands for `npm:@shop/ui-kit`, which the code has. [npm-package]
+Orders API stands for `compose:api`, which the code has. [compose-service]
+Payment provider stands for the host `pay.example.com`, which the code has. [angular-http]

@@ -1,0 +1,35 @@
+// The control: the corner shop drawn as its Compose file has it. Drift finds nothing to report.
+model shop: Corner shop
+
+system
+  repo stack
+  compose stack/compose.yaml
+
+customer: Customer [person]
+
+shop: Corner shop [system]
+  web: Storefront [service]
+    code compose:web
+  api: Orders API [service]
+    code compose:api
+  // No code line: its id is the service's name.
+  payments: Payments [service]
+  worker: Worker [service]
+    code compose:worker
+  queue: Job queue [service]
+    code compose:queue
+  db: Database [store]
+    code compose:db
+  cache: Cache [store]
+    code compose:cache
+
+bank: Bank | Takes card payments [external]
+
+customer uses web
+web calls api
+api reads orders from db
+api charges cards through payments
+api keeps sessions in cache
+worker calls api
+worker takes jobs from queue
+payments charges cards at bank
