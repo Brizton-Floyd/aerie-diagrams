@@ -254,9 +254,10 @@ walkthrough tour: A tour of the shop
 
 ## Tying the model to the code
 
-Optional lines for checking the diagram against the code with `aerie drift`, which is still being
-built: `aerie check` already validates them, and only drift will read them. They never change what
-a reader sees.
+Lines for checking the diagram against the code with `aerie drift`. `aerie check` validates them,
+only drift reads them, and they never change what a reader sees. Write them whenever the project
+has files drift reads: Docker Compose files, Maven poms (with Spring Boot and Java), and Node
+`package.json` files (with Angular).
 
 ```aerie
 model shop: Corner shop
@@ -291,7 +292,9 @@ ignore drift maven:orders-legacy - retiring with the old admin app
   modules) lists all its units.
 - `ignore drift <subject> - <reason>` (top level) marks a difference from the code as meant. The
   subject is an element id, a code unit, or `a to b` for the connection from one to the other. The
-  reason is required.
+  reason is required. Keep ignore lines together at the end of the file.
+- An element without a code line is matched by name: its id or name against the compose services,
+  Maven modules and packages. Write the code line anyway, so a rename in the code is caught.
 
 ## The commands
 
@@ -304,8 +307,12 @@ ignore drift maven:orders-legacy - retiring with the old admin app
 | `aerie format <file>` (or `aerie fmt`) | formats the file in place; changes only spacing                                              |
 | `aerie format <file> --check`          | changes nothing; exit code 1 and the file name when it would change                          |
 | `aerie model <file>`                   | prints the canonical JSON model of a file without errors                                     |
+| `aerie drift <file> --format json`     | compares the model with its code; exit code 1 when there is drift, else 0                    |
+| `aerie drift <file>`                   | the same as a plain-English report                                                           |
+| `aerie drift <file> --format diff`     | every suggested edit as one patch, for `git apply`; changes nothing                          |
 
 Exit code 2 means the command could not run (a missing file, a wrong option); its message says why.
+Run `aerie drift` from the folder that holds the file: the paths in its report start there.
 
 The JSON from `check --format json`:
 
@@ -331,6 +338,65 @@ The JSON from `check --format json`:
   "warnings": 0
 }
 ```
+
+A finding in the JSON from `drift --format json` (`aerie-drift/1`). Each hunk in `edits` and
+`instead` replaces the `remove` lines, starting at line `at`, with the `add` lines; with nothing to
+remove, the lines go in before line `at`.
+
+```json
+{
+  "id": "D01",
+  "key": "undrawn-code:compose:mailpit",
+  "level": "drift",
+  "kind": "undrawn-code",
+  "title": "The code has the Compose service `compose:mailpit`, but no element stands for it.",
+  "detail": "2 techniques found it: Compose service and Compose environment URL.",
+  "elements": [],
+  "diagram": null,
+  "techniques": ["compose-service", "env-url"],
+  "evidence": [
+    {
+      "technique": "compose-service",
+      "name": "Compose service",
+      "at": "recipe-box/compose.yaml:20",
+      "detail": "compose:mailpit",
+      "corroborates": false
+    },
+    {
+      "technique": "env-url",
+      "name": "Compose environment URL",
+      "at": "recipe-box/compose.yaml:11",
+      "detail": "compose:api to compose:mailpit (MAIL_API_URL=http://mailpit:8025/api/v1/send)",
+      "corroborates": false
+    }
+  ],
+  "edits": [
+    {
+      "at": 60,
+      "remove": [],
+      "add": ["", "  mailpit: mailpit [service]", "    code compose:mailpit"]
+    },
+    {
+      "at": 81,
+      "remove": [],
+      "add": ["api calls mailpit"]
+    }
+  ],
+  "instead": [
+    {
+      "at": 122,
+      "remove": [],
+      "add": ["", "ignore drift compose:mailpit - why this difference is meant"]
+    }
+  ]
+}
+```
+
+Beside `findings`, the document has `summary` (the counts: `drift`, `likely`, `suggestions`,
+`notChecked`, `confirmedElements`, `confirmedLines`, `exitCode` and more), `suggestions` (code
+lines drift would pin, each with its edit), `notChecked` (what the code cannot show, each with its
+`text`), `ignored` (each ignore line with the findings it excused), `confirmed` and `problems` (what
+drift could not read).
 
 ## Fixing diagnostics
 
@@ -403,3 +469,21 @@ when it is right. This table adds the usual cause.
 | E813 | `a to a`                                                              | name two different ends                                                                                                                     |
 | E814 | the same subject ignored twice                                        | keep one line                                                                                                                               |
 | W001 | a file with no elements                                               | add elements                                                                                                                                |
+
+## Fixing drift findings
+
+Every finding says what differs and where the code shows it. Check its evidence, then fix the model,
+or, when the difference is meant, add its ignore line with the true reason. This table gives the
+usual fix of each `kind`.
+
+| Kind                 | Means                                                                | Usual fix                                                                                                                       |
+| -------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `missing-code`       | a code line names code the project does not have                     | correct the code line to the name the files use, or remove the element if the part is gone                                      |
+| `renamed-code`       | the same, and the code has a unit by a close name that nothing names | change the code line to the new name, and the element's name and wording if they used the old one                               |
+| `undrawn-code`       | a service, module or package that no element stands for              | add the element, worded like its siblings, with its code line and relationships; ignore it if left out on purpose               |
+| `undrawn-connection` | the code joins two elements that no relationship joins               | add the relationship, at the finest grain the code shows, with a verb that says what happens                                    |
+| `missing-connection` | a relationship that no call or connection in the code shows          | check the code: remove or redirect the relationship if the code is right; ignore it if drift cannot read the call               |
+| `undrawn-dependency` | a build dependency between two elements with no `[code]` line        | add the `[code]` relationship                                                                                                   |
+| `missing-dependency` | a `[code]` relationship that no build dependency shows               | remove it, or point it at the module the build depends on now                                                                   |
+| `unanswered-calls`   | calls that no endpoint of the system answers                         | tell the user: nothing in the system answers them, so the code may need fixing; if they are meant, ignore the element, with why |
+| `unused-ignore`      | an ignore line that excuses nothing any more                         | remove it, as its edit does                                                                                                     |

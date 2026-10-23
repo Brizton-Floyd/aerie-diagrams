@@ -6,9 +6,10 @@ Aerie is diagram-as-code for architecture. Engineers describe a system once, in 
 every reader explores it as an interactive diagram at their own level: the same model reads differently
 for an executive, a manager and an engineer, and opens deeper in place when someone wants more detail.
 
-Private. Version 1.0.0 is complete: the Lines language, the interactive viewer with its audience
-switch, scenarios and presenter mode, the live editor and watch mode, and the Aerie skill for Claude
-([CHANGELOG.md](CHANGELOG.md)).
+Private. Version 1.1.0: the Lines language, the interactive viewer with its audience switch,
+scenarios and presenter mode, the live editor and watch mode, the Aerie skill for Claude, and drift
+detection, which checks a model against the code it describes, on the command line and on every pull
+request ([CHANGELOG.md](CHANGELOG.md)).
 
 ![The Lotto sample's Big picture, written for an executive](docs/screenshots/a11-v1/lotto-big-picture-exec.png)
 
@@ -63,10 +64,48 @@ The language is described in [docs/spec/language.md](docs/spec/language.md).
 
 ### Check a model against its code
 
+`aerie drift` reads the project's files (Docker Compose, Maven with Spring Boot and Java, Node with
+Angular; it never runs anything), compares what it finds with the model, and reports each
+difference in plain words, with its evidence in the code, a suggested Lines edit, and the ignore
+line to use if the difference is meant. Aerie never writes the model.
+
 ```sh
 npx aerie drift docs/architecture.aerie                # where the diagram and the code differ
 npx aerie drift docs/architecture.aerie --format diff  # every suggested edit, as a patch
 ```
+
+A model needs nothing extra to be checked: elements are matched to the code by name. Three kinds of
+line make the check exact, and change nothing a reader sees:
+
+```aerie
+model shop: Corner shop
+
+system
+  repo .
+  repo ../shop-web
+  compose deploy/compose.yaml
+
+shop: Shop [system]
+  web: Storefront [service]
+    code compose:web npm:shop-web
+  api: Orders API [service]
+    code compose:api maven:orders-api
+
+web sends orders to api
+
+ignore drift maven:orders-legacy - retiring with the old admin app
+```
+
+- The **system root** (`system`) names the repos that form the system, from the model file's folder,
+  and the Compose files that are the truth.
+- A **code line** (`code`) under an element names the code it stands for: `compose:<service>`,
+  `maven:<artifactId>`, `npm:<package name>`, or `class:<com.pkg>.*` for a part of a Java module.
+- An **ignore line** (`ignore drift <subject> - <reason>`) marks a difference as meant, with a
+  reason that is reviewed like any other line. One that excuses nothing any more is reported.
+
+Findings are **drift** (several techniques agree, or an exact check fails, such as a code line naming
+code that is gone) or **likely** (one technique); only drift fails by default (`--fail-on likely` is
+stricter). What code cannot show, such as a person using a website, is listed as not checked.
 
 On GitHub, this repository is also an Action that checks every pull request: it posts one comment
 per model file (edited in place on each run), suggests edits on the lines the pull request adds,
@@ -103,10 +142,12 @@ Drift is described in [docs/spec/drift.md](docs/spec/drift.md), the Action in it
 ### Let Claude write the model
 
 [skills/aerie/](skills/aerie/SKILL.md) is a skill for Claude: it reads a project, writes its model
-in Lines with wording for each audience, and runs `aerie check` until the file is clean. Copy the
-folder into `~/.claude/skills/aerie/` (every project) or `.claude/skills/aerie/` (one project),
-then ask Claude to "describe this system as an Aerie diagram". The Lotto sample was refined this
-way; [samples/lotto.md](samples/lotto.md) records how.
+in Lines with wording for each audience, ties it to the code with a system root and code lines, and
+runs `aerie check` and then `aerie drift` until the file is clean. When Claude later changes code in
+a way that changes the architecture, the skill runs drift and updates the model in the same change.
+Copy the folder into `~/.claude/skills/aerie/` (every project) or `.claude/skills/aerie/` (one
+project), then ask Claude to "describe this system as an Aerie diagram". The Lotto sample was
+refined this way; [samples/lotto.md](samples/lotto.md) records how.
 
 ### Run the checks
 

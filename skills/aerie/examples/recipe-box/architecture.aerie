@@ -1,11 +1,16 @@
-// Worked example 1: the Recipe box project, described in recipe-box.md.
-// A draft for human review: every line comes from a file named in recipe-box.md.
+// Worked example 1: the Recipe box project, described in ../recipe-box.md, whose deployment and
+// build files are in this folder. A draft for human review: every line comes from a file named in
+// recipe-box.md.
 
 model recipe-box: Recipe box
   > A small web app where home cooks save recipes, plan the week's meals and get the shopping
     list by email.
 
 audiences exec "Executive", manager "Manager" (default), engineer "Engineer" (code)
+
+system
+  repo .
+  compose compose.yaml
 
 // ---------------------------------------------------------------- elements
 
@@ -16,10 +21,11 @@ recipe-box: Recipe box | Recipes, meal plans and shopping lists [system]
   > Three parts that start together: the web app, the recipe API and the database.
   @exec: | Our meal planning product
   @engineer >> `compose.yaml` starts `web`, `api` and `db`. Only `web` is published, on port
-    3000.
+    3000. In development it also starts `mailpit`, which catches the email the API sends.
 
   web: Web app | The screens cooks use [service]
     icon web
+    code compose:web npm:recipe-web
     > Shows recipes and the weekly plan, and sends every change to the recipe API.
     @engineer: | recipe-web, React 19 and Vite
     @engineer >> Built by `web/Dockerfile` and served by nginx on port 3000, which passes
@@ -27,6 +33,7 @@ recipe-box: Recipe box | Recipes, meal plans and shopping lists [system]
 
   api: Recipe API | Keeps recipes and plans, builds shopping lists [service]
     icon api
+    code compose:api
     > Saves recipes and meal plans, and turns a week's plan into a shopping list.
     @exec: Recipe service | Where the planning happens
     @engineer: | recipe-api, FastAPI :8000
@@ -45,6 +52,7 @@ recipe-box: Recipe box | Recipes, meal plans and shopping lists [system]
       @engineer >> Reads `MAIL_API_KEY` and `MAIL_FROM` from the environment.
 
   db: Recipe database | Every recipe and meal plan [store]
+    code compose:db
     > Recipes, their ingredients, and each week's plan.
     @engineer: | PostgreSQL 16
     @engineer >> The `db` service in `compose.yaml`, with the volume `pgdata`. Tables come from
@@ -111,3 +119,7 @@ walkthrough tour: A tour of Recipe box
     > A shopping list starts with the week's recipes.
   step send-list: 5-7
     > Then it goes out by email.
+
+// ---------------------------------------------------------------- drift
+
+ignore drift compose:mailpit - a mail catcher for development only; the real email service is outside

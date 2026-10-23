@@ -942,6 +942,17 @@ Decided in #56. The Aerie skill ([claude-skill.md](claude-skill.md)):
 - when Claude changes code in a way that changes the architecture, runs drift and updates the diagram
   in the same change.
 
+Slice D8 builds this as SKILL-211 to SKILL-213, and proves it on the skill's first worked example
+(SKILL-302), whose deployment and build files now sit beside its model.
+
+Choices D8 made, where this document left them open: the model is clean when drift's JSON has no
+findings, drift or likely (an exit code of 0 alone still allows likely ones); the skill stops as it
+does for `aerie check`, after ten runs or when the same finding survives two fixes; a suggested new
+element is a placeholder the skill words like its siblings, never left as drift wrote it; a
+difference that is meant, such as a development tool left out of the picture, becomes the finding's
+ignore line with the true reason; the skill writes `repo .` for the model's own repository rather
+than relying on the nearest `.git`; and ignore lines go last in the file.
+
 ## 10. Definition of done
 
 Decided in #57, on top of the repository's definition of done
@@ -953,6 +964,12 @@ Decided in #57, on top of the repository's definition of done
   worse (like the readability scores, ACC-004).
 - **Journeys**: the GitHub Action (a test pull request gets the right comment) and the skill loop (it
   ends clean).
+
+Where each is proven, as of D8: the fixture projects by DRIFT-432 (and their reports by DRIFT-509);
+the benchmark by DRIFT-433, whose `benchmark.json` is part of `npm run check`; the Action by
+`.github/workflows/drift.yml` on the pull requests that change it, and in memory by DRIFT-601 to
+DRIFT-606; and the skill loop by SKILL-302, which runs the commands the skill runs, from a first draft
+through drift's rounds and a change to the code, to a clean run.
 
 ## 11. Slices
 

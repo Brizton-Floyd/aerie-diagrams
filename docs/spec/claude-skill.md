@@ -3,7 +3,10 @@
 Slice A12 gives Claude a skill for writing Aerie models. With it, Claude reads a project, finds its
 elements, relationships and main flows, writes them in Lines with wording for each audience, and runs
 Aerie's checker until the file is clean. Slice A11 then uses the skill to draft the Lotto sample, which
-is the skill's first real test.
+is the skill's first real test. Slice D8 ties the skill to drift detection
+([drift.md](drift.md#9-the-claude-skill-slice-d8)): it writes the lines that tie a model to its code,
+runs `aerie drift` until the model and the code agree, and keeps the model in step when it changes the
+code.
 
 Requirement ids: `SKILL-nnn`. Conventions are in [overview.md](overview.md#reading-this-spec).
 
@@ -81,13 +84,36 @@ Requirement ids: `SKILL-nnn`. Conventions are in [overview.md](overview.md#readi
   reports any warning it leaves.
 - **SKILL-208** **Format.** It runs `npx aerie format <file>`.
 - **SKILL-209** **Report.** It tells the user the path written; the number of elements, relationships,
-  views and scenarios; the checker's final summary line; every `// Unsure:` point; and how to see the
-  diagram: `npx aerie watch <file>`.
+  views and scenarios; the checker's final summary line; drift's result and rounds (from D8); every
+  `// Unsure:` point; every ignore line it added, with its reason, and what drift could not check;
+  and how to see the diagram: `npx aerie watch <file>`.
 - **SKILL-210** **Edit, do not rewrite.** When a `.aerie` file already exists, it changes only what is
   needed and keeps the author's ids, wording and comments.
+- **SKILL-211** **Tie the model to the code.** When the project has files drift reads (Docker Compose,
+  Maven with Spring Boot and Java, Node with Angular), the skill writes, without being asked, the
+  system root after `audiences` (a `repo` line for each repository of the system, `repo .` for the
+  model's own, and a `compose` line for the Compose file the project tells people to use) and a
+  `code` line under each element that stands for code, with the names the deployment and build files
+  use; `class:` hints only for parts of Java modules whose package or classes it can name. People,
+  outside systems and code drift does not read get none. It adds them to an existing file that has
+  none, and writes neither when the project has no such files.
+- **SKILL-212** **Fix drift until clean.** After the check, it runs `aerie drift <file> --format json`
+  from the model's folder (DRIFT-507) and fixes every drift and likely finding, until `findings` is
+  empty: it corrects the model where the model is wrong, wording any element a suggested edit adds as
+  a placeholder like its siblings, and adds the finding's ignore line, with the true reason, where the
+  difference is meant. It never adds or removes an element or a relationship the code does not bear
+  out to silence a finding. The reference gives the usual fix of every kind of finding. After ten
+  runs, or when the same finding survives two fixes, it stops and shows the user the finding.
+- **SKILL-213** **Keep the model in step with the code.** When Claude changes the code of a project
+  whose model has a system root, in a way that changes what the model describes (a service, module or
+  package added, removed or renamed; a connection between parts; an outside system), it runs drift
+  and updates the model in the same change, until drift is clean, and says what it changed.
 
 ## Proving it
 
 - **SKILL-301** Slice A11 drafts the Lotto sample with the skill and commits a short record next to the
   sample: what the skill read, how many check rounds it took, the warnings it left, and what the human
   changed afterwards.
+- **SKILL-302** Worked example 1 is a project drift reads: its deployment and build files sit beside
+  its model, and the rounds it shows (the check, drift's rounds, and a later code change with the
+  model's update) are what the commands print on them, so the loop ends clean.
