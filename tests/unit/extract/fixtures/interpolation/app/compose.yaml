@@ -1,0 +1,22 @@
+services:
+  orders-api:
+    image: ${REGISTRY}/orders-api:${TAG:-latest}
+    ports:
+      - "${API_PORT}:8080"
+      - "${METRICS_PORT-9100}:9100"
+    environment:
+      DATABASE_URL: ${DB_URL}
+      PRICING_URL: http://${PRICING_HOST:-pricing}:${PRICING_PORT:-8081}/api
+      LITERAL: $LITERAL
+      ESCAPED: $${NOT_A_VARIABLE}
+      FALLBACK: ${EMPTY:-http://pricing:8081}
+      KEEP_EMPTY: ${EMPTY-http://ignored:1}
+      ALTERNATE: ${API_PORT:+http://pricing:8081}
+      NESTED: ${MISSING:-${ALSO_MISSING:-http://pricing:8081}}
+  pricing:
+    image: ${REGISTRY}/pricing
+    environment:
+      ORDERS: http://${API_HOST}:${API_PORT}
+      AUDIT_URL: http://${AUDIT_HOST}:7000
+  db:
+    image: postgres:16

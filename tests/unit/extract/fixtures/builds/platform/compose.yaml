@@ -1,0 +1,30 @@
+services:
+  orders:
+    build:
+      context: .
+      dockerfile: docker/orders.Dockerfile
+      target: runtime
+      args:
+        JDK: "21"
+        MODULE: orders-app
+      additional_contexts:
+        orders-src: ${ORDERS_SRC}
+        tools: docker-image://alpine:3.20
+  orders-debug:
+    build:
+      context: .
+      dockerfile: docker/orders.Dockerfile
+      target: debug
+      additional_contexts:
+        - orders-src=../orders-service
+  remote:
+    build: https://github.com/example/remote.git#main
+  missing:
+    build:
+      context: ./nowhere
+  inline:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM alpine:3.20
+        COPY . /app

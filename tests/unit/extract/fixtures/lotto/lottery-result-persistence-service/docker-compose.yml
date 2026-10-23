@@ -1,0 +1,13 @@
+version: '3.1'
+services:
+  lotto-options-core-service:
+    image: lotto-options-core-service:latest
+    container_name: core
+    ports:
+    - 8002:8002
+
+  lotto-persistence-service:
+    image: lotto-persistence-service:latest
+    container_name: persistence
+    ports:
+    - 8001:8001

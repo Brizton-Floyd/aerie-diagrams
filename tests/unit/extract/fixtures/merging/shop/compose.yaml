@@ -1,0 +1,42 @@
+name: shop
+
+x-java: &java
+  environment: &java-env
+    JAVA_OPTS: -Xmx512m
+    CONFIG_SERVER_URL: http://config:8888
+  healthcheck:
+    test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+
+x-web: &web
+  ports:
+    - "8080"
+
+include:
+  - billing/compose.yaml
+
+services:
+  config:
+    image: shop/config
+  orders:
+    <<: [*java, *web]
+    image: shop/orders
+    environment:
+      <<: *java-env
+      BILLING_URL: http://billing:8090
+  shipping:
+    extends:
+      service: orders
+    image: shop/shipping
+    environment:
+      SHIPPING_ONLY: "true"
+  catalog:
+    extends:
+      file: common.yaml
+      service: base-java
+    image: shop/catalog
+  legacy:
+    image: shop/legacy
+    ports:
+      - "7000:7000"
+    environment:
+      ORDERS_URL: http://orders:8080

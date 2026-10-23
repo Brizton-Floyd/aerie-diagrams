@@ -1,0 +1,8 @@
+model shop: Corner shop
+
+system
+  repo platform
+  repo orders-service
+  compose platform/compose.yaml
+
+orders: Orders

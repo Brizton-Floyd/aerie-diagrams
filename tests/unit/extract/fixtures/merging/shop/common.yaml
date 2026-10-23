@@ -1,0 +1,6 @@
+services:
+  base-java:
+    environment:
+      CONFIG_SERVER_URL: http://config:8888
+    healthcheck:
+      test: curl -f http://localhost:8080/health || exit 1

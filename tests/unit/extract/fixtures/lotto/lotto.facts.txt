@@ -1,0 +1,97 @@
+lotto-options-core/compose.yaml:7  Compose project: lotto-stack
+lotto-options-core/compose.yaml:10  Compose build context: compose:bff builds in lotto-options-core (lotto-options-core/deploy/backend/Dockerfile, target bff)
+lotto-options-core/compose.yaml:10  Compose build context: compose:core builds in lotto-options-core (lotto-options-core/deploy/backend/Dockerfile, target core)
+lotto-options-core/compose.yaml:10  Compose build context: compose:results-service builds in lotto-options-core (lotto-options-core/deploy/backend/Dockerfile, target results-service)
+lotto-options-core/compose.yaml:16  Compose service: compose:results-service
+lotto-options-core/compose.yaml:21  Compose port: compose:results-service publishes 8001/tcp on 127.0.0.1:8001
+lotto-options-core/compose.yaml:23  Compose volume: compose:results-service mounts volume draw-data at /data
+lotto-options-core/compose.yaml:27  Compose healthcheck: compose:results-service checks itself with curl -fsS http://localhost:8001/api/v1/all/v2/state-games | grep -q '"fullName"'
+lotto-options-core/compose.yaml:34  Compose service: compose:core
+lotto-options-core/compose.yaml:39  Compose environment URL: compose:core to compose:results-service (PERSISTENCESERVICE_HOST=http://results-service:8001/)
+lotto-options-core/compose.yaml:41  Compose port: compose:core publishes 8002/tcp on 127.0.0.1:8002
+lotto-options-core/compose.yaml:43  Compose depends_on: compose:core to compose:results-service
+lotto-options-core/compose.yaml:46  Compose healthcheck: compose:core checks itself with curl -fsS -o /dev/null http://localhost:8002/api/v1/gameout/health
+lotto-options-core/compose.yaml:53  Compose service: compose:bff
+lotto-options-core/compose.yaml:61  Compose environment URL: compose:bff to compose:core (COREAPI_BASEURL=http://core:8002)
+lotto-options-core/compose.yaml:63  Compose port: compose:bff publishes 8080/tcp on 127.0.0.1:8080
+lotto-options-core/compose.yaml:65  Compose depends_on: compose:bff to compose:core
+lotto-options-core/compose.yaml:68  Compose healthcheck: compose:bff checks itself with curl -fsS -o /dev/null http://localhost:8080/ui/ping
+lotto-options-core/compose.yaml:75  Compose service: compose:web-ui
+lotto-options-core/compose.yaml:77  Compose build context: compose:web-ui builds in lotto-options-core/deploy/web-ui (lotto-options-core/deploy/web-ui/Dockerfile)
+lotto-options-core/compose.yaml:81  Compose environment URL: compose:web-ui to compose:bff (BFF_URL=http://bff:8080)
+lotto-options-core/compose.yaml:83  Compose port: compose:web-ui publishes 80/tcp on 127.0.0.1:4200
+lotto-options-core/compose.yaml:85  Compose depends_on: compose:web-ui to compose:bff
+lotto-options-core/compose.yaml:88  Compose healthcheck: compose:web-ui checks itself with curl -fsS -o /dev/null http://localhost/
+lotto-options-core/deploy/backend/Dockerfile:13  Dockerfile COPY: compose:bff is built from lottery-result-persistence-service/pom.xml (stage results-service-build)
+lotto-options-core/deploy/backend/Dockerfile:13  Dockerfile COPY: compose:core is built from lottery-result-persistence-service/pom.xml (stage results-service-build)
+lotto-options-core/deploy/backend/Dockerfile:13  Dockerfile COPY: compose:results-service is built from lottery-result-persistence-service/pom.xml (stage results-service-build)
+lotto-options-core/deploy/backend/Dockerfile:14  Dockerfile COPY: compose:bff is built from lottery-result-persistence-service/lottery-result-persistence-service-models/pom.xml (stage results-service-build)
+lotto-options-core/deploy/backend/Dockerfile:14  Dockerfile COPY: compose:core is built from lottery-result-persistence-service/lottery-result-persistence-service-models/pom.xml (stage results-service-build)
+lotto-options-core/deploy/backend/Dockerfile:14  Dockerfile COPY: compose:results-service is built from lottery-result-persistence-service/lottery-result-persistence-service-models/pom.xml (stage results-service-build)
+lotto-options-core/deploy/backend/Dockerfile:15  Dockerfile COPY: compose:bff is built from lottery-result-persistence-service/lottery-result-persistence-service-models/src (stage results-service-build)
+lotto-options-core/deploy/backend/Dockerfile:15  Dockerfile COPY: compose:core is built from lottery-result-persistence-service/lottery-result-persistence-service-models/src (stage results-service-build)
+lotto-options-core/deploy/backend/Dockerfile:15  Dockerfile COPY: compose:results-service is built from lottery-result-persistence-service/lottery-result-persistence-service-models/src (stage results-service-build)
+lotto-options-core/deploy/backend/Dockerfile:16  Dockerfile COPY: compose:bff is built from lottery-result-persistence-service/lottery-result-aggregator/pom.xml (stage results-service-build)
+lotto-options-core/deploy/backend/Dockerfile:16  Dockerfile COPY: compose:core is built from lottery-result-persistence-service/lottery-result-aggregator/pom.xml (stage results-service-build)
+lotto-options-core/deploy/backend/Dockerfile:16  Dockerfile COPY: compose:results-service is built from lottery-result-persistence-service/lottery-result-aggregator/pom.xml (stage results-service-build)
+lotto-options-core/deploy/backend/Dockerfile:17  Dockerfile COPY: compose:bff is built from lottery-result-persistence-service/lottery-result-aggregator/src (stage results-service-build)
+lotto-options-core/deploy/backend/Dockerfile:17  Dockerfile COPY: compose:core is built from lottery-result-persistence-service/lottery-result-aggregator/src (stage results-service-build)
+lotto-options-core/deploy/backend/Dockerfile:17  Dockerfile COPY: compose:results-service is built from lottery-result-persistence-service/lottery-result-aggregator/src (stage results-service-build)
+lotto-options-core/deploy/backend/Dockerfile:18  Dockerfile COPY: compose:bff is built from lottery-result-persistence-service/lottery-result-persistence-server/pom.xml (stage results-service-build)
+lotto-options-core/deploy/backend/Dockerfile:18  Dockerfile COPY: compose:core is built from lottery-result-persistence-service/lottery-result-persistence-server/pom.xml (stage results-service-build)
+lotto-options-core/deploy/backend/Dockerfile:18  Dockerfile COPY: compose:results-service is built from lottery-result-persistence-service/lottery-result-persistence-server/pom.xml (stage results-service-build)
+lotto-options-core/deploy/backend/Dockerfile:19  Dockerfile COPY: compose:bff is built from lottery-result-persistence-service/lottery-result-persistence-server/src (stage results-service-build)
+lotto-options-core/deploy/backend/Dockerfile:19  Dockerfile COPY: compose:core is built from lottery-result-persistence-service/lottery-result-persistence-server/src (stage results-service-build)
+lotto-options-core/deploy/backend/Dockerfile:19  Dockerfile COPY: compose:results-service is built from lottery-result-persistence-service/lottery-result-persistence-server/src (stage results-service-build)
+lotto-options-core/deploy/backend/Dockerfile:37  Dockerfile COPY: compose:bff is built from lotto-options-core/lombok.config (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:37  Dockerfile COPY: compose:bff is built from lotto-options-core/pom.xml (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:37  Dockerfile COPY: compose:core is built from lotto-options-core/lombok.config (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:37  Dockerfile COPY: compose:core is built from lotto-options-core/pom.xml (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:38  Dockerfile COPY: compose:bff is built from lotto-options-core/lotto-options-core-domain/pom.xml (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:38  Dockerfile COPY: compose:core is built from lotto-options-core/lotto-options-core-domain/pom.xml (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:39  Dockerfile COPY: compose:bff is built from lotto-options-core/lotto-options-core-domain/src (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:39  Dockerfile COPY: compose:core is built from lotto-options-core/lotto-options-core-domain/src (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:40  Dockerfile COPY: compose:bff is built from lotto-options-core/lotto-options-core-application/pom.xml (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:40  Dockerfile COPY: compose:core is built from lotto-options-core/lotto-options-core-application/pom.xml (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:41  Dockerfile COPY: compose:bff is built from lotto-options-core/lotto-options-core-application/src (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:41  Dockerfile COPY: compose:core is built from lotto-options-core/lotto-options-core-application/src (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:42  Dockerfile COPY: compose:bff is built from lotto-options-core/lotto-options-core-api-contract/pom.xml (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:42  Dockerfile COPY: compose:core is built from lotto-options-core/lotto-options-core-api-contract/pom.xml (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:43  Dockerfile COPY: compose:bff is built from lotto-options-core/lotto-options-core-api-contract/src (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:43  Dockerfile COPY: compose:core is built from lotto-options-core/lotto-options-core-api-contract/src (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:44  Dockerfile COPY: compose:bff is built from lotto-options-core/lotto-options-core-model/pom.xml (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:44  Dockerfile COPY: compose:core is built from lotto-options-core/lotto-options-core-model/pom.xml (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:45  Dockerfile COPY: compose:bff is built from lotto-options-core/lotto-options-core-model/src (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:45  Dockerfile COPY: compose:core is built from lotto-options-core/lotto-options-core-model/src (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:46  Dockerfile COPY: compose:bff is built from lotto-options-core/lotto-options-core-result-analyzer/pom.xml (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:46  Dockerfile COPY: compose:core is built from lotto-options-core/lotto-options-core-result-analyzer/pom.xml (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:47  Dockerfile COPY: compose:bff is built from lotto-options-core/lotto-options-core-result-analyzer/src (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:47  Dockerfile COPY: compose:core is built from lotto-options-core/lotto-options-core-result-analyzer/src (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:48  Dockerfile COPY: compose:bff is built from lotto-options-core/lotto-options-core-legacy-desktop/pom.xml (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:48  Dockerfile COPY: compose:core is built from lotto-options-core/lotto-options-core-legacy-desktop/pom.xml (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:49  Dockerfile COPY: compose:bff is built from lotto-options-core/lotto-options-core-legacy-desktop/src (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:49  Dockerfile COPY: compose:core is built from lotto-options-core/lotto-options-core-legacy-desktop/src (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:50  Dockerfile COPY: compose:bff is built from lotto-options-core/lotto-options-core-test-fixtures/pom.xml (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:50  Dockerfile COPY: compose:core is built from lotto-options-core/lotto-options-core-test-fixtures/pom.xml (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:51  Dockerfile COPY: compose:bff is built from lotto-options-core/lotto-options-core-test-fixtures/src (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:51  Dockerfile COPY: compose:core is built from lotto-options-core/lotto-options-core-test-fixtures/src (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:52  Dockerfile COPY: compose:bff is built from lotto-options-core/lotto-options-core-server/pom.xml (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:52  Dockerfile COPY: compose:core is built from lotto-options-core/lotto-options-core-server/pom.xml (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:53  Dockerfile COPY: compose:bff is built from lotto-options-core/lotto-options-core-server/src (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:53  Dockerfile COPY: compose:core is built from lotto-options-core/lotto-options-core-server/src (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:54  Dockerfile COPY: compose:bff is built from lotto-options-core/lotto-options-core-bff/pom.xml (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:54  Dockerfile COPY: compose:core is built from lotto-options-core/lotto-options-core-bff/pom.xml (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:55  Dockerfile COPY: compose:bff is built from lotto-options-core/lotto-options-core-bff/src (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:55  Dockerfile COPY: compose:core is built from lotto-options-core/lotto-options-core-bff/src (stage core-build)
+lotto-options-core/deploy/backend/Dockerfile:81  Dockerfile EXPOSE: compose:results-service exposes 8001/tcp
+lotto-options-core/deploy/backend/Dockerfile:85  Dockerfile EXPOSE: compose:core exposes 8002/tcp
+lotto-options-core/deploy/backend/Dockerfile:89  Dockerfile EXPOSE: compose:bff exposes 8080/tcp
+lotto-options-core/deploy/web-ui/Dockerfile:13  Dockerfile COPY: compose:web-ui is built from lotto-options-ui/package-lock.json (stage build)
+lotto-options-core/deploy/web-ui/Dockerfile:13  Dockerfile COPY: compose:web-ui is built from lotto-options-ui/package.json (stage build)
+lotto-options-core/deploy/web-ui/Dockerfile:17  Dockerfile COPY: compose:web-ui is built from lotto-options-ui/angular.json (stage build)
+lotto-options-core/deploy/web-ui/Dockerfile:17  Dockerfile COPY: compose:web-ui is built from lotto-options-ui/tsconfig.app.json (stage build)
+lotto-options-core/deploy/web-ui/Dockerfile:17  Dockerfile COPY: compose:web-ui is built from lotto-options-ui/tsconfig.json (stage build)
+lotto-options-core/deploy/web-ui/Dockerfile:18  Dockerfile COPY: compose:web-ui is built from lotto-options-ui/public (stage build)
+lotto-options-core/deploy/web-ui/Dockerfile:19  Dockerfile COPY: compose:web-ui is built from lotto-options-ui/src (stage build)
+lotto-options-core/deploy/web-ui/Dockerfile:25  Dockerfile COPY: compose:web-ui is built from lotto-options-core/deploy/web-ui/default.conf.template
+lotto-options-core/deploy/web-ui/Dockerfile:27  Dockerfile EXPOSE: compose:web-ui exposes 80/tcp

@@ -1,0 +1,25 @@
+platform/compose.yaml:1  Compose project folder: platform
+platform/compose.yaml:2  Compose service: compose:orders
+platform/compose.yaml:4  Compose build context: compose:orders builds in platform (platform/docker/orders.Dockerfile, target runtime)
+platform/compose.yaml:13  Compose service: compose:orders-debug
+platform/compose.yaml:15  Compose build context: compose:orders-debug builds in platform (platform/docker/orders.Dockerfile, target debug)
+platform/compose.yaml:20  Compose service: compose:remote
+platform/compose.yaml:21  Compose build context: compose:remote builds in https://github.com/example/remote.git#main
+platform/compose.yaml:22  Compose service: compose:missing
+platform/compose.yaml:24  Compose build context: compose:missing builds in platform/nowhere (platform/nowhere/Dockerfile)
+platform/compose.yaml:25  Compose service: compose:inline
+platform/compose.yaml:27  Compose build context: compose:inline builds in platform
+platform/docker/orders.Dockerfile:8  Dockerfile COPY: compose:orders is built from orders-service/pom.xml (stage build)
+platform/docker/orders.Dockerfile:8  Dockerfile COPY: compose:orders-debug is built from orders-service/pom.xml (stage build)
+platform/docker/orders.Dockerfile:9  Dockerfile COPY: compose:orders is built from orders-service/orders-app/src (stage build)
+platform/docker/orders.Dockerfile:9  Dockerfile COPY: compose:orders-debug is built from orders-service/orders-core/src (stage build)
+platform/docker/orders.Dockerfile:10  Dockerfile COPY: compose:orders is built from platform/shared config (stage build)
+platform/docker/orders.Dockerfile:10  Dockerfile COPY: compose:orders-debug is built from platform/shared config (stage build)
+platform/docker/orders.Dockerfile:11  Dockerfile COPY: compose:orders is built from orders-service/settings.xml (stage build)
+platform/docker/orders.Dockerfile:11  Dockerfile COPY: compose:orders-debug is built from orders-service/settings.xml (stage build)
+platform/docker/orders.Dockerfile:19  Dockerfile EXPOSE: compose:orders exposes 8080/tcp
+platform/docker/orders.Dockerfile:19  Dockerfile EXPOSE: compose:orders-debug exposes 8080/tcp
+platform/docker/orders.Dockerfile:20  Compose environment URL: compose:orders to host reports (REPORTS_URL=http://reports:9000)
+platform/docker/orders.Dockerfile:20  Compose environment URL: compose:orders-debug to host reports (REPORTS_URL=http://reports:9000)
+platform/docker/orders.Dockerfile:23  Dockerfile EXPOSE: compose:orders-debug exposes 5005/tcp
+platform/docker/orders.Dockerfile:24  Dockerfile COPY: compose:orders-debug is built from platform/debug/agent.jar (stage debug)

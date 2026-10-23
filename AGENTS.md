@@ -120,6 +120,13 @@ has the steps for opening a model and choosing a view and audience with clicks).
   classes and geometry; every colour, stroke, face and timing is in the stylesheet that
   `contourStyle()` writes from the tokens, so a theme switch redraws nothing and colours never
   appear outside `tokens.ts` (a unit test enforces it).
+- `src/extract/` (drift's extractor, D2 on) is pure TypeScript too, built only on
+  `src/lines/index.ts` and its parsers (`yaml`, `dockerfile-ast`); it reads a project only through
+  `ProjectFiles` (the Node one is `src/cli/project.ts`). API notes in
+  [src/extract/index.ts](src/extract/index.ts). Its fixture projects in `tests/unit/extract/fixtures/`
+  (Prettier skips them) hold every expected fact in `<model>.facts.txt`, updated with
+  `npx vitest run --project unit -u`; check a new one against `docker compose config`, run with
+  `env -i PATH=$PATH HOME=$HOME` so no shell variable leaks in.
 - Text is measured from `src/layout/text/advances.json`, written from the bundled Fontsource fonts by
   `node scripts/font-metrics.ts`; rerun it when a font package changes (a unit test compares them).
 - The split editor (A10) is CodeMirror 6 in `src/app/editor.ts`, loaded only when "Edit" is pressed

@@ -5,6 +5,19 @@ functional spec for each version is [docs/spec/](docs/spec/overview.md).
 
 ## Unreleased
 
+### Checking against the code: the extractor and Docker Compose (D2)
+
+- Aerie's own static extractor (`src/extract/`, [docs/spec/drift.md](docs/spec/drift.md)): it reads
+  the project a model's `system` block names, without running anything, and returns facts, each with
+  the technique that found it and its evidence as `repo/path:line`.
+- Docker Compose: services, the project name, ports, volumes, profiles, healthchecks and images; each
+  build's context and, through the Dockerfile's stages, the source the image is built from; and the
+  services each one names in its environment (URLs, JDBC URLs, host names), with `depends_on` and
+  `links` as corroboration. Interpolation from `.env`, merge keys, override files, `extends` and
+  `include` are read as Compose reads them, and only the Compose files the system root names.
+- New dependencies: `yaml` and `dockerfile-ast` (recorded in THIRD_PARTY_NOTICES.md). Nothing reads
+  the facts yet; matching and reports come in D5 and D6.
+
 ### Checking against the code: the lines (D1)
 
 - Lines that tie a model to its code, read only by drift detection ([docs/spec/drift.md](docs/spec/drift.md)):

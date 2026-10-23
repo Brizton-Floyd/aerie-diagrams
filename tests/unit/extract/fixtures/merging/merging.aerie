@@ -1,0 +1,6 @@
+model shop: Corner shop
+
+system
+  repo shop
+
+orders: Orders

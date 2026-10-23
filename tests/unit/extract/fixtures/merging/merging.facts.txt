@@ -1,0 +1,33 @@
+shop/billing/compose.yaml:2  Compose service: compose:billing
+shop/billing/compose.yaml:3  Compose image: compose:billing runs shop/billing:2.1
+shop/billing/compose.yaml:5  Compose environment host name: compose:billing to compose:ledger (LEDGER_HOST=ledger)
+shop/billing/compose.yaml:6  Compose environment URL: compose:billing to compose:orders (ORDERS_CALLBACK=http://orders:8080/callbacks)
+shop/billing/compose.yaml:7  Compose service: compose:ledger
+shop/billing/compose.yaml:8  Compose image: compose:ledger runs shop/ledger
+shop/common.yaml:4  Compose environment URL: compose:catalog to compose:config (CONFIG_SERVER_URL=http://config:8888)
+shop/common.yaml:6  Compose healthcheck: compose:catalog checks itself with curl -f http://localhost:8080/health || exit 1
+shop/compose.override.yaml:4  Compose port: compose:orders publishes 8080/tcp on 18080
+shop/compose.override.yaml:6  Compose environment URL: compose:orders to compose:debugger (DEBUG_URL=http://debugger:5005)
+shop/compose.override.yaml:9  Compose port: compose:legacy publishes 7000/tcp on 7001
+shop/compose.override.yaml:11  Compose service: compose:debugger
+shop/compose.override.yaml:12  Compose image: compose:debugger runs shop/debugger
+shop/compose.override.yaml:13  Compose profile: compose:debugger is in profile debug
+shop/compose.yaml:1  Compose project: shop
+shop/compose.yaml:6  Compose environment URL: compose:orders to compose:config (CONFIG_SERVER_URL=http://config:8888)
+shop/compose.yaml:6  Compose environment URL: compose:shipping to compose:config (CONFIG_SERVER_URL=http://config:8888)
+shop/compose.yaml:8  Compose healthcheck: compose:orders checks itself with curl -f http://localhost:8080/health
+shop/compose.yaml:8  Compose healthcheck: compose:shipping checks itself with curl -f http://localhost:8080/health
+shop/compose.yaml:12  Compose port: compose:orders publishes 8080/tcp on a free port
+shop/compose.yaml:12  Compose port: compose:shipping publishes 8080/tcp on a free port
+shop/compose.yaml:18  Compose service: compose:config
+shop/compose.yaml:19  Compose image: compose:config runs shop/config
+shop/compose.yaml:20  Compose service: compose:orders
+shop/compose.yaml:22  Compose image: compose:orders runs shop/orders
+shop/compose.yaml:25  Compose environment URL: compose:orders to compose:billing (BILLING_URL=http://billing:8090)
+shop/compose.yaml:25  Compose environment URL: compose:shipping to compose:billing (BILLING_URL=http://billing:8090)
+shop/compose.yaml:26  Compose service: compose:shipping
+shop/compose.yaml:29  Compose image: compose:shipping runs shop/shipping
+shop/compose.yaml:32  Compose service: compose:catalog
+shop/compose.yaml:36  Compose image: compose:catalog runs shop/catalog
+shop/compose.yaml:37  Compose service: compose:legacy
+shop/compose.yaml:38  Compose image: compose:legacy runs shop/legacy
