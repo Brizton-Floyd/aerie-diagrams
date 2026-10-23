@@ -4,7 +4,9 @@
 // docs/spec/acceptance.md.
 import { expect, test } from '@playwright/test';
 
-test('the page opens the Lotto sample and draws its first view', async ({ page }) => {
+test('INT-002 the page opens the first bundled model, the Lotto sample, and draws its first view', async ({
+  page,
+}) => {
   await page.goto('/');
   await expect(page).toHaveTitle('Aerie');
   await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
@@ -13,6 +15,16 @@ test('the page opens the Lotto sample and draws its first view', async ({ page }
   await expect(page.locator('svg.aerie g.node[data-id="website"] text').first()).toHaveText(
     'Website',
   );
+});
+
+test('INT-002 the model parameter chooses another bundled model by name', async ({ page }) => {
+  await page.goto('/?model=samples/shapes.aerie');
+  await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+  await expect(page).toHaveURL(/\?model=samples\/shapes\.aerie$/);
+  await expect(page.locator('svg.aerie g.node[data-id="visitor"] text').first()).toHaveText(
+    'Visitor',
+  );
+  await expect(page.locator('svg.aerie g.node[data-id="website"]')).toHaveCount(0);
 });
 
 test.describe('in a dark system', () => {

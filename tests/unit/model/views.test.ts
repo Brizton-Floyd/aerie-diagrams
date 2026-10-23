@@ -56,7 +56,7 @@ describe('what a view selects and draws', () => {
     expect([...NESTED.scope('none').selected]).toEqual(['a', 'g']);
   });
 
-  it('MODEL-202 draws the selected elements and their ancestors by default', () => {
+  it('MODEL-202 and LANG-508 draws the selected elements and their ancestors by default', () => {
     expect([...NESTED.scope('tags').defaults]).toEqual(['a', 'b', 'c', 'f']);
     expect([...LOTTO.scope('engineering').defaults]).toEqual([
       'suite',

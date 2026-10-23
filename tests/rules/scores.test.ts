@@ -22,7 +22,7 @@ function report(text: string): void {
   process.stdout.write(`${text}\n`);
 }
 
-it('SCORE-001 to SCORE-003 edge crossings, bends and fit scale are no worse than the baseline', async () => {
+it('SCORE-001 to SCORE-003 and ACC-004 edge crossings, bends and fit scale are no worse than the baseline', async () => {
   const now: Baseline = {};
   for (const source of SOURCES) {
     const scored: Record<string, Scores> = {};

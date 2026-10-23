@@ -327,7 +327,9 @@ input {
 button:focus-visible,
 select:focus-visible,
 input:focus-visible,
-.panel h1:focus-visible {
+.panel h1:focus-visible,
+.caption-bar:focus-visible,
+.narration-bar:focus-visible {
   outline: 2px solid var(--aerie-accent);
   outline-offset: 2px;
 }

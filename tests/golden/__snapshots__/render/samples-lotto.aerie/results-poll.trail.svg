@@ -1,5 +1,5 @@
 <?xml-stylesheet href="../contour.css" type="text/css"?>
-<svg xmlns="http://www.w3.org/2000/svg" class="aerie" viewBox="0 0 761 816" width="761" height="816" overflow="visible" role="img" aria-label="The Lotto suite: Big picture" data-view="big-picture" data-audience="manager">
+<svg xmlns="http://www.w3.org/2000/svg" class="aerie" viewBox="0 0 737 816" width="737" height="816" overflow="visible" role="img" aria-label="The Lotto suite: Big picture" data-view="big-picture" data-audience="manager">
   <defs>
     <pattern id="aerie-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
       <rect class="hatch-bg" width="7" height="7"/>
@@ -17,10 +17,10 @@
       <text class="t-name" x="44" y="26" data-width="28">User</text>
       <text class="t-tagline" x="44" y="44" data-width="105">Using a browser</text>
     </g>
-    <g class="node open depth-0 context" data-id="suite" transform="translate(12 191)">
-      <rect class="shape" width="426.5" height="598" rx="18"/>
-      <rect class="inner" x="5" y="5" width="416.5" height="588" rx="13"/>
-      <rect class="ring" x="-3" y="-3" width="432.5" height="604" rx="21"/>
+    <g class="node open depth-0 context" data-id="suite" transform="translate(12 174)">
+      <rect class="shape" width="426.5" height="615" rx="18"/>
+      <rect class="inner" x="5" y="5" width="416.5" height="605" rx="13"/>
+      <rect class="ring" x="-3" y="-3" width="432.5" height="621" rx="21"/>
       <g class="icon" data-icon="stack" transform="translate(12 12) scale(0.34375)">
         <path d="M32 9 56 21 32 33 8 21Z"/>
         <path d="M8 31l24 12 24-12"/>
@@ -31,7 +31,7 @@
         <path d="M-4 0H4"/>
       </g>
     </g>
-    <g class="node leaf dim" data-id="website" transform="translate(127.5 261)">
+    <g class="node leaf dim" data-id="website" transform="translate(127.5 244)">
       <rect class="shape" width="283" height="59" rx="4"/>
       <rect class="ring" x="-3" y="-3" width="289" height="65" rx="7"/>
       <g class="icon" data-icon="web" transform="translate(12 12) scale(0.34375)">
@@ -43,7 +43,7 @@
       <text class="t-name" x="44" y="26" data-width="49">Website</text>
       <text class="t-tagline" x="44" y="44" data-width="214">Picks a game, generates numbers</text>
     </g>
-    <g class="node leaf dim" data-id="screen-api" transform="translate(146 381)">
+    <g class="node leaf dim" data-id="screen-api" transform="translate(146 364)">
       <rect class="shape" width="246" height="76" rx="4"/>
       <rect class="ring" x="-3" y="-3" width="252" height="82" rx="7"/>
       <g class="icon" data-icon="api" transform="translate(12 12) scale(0.34375)">
@@ -55,7 +55,7 @@
       <text class="t-name" x="44" y="26" data-width="65">Screen API</text>
       <text class="t-tagline" x="44" y="44" data-width="190">Prepares data for each screen</text>
     </g>
-    <g class="node closed dim" data-id="engine" transform="translate(123.5 518)">
+    <g class="node closed dim" data-id="engine" transform="translate(123.5 501)">
       <rect class="shape" width="291" height="96" rx="8"/>
       <rect class="inner" x="5" y="5" width="281" height="86" rx="3"/>
       <rect class="ring" x="-3" y="-3" width="297" height="102" rx="11"/>
@@ -82,7 +82,7 @@
         <path d="M14 38c0 3.3 8 6 18 6s18-2.7 18-6"/>
       </g>
       <text class="t-name" x="44" y="26" data-width="78">Results store</text>
-      <text class="t-tagline" x="44" y="44" data-width="145">Keeps every past draw</text>
+      <text class="t-tagline" x="44" y="44" data-width="192">Keeps each game's past draws</text>
       <text class="t-chip" x="44" y="79" data-width="80">4 parts inside</text>
       <g class="control" transform="translate(282 21)">
         <circle r="9"/>
@@ -105,19 +105,19 @@
   </g>
   <g class="edges">
     <g class="edge dim" data-id="user-&gt;website">
-      <path class="line" d="M269 88L269 261"/>
-      <path class="arrow" d="M264 249L269 261L274 249"/>
+      <path class="line" d="M269 88L269 244"/>
+      <path class="arrow" d="M264 232L269 244L274 232"/>
     </g>
     <g class="edge dim" data-id="website-&gt;screen-api">
-      <path class="line" d="M269 320L269 381"/>
-      <path class="arrow" d="M264 369L269 381L274 369"/>
+      <path class="line" d="M269 303L269 364"/>
+      <path class="arrow" d="M264 352L269 364L274 352"/>
     </g>
     <g class="edge dim" data-id="screen-api-&gt;engine">
-      <path class="line" d="M269 457L269 518"/>
-      <path class="arrow" d="M264 506L269 518L274 506"/>
+      <path class="line" d="M269 440L269 501"/>
+      <path class="arrow" d="M264 489L269 501L274 489"/>
     </g>
     <g class="edge dim" data-id="engine-&gt;store">
-      <path class="line" d="M269 614L269 675"/>
+      <path class="line" d="M269 597L269 675"/>
       <path class="arrow" d="M264 663L269 675L274 663"/>
     </g>
     <g class="edge dim" data-id="store-&gt;texas">
@@ -126,51 +126,52 @@
     </g>
   </g>
   <g class="heads">
-    <g class="head depth-0 context" data-id="suite" transform="translate(12 191)">
+    <g class="head depth-0 context" data-id="suite" transform="translate(12 174)">
       <text class="t-name" x="44" y="26" data-width="65">Lotto suite</text>
-      <text class="t-tagline" x="44" y="44" data-width="220">Runs as one stack on one machine</text>
+      <text class="t-tagline" x="44" y="44" data-width="203">Runs together on one computer</text>
     </g>
   </g>
   <g class="labels">
     <g class="label dim" data-id="user-&gt;website">
       <title>User uses Website.</title>
-      <text class="t-label" x="231" y="142.5" data-width="25">uses</text>
+      <text class="t-label" x="231" y="134" data-width="25">uses</text>
     </g>
     <g class="label dim" data-id="website-&gt;screen-api">
       <title>Website gets screen data from Screen API.</title>
-      <text class="t-label" x="137" y="356" data-width="125">gets screen data from</text>
+      <text class="t-label" x="137" y="339" data-width="125">gets screen data from</text>
     </g>
     <g class="label dim" data-id="screen-api-&gt;engine">
       <title>Screen API requests analysis from Request handling.</title>
-      <text class="t-label" x="86.5" y="493" data-width="132">requests analysis from</text>
+      <text class="t-label" x="123" y="476" data-width="132">requests analysis from</text>
     </g>
     <g class="label dim" data-id="engine-&gt;store">
-      <title>Draw history lookup fetches draw history from Draw history service.</title>
-      <text class="t-label" x="72.5" y="650" data-width="152">fetches draw history from</text>
+      <title>Draw history lookup fetches draw history from Draw history service.
+Legacy desktop support reads draw history from Draw history service.</title>
+      <text class="t-label" x="42" y="641.5" data-width="213">fetches draw history from (+1 more)</text>
     </g>
     <g class="label dim" data-id="store-&gt;texas">
-      <title>Results updater downloads new results from Texas Lottery website.</title>
-      <text class="t-label" x="551" y="142.5" data-width="167">downloads new results from</text>
+      <title>Results reader downloads results from Texas Lottery website.</title>
+      <text class="t-label" x="553" y="134" data-width="139">downloads results from</text>
     </g>
   </g>
   <g class="trail">
     <g class="step call past" data-step="1">
-      <path class="curve" d="M278.3 670Q331.89 364.53 489.97 93"/>
-      <path class="arrow" d="M488.25 105.89L489.97 93L479.61 100.85"/>
-    </g>
-    <g class="step reply past" data-step="2">
-      <path class="curve" d="M507.46 93Q452.11 408.47 299.86 670"/>
-    </g>
-    <g class="step call past" data-step="3">
       <path class="curve" d="M423.5 686C458.17 676 458.17 706 423.5 696"/>
       <path class="arrow" d="M436.42 694.52L423.5 696L433.64 704.13"/>
     </g>
-    <g class="step reply past" data-step="4">
-      <path class="curve" d="M423.5 708C458.17 698 458.17 728 423.5 718"/>
+    <g class="step call past" data-step="2">
+      <path class="curve" d="M278.3 670Q331.89 364.53 489.97 93"/>
+      <path class="arrow" d="M488.25 105.89L489.97 93L479.61 100.85"/>
     </g>
-    <g class="step call past" data-step="5">
+    <g class="step reply past" data-step="3">
+      <path class="curve" d="M507.46 93Q452.11 408.47 299.86 670"/>
+    </g>
+    <g class="step call past" data-step="4">
+      <path class="curve" d="M423.5 708C458.17 698 458.17 728 423.5 718"/>
+      <path class="arrow" d="M436.42 716.52L423.5 718L433.64 726.13"/>
+    </g>
+    <g class="step reply past" data-step="5">
       <path class="curve" d="M423.5 730C458.17 720 458.17 750 423.5 740"/>
-      <path class="arrow" d="M436.42 738.52L423.5 740L433.64 748.13"/>
     </g>
     <g class="step call now" data-step="6">
       <path class="curve" d="M423.5 686C458.17 676 458.17 706 423.5 696" pathLength="1"/>
@@ -178,15 +179,15 @@
     </g>
   </g>
   <g class="badges">
-    <g class="badge" data-step="1" transform="translate(358.01 373.01)">
+    <g class="badge" data-step="1" transform="translate(443.5 691)">
       <circle r="9"/>
       <text class="t-badge" y="4">1</text>
     </g>
-    <g class="badge" data-step="2" transform="translate(427.88 394.99)">
+    <g class="badge" data-step="2" transform="translate(358.01 373.01)">
       <circle r="9"/>
       <text class="t-badge" y="4">2</text>
     </g>
-    <g class="badge" data-step="3" transform="translate(443.5 691)">
+    <g class="badge" data-step="3" transform="translate(427.88 394.99)">
       <circle r="9"/>
       <text class="t-badge" y="4">3</text>
     </g>

@@ -17,15 +17,15 @@ view big-picture, default (no changes)
   screen-api->engine carries 2
     exec: asks for numbers from
     manager: requests analysis from
-    engineer: POSTs /api/v1/analysis/* to
-  engine->store carries 6
-    exec: fetches draw history from
-    manager: fetches draw history from
-    engineer: POSTs /api/v1/state/games to
-  store->texas carries 8
-    exec: downloads new results from
-    manager: downloads new results from
-    engineer: polls CSV exports every 2 h from
+    engineer: calls /api/v1/* on
+  engine->store carries 8, 9
+    exec: fetches draw history from (+1 more)
+    manager: fetches draw history from (+1 more)
+    engineer: POSTs /api/v1/state/games to (+1 more)
+  store->texas carries 12
+    exec: downloads results from
+    manager: downloads results from
+    engineer: fetches CSV exports from
 
 view big-picture, everything open (engine open, engine-service open, store open)
   user
@@ -35,6 +35,7 @@ view big-picture, everything open (engine open, engine-service open, store open)
     engine (open)
       engine-service (open)
         request-handling
+        game-analysis
         pick-generation
         history-lookup
       strategies
@@ -57,43 +58,55 @@ view big-picture, everything open (engine open, engine-service open, store open)
   screen-api->request-handling carries 2
     exec: asks for numbers from
     manager: requests analysis from
-    engineer: POSTs /api/v1/analysis/* to
+    engineer: calls /api/v1/* on
   request-handling->pick-generation carries 3
     exec: hands requests to
     manager: hands requests to
     engineer: hands requests to
-  pick-generation->history-lookup carries 4
+  request-handling->game-analysis carries 4
+    exec: hands dashboard requests to
+    manager: hands dashboard requests to
+    engineer: hands dashboard requests to
+  pick-generation->history-lookup carries 5
     exec: gets past draws from
     manager: gets past draws from
     engineer: gets past draws from
-  pick-generation->strategies carries 5
+  pick-generation->strategies carries 6
     exec: picks and scores tickets with
     manager: picks and scores tickets with
     engineer: picks and scores tickets with
-  history-lookup->history-service carries 6
+  game-analysis->history-lookup carries 7
+    exec: gets past draws from
+    manager: gets past draws from
+    engineer: gets past draws from
+  history-lookup->history-service carries 8
     exec: fetches draw history from
     manager: fetches draw history from
     engineer: POSTs /api/v1/state/games to
-  history-service->saved-draws carries 7
+  legacy->history-service carries 9
+    exec: reads draw history from
+    manager: reads draw history from
+    engineer: calls /api/v1/state-games/* on
+  history-service->saved-draws carries 10
     exec: reads
     manager: reads
     engineer: reads
-  updater->texas carries 8
-    exec: downloads new results from
-    manager: downloads new results from
-    engineer: polls CSV exports every 2 h from
-  updater->reader carries 9
-    exec: hands the files to
-    manager: hands the files to
-    engineer: hands the files to
-  reader->saved-draws carries 10
+  updater->reader carries 11
+    exec: has each game refreshed by
+    manager: has each game refreshed by
+    engineer: has each game refreshed by
+  reader->texas carries 12
+    exec: downloads results from
+    manager: downloads results from
+    engineer: fetches CSV exports from
+  reader->saved-draws carries 13
     exec: saves draws into
     manager: saves draws into
     engineer: writes {STATE}/{Game}.ser to
-  updater->history-service carries 11
-    exec: announces new draws to
-    manager: announces new draws to
-    engineer: announces new draws to
+  updater->history-service carries 14
+    exec: announces each finished refresh to
+    manager: announces each finished refresh to
+    engineer: announces each finished refresh to
 
 view big-picture, all closed (suite closed)
   user
@@ -103,10 +116,10 @@ view big-picture, all closed (suite closed)
     exec: uses
     manager: uses
     engineer: uses
-  suite->texas carries 8
-    exec: downloads new results from
-    manager: downloads new results from
-    engineer: polls CSV exports every 2 h from
+  suite->texas carries 12
+    exec: downloads results from
+    manager: downloads results from
+    engineer: fetches CSV exports from
 
 view services, default (no changes)
   user
@@ -114,7 +127,7 @@ view services, default (no changes)
     website
     screen-api
     engine (open)
-      engine-service (closed, 3 inside)
+      engine-service (closed, 4 inside)
       strategies
       formats
       legacy
@@ -135,35 +148,39 @@ view services, default (no changes)
   screen-api->engine-service carries 2
     exec: asks for numbers from
     manager: requests analysis from
-    engineer: POSTs /api/v1/analysis/* to
-  engine-service->strategies carries 5
+    engineer: calls /api/v1/* on
+  engine-service->strategies carries 6
     exec: picks and scores tickets with
     manager: picks and scores tickets with
     engineer: picks and scores tickets with
-  engine-service->history-service carries 6
+  engine-service->history-service carries 8
     exec: fetches draw history from
     manager: fetches draw history from
     engineer: POSTs /api/v1/state/games to
-  history-service->saved-draws carries 7
+  legacy->history-service carries 9
+    exec: reads draw history from
+    manager: reads draw history from
+    engineer: calls /api/v1/state-games/* on
+  history-service->saved-draws carries 10
     exec: reads
     manager: reads
     engineer: reads
-  updater->texas carries 8
-    exec: downloads new results from
-    manager: downloads new results from
-    engineer: polls CSV exports every 2 h from
-  updater->reader carries 9
-    exec: hands the files to
-    manager: hands the files to
-    engineer: hands the files to
-  reader->saved-draws carries 10
+  updater->reader carries 11
+    exec: has each game refreshed by
+    manager: has each game refreshed by
+    engineer: has each game refreshed by
+  reader->texas carries 12
+    exec: downloads results from
+    manager: downloads results from
+    engineer: fetches CSV exports from
+  reader->saved-draws carries 13
     exec: saves draws into
     manager: saves draws into
     engineer: writes {STATE}/{Game}.ser to
-  updater->history-service carries 11
-    exec: announces new draws to
-    manager: announces new draws to
-    engineer: announces new draws to
+  updater->history-service carries 14
+    exec: announces each finished refresh to
+    manager: announces each finished refresh to
+    engineer: announces each finished refresh to
 
 view services, everything open (engine-service open)
   user
@@ -173,6 +190,7 @@ view services, everything open (engine-service open)
     engine (open)
       engine-service (open)
         request-handling
+        game-analysis
         pick-generation
         history-lookup
       strategies
@@ -195,43 +213,55 @@ view services, everything open (engine-service open)
   screen-api->request-handling carries 2
     exec: asks for numbers from
     manager: requests analysis from
-    engineer: POSTs /api/v1/analysis/* to
+    engineer: calls /api/v1/* on
   request-handling->pick-generation carries 3
     exec: hands requests to
     manager: hands requests to
     engineer: hands requests to
-  pick-generation->history-lookup carries 4
+  request-handling->game-analysis carries 4
+    exec: hands dashboard requests to
+    manager: hands dashboard requests to
+    engineer: hands dashboard requests to
+  pick-generation->history-lookup carries 5
     exec: gets past draws from
     manager: gets past draws from
     engineer: gets past draws from
-  pick-generation->strategies carries 5
+  pick-generation->strategies carries 6
     exec: picks and scores tickets with
     manager: picks and scores tickets with
     engineer: picks and scores tickets with
-  history-lookup->history-service carries 6
+  game-analysis->history-lookup carries 7
+    exec: gets past draws from
+    manager: gets past draws from
+    engineer: gets past draws from
+  history-lookup->history-service carries 8
     exec: fetches draw history from
     manager: fetches draw history from
     engineer: POSTs /api/v1/state/games to
-  history-service->saved-draws carries 7
+  legacy->history-service carries 9
+    exec: reads draw history from
+    manager: reads draw history from
+    engineer: calls /api/v1/state-games/* on
+  history-service->saved-draws carries 10
     exec: reads
     manager: reads
     engineer: reads
-  updater->texas carries 8
-    exec: downloads new results from
-    manager: downloads new results from
-    engineer: polls CSV exports every 2 h from
-  updater->reader carries 9
-    exec: hands the files to
-    manager: hands the files to
-    engineer: hands the files to
-  reader->saved-draws carries 10
+  updater->reader carries 11
+    exec: has each game refreshed by
+    manager: has each game refreshed by
+    engineer: has each game refreshed by
+  reader->texas carries 12
+    exec: downloads results from
+    manager: downloads results from
+    engineer: fetches CSV exports from
+  reader->saved-draws carries 13
     exec: saves draws into
     manager: saves draws into
     engineer: writes {STATE}/{Game}.ser to
-  updater->history-service carries 11
-    exec: announces new draws to
-    manager: announces new draws to
-    engineer: announces new draws to
+  updater->history-service carries 14
+    exec: announces each finished refresh to
+    manager: announces each finished refresh to
+    engineer: announces each finished refresh to
 
 view services, all closed (suite closed)
   user
@@ -241,40 +271,40 @@ view services, all closed (suite closed)
     exec: uses
     manager: uses
     engineer: uses
-  suite->texas carries 8
-    exec: downloads new results from
-    manager: downloads new results from
-    engineer: polls CSV exports every 2 h from
+  suite->texas carries 12
+    exec: downloads results from
+    manager: downloads results from
+    engineer: fetches CSV exports from
 
 view engineering, default (no changes)
   suite (open, partly)
     screen-api
     engine (open)
-      engine-service (closed, 3 inside)
+      engine-service (closed, 4 inside)
       strategies
       formats
       legacy
-  engine-service->strategies carries 12
+  engine-service->strategies carries 15
     exec: depends on
     manager: depends on
     engineer: depends on
-  engine-service->formats carries 13
+  engine-service->formats carries 16
     exec: depends on
     manager: depends on
     engineer: depends on
-  engine-service->legacy carries 14
+  engine-service->legacy carries 17
+    exec: ships with
+    manager: ships with
+    engineer: has a runtime-only dependency on
+  strategies->formats carries 18
     exec: depends on
     manager: depends on
     engineer: depends on
-  strategies->formats carries 15
+  legacy->formats carries 19
     exec: depends on
     manager: depends on
     engineer: depends on
-  legacy->formats carries 16
-    exec: depends on
-    manager: depends on
-    engineer: depends on
-  screen-api->formats carries 17
+  screen-api->formats carries 20
     exec: uses the shapes in
     manager: uses the shapes in
     engineer: depends on
@@ -286,6 +316,7 @@ view engineering, everything open (suite open, engine-service open, store open)
     engine (open)
       engine-service (open)
         request-handling
+        game-analysis
         pick-generation
         history-lookup
       strategies
@@ -296,27 +327,27 @@ view engineering, everything open (suite open, engine-service open, store open)
       updater
       reader
       saved-draws
-  engine-service->strategies carries 12
+  engine-service->strategies carries 15
     exec: depends on
     manager: depends on
     engineer: depends on
-  engine-service->formats carries 13
+  engine-service->formats carries 16
     exec: depends on
     manager: depends on
     engineer: depends on
-  engine-service->legacy carries 14
+  engine-service->legacy carries 17
+    exec: ships with
+    manager: ships with
+    engineer: has a runtime-only dependency on
+  strategies->formats carries 18
     exec: depends on
     manager: depends on
     engineer: depends on
-  strategies->formats carries 15
+  legacy->formats carries 19
     exec: depends on
     manager: depends on
     engineer: depends on
-  legacy->formats carries 16
-    exec: depends on
-    manager: depends on
-    engineer: depends on
-  screen-api->formats carries 17
+  screen-api->formats carries 20
     exec: uses the shapes in
     manager: uses the shapes in
     engineer: depends on

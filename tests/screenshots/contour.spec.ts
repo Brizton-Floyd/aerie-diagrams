@@ -13,7 +13,7 @@ for (const theme of THEMES) {
   test.describe(`${theme} theme`, () => {
     test.use({ colorScheme: theme });
 
-    test(`LOOK-301 to LOOK-502 and LOOK-801 to LOOK-807 every Lotto view in every audience, ${theme}`, async ({
+    test(`LOOK-301 to LOOK-502, LOOK-801 to LOOK-807 and SCOPE-004 every Lotto view in every audience, ${theme}`, async ({
       page,
     }) => {
       await openModel(page, 'samples/lotto.aerie');
@@ -50,6 +50,18 @@ for (const theme of THEMES) {
     });
   });
 }
+
+test('ACC-006 screenshot runs hide drawn text, form controls and the side panel content', async ({
+  page,
+}) => {
+  await openModel(page, 'samples/lotto.aerie');
+  const text = page.locator('svg.aerie g.node text').first();
+  await expect(text).not.toHaveCSS('fill', 'rgba(0, 0, 0, 0)');
+  await page.addStyleTag({ content: HIDE_TEXT });
+  await expect(text).toHaveCSS('fill', 'rgba(0, 0, 0, 0)');
+  await expect(page.locator('header .crumb')).toHaveCSS('color', 'rgba(0, 0, 0, 0)');
+  await expect(page.locator('.panel-content').first()).toHaveCSS('visibility', 'hidden');
+});
 
 /** What the browser drew for every text element of the current drawing. */
 interface DrawnText {

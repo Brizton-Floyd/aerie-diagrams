@@ -67,7 +67,7 @@
         <path d="M14 38c0 3.3 8 6 18 6s18-2.7 18-6"/>
       </g>
       <text class="t-name" x="44" y="26" data-width="78">Results store</text>
-      <text class="t-tagline" x="44" y="44" data-width="145">Keeps every past draw</text>
+      <text class="t-tagline" x="44" y="44" data-width="192">Keeps each game's past draws</text>
     </g>
     <g class="node leaf person now" data-id="user" transform="translate(1195 44)">
       <rect class="shape" width="178" height="59" rx="29.5"/>
@@ -133,7 +133,7 @@
   </g>
   <g class="labels">
     <g class="label" data-step="1">
-      <text class="t-label" x="659.25" y="156" data-width="107">clicks Generate on</text>
+      <text class="t-label" x="630.75" y="156" data-width="164">clicks Generate Numbers on</text>
     </g>
     <g class="label" data-step="2">
       <text class="t-label" x="234.75" y="210" data-width="110">asks for picks from</text>
@@ -151,7 +151,7 @@
       <text class="t-label" x="799" y="409" data-width="152">fetches draw history from</text>
     </g>
     <g class="label" data-step="7">
-      <text class="t-label" x="800.5" y="446" data-width="149">returns the full history to</text>
+      <text class="t-label" x="795" y="446" data-width="160">returns the draw history to</text>
     </g>
     <g class="label" data-step="8">
       <text class="t-label" x="781" y="487" data-width="140">hands the past draws to</text>

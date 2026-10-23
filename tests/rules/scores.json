@@ -7,8 +7,8 @@
     },
     "big-picture, everything open": {
       "crossings": 0,
-      "bends": 12,
-      "fitScale": 0.566
+      "bends": 20,
+      "fitScale": 0.546
     },
     "big-picture, all closed": {
       "crossings": 0,
@@ -17,23 +17,23 @@
     },
     "big-picture, engine opened": {
       "crossings": 0,
-      "bends": 4,
-      "fitScale": 0.938
+      "bends": 6,
+      "fitScale": 0.923
     },
     "big-picture, store opened": {
       "crossings": 0,
-      "bends": 10,
-      "fitScale": 0.829
+      "bends": 8,
+      "fitScale": 0.817
     },
     "services, default": {
       "crossings": 0,
-      "bends": 12,
-      "fitScale": 0.706
+      "bends": 14,
+      "fitScale": 0.683
     },
     "services, everything open": {
       "crossings": 0,
-      "bends": 12,
-      "fitScale": 0.566
+      "bends": 20,
+      "fitScale": 0.546
     },
     "services, all closed": {
       "crossings": 0,
@@ -42,13 +42,13 @@
     },
     "services, engine closed": {
       "crossings": 0,
-      "bends": 10,
-      "fitScale": 0.829
+      "bends": 8,
+      "fitScale": 0.817
     },
     "services, store closed": {
       "crossings": 0,
-      "bends": 4,
-      "fitScale": 0.938
+      "bends": 6,
+      "fitScale": 0.923
     },
     "engineering, default": {
       "crossings": 0,
@@ -57,8 +57,8 @@
     },
     "engineering, everything open": {
       "crossings": 0,
-      "bends": 8,
-      "fitScale": 0.512
+      "bends": 6,
+      "fitScale": 0.461
     },
     "engineering, all closed": {
       "crossings": 0,
@@ -72,8 +72,8 @@
     },
     "engineering, engine-service opened": {
       "crossings": 0,
-      "bends": 8,
-      "fitScale": 1.15
+      "bends": 6,
+      "fitScale": 0.942
     }
   },
   "samples/shapes.aerie": {

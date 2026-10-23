@@ -7,12 +7,14 @@ import { describe, expect, it } from 'vitest';
 import {
   CATALOGUE,
   DEFAULT_AUDIENCES,
+  format,
   parse,
   serializeModel,
   severityOf,
   type DiagnosticId,
   type Model,
 } from '../../../src/lines/index.ts';
+import { check } from '../../../src/model/index.ts';
 
 const ROOT = join(import.meta.dirname, '../../..');
 const read = (path: string): string => readFileSync(join(ROOT, path), 'utf8');
@@ -47,6 +49,56 @@ describe('files and lines', () => {
     expect(
       modelOf('web: Website\n  > Shows the\n    pages to users\n').elements[0]?.about.base,
     ).toBe('Shows the pages to users');
+  });
+});
+
+describe('block rules', () => {
+  it('LANG-009 a keyword cannot be an id (E006)', () => {
+    expect(ids('view: A view\nweb: Website\n')).toEqual(['E006']);
+    expect(ids('views: Views\nweb: Website\n')).toEqual([]);
+  });
+
+  it('LANG-305 an audience must be declared, has one @level: line per owner, and >> needs one', () => {
+    expect(ids('web: Website\n  @board: Our site\n')).toEqual(['E301']);
+    expect(ids('web: Website\n  @exec: Our site\n  @exec: | Our tagline\n')).toEqual(['E302']);
+    expect(ids('web: Website\n  >> An added paragraph.\n')).toEqual(['E304']);
+    expect(ids('web: Website\n  @exec: Our site\n  @engineer: | web/\n')).toEqual([]);
+  });
+
+  it('LANG-604 a scenario has at least one step (E601), numbered in the order written', () => {
+    expect(ids('web: Website\nscenario flow: Flow\n  > Nothing yet.\n')).toEqual(['E601']);
+    const model = modelOf(
+      'web: Website\napi: API\nweb calls api\nscenario flow: Flow\n  web asks api\n  api answers web\n',
+    );
+    expect(model.scenarios[0]?.steps.map((step) => step.verb.base)).toEqual(['asks', 'answers']);
+  });
+
+  it('LANG-607 a scenario no view can hold is E604, found by the model check', () => {
+    const source = [
+      'a: A',
+      'b: B',
+      'outer: Outer',
+      '  c: C',
+      'a calls b',
+      'b calls c',
+      'view v: V',
+      '  show a, b',
+      'scenario flow: Flow',
+      '  a calls b',
+      '  b calls c',
+      '',
+    ].join('\n');
+    expect(ids(source)).toEqual([]);
+    expect(check(source).diagnostics.map((found) => found.id)).toEqual(['E604']);
+    const held = source.replace('  show a, b', '  show a, b, outer');
+    expect(check(held).diagnostics.map((found) => found.id)).toEqual([]);
+  });
+
+  it('LANG-707 a walkthrough has at least one step (E701)', () => {
+    expect(
+      ids('web: Website\nview main: Main\nwalkthrough tour: Tour\n  > Nothing yet.\n'),
+    ).toEqual(['E701']);
+    expect(ids('web: Website\nview main: Main\nwalkthrough tour: Tour\n  step main\n')).toEqual([]);
   });
 });
 
@@ -360,9 +412,9 @@ describe('diagnostics', () => {
   });
 });
 
-describe('the Lotto sample', () => {
-  it('ACC-011 has the shape section 15 of the language spec describes', () => {
-    const model = modelOf(read('samples/lotto.aerie'));
+describe('the worked example', () => {
+  it('ACC-013 examples/lotto.aerie has the shape section 15 of the language spec describes', () => {
+    const model = modelOf(LOTTO);
     expect(model.elements).toHaveLength(18);
     expect(Math.max(...model.elements.map((element) => depthOf(model, element.id)))).toBe(3);
     expect(model.relationships).toHaveLength(18);
@@ -397,3 +449,20 @@ function depthOf(model: Model, id: string): number {
   const parent = model.elements.find((element) => element.id === id)?.parent ?? null;
   return parent === null ? 0 : 1 + depthOf(model, parent);
 }
+
+describe('the Lotto sample', () => {
+  it('ACC-011 and SCOPE-010 samples/lotto.aerie is the A11 sample: clean, formatted, and ready for every journey', () => {
+    const source = read('samples/lotto.aerie');
+    expect(check(source).diagnostics).toEqual([]);
+    expect(format(source).text).toBe(source);
+    expect(source).not.toBe(LOTTO);
+    const model = modelOf(source);
+    expect(model.audiences.map((audience) => audience.id)).toEqual(['exec', 'manager', 'engineer']);
+    expect(model.views.map((view) => view.id)).toEqual(['big-picture', 'services', 'engineering']);
+    expect(model.scenarios.map((scenario) => scenario.id)).toEqual([
+      'generate-picks',
+      'results-poll',
+    ]);
+    expect(model.walkthroughs.map((walkthrough) => walkthrough.id)).toEqual(['tour']);
+  });
+});

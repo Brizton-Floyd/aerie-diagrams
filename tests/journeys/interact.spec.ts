@@ -21,7 +21,7 @@ test.use({ viewport: { width: 1600, height: 900 } });
 const panel = (page: Page) => page.locator('aside.panel');
 const tab = (page: Page, name: string) => page.getByRole('tab', { name });
 
-const ENGINE_PARTS = ['request-handling', 'pick-generation', 'history-lookup'];
+const ENGINE_PARTS = ['request-handling', 'game-analysis', 'pick-generation', 'history-lookup'];
 
 test.describe('the audience switch', () => {
   test('JOURNEY-001 switching audience rewords the page and moves nothing', async ({ page }) => {
@@ -119,12 +119,12 @@ test.describe('selecting and the side panel', () => {
     const side = panel(page);
     await expect(side.locator('.kicker')).toHaveText('Service in Lotto suite');
     await expect(side.locator('h1')).toHaveText('Results store');
-    await expect(side.locator('.lead')).toHaveText('Keeps every past draw');
+    await expect(side.locator('.lead')).toHaveText("Keeps each game's past draws");
     await expect(side.getByRole('heading', { name: 'At every level' })).toBeVisible();
     await expect(side.locator('.levels li')).toHaveText([
-      /Executive\s*Results store\s*Keeps every past draw/i,
-      /Manager\s*Results store\s*Keeps every past draw/i,
-      /Engineer\s*Results store\s*lottery-result-persistence-service :8001/i,
+      /Executive\s*Results store\s*Keeps each game's past draws/i,
+      /Manager\s*Results store\s*Keeps each game's past draws/i,
+      /Engineer\s*Results service\s*lottery-result-persistence-service :8001/i,
     ]);
     await expect(side.locator('.levels li.on')).toHaveAttribute('data-audience', 'manager');
     await expect(side.locator('.sentences li').first()).toHaveText(
@@ -251,6 +251,30 @@ test.describe('opening in place', () => {
     await expect(edge(page, 'screen-api->engine-service')).toBeAttached();
   });
 
+  test('LAYOUT-403 a change during a glide first finishes the glide at once, then starts', async ({
+    page,
+  }) => {
+    await openLotto(page, 'services');
+    const control = node(page, 'engine-service').locator('.control');
+    await control.click();
+    await settled(page);
+    const opened = await boxes(page);
+    await control.click();
+    await settled(page);
+    // Open again, and switch the audience while the picture is still gliding.
+    await control.click();
+    expect(await page.evaluate(() => document.getAnimations().length)).toBeGreaterThan(0);
+    await page.keyboard.press('3');
+    // The glide has ended at once, and the switch itself moves nothing (INT-103).
+    expect(await boxes(page)).toEqual(opened);
+    await settled(page);
+    expect(await boxes(page)).toEqual(opened);
+    await expect(page.getByRole('tab', { name: 'Engineer' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+  });
+
   test('INT-302 double-clicking a container opens it; LAYOUT-402 the picture glides', async ({
     page,
   }) => {
@@ -328,7 +352,7 @@ test.describe('the camera', () => {
     expect(await boxes(page)).toEqual(before);
   });
 
-  test('INT-352 and INT-353 the buttons and keys magnify by 1.25, shrink by 0.8, fit, and stay between 0.2 and 2.5', async ({
+  test('INT-352, INT-353 and LAYOUT-452 the buttons and keys magnify by 1.25, shrink by 0.8, fit, and stay between 0.2 and 2.5', async ({
     page,
   }) => {
     await openLotto(page, 'services');
@@ -461,7 +485,7 @@ test.describe('the keyboard and screen readers', () => {
     await expect(sentences.getByRole('listitem').first()).toHaveText('User uses Website.');
     await expect(sentences).toContainText('Website gets screen data from Screen API.');
     await page.keyboard.press('3');
-    await expect(sentences).toContainText('Website calls /ui/* on Screen API.');
+    await expect(sentences).toContainText('Website calls /ui/* on BFF.');
     await expect(
       page.getByRole('button', { name: 'Website: lotto-options-ui, Angular 21' }),
     ).toBeVisible();

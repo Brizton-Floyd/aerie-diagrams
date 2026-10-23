@@ -1,5 +1,5 @@
 <?xml-stylesheet href="../contour.css" type="text/css"?>
-<svg xmlns="http://www.w3.org/2000/svg" class="aerie" viewBox="0 0 837 681" width="837" height="681" overflow="visible" role="img" aria-label="The Lotto suite: How the code is organised" data-view="engineering" data-audience="exec">
+<svg xmlns="http://www.w3.org/2000/svg" class="aerie" viewBox="0 0 962.5 715" width="962.5" height="715" overflow="visible" role="img" aria-label="The Lotto suite: How the code is organised" data-view="engineering" data-audience="exec">
   <defs>
     <pattern id="aerie-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
       <rect class="hatch-bg" width="7" height="7"/>
@@ -8,15 +8,15 @@
   </defs>
   <g class="boxes">
     <g class="node open depth-0" data-id="suite" transform="translate(12 12)">
-      <rect class="shape" width="813" height="657" rx="18"/>
-      <rect class="inner" x="5" y="5" width="803" height="647" rx="13"/>
-      <rect class="ring" x="-3" y="-3" width="819" height="663" rx="21"/>
+      <rect class="shape" width="938.5" height="691" rx="18"/>
+      <rect class="inner" x="5" y="5" width="928.5" height="681" rx="13"/>
+      <rect class="ring" x="-3" y="-3" width="944.5" height="697" rx="21"/>
       <g class="icon" data-icon="stack" transform="translate(12 12) scale(0.34375)">
         <path d="M32 9 56 21 32 33 8 21Z"/>
         <path d="M8 31l24 12 24-12"/>
         <path d="M8 41l24 12 24-12"/>
       </g>
-      <g class="control" transform="translate(792 21)">
+      <g class="control" transform="translate(917.5 21)">
         <circle r="9"/>
         <path d="M-4 0H4"/>
       </g>
@@ -34,36 +34,37 @@
       <text class="t-tagline" x="44" y="44" data-width="157">Gets each screen its data</text>
     </g>
     <g class="node open depth-1" data-id="engine" transform="translate(135 224)">
-      <rect class="shape" width="672" height="427" rx="18"/>
-      <rect class="inner" x="5" y="5" width="662" height="417" rx="13"/>
-      <rect class="ring" x="-3" y="-3" width="678" height="433" rx="21"/>
+      <rect class="shape" width="797.5" height="461" rx="18"/>
+      <rect class="inner" x="5" y="5" width="787.5" height="451" rx="13"/>
+      <rect class="ring" x="-3" y="-3" width="803.5" height="467" rx="21"/>
       <g class="icon" data-icon="gear" transform="translate(12 12) scale(0.34375)">
         <path d="M28.1 16.5 29 10.7h6l.9 5.8 4.3 1.8 4.7-3.5 4.3 4.3-3.5 4.7 1.8 4.3 5.8.9v6l-5.8.9-1.8 4.3 3.5 4.7-4.3 4.3-4.7-3.5-4.3 1.8-.9 5.8h-6l-.9-5.8-4.3-1.8-4.7 3.5-4.3-4.3 3.5-4.7-1.8-4.3-5.8-.9v-6l5.8-.9 1.8-4.3-3.5-4.7 4.3-4.3 4.7 3.5Z"/>
         <circle cx="32" cy="32" r="6"/>
       </g>
-      <g class="control" transform="translate(651 21)">
+      <g class="control" transform="translate(776.5 21)">
         <circle r="9"/>
         <path d="M-4 0H4"/>
       </g>
     </g>
-    <g class="node closed" data-id="engine-service" transform="translate(228 294)">
-      <rect class="shape" width="230" height="79" rx="8"/>
-      <rect class="inner" x="5" y="5" width="220" height="69" rx="3"/>
-      <rect class="ring" x="-3" y="-3" width="236" height="85" rx="11"/>
+    <g class="node closed" data-id="engine-service" transform="translate(340.5 294)">
+      <rect class="shape" width="282" height="96" rx="8"/>
+      <rect class="inner" x="5" y="5" width="272" height="86" rx="3"/>
+      <rect class="ring" x="-3" y="-3" width="288" height="102" rx="11"/>
       <g class="icon" data-icon="module" transform="translate(12 12) scale(0.34375)">
         <path d="M32 8 53 20v24L32 56 11 44V20Z"/>
         <path d="M11 20l21 12 21-12"/>
         <path d="M32 32v24"/>
       </g>
       <text class="t-name" x="44" y="26" data-width="87">Engine service</text>
-      <text class="t-tagline" x="44" y="44" data-width="140">The running program</text>
-      <text class="t-chip" x="44" y="62" data-width="80">3 parts inside</text>
-      <g class="control" transform="translate(209 21)">
+      <text class="t-tagline" x="44" y="44" data-width="198">Answers requests and does the</text>
+      <text class="t-tagline" x="44" y="61" data-width="34">work</text>
+      <text class="t-chip" x="44" y="79" data-width="80">4 parts inside</text>
+      <g class="control" transform="translate(261 21)">
         <circle r="9"/>
         <path d="M-4 0H4M0-4V4"/>
       </g>
     </g>
-    <g class="node leaf" data-id="strategies" transform="translate(541 444)">
+    <g class="node leaf" data-id="strategies" transform="translate(666.5 478)">
       <rect class="shape" width="248" height="59" rx="4"/>
       <rect class="ring" x="-3" y="-3" width="254" height="65" rx="7"/>
       <g class="icon" data-icon="books" transform="translate(12 12) scale(0.34375)">
@@ -75,17 +76,18 @@
       <text class="t-name" x="44" y="26" data-width="105">Strategies library</text>
       <text class="t-tagline" x="44" y="44" data-width="192">The number-picking methods</text>
     </g>
-    <g class="node leaf" data-id="formats" transform="translate(175.1 574)">
+    <g class="node leaf" data-id="formats" transform="translate(300.6 608)">
       <rect class="shape" width="276" height="59" rx="4"/>
       <rect class="ring" x="-3" y="-3" width="282" height="65" rx="7"/>
-      <g class="icon" data-icon="grid" transform="translate(12 12) scale(0.34375)">
-        <rect x="9" y="12" width="46" height="40" rx="3"/>
-        <path d="M9 24h46M9 38h46M32 24v28"/>
+      <g class="icon" data-icon="module" transform="translate(12 12) scale(0.34375)">
+        <path d="M32 8 53 20v24L32 56 11 44V20Z"/>
+        <path d="M11 20l21 12 21-12"/>
+        <path d="M32 32v24"/>
       </g>
       <text class="t-name" x="44" y="26" data-width="124">Shared data formats</text>
       <text class="t-tagline" x="44" y="44" data-width="220">The shapes of requests and results</text>
     </g>
-    <g class="node leaf" data-id="legacy" transform="translate(164 444)">
+    <g class="node leaf" data-id="legacy" transform="translate(289.5 478)">
       <rect class="shape" width="243" height="59" rx="4"/>
       <rect class="ring" x="-3" y="-3" width="249" height="65" rx="7"/>
       <g class="icon" data-icon="monitor" transform="translate(12 12) scale(0.34375)">
@@ -98,28 +100,28 @@
   </g>
   <g class="edges">
     <g class="edge" data-id="engine-service-&gt;strategies">
-      <path class="line" d="M400.5 373L400.5 378Q400.5 383 405.5 383L656 383Q665 383 665 392L665 444"/>
-      <path class="arrow" d="M660 432L665 444L670 432"/>
+      <path class="line" d="M552 390L552 395Q552 400 557 400L781.5 400Q790.5 400 790.5 409L790.5 478"/>
+      <path class="arrow" d="M785.5 466L790.5 478L795.5 466"/>
     </g>
     <g class="edge" data-id="engine-service-&gt;formats">
-      <path class="line" d="M343 373L343 384Q343 393 352 393L511 393Q520 393 520 402L520 545Q520 554 511 554L349.7 554Q340.7 554 340.7 563L340.7 574"/>
-      <path class="arrow" d="M335.7 562L340.7 574L345.7 562"/>
+      <path class="line" d="M481.5 390L481.5 401Q481.5 410 490.5 410L636.5 410Q645.5 410 645.5 419L645.5 579Q645.5 588 636.5 588L475.2 588Q466.2 588 466.2 597L466.2 608"/>
+      <path class="arrow" d="M461.2 596L466.2 608L471.2 596"/>
     </g>
     <g class="edge" data-id="engine-service-&gt;legacy">
-      <path class="line" d="M285.5 373L285.5 444"/>
-      <path class="arrow" d="M280.5 432L285.5 444L290.5 432"/>
+      <path class="line" d="M411 390L411 478"/>
+      <path class="arrow" d="M406 466L411 478L416 466"/>
     </g>
     <g class="edge" data-id="strategies-&gt;formats">
-      <path class="line" d="M665 503L665 555Q665 564 656 564L400.9 564Q395.9 564 395.9 569L395.9 574"/>
-      <path class="arrow" d="M390.9 562L395.9 574L400.9 562"/>
+      <path class="line" d="M790.5 537L790.5 589Q790.5 598 781.5 598L526.4 598Q521.4 598 521.4 603L521.4 608"/>
+      <path class="arrow" d="M516.4 596L521.4 608L526.4 596"/>
     </g>
     <g class="edge" data-id="legacy-&gt;formats">
-      <path class="line" d="M285.5 503L285.5 574"/>
-      <path class="arrow" d="M280.5 562L285.5 574L290.5 562"/>
+      <path class="line" d="M411 537L411 608"/>
+      <path class="arrow" d="M406 596L411 608L416 596"/>
     </g>
     <g class="edge" data-id="screen-api-&gt;formats">
-      <path class="line" d="M153 158L153 545Q153 554 162 554L221.3 554Q230.3 554 230.3 563L230.3 574"/>
-      <path class="arrow" d="M225.3 562L230.3 574L235.3 562"/>
+      <path class="line" d="M153 158L153 579Q153 588 162 588L346.8 588Q355.8 588 355.8 597L355.8 608"/>
+      <path class="arrow" d="M350.8 596L355.8 608L360.8 596"/>
     </g>
   </g>
   <g class="heads">
@@ -136,23 +138,23 @@
   <g class="labels">
     <g class="label" data-id="engine-service-&gt;strategies">
       <title>Engine service depends on Strategies library.</title>
-      <text class="t-label" x="584.5" y="419" data-width="66">depends on</text>
+      <text class="t-label" x="710" y="444.5" data-width="66">depends on</text>
     </g>
     <g class="label" data-id="engine-service-&gt;formats">
       <title>Engine service depends on Shared data formats.</title>
-      <text class="t-label" x="439.5" y="479" data-width="66">depends on</text>
+      <text class="t-label" x="565" y="513" data-width="66">depends on</text>
     </g>
     <g class="label" data-id="engine-service-&gt;legacy">
-      <title>Engine service depends on Legacy desktop support.</title>
-      <text class="t-label" x="205" y="419" data-width="66">depends on</text>
+      <title>Engine service ships with Legacy desktop support.</title>
+      <text class="t-label" x="256" y="444.5" data-width="61">ships with</text>
     </g>
     <g class="label" data-id="strategies-&gt;formats">
       <title>Strategies library depends on Shared data formats.</title>
-      <text class="t-label" x="584.5" y="539" data-width="66">depends on</text>
+      <text class="t-label" x="710" y="573" data-width="66">depends on</text>
     </g>
     <g class="label" data-id="legacy-&gt;formats">
       <title>Legacy desktop support depends on Shared data formats.</title>
-      <text class="t-label" x="205" y="539" data-width="66">depends on</text>
+      <text class="t-label" x="330.5" y="573" data-width="66">depends on</text>
     </g>
     <g class="label" data-id="screen-api-&gt;formats">
       <title>Website back end uses the shapes in Shared data formats.</title>

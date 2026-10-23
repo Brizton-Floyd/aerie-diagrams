@@ -1,375 +1,397 @@
 view big-picture, default (no changes)
-  size 761 x 816
+  size 737 x 816
   user (178 x 59, rim): 180, 29, 178 x 59
-  suite (open, at least 304 wide, header 70): 12, 191, 426.5 x 598
-    website (283 x 59): 127.5, 261, 283 x 59
-    screen-api (246 x 76): 146, 381, 246 x 76
-    engine (291 x 96): 123.5, 518, 291 x 96
+  suite (open, at least 287 wide, header 70): 12, 174, 426.5 x 615
+    website (283 x 59): 127.5, 244, 283 x 59
+    screen-api (246 x 76): 146, 364, 246 x 76
+    engine (291 x 96): 123.5, 501, 291 x 96
     store (303 x 96): 117.5, 675, 303 x 96
   texas (262 x 76, rim): 384, 12, 262 x 76
-  user->website: 269,88 269,261
-    label 222, 126.5, 43 x 21
-  website->screen-api: 269,320 269,381
-    label 132, 340, 135 x 21
-  screen-api->engine: 269,457 269,518
-    label 38, 477, 229 x 21
-  engine->store: 269,614 269,675
-    label 30, 634, 237 x 21
+  user->website: 269,88 269,244
+    label 222, 118, 43 x 21
+  website->screen-api: 269,303 269,364
+    label 132, 323, 135 x 21
+  screen-api->engine: 269,440 269,501
+    label 111, 460, 156 x 21
+  engine->store: 269,597 269,675
+    label 30, 617, 237 x 38
   store->texas: 269,771 269,804 515,804 515,88
-    label 520, 118, 229 x 38
+    label 520, 118, 205 x 21
 
 view big-picture, everything open (engine open, engine-service open, store open)
-  size 1492 x 1687
-  user (178 x 59, rim): 313, 29, 178 x 59
-  suite (open, at least 304 wide, header 70): 12, 191, 1219.5 x 1469
-    website (283 x 59): 260.17, 261, 283 x 59
-    screen-api (246 x 76): 278.67, 381, 246 x 76
-    engine (open, at least 291 wide, header 70): 30, 523, 1183.5 x 622
-      engine-service (open, at least 230 wide, header 53): 233.67, 598, 402.83 x 404
-        request-handling (276 x 76): 263.67, 651, 276 x 76
-        pick-generation (251 x 59): 276.17, 788, 251 x 59
-        history-lookup (275 x 76): 306, 908, 275 x 76
-      strategies (248 x 59): 171, 1068, 248 x 59
-      formats (276 x 59): 919.5, 770.5, 276 x 59
-      legacy (243 x 59): 656.5, 770.5, 243 x 59
-    store (open, at least 303 wide, header 70): 425.5, 1216, 636 x 421
-      history-service (264 x 76): 469.5, 1423, 264 x 76
-      updater (283 x 76): 751.5, 1286, 283 x 76
-      reader (279 x 76): 753.5, 1423, 279 x 76
-      saved-draws (194 x 59): 763.67, 1560, 194 x 59
-  texas (262 x 76, rim): 1115, 12, 262 x 76
-  user->website: 402,88 402,261
-    label 355, 126.5, 43 x 21
-  website->screen-api: 401.67,320 401.67,381
-    label 264.67, 340, 135 x 21
-  screen-api->request-handling: 401.67,457 401.67,651
-    label 170.67, 477, 229 x 21
-  request-handling->pick-generation: 401.67,727 401.67,788
-    label 251.67, 747, 148 x 21
-  pick-generation->history-lookup: 443.5,847 443.5,908
-    label 446.5, 867, 172 x 21
-  pick-generation->strategies: 359.83,847 359.83,857 295,857 295,1068
-    label 48, 1027, 245 x 21
-  history-lookup->history-service: 443.5,984 443.5,1413 557.5,1413 557.5,1423
-    label 204.5, 1170, 237 x 21
-  history-service->saved-draws: 601.5,1499 601.5,1550 828.33,1550 828.33,1560
-    label 548.5, 1519, 51 x 21
-  updater->texas: 963.75,1362 963.75,1372 1042.5,1372 1042.5,1675 1246,1675 1246,88
-    label 1251, 118, 229 x 38
-  updater->reader: 893,1362 893,1423
-    label 735, 1382, 156 x 21
-  reader->saved-draws: 893,1499 893,1560
-    label 654, 1519, 237 x 21
-  updater->history-service: 822.25,1362 822.25,1372 645.5,1372 645.5,1423
-    label 454.5, 1382, 189 x 21
+  size 1516 x 1748
+  user (178 x 59, rim): 654, 29, 178 x 59
+  suite (open, at least 287 wide, header 70): 12, 174, 1267.33 x 1547
+    website (283 x 59): 601.5, 244, 283 x 59
+    screen-api (246 x 76): 620, 364, 246 x 76
+    engine (open, at least 291 wide, header 70): 30, 506, 1027 x 656
+      engine-service (open, at least 282 wide, header 70): 344, 581, 695 x 438
+        request-handling (276 x 76): 605, 651, 276 x 76
+        game-analysis (263 x 76): 657.5, 788, 263 x 76
+        pick-generation (251 x 59): 386.5, 799.33, 251 x 59
+        history-lookup (275 x 76): 605.67, 925, 275 x 76
+      strategies (248 x 59): 244.83, 1085, 248 x 59
+      formats (276 x 59): 48, 770.5, 276 x 59
+      legacy (243 x 59): 512.83, 1085, 243 x 59
+    store (open, at least 303 wide, header 70): 616.33, 1250, 645 x 448
+      history-service (264 x 76): 674.33, 1484, 264 x 76
+      updater (283 x 76): 917.67, 1320, 283 x 76
+      reader (274 x 76): 969.33, 1484, 274 x 76
+      saved-draws (194 x 59): 931.33, 1621, 194 x 59
+  texas (262 x 76, rim): 1163, 12, 262 x 76
+  user->website: 743,88 743,244
+    label 696, 118, 43 x 21
+  website->screen-api: 743,303 743,364
+    label 606, 323, 135 x 21
+  screen-api->request-handling: 743,440 743,651
+    label 585, 460, 156 x 21
+  request-handling->pick-generation: 697,727 697,737 512,737 512,799.33
+    label 362, 747, 148 x 21
+  request-handling->game-analysis: 789,727 789,788
+    label 792, 747, 229 x 21
+  pick-generation->history-lookup: 553.83,858.33 553.83,915 697.33,915 697.33,925
+    label 379.83, 884, 172 x 21
+  pick-generation->strategies: 470.17,858.33 470.17,874 368.83,874 368.83,1085
+    label 121.83, 1044, 245 x 21
+  game-analysis->history-lookup: 789,864 789,925
+    label 615, 884, 172 x 21
+  history-lookup->history-service: 743.17,1001 743.17,1034 765.83,1034 765.83,1235 645.33,1235 645.33,1464 806.33,1464 806.33,1484
+    label 768.83, 1195.5, 237 x 21
+  legacy->history-service: 634.33,1144 634.33,1474 740.33,1474 740.33,1484
+    label 403.33, 1187, 229 x 38
+  history-service->saved-draws: 806.33,1560 806.33,1611 996,1611 996,1621
+    label 753.33, 1580, 51 x 21
+  updater->reader: 1106.33,1396 1106.33,1484
+    label 883.33, 1424.5, 221 x 21
+  reader->texas: 1152,1560 1152,1736 1294,1736 1294,88
+    label 1299, 118, 205 x 21
+  reader->saved-draws: 1060.67,1560 1060.67,1621
+    label 821.67, 1580, 237 x 21
+  updater->history-service: 1012,1396 1012,1406 872.33,1406 872.33,1484
+    label 656.33, 1416, 214 x 38
 
 view big-picture, all closed (suite closed)
-  size 502 x 294
-  user (178 x 59, rim): 24, 29, 178 x 59
-  suite (304 x 96): 12, 186, 304 x 96
-  texas (262 x 76, rim): 228, 12, 262 x 76
-  user->suite: 113,88 113,186
-    label 66, 126.5, 43 x 21
-  suite->texas: 215,186 215,98 359,98 359,88
-    label 220, 118, 229 x 38
+  size 497 x 277
+  user (178 x 59, rim): 19, 29, 178 x 59
+  suite (287 x 96): 12, 169, 287 x 96
+  texas (262 x 76, rim): 223, 12, 262 x 76
+  user->suite: 108,88 108,169
+    label 61, 118, 43 x 21
+  suite->texas: 203,169 203,98 354,98 354,88
+    label 208, 118, 205 x 21
 
 view big-picture, engine opened (engine open)
-  size 1304 x 1017
-  user (178 x 59, rim): 244, 29, 178 x 59
-  suite (open, at least 304 wide, header 70): 12, 191, 1031.33 x 799
-    website (283 x 59): 191.83, 261, 283 x 59
-    screen-api (246 x 76): 210.33, 381, 246 x 76
-    engine (open, at least 291 wide, header 70): 30, 523, 995.33 x 287
-      engine-service (230 x 79): 218.33, 593, 230 x 79
+  size 1156 x 1034
+  user (178 x 59, rim): 556, 29, 178 x 59
+  suite (open, at least 287 wide, header 70): 12, 174, 907.5 x 833
+    website (283 x 59): 503.5, 244, 283 x 59
+    screen-api (246 x 76): 522, 364, 246 x 76
+    engine (open, at least 291 wide, header 70): 30, 506, 774 x 304
+      engine-service (282 x 96): 504, 576, 282 x 96
       strategies (248 x 59): 171, 733, 248 x 59
-      formats (276 x 59): 731.33, 603, 276 x 59
-      legacy (243 x 59): 468.33, 603, 243 x 59
-    store (303 x 96): 277.5, 876, 303 x 96
-  texas (262 x 76, rim): 927, 12, 262 x 76
-  user->website: 333,88 333,261
-    label 286, 126.5, 43 x 21
-  website->screen-api: 333.33,320 333.33,381
-    label 196.33, 340, 135 x 21
-  screen-api->engine-service: 333.33,457 333.33,593
-    label 102.33, 477, 229 x 21
-  engine-service->strategies: 295,672 295,733
+      formats (276 x 59): 208, 594.5, 276 x 59
+      legacy (243 x 59): 439, 733, 243 x 59
+    store (303 x 96): 459.5, 893, 303 x 96
+  texas (262 x 76, rim): 803, 12, 262 x 76
+  user->website: 645,88 645,244
+    label 598, 118, 43 x 21
+  website->screen-api: 645,303 645,364
+    label 508, 323, 135 x 21
+  screen-api->engine-service: 645,440 645,576
+    label 487, 460, 156 x 21
+  engine-service->strategies: 598,672 598,682 295,682 295,733
     label 48, 692, 245 x 21
-  engine-service->store: 371.67,672 371.67,682 429,682 429,876
-    label 190, 835, 237 x 21
-  store->texas: 429,972 429,1005 1058,1005 1058,88
-    label 1063, 118, 229 x 38
+  engine-service->store: 692,672 692,825 661.5,825 661.5,893
+    label 664.5, 843.5, 237 x 21
+  legacy->store: 560.5,792 560.5,893
+    label 329.5, 835, 229 x 38
+  store->texas: 611,989 611,1022 934,1022 934,88
+    label 939, 118, 205 x 21
 
 view big-picture, store opened (store open)
-  size 1165 x 1151
-  user (178 x 59, rim): 180, 29, 178 x 59
-  suite (open, at least 304 wide, header 70): 12, 191, 893 x 933
-    website (283 x 59): 127.5, 261, 283 x 59
-    screen-api (246 x 76): 146, 381, 246 x 76
-    engine (291 x 96): 123.5, 518, 291 x 96
-    store (open, at least 303 wide, header 70): 251, 680, 636 x 421
-      history-service (264 x 76): 295, 887, 264 x 76
-      updater (283 x 76): 577, 750, 283 x 76
-      reader (279 x 76): 579, 887, 279 x 76
-      saved-draws (194 x 59): 589.17, 1024, 194 x 59
-  texas (262 x 76, rim): 788, 12, 262 x 76
-  user->website: 269,88 269,261
-    label 222, 126.5, 43 x 21
-  website->screen-api: 269,320 269,381
-    label 132, 340, 135 x 21
-  screen-api->engine: 269,457 269,518
-    label 38, 477, 229 x 21
-  engine->history-service: 269,614 269,877 383,877 383,887
-    label 30, 634, 237 x 21
-  history-service->saved-draws: 427,963 427,1014 653.83,1014 653.83,1024
-    label 374, 983, 51 x 21
-  updater->texas: 789.25,826 789.25,836 868,836 868,1139 919,1139 919,88
-    label 924, 118, 229 x 38
-  updater->reader: 718.5,826 718.5,887
-    label 560.5, 846, 156 x 21
-  reader->saved-draws: 718.5,963 718.5,1024
-    label 479.5, 983, 237 x 21
-  updater->history-service: 647.75,826 647.75,836 471,836 471,887
-    label 280, 846, 189 x 21
+  size 1072 x 1168
+  user (178 x 59, rim): 515, 29, 178 x 59
+  suite (open, at least 287 wide, header 70): 12, 174, 755.5 x 967
+    website (283 x 59): 462.5, 244, 283 x 59
+    screen-api (246 x 76): 481, 364, 246 x 76
+    engine (291 x 96): 458.5, 501, 291 x 96
+    store (open, at least 303 wide, header 70): 30, 680, 680 x 438
+      history-service (264 x 76): 428, 904, 264 x 76
+      updater (283 x 76): 176.67, 750, 283 x 76
+      reader (274 x 76): 134, 904, 274 x 76
+      saved-draws (194 x 59): 410.67, 1041, 194 x 59
+  texas (262 x 76, rim): 719, 12, 262 x 76
+  user->website: 604,88 604,244
+    label 557, 118, 43 x 21
+  website->screen-api: 604,303 604,364
+    label 467, 323, 135 x 21
+  screen-api->engine: 604,440 604,501
+    label 446, 460, 156 x 21
+  engine->history-service: 604,597 604,904
+    label 365, 617, 237 x 38
+  history-service->saved-draws: 560,980 560,1031 540,1031 540,1041
+    label 507, 1000, 51 x 21
+  updater->reader: 271,826 271,904
+    label 48, 854.5, 221 x 21
+  reader->texas: 225.33,980 225.33,1156 850,1156 850,88
+    label 855, 118, 205 x 21
+  reader->saved-draws: 316.67,980 316.67,990 475.33,990 475.33,1041
+    label 236.33, 1000, 237 x 21
+  updater->history-service: 365.33,826 365.33,836 516,836 516,904
+    label 300, 846, 214 x 38
 
 view services, default (no changes)
-  size 1325 x 1352
-  user (178 x 59, rim): 244, 29, 178 x 59
-  suite (open, at least 304 wide, header 70): 12, 191, 1053 x 1134
-    website (283 x 59): 191.83, 261, 283 x 59
-    screen-api (246 x 76): 210.33, 381, 246 x 76
-    engine (open, at least 291 wide, header 70): 30, 523, 995.33 x 287
-      engine-service (230 x 79): 218.33, 593, 230 x 79
+  size 1442 x 1396
+  user (178 x 59, rim): 556, 29, 178 x 59
+  suite (open, at least 287 wide, header 70): 12, 174, 1193.5 x 1195
+    website (283 x 59): 503.5, 244, 283 x 59
+    screen-api (246 x 76): 522, 364, 246 x 76
+    engine (open, at least 291 wide, header 70): 30, 506, 774 x 304
+      engine-service (282 x 96): 504, 576, 282 x 96
       strategies (248 x 59): 171, 733, 248 x 59
-      formats (276 x 59): 731.33, 603, 276 x 59
-      legacy (243 x 59): 468.33, 603, 243 x 59
-    store (open, at least 303 wide, header 70): 411, 881, 636 x 421
-      history-service (264 x 76): 455, 1088, 264 x 76
-      updater (283 x 76): 737, 951, 283 x 76
-      reader (279 x 76): 739, 1088, 279 x 76
-      saved-draws (194 x 59): 749.17, 1225, 194 x 59
-  texas (262 x 76, rim): 948, 12, 262 x 76
-  user->website: 333,88 333,261
-    label 286, 126.5, 43 x 21
-  website->screen-api: 333.33,320 333.33,381
-    label 196.33, 340, 135 x 21
-  screen-api->engine-service: 333.33,457 333.33,593
-    label 102.33, 477, 229 x 21
-  engine-service->strategies: 295,672 295,733
+      formats (276 x 59): 208, 594.5, 276 x 59
+      legacy (243 x 59): 439, 733, 243 x 59
+    store (open, at least 303 wide, header 70): 542.5, 898, 645 x 448
+      history-service (264 x 76): 600.5, 1132, 264 x 76
+      updater (283 x 76): 843.83, 968, 283 x 76
+      reader (274 x 76): 895.5, 1132, 274 x 76
+      saved-draws (194 x 59): 857.5, 1269, 194 x 59
+  texas (262 x 76, rim): 1089, 12, 262 x 76
+  user->website: 645,88 645,244
+    label 598, 118, 43 x 21
+  website->screen-api: 645,303 645,364
+    label 508, 323, 135 x 21
+  screen-api->engine-service: 645,440 645,576
+    label 487, 460, 156 x 21
+  engine-service->strategies: 598,672 598,682 295,682 295,733
     label 48, 692, 245 x 21
-  engine-service->history-service: 371.67,672 371.67,682 429,682 429,1078 543,1078 543,1088
-    label 190, 835, 237 x 21
-  history-service->saved-draws: 587,1164 587,1215 813.83,1215 813.83,1225
-    label 534, 1184, 51 x 21
-  updater->texas: 949.25,1027 949.25,1037 1028,1037 1028,1340 1079,1340 1079,88
-    label 1084, 118, 229 x 38
-  updater->reader: 878.5,1027 878.5,1088
-    label 720.5, 1047, 156 x 21
-  reader->saved-draws: 878.5,1164 878.5,1225
-    label 639.5, 1184, 237 x 21
-  updater->history-service: 807.75,1027 807.75,1037 631,1037 631,1088
-    label 440, 1047, 189 x 21
+  engine-service->history-service: 692,672 692,883 571.5,883 571.5,1112 732.5,1112 732.5,1132
+    label 695, 843.5, 237 x 21
+  legacy->history-service: 560.5,792 560.5,1122 666.5,1122 666.5,1132
+    label 329.5, 835, 229 x 38
+  history-service->saved-draws: 732.5,1208 732.5,1259 922.17,1259 922.17,1269
+    label 679.5, 1228, 51 x 21
+  updater->reader: 1032.5,1044 1032.5,1132
+    label 809.5, 1072.5, 221 x 21
+  reader->texas: 1078.17,1208 1078.17,1384 1220,1384 1220,88
+    label 1225, 118, 205 x 21
+  reader->saved-draws: 986.83,1208 986.83,1269
+    label 747.83, 1228, 237 x 21
+  updater->history-service: 938.17,1044 938.17,1054 798.5,1054 798.5,1132
+    label 582.5, 1064, 214 x 38
 
 view services, everything open (engine-service open)
-  size 1492 x 1687
-  user (178 x 59, rim): 313, 29, 178 x 59
-  suite (open, at least 304 wide, header 70): 12, 191, 1219.5 x 1469
-    website (283 x 59): 260.17, 261, 283 x 59
-    screen-api (246 x 76): 278.67, 381, 246 x 76
-    engine (open, at least 291 wide, header 70): 30, 523, 1183.5 x 622
-      engine-service (open, at least 230 wide, header 53): 233.67, 598, 402.83 x 404
-        request-handling (276 x 76): 263.67, 651, 276 x 76
-        pick-generation (251 x 59): 276.17, 788, 251 x 59
-        history-lookup (275 x 76): 306, 908, 275 x 76
-      strategies (248 x 59): 171, 1068, 248 x 59
-      formats (276 x 59): 919.5, 770.5, 276 x 59
-      legacy (243 x 59): 656.5, 770.5, 243 x 59
-    store (open, at least 303 wide, header 70): 425.5, 1216, 636 x 421
-      history-service (264 x 76): 469.5, 1423, 264 x 76
-      updater (283 x 76): 751.5, 1286, 283 x 76
-      reader (279 x 76): 753.5, 1423, 279 x 76
-      saved-draws (194 x 59): 763.67, 1560, 194 x 59
-  texas (262 x 76, rim): 1115, 12, 262 x 76
-  user->website: 402,88 402,261
-    label 355, 126.5, 43 x 21
-  website->screen-api: 401.67,320 401.67,381
-    label 264.67, 340, 135 x 21
-  screen-api->request-handling: 401.67,457 401.67,651
-    label 170.67, 477, 229 x 21
-  request-handling->pick-generation: 401.67,727 401.67,788
-    label 251.67, 747, 148 x 21
-  pick-generation->history-lookup: 443.5,847 443.5,908
-    label 446.5, 867, 172 x 21
-  pick-generation->strategies: 359.83,847 359.83,857 295,857 295,1068
-    label 48, 1027, 245 x 21
-  history-lookup->history-service: 443.5,984 443.5,1413 557.5,1413 557.5,1423
-    label 204.5, 1170, 237 x 21
-  history-service->saved-draws: 601.5,1499 601.5,1550 828.33,1550 828.33,1560
-    label 548.5, 1519, 51 x 21
-  updater->texas: 963.75,1362 963.75,1372 1042.5,1372 1042.5,1675 1246,1675 1246,88
-    label 1251, 118, 229 x 38
-  updater->reader: 893,1362 893,1423
-    label 735, 1382, 156 x 21
-  reader->saved-draws: 893,1499 893,1560
-    label 654, 1519, 237 x 21
-  updater->history-service: 822.25,1362 822.25,1372 645.5,1372 645.5,1423
-    label 454.5, 1382, 189 x 21
+  size 1516 x 1748
+  user (178 x 59, rim): 654, 29, 178 x 59
+  suite (open, at least 287 wide, header 70): 12, 174, 1267.33 x 1547
+    website (283 x 59): 601.5, 244, 283 x 59
+    screen-api (246 x 76): 620, 364, 246 x 76
+    engine (open, at least 291 wide, header 70): 30, 506, 1027 x 656
+      engine-service (open, at least 282 wide, header 70): 344, 581, 695 x 438
+        request-handling (276 x 76): 605, 651, 276 x 76
+        game-analysis (263 x 76): 657.5, 788, 263 x 76
+        pick-generation (251 x 59): 386.5, 799.33, 251 x 59
+        history-lookup (275 x 76): 605.67, 925, 275 x 76
+      strategies (248 x 59): 244.83, 1085, 248 x 59
+      formats (276 x 59): 48, 770.5, 276 x 59
+      legacy (243 x 59): 512.83, 1085, 243 x 59
+    store (open, at least 303 wide, header 70): 616.33, 1250, 645 x 448
+      history-service (264 x 76): 674.33, 1484, 264 x 76
+      updater (283 x 76): 917.67, 1320, 283 x 76
+      reader (274 x 76): 969.33, 1484, 274 x 76
+      saved-draws (194 x 59): 931.33, 1621, 194 x 59
+  texas (262 x 76, rim): 1163, 12, 262 x 76
+  user->website: 743,88 743,244
+    label 696, 118, 43 x 21
+  website->screen-api: 743,303 743,364
+    label 606, 323, 135 x 21
+  screen-api->request-handling: 743,440 743,651
+    label 585, 460, 156 x 21
+  request-handling->pick-generation: 697,727 697,737 512,737 512,799.33
+    label 362, 747, 148 x 21
+  request-handling->game-analysis: 789,727 789,788
+    label 792, 747, 229 x 21
+  pick-generation->history-lookup: 553.83,858.33 553.83,915 697.33,915 697.33,925
+    label 379.83, 884, 172 x 21
+  pick-generation->strategies: 470.17,858.33 470.17,874 368.83,874 368.83,1085
+    label 121.83, 1044, 245 x 21
+  game-analysis->history-lookup: 789,864 789,925
+    label 615, 884, 172 x 21
+  history-lookup->history-service: 743.17,1001 743.17,1034 765.83,1034 765.83,1235 645.33,1235 645.33,1464 806.33,1464 806.33,1484
+    label 768.83, 1195.5, 237 x 21
+  legacy->history-service: 634.33,1144 634.33,1474 740.33,1474 740.33,1484
+    label 403.33, 1187, 229 x 38
+  history-service->saved-draws: 806.33,1560 806.33,1611 996,1611 996,1621
+    label 753.33, 1580, 51 x 21
+  updater->reader: 1106.33,1396 1106.33,1484
+    label 883.33, 1424.5, 221 x 21
+  reader->texas: 1152,1560 1152,1736 1294,1736 1294,88
+    label 1299, 118, 205 x 21
+  reader->saved-draws: 1060.67,1560 1060.67,1621
+    label 821.67, 1580, 237 x 21
+  updater->history-service: 1012,1396 1012,1406 872.33,1406 872.33,1484
+    label 656.33, 1416, 214 x 38
 
 view services, all closed (suite closed)
-  size 502 x 294
-  user (178 x 59, rim): 24, 29, 178 x 59
-  suite (304 x 96): 12, 186, 304 x 96
-  texas (262 x 76, rim): 228, 12, 262 x 76
-  user->suite: 113,88 113,186
-    label 66, 126.5, 43 x 21
-  suite->texas: 215,186 215,98 359,98 359,88
-    label 220, 118, 229 x 38
+  size 497 x 277
+  user (178 x 59, rim): 19, 29, 178 x 59
+  suite (287 x 96): 12, 169, 287 x 96
+  texas (262 x 76, rim): 223, 12, 262 x 76
+  user->suite: 108,88 108,169
+    label 61, 118, 43 x 21
+  suite->texas: 203,169 203,98 354,98 354,88
+    label 208, 118, 205 x 21
 
 view services, engine closed (engine closed)
-  size 1165 x 1151
-  user (178 x 59, rim): 180, 29, 178 x 59
-  suite (open, at least 304 wide, header 70): 12, 191, 893 x 933
-    website (283 x 59): 127.5, 261, 283 x 59
-    screen-api (246 x 76): 146, 381, 246 x 76
-    engine (291 x 96): 123.5, 518, 291 x 96
-    store (open, at least 303 wide, header 70): 251, 680, 636 x 421
-      history-service (264 x 76): 295, 887, 264 x 76
-      updater (283 x 76): 577, 750, 283 x 76
-      reader (279 x 76): 579, 887, 279 x 76
-      saved-draws (194 x 59): 589.17, 1024, 194 x 59
-  texas (262 x 76, rim): 788, 12, 262 x 76
-  user->website: 269,88 269,261
-    label 222, 126.5, 43 x 21
-  website->screen-api: 269,320 269,381
-    label 132, 340, 135 x 21
-  screen-api->engine: 269,457 269,518
-    label 38, 477, 229 x 21
-  engine->history-service: 269,614 269,877 383,877 383,887
-    label 30, 634, 237 x 21
-  history-service->saved-draws: 427,963 427,1014 653.83,1014 653.83,1024
-    label 374, 983, 51 x 21
-  updater->texas: 789.25,826 789.25,836 868,836 868,1139 919,1139 919,88
-    label 924, 118, 229 x 38
-  updater->reader: 718.5,826 718.5,887
-    label 560.5, 846, 156 x 21
-  reader->saved-draws: 718.5,963 718.5,1024
-    label 479.5, 983, 237 x 21
-  updater->history-service: 647.75,826 647.75,836 471,836 471,887
-    label 280, 846, 189 x 21
+  size 1072 x 1168
+  user (178 x 59, rim): 515, 29, 178 x 59
+  suite (open, at least 287 wide, header 70): 12, 174, 755.5 x 967
+    website (283 x 59): 462.5, 244, 283 x 59
+    screen-api (246 x 76): 481, 364, 246 x 76
+    engine (291 x 96): 458.5, 501, 291 x 96
+    store (open, at least 303 wide, header 70): 30, 680, 680 x 438
+      history-service (264 x 76): 428, 904, 264 x 76
+      updater (283 x 76): 176.67, 750, 283 x 76
+      reader (274 x 76): 134, 904, 274 x 76
+      saved-draws (194 x 59): 410.67, 1041, 194 x 59
+  texas (262 x 76, rim): 719, 12, 262 x 76
+  user->website: 604,88 604,244
+    label 557, 118, 43 x 21
+  website->screen-api: 604,303 604,364
+    label 467, 323, 135 x 21
+  screen-api->engine: 604,440 604,501
+    label 446, 460, 156 x 21
+  engine->history-service: 604,597 604,904
+    label 365, 617, 237 x 38
+  history-service->saved-draws: 560,980 560,1031 540,1031 540,1041
+    label 507, 1000, 51 x 21
+  updater->reader: 271,826 271,904
+    label 48, 854.5, 221 x 21
+  reader->texas: 225.33,980 225.33,1156 850,1156 850,88
+    label 855, 118, 205 x 21
+  reader->saved-draws: 316.67,980 316.67,990 475.33,990 475.33,1041
+    label 236.33, 1000, 237 x 21
+  updater->history-service: 365.33,826 365.33,836 516,836 516,904
+    label 300, 846, 214 x 38
 
 view services, store closed (store closed)
-  size 1304 x 1017
-  user (178 x 59, rim): 244, 29, 178 x 59
-  suite (open, at least 304 wide, header 70): 12, 191, 1031.33 x 799
-    website (283 x 59): 191.83, 261, 283 x 59
-    screen-api (246 x 76): 210.33, 381, 246 x 76
-    engine (open, at least 291 wide, header 70): 30, 523, 995.33 x 287
-      engine-service (230 x 79): 218.33, 593, 230 x 79
+  size 1156 x 1034
+  user (178 x 59, rim): 556, 29, 178 x 59
+  suite (open, at least 287 wide, header 70): 12, 174, 907.5 x 833
+    website (283 x 59): 503.5, 244, 283 x 59
+    screen-api (246 x 76): 522, 364, 246 x 76
+    engine (open, at least 291 wide, header 70): 30, 506, 774 x 304
+      engine-service (282 x 96): 504, 576, 282 x 96
       strategies (248 x 59): 171, 733, 248 x 59
-      formats (276 x 59): 731.33, 603, 276 x 59
-      legacy (243 x 59): 468.33, 603, 243 x 59
-    store (303 x 96): 277.5, 876, 303 x 96
-  texas (262 x 76, rim): 927, 12, 262 x 76
-  user->website: 333,88 333,261
-    label 286, 126.5, 43 x 21
-  website->screen-api: 333.33,320 333.33,381
-    label 196.33, 340, 135 x 21
-  screen-api->engine-service: 333.33,457 333.33,593
-    label 102.33, 477, 229 x 21
-  engine-service->strategies: 295,672 295,733
+      formats (276 x 59): 208, 594.5, 276 x 59
+      legacy (243 x 59): 439, 733, 243 x 59
+    store (303 x 96): 459.5, 893, 303 x 96
+  texas (262 x 76, rim): 803, 12, 262 x 76
+  user->website: 645,88 645,244
+    label 598, 118, 43 x 21
+  website->screen-api: 645,303 645,364
+    label 508, 323, 135 x 21
+  screen-api->engine-service: 645,440 645,576
+    label 487, 460, 156 x 21
+  engine-service->strategies: 598,672 598,682 295,682 295,733
     label 48, 692, 245 x 21
-  engine-service->store: 371.67,672 371.67,682 429,682 429,876
-    label 190, 835, 237 x 21
-  store->texas: 429,972 429,1005 1058,1005 1058,88
-    label 1063, 118, 229 x 38
+  engine-service->store: 692,672 692,825 661.5,825 661.5,893
+    label 664.5, 843.5, 237 x 21
+  legacy->store: 560.5,792 560.5,893
+    label 329.5, 835, 229 x 38
+  store->texas: 611,989 611,1022 934,1022 934,88
+    label 939, 118, 205 x 21
 
 view engineering, default (no changes)
-  size 837 x 681
-  suite (open, at least 304 wide, header 70): 12, 12, 813 x 657
+  size 962.5 x 715
+  suite (open, at least 287 wide, header 70): 12, 12, 938.5 x 691
     screen-api (246 x 76): 30, 82, 246 x 76
-    engine (open, at least 291 wide, header 70): 135, 224, 672 x 427
-      engine-service (230 x 79): 228, 294, 230 x 79
-      strategies (248 x 59): 541, 444, 248 x 59
-      formats (276 x 59): 175.1, 574, 276 x 59
-      legacy (243 x 59): 164, 444, 243 x 59
-  engine-service->strategies: 400.5,373 400.5,383 665,383 665,444
-    label 572, 403, 91 x 21
-  engine-service->formats: 343,373 343,393 520,393 520,554 340.7,554 340.7,574
-    label 427, 463, 91 x 21
-  engine-service->legacy: 285.5,373 285.5,444
-    label 192.5, 403, 91 x 21
-  strategies->formats: 665,503 665,564 395.9,564 395.9,574
-    label 572, 523, 91 x 21
-  legacy->formats: 285.5,503 285.5,574
-    label 192.5, 523, 91 x 21
-  screen-api->formats: 153,158 153,554 230.3,554 230.3,574
+    engine (open, at least 291 wide, header 70): 135, 224, 797.5 x 461
+      engine-service (282 x 96): 340.5, 294, 282 x 96
+      strategies (248 x 59): 666.5, 478, 248 x 59
+      formats (276 x 59): 300.6, 608, 276 x 59
+      legacy (243 x 59): 289.5, 478, 243 x 59
+  engine-service->strategies: 552,390 552,400 790.5,400 790.5,478
+    label 697.5, 428.5, 91 x 21
+  engine-service->formats: 481.5,390 481.5,410 645.5,410 645.5,588 466.2,588 466.2,608
+    label 552.5, 497, 91 x 21
+  engine-service->legacy: 411,390 411,478
+    label 164, 420, 245 x 38
+  strategies->formats: 790.5,537 790.5,598 521.4,598 521.4,608
+    label 697.5, 557, 91 x 21
+  legacy->formats: 411,537 411,608
+    label 318, 557, 91 x 21
+  screen-api->formats: 153,158 153,588 355.8,588 355.8,608
     label 37, 178, 114 x 21
 
 view engineering, everything open (suite open, engine-service open, store open)
-  size 2529 x 827
-  suite (open, at least 304 wide, header 70): 12, 12, 2505 x 803
+  size 2807 x 861
+  suite (open, at least 287 wide, header 70): 12, 12, 2783 x 837
     website (283 x 59): 30, 134.5, 283 x 59
-    screen-api (246 x 76): 1469, 170, 246 x 76
-    engine (open, at least 291 wide, header 70): 1574, 312, 925 x 485
-      engine-service (open, at least 230 wide, header 53): 1603, 382, 878 x 147
-        request-handling (276 x 76): 1916, 435, 276 x 76
-        pick-generation (251 x 59): 2212, 443.5, 251 x 59
-        history-lookup (275 x 76): 1621, 435, 275 x 76
-      strategies (248 x 59): 2137.5, 590, 248 x 59
-      formats (276 x 59): 1712.1, 720, 276 x 59
-      legacy (243 x 59): 1701, 590, 243 x 59
-    store (open, at least 303 wide, header 70): 333, 82, 1116 x 164
-      history-service (264 x 76): 650, 152, 264 x 76
-      updater (283 x 76): 934, 152, 283 x 76
-      reader (279 x 76): 351, 152, 279 x 76
-      saved-draws (194 x 59): 1237, 160.5, 194 x 59
-  engine-service->strategies: 2261.5,529 2261.5,590
-    label 2168.5, 549, 91 x 21
-  engine-service->formats: 2042,529 2042,539 2057,539 2057,700 1877.7,700 1877.7,720
-    label 1964, 609, 91 x 21
-  engine-service->legacy: 1822.5,529 1822.5,590
-    label 1729.5, 549, 91 x 21
-  strategies->formats: 2261.5,649 2261.5,710 1932.9,710 1932.9,720
-    label 2168.5, 669, 91 x 21
-  legacy->formats: 1822.5,649 1822.5,720
-    label 1729.5, 669, 91 x 21
-  screen-api->formats: 1592,246 1592,700 1767.3,700 1767.3,720
-    label 1476, 266, 114 x 21
+    screen-api (246 x 76): 1464, 170, 246 x 76
+    engine (open, at least 291 wide, header 70): 1569, 312, 1208 x 519
+      engine-service (open, at least 282 wide, header 70): 1598, 382, 1161 x 164
+        request-handling (276 x 76): 1887, 452, 276 x 76
+        game-analysis (263 x 76): 2183, 452, 263 x 76
+        pick-generation (251 x 59): 1616, 460.5, 251 x 59
+        history-lookup (275 x 76): 2466, 452, 275 x 76
+      strategies (248 x 59): 2344.75, 624, 248 x 59
+      formats (276 x 59): 1777.85, 754, 276 x 59
+      legacy (243 x 59): 1766.75, 624, 243 x 59
+    store (open, at least 303 wide, header 70): 333, 82, 1111 x 164
+      history-service (264 x 76): 645, 152, 264 x 76
+      updater (283 x 76): 929, 152, 283 x 76
+      reader (274 x 76): 351, 152, 274 x 76
+      saved-draws (194 x 59): 1232, 160.5, 194 x 59
+  engine-service->strategies: 2468.75,546 2468.75,624
+    label 2375.75, 574.5, 91 x 21
+  engine-service->formats: 2178.5,546 2178.5,734 1943.45,734 1943.45,754
+    label 2085.5, 643, 91 x 21
+  engine-service->legacy: 1888.25,546 1888.25,624
+    label 1641.25, 566, 245 x 38
+  strategies->formats: 2468.75,683 2468.75,744 1998.65,744 1998.65,754
+    label 2375.75, 703, 91 x 21
+  legacy->formats: 1888.25,683 1888.25,754
+    label 1795.25, 703, 91 x 21
+  screen-api->formats: 1587,246 1587,734 1833.05,734 1833.05,754
+    label 1471, 266, 114 x 21
 
 view engineering, all closed (suite closed)
-  size 328 x 120
-  suite (304 x 96): 12, 12, 304 x 96
+  size 311 x 120
+  suite (287 x 96): 12, 12, 287 x 96
 
 view engineering, engine closed (engine closed)
   size 351 x 345
-  suite (open, at least 304 wide, header 70): 12, 12, 327 x 321
+  suite (open, at least 287 wide, header 70): 12, 12, 327 x 321
     screen-api (246 x 76): 52.5, 82, 246 x 76
     engine (291 x 96): 30, 219, 291 x 96
   screen-api->engine: 175.5,158 175.5,219
     label 59.5, 178, 114 x 21
 
 view engineering, engine-service opened (engine-service open)
-  size 1090 x 739
-  suite (open, at least 304 wide, header 70): 12, 12, 1066 x 715
+  size 1373 x 773
+  suite (open, at least 287 wide, header 70): 12, 12, 1349 x 749
     screen-api (246 x 76): 30, 82, 246 x 76
-    engine (open, at least 291 wide, header 70): 135, 224, 925 x 485
-      engine-service (open, at least 230 wide, header 53): 164, 294, 878 x 147
-        request-handling (276 x 76): 477, 347, 276 x 76
-        pick-generation (251 x 59): 773, 355.5, 251 x 59
-        history-lookup (275 x 76): 182, 347, 275 x 76
-      strategies (248 x 59): 698.5, 502, 248 x 59
-      formats (276 x 59): 273.1, 632, 276 x 59
-      legacy (243 x 59): 262, 502, 243 x 59
-  engine-service->strategies: 822.5,441 822.5,502
-    label 729.5, 461, 91 x 21
-  engine-service->formats: 603,441 603,451 618,451 618,612 438.7,612 438.7,632
-    label 525, 521, 91 x 21
-  engine-service->legacy: 383.5,441 383.5,502
-    label 290.5, 461, 91 x 21
-  strategies->formats: 822.5,561 822.5,622 493.9,622 493.9,632
-    label 729.5, 581, 91 x 21
-  legacy->formats: 383.5,561 383.5,632
-    label 290.5, 581, 91 x 21
-  screen-api->formats: 153,158 153,612 328.3,612 328.3,632
+    engine (open, at least 291 wide, header 70): 135, 224, 1208 x 519
+      engine-service (open, at least 282 wide, header 70): 164, 294, 1161 x 164
+        request-handling (276 x 76): 453, 364, 276 x 76
+        game-analysis (263 x 76): 749, 364, 263 x 76
+        pick-generation (251 x 59): 182, 372.5, 251 x 59
+        history-lookup (275 x 76): 1032, 364, 275 x 76
+      strategies (248 x 59): 910.75, 536, 248 x 59
+      formats (276 x 59): 343.85, 666, 276 x 59
+      legacy (243 x 59): 332.75, 536, 243 x 59
+  engine-service->strategies: 1034.75,458 1034.75,536
+    label 941.75, 486.5, 91 x 21
+  engine-service->formats: 744.5,458 744.5,646 509.45,646 509.45,666
+    label 651.5, 555, 91 x 21
+  engine-service->legacy: 454.25,458 454.25,536
+    label 207.25, 478, 245 x 38
+  strategies->formats: 1034.75,595 1034.75,656 564.65,656 564.65,666
+    label 941.75, 615, 91 x 21
+  legacy->formats: 454.25,595 454.25,666
+    label 361.25, 615, 91 x 21
+  screen-api->formats: 153,158 153,646 399.05,646 399.05,666
     label 37, 178, 114 x 21
 
 scenario generate-picks as lanes on big-picture, default
@@ -381,7 +403,7 @@ scenario generate-picks as lanes on big-picture, default
   lane store at 1025.5: header 888, 44, 275 x 76, line 120 to 755
   lane user at 1284: header 1195, 44, 178 x 59, line 103 to 755
   step 1 call arrow user->website, row 136 + 37: 1284,169 141.5,169
-    label 634.75, 140, 156 x 21, badge 1284,169
+    label 602.25, 140, 221 x 21, badge 1284,169
   step 2 call arrow website->screen-api, row 173 + 71: 141.5,240 438,240
     label 167.25, 177, 245 x 55, badge 141.5,240
   step 3 call arrow screen-api->engine, row 244 + 71: 438,311 724.5,311
@@ -411,250 +433,250 @@ scenario generate-picks as lanes on big-picture, default
 
 scenario generate-picks as lanes on big-picture, everything open
   size 2245 x 811
-  band suite, depth 0: 210, 0, 2035 x 28
-  band engine, depth 1: 803, 28, 1146 x 28
-  band store, depth 1: 1981, 28, 264 x 28
-  band engine-service, depth 2: 1083, 56, 866 x 28
-  lane user at 89: header 0, 100, 178 x 59, line 159 to 811
-  lane website at 351.5: header 210, 100, 283 x 59, line 159 to 811
-  lane screen-api at 648: header 525, 100, 246 x 76, line 176 to 811
-  lane strategies at 927: header 803, 100, 248 x 59, line 159 to 811
-  lane request-handling at 1221: header 1083, 100, 276 x 76, line 176 to 811
-  lane pick-generation at 1516.5: header 1391, 100, 251 x 59, line 159 to 811
-  lane history-lookup at 1811.5: header 1674, 100, 275 x 76, line 176 to 811
-  lane history-service at 2113: header 1981, 100, 264 x 76, line 176 to 811
-  step 1 call arrow user->website, row 192 + 37: 89,225 351.5,225
-    label 142.25, 196, 156 x 21, badge 89,225
-  step 2 call arrow website->screen-api, row 229 + 71: 351.5,296 648,296
-    label 377.25, 233, 245 x 55, badge 351.5,296
-  step 3 call arrow screen-api->request-handling, row 300 + 71: 648,367 1221,367
-    label 824, 304, 221 x 55, badge 648,367
-  step 4 call arrow request-handling->pick-generation, row 371 + 37: 1221,404 1516.5,404
-    label 1282.75, 375, 172 x 21, badge 1221,404
-  step 5 call arrow pick-generation->history-lookup, row 408 + 37: 1516.5,441 1811.5,441
-    label 1561.5, 412, 205 x 21, badge 1516.5,441
-  step 6 call arrow history-lookup->history-service, row 445 + 37: 1811.5,478 2113,478
-    label 1855.75, 449, 213 x 21, badge 1811.5,478
-  step 7 reply arrow history-service->history-lookup, row 482 + 37: 2113,515 1811.5,515
-    label 1847.75, 486, 229 x 21, badge 2113,515
-  step 8 reply arrow history-lookup->pick-generation, row 519 + 37: 1811.5,552 1516.5,552
-    label 1565.5, 523, 197 x 21, badge 1811.5,552
-  step 9 call arrow pick-generation->strategies, row 556 + 54: 1516.5,606 927,606
-    label 1103.25, 560, 237 x 38, badge 1516.5,606
-  step 10 reply arrow strategies->pick-generation, row 610 + 37: 927,643 1516.5,643
-    label 1115.25, 614, 213 x 21, badge 927,643
-  step 11 reply arrow pick-generation->request-handling, row 647 + 37: 1516.5,680 1221,680
-    label 1282.75, 651, 172 x 21, badge 1516.5,680
-  step 12 reply arrow request-handling->screen-api, row 684 + 37: 1221,717 648,717
-    label 848.5, 688, 172 x 21, badge 1221,717
-  step 13 reply arrow screen-api->website, row 721 + 37: 648,754 351.5,754
-    label 381.25, 725, 237 x 21, badge 648,754
-  step 14 reply arrow website->user, row 758 + 37: 351.5,791 89,791
-    label 142.25, 762, 156 x 21, badge 351.5,791
+  band suite, depth 0: 0, 0, 2035 x 28
+  band engine, depth 1: 0, 28, 1146 x 28
+  band store, depth 1: 1771, 28, 264 x 28
+  band engine-service, depth 2: 280, 56, 866 x 28
+  lane strategies at 124: header 0, 100, 248 x 59, line 159 to 811
+  lane pick-generation at 405.5: header 280, 100, 251 x 59, line 159 to 811
+  lane request-handling at 701: header 563, 100, 276 x 76, line 176 to 811
+  lane history-lookup at 1008.5: header 871, 100, 275 x 76, line 176 to 811
+  lane website at 1319.5: header 1178, 100, 283 x 59, line 159 to 811
+  lane screen-api at 1616: header 1493, 100, 246 x 76, line 176 to 811
+  lane history-service at 1903: header 1771, 100, 264 x 76, line 176 to 811
+  lane user at 2156: header 2067, 100, 178 x 59, line 159 to 811
+  step 1 call arrow user->website, row 192 + 37: 2156,225 1319.5,225
+    label 1627.25, 196, 221 x 21, badge 2156,225
+  step 2 call arrow website->screen-api, row 229 + 71: 1319.5,296 1616,296
+    label 1345.25, 233, 245 x 55, badge 1319.5,296
+  step 3 call arrow screen-api->request-handling, row 300 + 71: 1616,367 701,367
+    label 1048, 304, 221 x 55, badge 1616,367
+  step 4 call arrow request-handling->pick-generation, row 371 + 37: 701,404 405.5,404
+    label 467.25, 375, 172 x 21, badge 701,404
+  step 5 call arrow pick-generation->history-lookup, row 408 + 37: 405.5,441 1008.5,441
+    label 604.5, 412, 205 x 21, badge 405.5,441
+  step 6 call arrow history-lookup->history-service, row 445 + 37: 1008.5,478 1903,478
+    label 1349.25, 449, 213 x 21, badge 1008.5,478
+  step 7 reply arrow history-service->history-lookup, row 482 + 37: 1903,515 1008.5,515
+    label 1341.25, 486, 229 x 21, badge 1903,515
+  step 8 reply arrow history-lookup->pick-generation, row 519 + 37: 1008.5,552 405.5,552
+    label 608.5, 523, 197 x 21, badge 1008.5,552
+  step 9 call arrow pick-generation->strategies, row 556 + 54: 405.5,606 124,606
+    label 146.25, 560, 237 x 38, badge 405.5,606
+  step 10 reply arrow strategies->pick-generation, row 610 + 37: 124,643 405.5,643
+    label 158.25, 614, 213 x 21, badge 124,643
+  step 11 reply arrow pick-generation->request-handling, row 647 + 37: 405.5,680 701,680
+    label 467.25, 651, 172 x 21, badge 405.5,680
+  step 12 reply arrow request-handling->screen-api, row 684 + 37: 701,717 1616,717
+    label 1072.5, 688, 172 x 21, badge 701,717
+  step 13 reply arrow screen-api->website, row 721 + 37: 1616,754 1319.5,754
+    label 1349.25, 725, 237 x 21, badge 1616,754
+  step 14 reply arrow website->user, row 758 + 37: 1319.5,791 2156,791
+    label 1659.75, 762, 156 x 21, badge 1319.5,791
 
 scenario generate-picks as lanes on big-picture, all closed
-  size 621 x 711
+  size 612.5 x 711
   lane user at 89: header 0, 0, 178 x 59, line 59 to 711
-  lane suite at 348: header 210, 0, 276 x 76, line 76 to 711
-  step 1 call arrow user->suite, row 92 + 37: 89,125 348,125
-    label 140.5, 96, 156 x 21, badge 89,125
-  step 2 call self suite->suite, row 129 + 71: 348,133 372,133 372,196 348,196
-    label 376, 137, 245 x 55, badge 348,133
-  step 3 call self suite->suite, row 200 + 71: 348,204 372,204 372,267 348,267
-    label 376, 208, 221 x 55, badge 348,204
-  step 4 call self suite->suite, row 271 + 37: 348,275 372,275 372,304 348,304
-    label 376, 279, 172 x 21, badge 348,275
-  step 5 call self suite->suite, row 308 + 37: 348,312 372,312 372,341 348,341
-    label 376, 316, 205 x 21, badge 348,312
-  step 6 call self suite->suite, row 345 + 37: 348,349 372,349 372,378 348,378
-    label 376, 353, 213 x 21, badge 348,349
-  step 7 reply self suite->suite, row 382 + 37: 348,386 372,386 372,415 348,415
-    label 376, 390, 229 x 21, badge 348,386
-  step 8 reply self suite->suite, row 419 + 37: 348,423 372,423 372,452 348,452
-    label 376, 427, 197 x 21, badge 348,423
-  step 9 call self suite->suite, row 456 + 54: 348,460 372,460 372,506 348,506
-    label 376, 464, 237 x 38, badge 348,460
-  step 10 reply self suite->suite, row 510 + 37: 348,514 372,514 372,543 348,543
-    label 376, 518, 213 x 21, badge 348,514
-  step 11 reply self suite->suite, row 547 + 37: 348,551 372,551 372,580 348,580
-    label 376, 555, 172 x 21, badge 348,551
-  step 12 reply self suite->suite, row 584 + 37: 348,588 372,588 372,617 348,617
-    label 376, 592, 172 x 21, badge 348,588
-  step 13 reply self suite->suite, row 621 + 37: 348,625 372,625 372,654 348,654
-    label 376, 629, 237 x 21, badge 348,625
-  step 14 reply arrow suite->user, row 658 + 37: 348,691 89,691
-    label 140.5, 662, 156 x 21, badge 348,691
+  lane suite at 339.5: header 210, 0, 259 x 76, line 76 to 711
+  step 1 call arrow user->suite, row 92 + 37: 89,125 339.5,125
+    label 103.75, 96, 221 x 21, badge 89,125
+  step 2 call self suite->suite, row 129 + 71: 339.5,133 363.5,133 363.5,196 339.5,196
+    label 367.5, 137, 245 x 55, badge 339.5,133
+  step 3 call self suite->suite, row 200 + 71: 339.5,204 363.5,204 363.5,267 339.5,267
+    label 367.5, 208, 221 x 55, badge 339.5,204
+  step 4 call self suite->suite, row 271 + 37: 339.5,275 363.5,275 363.5,304 339.5,304
+    label 367.5, 279, 172 x 21, badge 339.5,275
+  step 5 call self suite->suite, row 308 + 37: 339.5,312 363.5,312 363.5,341 339.5,341
+    label 367.5, 316, 205 x 21, badge 339.5,312
+  step 6 call self suite->suite, row 345 + 37: 339.5,349 363.5,349 363.5,378 339.5,378
+    label 367.5, 353, 213 x 21, badge 339.5,349
+  step 7 reply self suite->suite, row 382 + 37: 339.5,386 363.5,386 363.5,415 339.5,415
+    label 367.5, 390, 229 x 21, badge 339.5,386
+  step 8 reply self suite->suite, row 419 + 37: 339.5,423 363.5,423 363.5,452 339.5,452
+    label 367.5, 427, 197 x 21, badge 339.5,423
+  step 9 call self suite->suite, row 456 + 54: 339.5,460 363.5,460 363.5,506 339.5,506
+    label 367.5, 464, 237 x 38, badge 339.5,460
+  step 10 reply self suite->suite, row 510 + 37: 339.5,514 363.5,514 363.5,543 339.5,543
+    label 367.5, 518, 213 x 21, badge 339.5,514
+  step 11 reply self suite->suite, row 547 + 37: 339.5,551 363.5,551 363.5,580 339.5,580
+    label 367.5, 555, 172 x 21, badge 339.5,551
+  step 12 reply self suite->suite, row 584 + 37: 339.5,588 363.5,588 363.5,617 339.5,617
+    label 367.5, 592, 172 x 21, badge 339.5,588
+  step 13 reply self suite->suite, row 621 + 37: 339.5,625 363.5,625 363.5,654 339.5,654
+    label 367.5, 629, 237 x 21, badge 339.5,625
+  step 14 reply arrow suite->user, row 658 + 37: 339.5,691 89,691
+    label 136.25, 662, 156 x 21, badge 339.5,691
 
 scenario generate-picks as lanes on big-picture, engine opened
-  size 1724 x 783
-  band suite, depth 0: 210, 0, 1382 x 28
-  band engine, depth 1: 1110, 28, 482 x 28
-  lane user at 89: header 0, 72, 178 x 59, line 131 to 783
-  lane website at 351.5: header 210, 72, 283 x 59, line 131 to 783
-  lane screen-api at 648: header 525, 72, 246 x 76, line 148 to 783
-  lane store at 940.5: header 803, 72, 275 x 76, line 148 to 783
-  lane strategies at 1234: header 1110, 72, 248 x 59, line 131 to 783
-  lane engine-service at 1491: header 1390, 72, 202 x 59, line 131 to 783
-  step 1 call arrow user->website, row 164 + 37: 89,197 351.5,197
-    label 142.25, 168, 156 x 21, badge 89,197
-  step 2 call arrow website->screen-api, row 201 + 71: 351.5,268 648,268
-    label 377.25, 205, 245 x 55, badge 351.5,268
-  step 3 call arrow screen-api->engine-service, row 272 + 71: 648,339 1491,339
-    label 959, 276, 221 x 55, badge 648,339
-  step 4 call self engine-service->engine-service, row 343 + 37: 1491,347 1515,347 1515,376 1491,376
-    label 1519, 351, 172 x 21, badge 1491,347
-  step 5 call self engine-service->engine-service, row 380 + 37: 1491,384 1515,384 1515,413 1491,413
-    label 1519, 388, 205 x 21, badge 1491,384
-  step 6 call arrow engine-service->store, row 417 + 37: 1491,450 940.5,450
-    label 1109.25, 421, 213 x 21, badge 1491,450
-  step 7 reply arrow store->engine-service, row 454 + 37: 940.5,487 1491,487
-    label 1101.25, 458, 229 x 21, badge 940.5,487
-  step 8 reply self engine-service->engine-service, row 491 + 37: 1491,495 1515,495 1515,524 1491,524
-    label 1519, 499, 197 x 21, badge 1491,495
-  step 9 call arrow engine-service->strategies, row 528 + 54: 1491,578 1234,578
-    label 1244, 532, 237 x 38, badge 1491,578
-  step 10 reply arrow strategies->engine-service, row 582 + 37: 1234,615 1491,615
-    label 1256, 586, 213 x 21, badge 1234,615
-  step 11 reply self engine-service->engine-service, row 619 + 37: 1491,623 1515,623 1515,652 1491,652
-    label 1519, 627, 172 x 21, badge 1491,623
-  step 12 reply arrow engine-service->screen-api, row 656 + 37: 1491,689 648,689
-    label 983.5, 660, 172 x 21, badge 1491,689
-  step 13 reply arrow screen-api->website, row 693 + 37: 648,726 351.5,726
-    label 381.25, 697, 237 x 21, badge 648,726
-  step 14 reply arrow website->user, row 730 + 37: 351.5,763 89,763
-    label 142.25, 734, 156 x 21, badge 351.5,763
+  size 1644 x 783
+  band suite, depth 0: 0, 0, 1434 x 28
+  band engine, depth 1: 0, 28, 534 x 28
+  lane strategies at 124: header 0, 72, 248 x 59, line 131 to 783
+  lane engine-service at 407: header 280, 72, 254 x 76, line 148 to 783
+  lane store at 703.5: header 566, 72, 275 x 76, line 148 to 783
+  lane website at 1014.5: header 873, 72, 283 x 59, line 131 to 783
+  lane screen-api at 1311: header 1188, 72, 246 x 76, line 148 to 783
+  lane user at 1555: header 1466, 72, 178 x 59, line 131 to 783
+  step 1 call arrow user->website, row 164 + 37: 1555,197 1014.5,197
+    label 1174.25, 168, 221 x 21, badge 1555,197
+  step 2 call arrow website->screen-api, row 201 + 71: 1014.5,268 1311,268
+    label 1040.25, 205, 245 x 55, badge 1014.5,268
+  step 3 call arrow screen-api->engine-service, row 272 + 71: 1311,339 407,339
+    label 748.5, 276, 221 x 55, badge 1311,339
+  step 4 call self engine-service->engine-service, row 343 + 37: 407,347 431,347 431,376 407,376
+    label 435, 351, 172 x 21, badge 407,347
+  step 5 call self engine-service->engine-service, row 380 + 37: 407,384 431,384 431,413 407,413
+    label 435, 388, 205 x 21, badge 407,384
+  step 6 call arrow engine-service->store, row 417 + 37: 407,450 703.5,450
+    label 448.75, 421, 213 x 21, badge 407,450
+  step 7 reply arrow store->engine-service, row 454 + 37: 703.5,487 407,487
+    label 440.75, 458, 229 x 21, badge 703.5,487
+  step 8 reply self engine-service->engine-service, row 491 + 37: 407,495 431,495 431,524 407,524
+    label 435, 499, 197 x 21, badge 407,495
+  step 9 call arrow engine-service->strategies, row 528 + 54: 407,578 124,578
+    label 147, 532, 237 x 38, badge 407,578
+  step 10 reply arrow strategies->engine-service, row 582 + 37: 124,615 407,615
+    label 159, 586, 213 x 21, badge 124,615
+  step 11 reply self engine-service->engine-service, row 619 + 37: 407,623 431,623 431,652 407,652
+    label 435, 627, 172 x 21, badge 407,623
+  step 12 reply arrow engine-service->screen-api, row 656 + 37: 407,689 1311,689
+    label 773, 660, 172 x 21, badge 407,689
+  step 13 reply arrow screen-api->website, row 693 + 37: 1311,726 1014.5,726
+    label 1044.25, 697, 237 x 21, badge 1311,726
+  step 14 reply arrow website->user, row 730 + 37: 1014.5,763 1555,763
+    label 1206.75, 734, 156 x 21, badge 1014.5,763
 
 scenario generate-picks as lanes on big-picture, store opened
-  size 1362 x 783
-  band suite, depth 0: 210, 0, 1152 x 28
-  band store, depth 1: 1098, 28, 264 x 28
-  lane user at 89: header 0, 72, 178 x 59, line 131 to 783
-  lane website at 351.5: header 210, 72, 283 x 59, line 131 to 783
-  lane screen-api at 648: header 525, 72, 246 x 76, line 148 to 783
-  lane engine at 934.5: header 803, 72, 263 x 76, line 148 to 783
-  lane history-service at 1230: header 1098, 72, 264 x 76, line 148 to 783
-  step 1 call arrow user->website, row 164 + 37: 89,197 351.5,197
-    label 142.25, 168, 156 x 21, badge 89,197
-  step 2 call arrow website->screen-api, row 201 + 71: 351.5,268 648,268
-    label 377.25, 205, 245 x 55, badge 351.5,268
-  step 3 call arrow screen-api->engine, row 272 + 71: 648,339 934.5,339
-    label 680.75, 276, 221 x 55, badge 648,339
-  step 4 call self engine->engine, row 343 + 37: 934.5,347 958.5,347 958.5,376 934.5,376
-    label 962.5, 351, 172 x 21, badge 934.5,347
-  step 5 call self engine->engine, row 380 + 37: 934.5,384 958.5,384 958.5,413 934.5,413
-    label 962.5, 388, 205 x 21, badge 934.5,384
-  step 6 call arrow engine->history-service, row 417 + 37: 934.5,450 1230,450
-    label 975.75, 421, 213 x 21, badge 934.5,450
-  step 7 reply arrow history-service->engine, row 454 + 37: 1230,487 934.5,487
-    label 967.75, 458, 229 x 21, badge 1230,487
-  step 8 reply self engine->engine, row 491 + 37: 934.5,495 958.5,495 958.5,524 934.5,524
-    label 962.5, 499, 197 x 21, badge 934.5,495
-  step 9 call self engine->engine, row 528 + 54: 934.5,532 958.5,532 958.5,578 934.5,578
-    label 962.5, 536, 237 x 38, badge 934.5,532
-  step 10 reply self engine->engine, row 582 + 37: 934.5,586 958.5,586 958.5,615 934.5,615
-    label 962.5, 590, 213 x 21, badge 934.5,586
-  step 11 reply self engine->engine, row 619 + 37: 934.5,623 958.5,623 958.5,652 934.5,652
-    label 962.5, 627, 172 x 21, badge 934.5,623
-  step 12 reply arrow engine->screen-api, row 656 + 37: 934.5,689 648,689
-    label 705.25, 660, 172 x 21, badge 934.5,689
-  step 13 reply arrow screen-api->website, row 693 + 37: 648,726 351.5,726
-    label 381.25, 697, 237 x 21, badge 648,726
-  step 14 reply arrow website->user, row 730 + 37: 351.5,763 89,763
-    label 142.25, 734, 156 x 21, badge 351.5,763
+  size 1386.5 x 783
+  band suite, depth 0: 0, 0, 1152 x 28
+  band store, depth 1: 0, 28, 264 x 28
+  lane history-service at 132: header 0, 72, 264 x 76, line 148 to 783
+  lane website at 437.5: header 296, 72, 283 x 59, line 131 to 783
+  lane screen-api at 734: header 611, 72, 246 x 76, line 148 to 783
+  lane engine at 1020.5: header 889, 72, 263 x 76, line 148 to 783
+  lane user at 1297.5: header 1208.5, 72, 178 x 59, line 131 to 783
+  step 1 call arrow user->website, row 164 + 37: 1297.5,197 437.5,197
+    label 757, 168, 221 x 21, badge 1297.5,197
+  step 2 call arrow website->screen-api, row 201 + 71: 437.5,268 734,268
+    label 463.25, 205, 245 x 55, badge 437.5,268
+  step 3 call arrow screen-api->engine, row 272 + 71: 734,339 1020.5,339
+    label 766.75, 276, 221 x 55, badge 734,339
+  step 4 call self engine->engine, row 343 + 37: 1020.5,347 1044.5,347 1044.5,376 1020.5,376
+    label 1048.5, 351, 172 x 21, badge 1020.5,347
+  step 5 call self engine->engine, row 380 + 37: 1020.5,384 1044.5,384 1044.5,413 1020.5,413
+    label 1048.5, 388, 205 x 21, badge 1020.5,384
+  step 6 call arrow engine->history-service, row 417 + 37: 1020.5,450 132,450
+    label 469.75, 421, 213 x 21, badge 1020.5,450
+  step 7 reply arrow history-service->engine, row 454 + 37: 132,487 1020.5,487
+    label 461.75, 458, 229 x 21, badge 132,487
+  step 8 reply self engine->engine, row 491 + 37: 1020.5,495 1044.5,495 1044.5,524 1020.5,524
+    label 1048.5, 499, 197 x 21, badge 1020.5,495
+  step 9 call self engine->engine, row 528 + 54: 1020.5,532 1044.5,532 1044.5,578 1020.5,578
+    label 1048.5, 536, 237 x 38, badge 1020.5,532
+  step 10 reply self engine->engine, row 582 + 37: 1020.5,586 1044.5,586 1044.5,615 1020.5,615
+    label 1048.5, 590, 213 x 21, badge 1020.5,586
+  step 11 reply self engine->engine, row 619 + 37: 1020.5,623 1044.5,623 1044.5,652 1020.5,652
+    label 1048.5, 627, 172 x 21, badge 1020.5,623
+  step 12 reply arrow engine->screen-api, row 656 + 37: 1020.5,689 734,689
+    label 791.25, 660, 172 x 21, badge 1020.5,689
+  step 13 reply arrow screen-api->website, row 693 + 37: 734,726 437.5,726
+    label 467.25, 697, 237 x 21, badge 734,726
+  step 14 reply arrow website->user, row 730 + 37: 437.5,763 1297.5,763
+    label 789.5, 734, 156 x 21, badge 437.5,763
 
 scenario results-poll as lanes on big-picture, default
-  size 569 x 374
+  size 569 x 408
   band suite, depth 0: 0, 0, 275 x 28
-  lane store at 137.5: header 0, 44, 275 x 76, line 120 to 374
-  lane texas at 438: header 307, 44, 262 x 76, line 120 to 374
-  step 1 call arrow store->texas, row 136 + 37: 137.5,169 438,169
-    label 177.25, 140, 221 x 21, badge 137.5,169
-  step 2 reply arrow texas->store, row 173 + 37: 438,206 137.5,206
-    label 169.25, 177, 237 x 21, badge 438,206
-  step 3 call self store->store, row 210 + 37: 137.5,214 161.5,214 161.5,243 137.5,243
-    label 165.5, 218, 156 x 21, badge 137.5,214
-  step 4 reply self store->store, row 247 + 37: 137.5,251 161.5,251 161.5,280 137.5,280
-    label 165.5, 255, 172 x 21, badge 137.5,251
-  step 5 call self store->store, row 284 + 37: 137.5,288 161.5,288 161.5,317 137.5,317
-    label 165.5, 292, 140 x 21, badge 137.5,288
-  step 6 call self store->store, row 321 + 37: 137.5,325 161.5,325 161.5,354 137.5,354
-    label 165.5, 329, 189 x 21, badge 137.5,325
+  lane store at 137.5: header 0, 44, 275 x 76, line 120 to 408
+  lane texas at 438: header 307, 44, 262 x 76, line 120 to 408
+  step 1 call self store->store, row 136 + 37: 137.5,140 161.5,140 161.5,169 137.5,169
+    label 165.5, 144, 221 x 21, badge 137.5,140
+  step 2 call arrow store->texas, row 173 + 54: 137.5,223 438,223
+    label 177.25, 177, 221 x 38, badge 137.5,223
+  step 3 reply arrow texas->store, row 227 + 37: 438,260 137.5,260
+    label 165.25, 231, 245 x 21, badge 438,260
+  step 4 call self store->store, row 264 + 37: 137.5,268 161.5,268 161.5,297 137.5,297
+    label 165.5, 272, 229 x 21, badge 137.5,268
+  step 5 reply self store->store, row 301 + 37: 137.5,305 161.5,305 161.5,334 137.5,334
+    label 165.5, 309, 237 x 21, badge 137.5,305
+  step 6 call self store->store, row 338 + 54: 137.5,342 161.5,342 161.5,388 137.5,388
+    label 165.5, 346, 205 x 38, badge 137.5,342
 
 scenario results-poll as lanes on big-picture, everything open
-  size 1410 x 402
-  band suite, depth 0: 0, 0, 1116 x 28
-  band store, depth 1: 0, 28, 1116 x 28
-  lane history-service at 132: header 0, 72, 264 x 76, line 148 to 402
-  lane saved-draws at 393: header 296, 72, 194 x 59, line 131 to 402
-  lane updater at 663.5: header 522, 72, 283 x 76, line 148 to 402
-  lane reader at 976.5: header 837, 72, 279 x 76, line 148 to 402
-  lane texas at 1279: header 1148, 72, 262 x 76, line 148 to 402
-  step 1 call arrow updater->texas, row 164 + 37: 663.5,197 1279,197
-    label 860.75, 168, 221 x 21, badge 663.5,197
-  step 2 reply arrow texas->updater, row 201 + 37: 1279,234 663.5,234
-    label 852.75, 205, 237 x 21, badge 1279,234
-  step 3 call arrow updater->reader, row 238 + 37: 663.5,271 976.5,271
-    label 742, 242, 156 x 21, badge 663.5,271
-  step 4 reply arrow reader->updater, row 275 + 37: 976.5,308 663.5,308
-    label 734, 279, 172 x 21, badge 976.5,308
-  step 5 call arrow updater->saved-draws, row 312 + 37: 663.5,345 393,345
-    label 458.25, 316, 140 x 21, badge 663.5,345
-  step 6 call arrow updater->history-service, row 349 + 37: 663.5,382 132,382
-    label 303.25, 353, 189 x 21, badge 663.5,382
+  size 1405 x 436
+  band suite, depth 0: 0, 0, 1111 x 28
+  band store, depth 1: 0, 28, 1111 x 28
+  lane history-service at 132: header 0, 72, 264 x 76, line 148 to 436
+  lane saved-draws at 393: header 296, 72, 194 x 59, line 131 to 436
+  lane updater at 663.5: header 522, 72, 283 x 76, line 148 to 436
+  lane reader at 974: header 837, 72, 274 x 76, line 148 to 436
+  lane texas at 1274: header 1143, 72, 262 x 76, line 148 to 436
+  step 1 call arrow updater->reader, row 164 + 37: 663.5,197 974,197
+    label 708.25, 168, 221 x 21, badge 663.5,197
+  step 2 call arrow reader->texas, row 201 + 54: 974,251 1274,251
+    label 1013.5, 205, 221 x 38, badge 974,251
+  step 3 reply arrow texas->reader, row 255 + 37: 1274,288 974,288
+    label 1001.5, 259, 245 x 21, badge 1274,288
+  step 4 call arrow reader->saved-draws, row 292 + 37: 974,325 393,325
+    label 569, 296, 229 x 21, badge 974,325
+  step 5 reply arrow reader->updater, row 329 + 37: 974,362 663.5,362
+    label 700.25, 333, 237 x 21, badge 974,362
+  step 6 call arrow updater->history-service, row 366 + 54: 663.5,416 132,416
+    label 295.25, 370, 205 x 38, badge 663.5,416
 
 scenario results-poll as lanes on big-picture, all closed
-  size 570 x 330
-  lane suite at 138: header 0, 0, 276 x 76, line 76 to 330
-  lane texas at 439: header 308, 0, 262 x 76, line 76 to 330
-  step 1 call arrow suite->texas, row 92 + 37: 138,125 439,125
-    label 178, 96, 221 x 21, badge 138,125
-  step 2 reply arrow texas->suite, row 129 + 37: 439,162 138,162
-    label 170, 133, 237 x 21, badge 439,162
-  step 3 call self suite->suite, row 166 + 37: 138,170 162,170 162,199 138,199
-    label 166, 174, 156 x 21, badge 138,170
-  step 4 reply self suite->suite, row 203 + 37: 138,207 162,207 162,236 138,236
-    label 166, 211, 172 x 21, badge 138,207
-  step 5 call self suite->suite, row 240 + 37: 138,244 162,244 162,273 138,273
-    label 166, 248, 140 x 21, badge 138,244
-  step 6 call self suite->suite, row 277 + 37: 138,281 162,281 162,310 138,310
-    label 166, 285, 189 x 21, badge 138,281
+  size 553 x 364
+  lane suite at 129.5: header 0, 0, 259 x 76, line 76 to 364
+  lane texas at 422: header 291, 0, 262 x 76, line 76 to 364
+  step 1 call self suite->suite, row 92 + 37: 129.5,96 153.5,96 153.5,125 129.5,125
+    label 157.5, 100, 221 x 21, badge 129.5,96
+  step 2 call arrow suite->texas, row 129 + 54: 129.5,179 422,179
+    label 165.25, 133, 221 x 38, badge 129.5,179
+  step 3 reply arrow texas->suite, row 183 + 37: 422,216 129.5,216
+    label 153.25, 187, 245 x 21, badge 422,216
+  step 4 call self suite->suite, row 220 + 37: 129.5,224 153.5,224 153.5,253 129.5,253
+    label 157.5, 228, 229 x 21, badge 129.5,224
+  step 5 reply self suite->suite, row 257 + 37: 129.5,261 153.5,261 153.5,290 129.5,290
+    label 157.5, 265, 237 x 21, badge 129.5,261
+  step 6 call self suite->suite, row 294 + 54: 129.5,298 153.5,298 153.5,344 129.5,344
+    label 157.5, 302, 205 x 38, badge 129.5,298
 
 scenario results-poll as lanes on big-picture, engine opened
-  size 569 x 374
+  size 569 x 408
   band suite, depth 0: 0, 0, 275 x 28
-  lane store at 137.5: header 0, 44, 275 x 76, line 120 to 374
-  lane texas at 438: header 307, 44, 262 x 76, line 120 to 374
-  step 1 call arrow store->texas, row 136 + 37: 137.5,169 438,169
-    label 177.25, 140, 221 x 21, badge 137.5,169
-  step 2 reply arrow texas->store, row 173 + 37: 438,206 137.5,206
-    label 169.25, 177, 237 x 21, badge 438,206
-  step 3 call self store->store, row 210 + 37: 137.5,214 161.5,214 161.5,243 137.5,243
-    label 165.5, 218, 156 x 21, badge 137.5,214
-  step 4 reply self store->store, row 247 + 37: 137.5,251 161.5,251 161.5,280 137.5,280
-    label 165.5, 255, 172 x 21, badge 137.5,251
-  step 5 call self store->store, row 284 + 37: 137.5,288 161.5,288 161.5,317 137.5,317
-    label 165.5, 292, 140 x 21, badge 137.5,288
-  step 6 call self store->store, row 321 + 37: 137.5,325 161.5,325 161.5,354 137.5,354
-    label 165.5, 329, 189 x 21, badge 137.5,325
+  lane store at 137.5: header 0, 44, 275 x 76, line 120 to 408
+  lane texas at 438: header 307, 44, 262 x 76, line 120 to 408
+  step 1 call self store->store, row 136 + 37: 137.5,140 161.5,140 161.5,169 137.5,169
+    label 165.5, 144, 221 x 21, badge 137.5,140
+  step 2 call arrow store->texas, row 173 + 54: 137.5,223 438,223
+    label 177.25, 177, 221 x 38, badge 137.5,223
+  step 3 reply arrow texas->store, row 227 + 37: 438,260 137.5,260
+    label 165.25, 231, 245 x 21, badge 438,260
+  step 4 call self store->store, row 264 + 37: 137.5,268 161.5,268 161.5,297 137.5,297
+    label 165.5, 272, 229 x 21, badge 137.5,268
+  step 5 reply self store->store, row 301 + 37: 137.5,305 161.5,305 161.5,334 137.5,334
+    label 165.5, 309, 237 x 21, badge 137.5,305
+  step 6 call self store->store, row 338 + 54: 137.5,342 161.5,342 161.5,388 137.5,388
+    label 165.5, 346, 205 x 38, badge 137.5,342
 
 scenario results-poll as lanes on big-picture, store opened
-  size 1410 x 402
-  band suite, depth 0: 0, 0, 1116 x 28
-  band store, depth 1: 0, 28, 1116 x 28
-  lane history-service at 132: header 0, 72, 264 x 76, line 148 to 402
-  lane saved-draws at 393: header 296, 72, 194 x 59, line 131 to 402
-  lane updater at 663.5: header 522, 72, 283 x 76, line 148 to 402
-  lane reader at 976.5: header 837, 72, 279 x 76, line 148 to 402
-  lane texas at 1279: header 1148, 72, 262 x 76, line 148 to 402
-  step 1 call arrow updater->texas, row 164 + 37: 663.5,197 1279,197
-    label 860.75, 168, 221 x 21, badge 663.5,197
-  step 2 reply arrow texas->updater, row 201 + 37: 1279,234 663.5,234
-    label 852.75, 205, 237 x 21, badge 1279,234
-  step 3 call arrow updater->reader, row 238 + 37: 663.5,271 976.5,271
-    label 742, 242, 156 x 21, badge 663.5,271
-  step 4 reply arrow reader->updater, row 275 + 37: 976.5,308 663.5,308
-    label 734, 279, 172 x 21, badge 976.5,308
-  step 5 call arrow updater->saved-draws, row 312 + 37: 663.5,345 393,345
-    label 458.25, 316, 140 x 21, badge 663.5,345
-  step 6 call arrow updater->history-service, row 349 + 37: 663.5,382 132,382
-    label 303.25, 353, 189 x 21, badge 663.5,382
+  size 1405 x 436
+  band suite, depth 0: 0, 0, 1111 x 28
+  band store, depth 1: 0, 28, 1111 x 28
+  lane reader at 137: header 0, 72, 274 x 76, line 148 to 436
+  lane updater at 447.5: header 306, 72, 283 x 76, line 148 to 436
+  lane saved-draws at 718: header 621, 72, 194 x 59, line 131 to 436
+  lane history-service at 979: header 847, 72, 264 x 76, line 148 to 436
+  lane texas at 1274: header 1143, 72, 262 x 76, line 148 to 436
+  step 1 call arrow updater->reader, row 164 + 37: 447.5,197 137,197
+    label 181.75, 168, 221 x 21, badge 447.5,197
+  step 2 call arrow reader->texas, row 201 + 54: 137,251 1274,251
+    label 595, 205, 221 x 38, badge 137,251
+  step 3 reply arrow texas->reader, row 255 + 37: 1274,288 137,288
+    label 583, 259, 245 x 21, badge 1274,288
+  step 4 call arrow reader->saved-draws, row 292 + 37: 137,325 718,325
+    label 313, 296, 229 x 21, badge 137,325
+  step 5 reply arrow reader->updater, row 329 + 37: 137,362 447.5,362
+    label 173.75, 333, 237 x 21, badge 137,362
+  step 6 call arrow updater->history-service, row 366 + 54: 447.5,416 979,416
+    label 610.75, 370, 205 x 38, badge 447.5,416

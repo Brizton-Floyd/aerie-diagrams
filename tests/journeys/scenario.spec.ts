@@ -58,8 +58,8 @@ async function badges(page: Page): Promise<Record<string, { x: number; y: number
   );
 }
 
-test.describe('playing a scenario', () => {
-  test('INT-601 starting a scenario clears the selection, shows step 1 and fits around the caption bar', async ({
+test.describe('SCOPE-006 playing a scenario', () => {
+  test('INT-601, INT-603 and INT-904 starting a scenario clears the selection, shows step 1 with its announced caption, and fits around the caption bar', async ({
     page,
   }) => {
     await openLotto(page);
@@ -71,7 +71,7 @@ test.describe('playing a scenario', () => {
     await expect(button(page, 'website')).toHaveAttribute('aria-pressed', 'false');
     await expect(page.locator('header .crumb')).toContainText('Generate picks');
     await expect(caption(page)).toHaveText(
-      '1/14The user has chosen a game, a strategy and how many tickets.',
+      '1/14The user has chosen a game, a strategy, a target prize and how many tickets.',
     );
     // LAYOUT-451: the fitted picture keeps clear of the caption bar.
     const drawing = await page.locator('svg.aerie').boundingBox();
@@ -106,7 +106,7 @@ test.describe('playing a scenario', () => {
     await expect(first.locator('.ends')).toHaveText('User to Website');
     await expect(first.locator('.ends')).toHaveCSS('font-variant-caps', 'all-small-caps');
     await expect(first.locator('.caption')).toHaveText(
-      'The user has chosen a game, a strategy and how many tickets.',
+      'The user has chosen a game, a strategy, a target prize and how many tickets.',
     );
     await expect(first.getByRole('button')).toHaveAttribute('aria-current', 'step');
     // MODEL-401: the Results store answering the lookup is a reply, in italic.
@@ -135,7 +135,7 @@ test.describe('playing a scenario', () => {
     await expect(control(page, 'As lanes')).toBeInViewport();
   });
 
-  test('JOURNEY-004 step through Generate picks, see it as lanes, switch audience and end it', async ({
+  test('JOURNEY-004 and INT-604 step through Generate picks, see it as lanes, switch audience and end it', async ({
     page,
   }) => {
     await openLotto(page);
@@ -229,6 +229,27 @@ test.describe('playing a scenario', () => {
     await control(page, 'Play').click();
     await page.keyboard.press('ArrowRight');
     await expect(control(page, 'Play')).toBeVisible();
+  });
+
+  test('INT-901 a caption too long for its bar is reached with Tab and scrolled with the keys', async ({
+    page,
+  }) => {
+    await openLotto(page);
+    await playGeneratePicks(page);
+    await stepItem(page, 9).getByRole('button').click();
+    await atStep(page, 9);
+    await page.keyboard.press('3');
+    await expect(caption(page)).toContainText('The generator chosen by numberGenerator');
+    const bar = caption(page);
+    expect(await bar.evaluate((each) => each.scrollHeight > each.clientHeight)).toBe(true);
+    // After the last drawn element, Tab moves to the caption bar, which shows its focus.
+    await page.locator('svg.aerie g.boxes > g.node > .shape').last().focus();
+    await page.keyboard.press('Tab');
+    await expect(bar).toBeFocused();
+    await expect(bar).toHaveCSS('outline-style', 'solid');
+    await page.keyboard.press('ArrowDown');
+    await expect.poll(() => bar.evaluate((each) => each.scrollTop)).toBeGreaterThan(0);
+    await atStep(page, 9);
   });
 
   test('INT-605 Done ends the scenario', async ({ page }) => {

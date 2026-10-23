@@ -15,6 +15,11 @@ import {
 import type { Diagnostic } from '../../../src/lines/index.ts';
 
 const LOTTO = readFileSync(join(import.meta.dirname, '../../../samples/lotto.aerie'), 'utf8');
+/** The spec's worked example keeps one W601. */
+const WARNED = readFileSync(
+  join(import.meta.dirname, '../../../docs/spec/examples/lotto.aerie'),
+  'utf8',
+);
 const TYPO = LOTTO.replace(
   'website gets screen data from screen-api',
   'website gets screen data from screen-apu',
@@ -158,10 +163,10 @@ describe('keeping the last version without errors', () => {
 
   it('INT-806 warnings never stop the diagram from updating', () => {
     const { live: checker, seen } = live();
-    checker.now(LOTTO);
+    checker.now(WARNED);
     expect(seen[0]?.diagnostics.map((each) => each.id)).toEqual(['W601']);
     expect(seen[0]?.model).not.toBeNull();
-    expect(seen[0]?.shown?.source).toBe(LOTTO);
+    expect(seen[0]?.shown?.source).toBe(WARNED);
   });
 
   it('INT-806 a check made elsewhere seeds the shown version and the last text', () => {
@@ -197,7 +202,7 @@ describe('the error list', () => {
     checker.now(TYPO);
     const [first] = errorList(seen[0]?.diagnostics ?? []);
     expect(first === undefined ? '' : errorText(first)).toBe(
-      'Line 168, column 31: There is no element called `screen-apu`. Did you mean `screen-api`?',
+      'Line 213, column 31: There is no element called `screen-apu`. Did you mean `screen-api`?',
     );
   });
 
@@ -208,7 +213,7 @@ describe('the error list', () => {
     checker.now(TYPO);
     expect(
       errorList(seen[0]?.diagnostics ?? []).map((each) => `${each.id}@${String(each.line)}`),
-    ).toEqual(['E008@168', 'W601@230', 'W601@264', 'W601@281']);
+    ).toEqual(['E008@213', 'W601@284', 'W601@320']);
   });
 
   it('INT-806 the stage says it shows an earlier version', () => {

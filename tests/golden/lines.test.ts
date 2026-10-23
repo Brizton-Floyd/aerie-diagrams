@@ -28,9 +28,4 @@ describe('canonical models', () => {
     );
     await expect(serializeModel(result.model)).toMatchFileSnapshot(golden);
   });
-
-  it('ACC-011 samples/lotto.aerie is a copy of the spec example', () => {
-    const sample = readFileSync(join(ROOT, 'samples/lotto.aerie'), 'utf8');
-    expect(sample).toBe(readFileSync(join(ROOT, 'docs/spec/examples/lotto.aerie'), 'utf8'));
-  });
 });

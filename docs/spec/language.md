@@ -721,8 +721,9 @@ Claude ([claude-skill.md](claude-skill.md)). The command is `aerie`, run inside 
 [examples/lotto.aerie](examples/lotto.aerie) describes a lottery number service in about 300 lines:
 18 elements nested up to four deep, 16 relationship lines that declare 18 relationships (six of them
 build-time `code` dependencies), three views, two scenarios with 20 steps between them, and a
-walkthrough of 8 steps. It has wording for three audiences and is the first committed sample
-(`samples/lotto.aerie`, slice A2).
+walkthrough of 8 steps. It has wording for three audiences. It was the first committed sample (slice
+A2); slice A11 refined `samples/lotto.aerie` from it against the Lotto code, and this file stays as
+the spec's worked example.
 
 Highlights:
 

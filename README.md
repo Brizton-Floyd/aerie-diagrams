@@ -6,53 +6,78 @@ Aerie is diagram-as-code for architecture. Engineers describe a system once, in 
 every reader explores it as an interactive diagram at their own level: the same model reads differently
 for an executive, a manager and an engineer, and opens deeper in place when someone wants more detail.
 
-Private, work in progress. The Lines language, model, layout and the Contour renderer are built;
-the interactions come next ([docs/slice-plan.md](docs/slice-plan.md)).
+Private. Version 1.0.0 is complete: the Lines language, the interactive viewer with its audience
+switch, scenarios and presenter mode, the live editor and watch mode, and the Aerie skill for Claude
+([CHANGELOG.md](CHANGELOG.md)).
 
-## Getting started
+![The Lotto sample's Big picture, written for an executive](docs/screenshots/a11-v1/lotto-big-picture-exec.png)
+
+## Quick start
 
 Requires Node.js 24 (see `.nvmrc`).
 
+### Install
+
 ```sh
 npm ci
-npx playwright install chromium
-npm run check
+npx playwright install chromium   # only needed to run the browser tests
 ```
 
-`npm run check` is the single gate: typecheck, lint, unit tests, layout rule checks, goldens,
-screenshots and browser journeys. CI runs the same command on every push and pull request.
-
-To check, format or print the model of a Lines file
-([docs/spec/language.md](docs/spec/language.md#14-command-line-tools)):
-
-```sh
-npx aerie check samples/lotto.aerie
-npx aerie format samples/lotto.aerie
-npx aerie model samples/lotto.aerie
-```
-
-To see Aerie draw, start the viewer and open the address it prints:
+### See a diagram
 
 ```sh
 npm run dev
 ```
 
-It opens the Lotto sample; pick another bundled sample or open a local `.aerie` file from the
-sidebar, then choose a view or an audience. Click a box to select it, open containers in place,
-and zoom with the wheel, the +/-/Fit buttons or the keys. Choose a scenario to play it on the
-diagram: step with Next and Back or the arrow keys, press Play (or Space) to let it run, see it "As
-lanes", and press Done (or Esc) to end it. The address always holds what you see (view, audience,
-opened containers, selection), so Back and Forward step between views and "Copy link" shares the
-exact picture ([docs/spec/interaction.md](docs/spec/interaction.md#shared-links)). "Edit" opens the
-live split editor: the Lines text beside the diagram, which updates as you type.
+Open the address it prints. It shows [the Lotto sample](samples/lotto.aerie), Aerie's flagship
+model of a real lottery number service. Pick a view in the sidebar and an audience at the top
+(or press 1, 2 or 3): the words change for an executive, a manager or an engineer, and nothing
+moves. Click a box to read about it in the side panel, and use its round button to open it in
+place. Choose a scenario to play it on the diagram (arrow keys to step, Space to play, Esc to end),
+or the walkthrough to present it full screen. The address always holds what you see, so "Copy
+link" shares the exact picture. "Edit" opens the live split editor beside the diagram; you can
+also open a local `.aerie` file from the sidebar.
 
-To write a model in your own editor and see its diagram update on every save, build the page once
-and watch the file ([docs/spec/interaction.md](docs/spec/interaction.md#watch-mode)):
+### Write a model and watch it
+
+Write a `.aerie` file in your own editor, and see its diagram update on every save:
 
 ```sh
-npm run build
-npx aerie watch samples/lotto.aerie
+npm run build                     # once: watch mode serves the built page
+npx aerie watch path/to/model.aerie
 ```
+
+The page keeps the last good picture while the file has errors, and lists them in plain words.
+Outside this checkout, run `node <checkout>/src/cli/aerie.ts watch <file>` instead: `npx aerie`
+elsewhere would fetch an unrelated package of the same name.
+
+### Check and format
+
+```sh
+npx aerie check samples/lotto.aerie     # every problem, with line, column and advice
+npx aerie format samples/lotto.aerie    # tidies spacing, never meaning
+npx aerie model samples/lotto.aerie     # the canonical JSON model
+```
+
+The language is described in [docs/spec/language.md](docs/spec/language.md).
+
+### Let Claude write the model
+
+[skills/aerie/](skills/aerie/SKILL.md) is a skill for Claude: it reads a project, writes its model
+in Lines with wording for each audience, and runs `aerie check` until the file is clean. Copy the
+folder into `~/.claude/skills/aerie/` (every project) or `.claude/skills/aerie/` (one project),
+then ask Claude to "describe this system as an Aerie diagram". The Lotto sample was refined this
+way; [samples/lotto.md](samples/lotto.md) records how.
+
+### Run the checks
+
+```sh
+npm run check
+```
+
+`npm run check` is the single gate: type check, lint (including the docs and coverage checks),
+unit tests, layout rule checks and readability scores, goldens, screenshots and browser journeys.
+CI runs the same command on every push and pull request.
 
 ## Where to look
 
