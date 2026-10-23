@@ -375,7 +375,7 @@ test.describe('the camera', () => {
     for (let i = 0; i < 25; i++) await page.getByRole('button', { name: 'Shrink' }).click();
     await settled(page);
     expect(await scale(page)).toBeCloseTo(0.2, 5);
-    await page.getByRole('button', { name: 'Fit' }).click();
+    await page.getByRole('button', { name: 'Fit all' }).click();
     await settled(page);
     expect(await scale(page)).toBeCloseTo(fitted, 5);
     await page.getByRole('button', { name: 'Magnify' }).click();
@@ -399,14 +399,15 @@ test.describe('the camera', () => {
     expect(after.x).toBeCloseTo(before.x, 0);
     expect(after.y).toBeCloseTo(before.y, 0);
     expect(await scale(page)).toBeCloseTo(zoomed, 5);
-    // In fit mode, the opened picture is fitted again instead.
-    await page.getByRole('button', { name: 'Fit' }).click();
+    // In fit mode, the camera follows the closed container instead (LAYOUT-453), never below 1.
+    await page.getByRole('button', { name: 'Fit all' }).click();
     await settled(page);
     const fitted = await scale(page);
     await node(page, 'engine-service').locator('.control').click();
     await expect(node(page, 'request-handling')).toHaveCount(0);
     await settled(page);
     expect(await scale(page)).not.toBeCloseTo(fitted, 3);
+    expect(await scale(page)).toBeGreaterThanOrEqual(1);
   });
 });
 
@@ -509,8 +510,9 @@ test.describe('reduced motion', () => {
       'lotto-options-ui, Angular 21',
     );
     expect(await page.evaluate(() => document.getAnimations().length)).toBe(0);
-    await clickElement(page, 'website');
-    await expect(panel(page).locator('h1')).toHaveText('Website');
+    // Selecting changes at once too, and so does the camera bringing what is selected into view.
+    await clickElement(page, 'request-handling');
+    await expect(panel(page).locator('h1')).toHaveText('Request handling');
     expect(await page.evaluate(() => document.getAnimations().length)).toBe(0);
     // The camera jumps.
     await page.getByRole('button', { name: 'Magnify' }).click();

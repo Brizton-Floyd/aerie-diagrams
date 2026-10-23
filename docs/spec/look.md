@@ -211,7 +211,7 @@ Requirement ids: `LOOK-nnn`. Conventions are in [overview.md](overview.md#readin
   filled `accent` with `on-accent` text.
 - **LOOK-805** The caption bar sits at the bottom of the stage, 24 px from its sides and 18 px from its
   bottom: `paper`, a 1 px `rule` border with a 4 px `accent` left edge, the step count, then the text.
-- **LOOK-806** The camera buttons (plus, minus and "Fit") sit at the stage's top right: small `paper`
+- **LOOK-806** The camera buttons (plus, minus and "Fit all") sit at the stage's top right: small `paper`
   buttons with a `rule` border.
 - **LOOK-807** The logo is three nested, slightly irregular closed contours, like a hill seen from
   above, stroked in `ink`, with a small `accent` dot near the summit.

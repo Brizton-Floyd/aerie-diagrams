@@ -185,19 +185,44 @@ Box anatomy and metric names (`pad`, `icon`, `iconGap`, and so on) are defined i
   3. the new edges and labels fade in, starting at `G + 60 ms` and lasting `0.6 G`.
 - **LAYOUT-403** Changes never interleave: a change that arrives during a transition first finishes
   the current one at once, then starts.
-- **LAYOUT-404** The camera is in **fit mode** at first and after the reader presses Fit. In fit mode,
-  every layout change fits the whole picture on screen (LAYOUT-451), gliding with the elements. Once
-  the reader magnifies or pans, the camera is in **free mode**: opening or closing a container then
-  keeps that container's top-left corner at the same place on screen at the same scale. Switching view
-  always fits and returns to fit mode.
+- **LAYOUT-404** The camera is in **fit mode** at first and after the reader presses Fit all. In fit
+  mode, every layout change places the picture again, gliding with the elements: it fits the whole
+  picture (LAYOUT-451) until the reader opens, closes or reveals an element, and from then on follows
+  that element (LAYOUT-453, LAYOUT-455). Once the reader magnifies or pans, the camera is in **free
+  mode**: opening or closing a container then keeps that container's top-left corner at the same place
+  on screen at the same scale, and then brings it and its connections into view at that scale
+  (LAYOUT-454). Switching view always fits the whole picture and returns to fit mode.
 
-### Fitting
+### Fitting and following
 
 - **LAYOUT-451** Fitting scales the picture to fill the stage less a 34 px margin on every side and,
   while a caption bar shows, less 92 px at the bottom. The scale is never more than 1.15. The picture is
   centred across, and centred down with its top at least 34 px from the top of the stage.
 - **LAYOUT-452** The reader can magnify between 0.2 and 2.5 times
   ([interaction.md](interaction.md#the-camera)).
+- **LAYOUT-453** In fit mode, opening or closing a container makes the camera follow that container,
+  and so does selecting an element that had to be revealed (MODEL-207): the camera comes closer to
+  what the reader is working on instead of shrinking the whole picture. While the whole picture fits
+  at scale 1 or more, following fits the whole picture (LAYOUT-451). Otherwise the camera frames the
+  element's box and its **directly connected neighbours**: the drawn elements at the other end of a
+  drawn edge from the element or anything inside it, other than its own ancestors. Neighbours join
+  the frame nearest first (by the distance between box middles, then by id), skipping any that would
+  make the frame too large to fit the stage at scale 1, less the margins of LAYOUT-451. The scale
+  fills that space with the frame, and is never less than 1, at which all text is at least 13.5 px on
+  screen (RULE-008), nor more than 1.15. The frame is centred; a frame too large for the stage even
+  at scale 1 shows its top left. Across and down separately, a picture that fits the stage at that
+  scale is centred, and a larger one never leaves more than the 34 px margin empty at either end. The
+  rest of the picture stays where the reader can drag to it, and Fit all fits it whole. The camera
+  keeps following the element until the reader presses Fit all or switches view, so a resized stage
+  or a live update frames it again.
+- **LAYOUT-454** Selecting an element brings it and its directly connected neighbours (LAYOUT-453,
+  as many as fit, nearest first) inside the stage less the 34 px margin, moving the picture the least
+  it must and never changing the scale. When they are already in view, nothing moves. A free camera
+  does the same for a container it opened or closed, after keeping its corner (LAYOUT-404).
+- **LAYOUT-455** In fit mode, closing a container returns the camera to where it was before that
+  container was opened, when the picture and the stage are exactly what that camera framed then (as
+  when nothing else was opened or closed in between and the stage kept its size). Otherwise the camera
+  follows the closed container (LAYOUT-453).
 
 ## Scenarios on the map: the trail
 

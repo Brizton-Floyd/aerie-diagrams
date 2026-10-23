@@ -1,9 +1,9 @@
 // The stage (docs/spec/interaction.md): the drawing in the middle of the page, the camera that
-// places it (INT-351 to INT-353, LAYOUT-404), the change from one picture to the next (LAYOUT-402,
-// LAYOUT-403, LOOK-901), the clicks a reader makes on it (INT-201, INT-302), the sentences a
-// screen reader hears after it (INT-903), a playing scenario's caption bar (INT-603, LOOK-805)
-// and cross-fade between the map and lanes (INT-604), and a presented walkthrough's narration bar
-// and camera framing its focus (INT-701, INT-702).
+// places it and follows the reader (INT-351 to INT-354, LAYOUT-404, LAYOUT-453 to LAYOUT-455), the
+// change from one picture to the next (LAYOUT-402, LAYOUT-403, LOOK-901), the clicks a reader makes
+// on it (INT-201, INT-302), the sentences a screen reader hears after it (INT-903), a playing
+// scenario's caption bar (INT-603, LOOK-805) and cross-fade between the map and lanes (INT-604),
+// and a presented walkthrough's narration bar and camera framing its focus (INT-701, INT-702).
 import type { Id } from '../lines/index.ts';
 import type { Tree } from '../model/index.ts';
 import {
@@ -12,14 +12,18 @@ import {
   dragged,
   PAGE,
   focusCamera,
+  followBoxes,
+  followCamera,
   keepCorner,
   magnify,
   pan,
+  revealCamera,
   timings,
   transitionPlan,
   type Box,
   type Camera,
   type LanesLayout,
+  type LayoutResult,
   type Point,
   type Size,
   type StructureLayout,
@@ -52,8 +56,27 @@ export interface Showing {
 export interface Arrival {
   /** Switching view fits the camera and returns it to fit mode (LAYOUT-404). */
   fit?: boolean;
-  /** The container opened or closed, whose corner a free camera keeps in place (LAYOUT-404). */
+  /**
+   * The container opened or closed: the camera follows it in fit mode (LAYOUT-453), and a free
+   * camera keeps its corner in place (LAYOUT-404).
+   */
   anchor?: Id;
+  /** True when `anchor` was closed, so the camera can return to where it was (LAYOUT-455). */
+  closing?: boolean;
+  /** The element selected, brought into view with its connections (LAYOUT-454). */
+  reveal?: Id;
+}
+
+/** LAYOUT-455: where a fitted camera was before a container was opened. */
+interface Return {
+  /** The container opened. */
+  id: Id;
+  camera: Camera;
+  follow: Id | null;
+  /** The layout and stage it framed, which closing the container must bring back exactly. */
+  result: LayoutResult;
+  stage: Size;
+  room: number;
 }
 
 /** What the reader does on the stage. */
@@ -128,12 +151,18 @@ export class Stage {
   /** INT-701: the narration bar, shown while a walkthrough is presented. */
   private readonly narrationBar: HTMLElement;
   private readonly narrationSwap: Swap;
-  /** INT-702: the elements fitting frames, until the reader presses Fit. */
+  /** INT-702: the elements fitting frames, until the reader presses Fit all. */
   private frame: readonly Id[] = [];
   private framing = false;
+  /** LAYOUT-453: the element a fitted camera follows, until the reader presses Fit all. */
+  private follow: Id | null = null;
+  /** LAYOUT-455: where the fitted camera was before each container still open was opened. */
+  private returns: Return[] = [];
   private camera: Camera = { scale: 1, x: 0, y: 0, mode: 'fit' };
   private drag: { pointer: number; start: Point; camera: Camera; moved: boolean } | null = null;
   private swallowClick = false;
+  /** True while a change puts the focus back, which the camera has already placed (INT-354). */
+  private restoring = false;
 
   constructor(tree: () => Tree | null, actions: StageActions) {
     this.tree = tree;
@@ -155,7 +184,7 @@ export class Stage {
       button('Shrink', '−', () => {
         this.magnifyBy(CAMERA.shrink);
       }),
-      button('Fit', 'Fit', () => {
+      button('Fit all', 'Fit all', () => {
         this.fit(true);
       }),
     ]);
@@ -202,6 +231,8 @@ export class Stage {
     this.holder.replaceChildren(content);
     this.sentences.replaceChildren();
     this.frame = [];
+    this.follow = null;
+    this.returns = [];
     this.setBars(null, null);
   }
 
@@ -244,23 +275,35 @@ export class Stage {
     this.sentences.replaceChildren(...showing.sentences.map((each) => h('li', {}, [each])));
     const roomMoved = this.setBars(showing.caption, showing.narration);
     this.frame = showing.frame;
-    // INT-704: a new walkthrough step fits the camera to its focus again.
-    if (arrival.fit === true) this.framing = true;
+    // INT-704: a new walkthrough step fits the camera to its focus again; switching view fits the
+    // whole picture and forgets what the camera followed (LAYOUT-404).
+    if (arrival.fit === true) {
+      this.framing = true;
+      this.follow = null;
+      this.returns = [];
+    }
     const samePlaces =
       (before !== null && after !== null && before.result === after.result) ||
       (wasLanes !== null && wasLanes === showing.lanes);
     if (old !== null && samePlaces && this.morph(old, next, after === null ? 'lanes' : 'map')) {
       // The caption or narration bar's room changes the fitted picture (LAYOUT-451).
       if (arrival.fit === true || (roomMoved && this.camera.mode === 'fit')) this.refit(true);
+      else if (arrival.reveal !== undefined) this.reveal(arrival.reveal);
       return;
     }
     const was = this.camera;
-    if (arrival.fit === true || this.camera.mode === 'fit' || old === null) {
+    if (arrival.fit === true || old === null) {
       this.camera = this.fitted(next, after);
-    } else if (arrival.anchor !== undefined && before !== null && after !== null) {
-      const from = before.result.boxes[arrival.anchor];
-      const to = after.result.boxes[arrival.anchor];
+    } else if (this.camera.mode === 'fit') {
+      this.camera = this.followed(arrival, before, after, next);
+    } else if (after !== null) {
+      // LAYOUT-404 and LAYOUT-454: a free camera keeps an opened or closed container's corner in
+      // place, then brings it and its connections into view at the reader's scale.
+      const from = arrival.anchor === undefined ? undefined : before?.result.boxes[arrival.anchor];
+      const to = arrival.anchor === undefined ? undefined : after.result.boxes[arrival.anchor];
       if (from !== undefined && to !== undefined) this.camera = keepCorner(this.camera, from, to);
+      const target = arrival.anchor ?? arrival.reveal;
+      if (target !== undefined) this.camera = this.revealed(this.camera, next, after, target);
     }
     this.svg = next;
     this.layout = after;
@@ -501,15 +544,91 @@ export class Stage {
   }
 
   /**
-   * LAYOUT-451: the fitted camera for a drawing: the whole picture, or a presented step's focus
-   * elements (INT-702) until the reader presses Fit.
+   * LAYOUT-451 and LAYOUT-453: the fitted camera for a drawing: a presented step's focus elements
+   * (INT-702), or the element the camera follows, until the reader presses Fit all; otherwise the
+   * whole picture.
    */
   private fitted(svg: SVGSVGElement, layout: StructureLayout | null): Camera {
-    const boxes =
-      this.framing && layout !== null
-        ? this.frame.flatMap((id) => layout.result.boxes[id] ?? [])
+    const size = this.sizeOf(svg);
+    const stage = this.stageSize();
+    if (this.framing && layout !== null) {
+      const boxes = this.frame.flatMap((id) => layout.result.boxes[id] ?? []);
+      if (boxes.length > 0) return focusCamera(boxes, size, stage, this.room);
+    }
+    const tree = this.tree();
+    const follow =
+      this.follow !== null && layout !== null && tree !== null
+        ? followBoxes(tree, layout, this.follow)
         : [];
-    return focusCamera(boxes, this.sizeOf(svg), this.stageSize(), this.room);
+    return followCamera(follow, size, stage, this.room);
+  }
+
+  /**
+   * LAYOUT-453 and LAYOUT-455: the fitted camera after a layout change. Opening a container
+   * remembers where the camera was and follows the container; closing it returns the camera there
+   * when the picture is the same again, and otherwise follows the closed container. Selecting an
+   * element that had to be revealed follows it.
+   */
+  private followed(
+    arrival: Arrival,
+    before: StructureLayout | null,
+    after: StructureLayout | null,
+    next: SVGSVGElement,
+  ): Camera {
+    const target = arrival.anchor ?? arrival.reveal;
+    if (target !== undefined && after !== null) {
+      if (arrival.anchor !== undefined && arrival.closing === true) {
+        const back = this.returnTo(arrival.anchor, after.result);
+        if (back !== null) {
+          this.follow = back.follow;
+          return back.camera;
+        }
+      } else if (arrival.anchor !== undefined && before !== null) {
+        this.returns.push({
+          id: arrival.anchor,
+          camera: this.camera,
+          follow: this.follow,
+          result: before.result,
+          stage: this.stageSize(),
+          room: this.room,
+        });
+      }
+      this.follow = target;
+    }
+    return this.fitted(next, after);
+  }
+
+  /**
+   * LAYOUT-455: where the camera was before a container was opened, forgetting it and everything
+   * opened after it; null when closing it does not bring back the picture and stage it framed.
+   */
+  private returnTo(id: Id, result: LayoutResult): Return | null {
+    const at = this.returns.findLastIndex((each) => each.id === id);
+    const back = this.returns[at];
+    if (back === undefined) return null;
+    this.returns = this.returns.slice(0, at);
+    const stage = this.stageSize();
+    const same =
+      back.result === result &&
+      back.stage.width === stage.width &&
+      back.stage.height === stage.height &&
+      back.room === this.room;
+    return same ? back : null;
+  }
+
+  /** LAYOUT-454: a camera that brings an element and its connections into view at its scale. */
+  private revealed(camera: Camera, svg: SVGSVGElement, layout: StructureLayout, id: Id): Camera {
+    const tree = this.tree();
+    if (tree === null) return camera;
+    const boxes = followBoxes(tree, layout, id);
+    return revealCamera(camera, boxes, this.sizeOf(svg), this.stageSize(), this.room);
+  }
+
+  /** LAYOUT-454: glides an element and its connections into view, never changing the scale. */
+  private reveal(id: Id): void {
+    if (this.svg === null || this.layout === null) return;
+    const next = this.revealed(this.camera, this.svg, this.layout, id);
+    if (next.x !== this.camera.x || next.y !== this.camera.y) this.place(next, true);
   }
 
   /** Fits the camera again, framing a presented step's focus if it still does (INT-704). */
@@ -518,9 +637,14 @@ export class Stage {
     this.place(this.fitted(this.svg, this.layout), glide);
   }
 
-  /** LAYOUT-451 and INT-352: Fit fits the whole picture and returns the camera to fit mode. */
+  /**
+   * LAYOUT-451 and INT-352: Fit all fits the whole picture and returns the camera to fit mode,
+   * following nothing.
+   */
   fit(glide: boolean): void {
     this.framing = false;
+    this.follow = null;
+    this.returns = [];
     this.refit(glide);
   }
 
@@ -599,6 +723,24 @@ export class Stage {
       if (id !== null && this.svg !== null && byId(this.svg, 'node', id)?.matches('.open, .closed'))
         this.actions.toggle(id);
     });
+    // INT-354: an element reached with the keyboard is brought into view at the camera's scale. A
+    // click's focus is left alone, since the reader can see what they clicked, and so is the focus
+    // a change puts back, which would otherwise cut its glide short.
+    this.holder.addEventListener('focusin', (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (this.restoring || target?.matches('.shape:focus-visible') !== true) return;
+      const id = target.closest('g.boxes > g.node')?.getAttribute('data-id') ?? null;
+      const box = id === null ? undefined : this.layout?.result.boxes[id];
+      if (this.svg === null || box === undefined) return;
+      const next = revealCamera(
+        this.camera,
+        [box],
+        this.sizeOf(this.svg),
+        this.stageSize(),
+        this.room,
+      );
+      if (next.x !== this.camera.x || next.y !== this.camera.y) this.place(next, true);
+    });
     this.holder.addEventListener(
       'wheel',
       (event) => {
@@ -631,7 +773,12 @@ export class Stage {
     for (const each of candidates) {
       const found = byId(this.svg, 'node', each)?.querySelector(':scope > .shape');
       if (found instanceof SVGElement) {
-        found.focus({ preventScroll: true });
+        this.restoring = true;
+        try {
+          found.focus({ preventScroll: true });
+        } finally {
+          this.restoring = false;
+        }
         return;
       }
     }

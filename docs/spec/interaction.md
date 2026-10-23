@@ -73,7 +73,9 @@ Requirement ids: `INT-nnn`. Conventions are in [overview.md](overview.md#reading
   plus when closed, a minus when open, with the tooltip "Open in place" or "Close in place".
 - **INT-302** Clicking the control, double-clicking the box, or using the side panel's button opens or
   closes the container (MODEL-206). The picture changes with the glide of LAYOUT-402, and the camera
-  follows LAYOUT-404.
+  follows LAYOUT-404: it comes closer to the container and its neighbours at a readable scale instead
+  of shrinking the whole picture (LAYOUT-453), and closing returns it toward where it was
+  (LAYOUT-455).
 - **INT-303** Opening and closing are allowed during scenario playback: the trail is redrawn at the new
   zoom (LAYOUT-505) and nothing else changes. They are not offered while presenting.
 - **INT-304** There is no global depth control: depth changes only by opening and closing in place, by
@@ -86,10 +88,15 @@ depth.
 
 - **INT-351** The wheel magnifies around the pointer. Dragging the stage moves the picture; a drag
   shorter than 4 px is a click.
-- **INT-352** The camera buttons magnify by 1.25, shrink by 0.8, and "Fit" fits the whole picture and
-  returns the camera to fit mode (LAYOUT-404). The keys `+`, `-` and `0` do the same.
+- **INT-352** The camera buttons magnify by 1.25, shrink by 0.8, and "Fit all" fits the whole picture
+  and returns the camera to fit mode, following nothing (LAYOUT-404). The keys `+`, `-` and `0` do the
+  same.
 - **INT-353** The scale stays between 0.2 and 2.5. The camera is not part of the picture: a shared link
   opens fitted.
+- **INT-354** Selecting an element, by a click, a key or a link in the side panel, gently brings it and
+  its connections into view without shrinking the picture (LAYOUT-454). An element reached with the
+  keyboard is brought into view the same way, on its own. The browser never scrolls the stage itself;
+  only the camera moves the picture.
 
 ## The navigation sidebar
 
