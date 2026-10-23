@@ -312,6 +312,91 @@ input {
   background: var(--aerie-band-1);
 }
 
+/* LOOK-808: Back, Forward and the recent visits at the stage's top left, like the camera buttons.
+   Every part has a fixed width (travel.ts counts on them), so no part takes its size from text. */
+.travel {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: flex;
+  gap: 4px;
+}
+.travel .cam {
+  width: 34px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--aerie-rule);
+  border-radius: 3px;
+  background: var(--aerie-paper);
+  font:
+    600 16px 'Source Sans 3',
+    system-ui,
+    sans-serif;
+  cursor: pointer;
+  transition: background-color var(--aerie-hover) ease;
+}
+.travel .cam:hover {
+  background: var(--aerie-band-1);
+}
+.travel .cam[aria-disabled='true'] {
+  color: var(--aerie-muted);
+  cursor: default;
+}
+.travel .cam[aria-disabled='true']:hover {
+  background: var(--aerie-paper);
+}
+.travel .recent {
+  display: flex;
+  height: 28px;
+  margin: 0 0 0 8px;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--aerie-rule);
+  border-radius: 3px;
+  background: var(--aerie-paper);
+}
+.travel .recent li {
+  display: flex;
+  align-items: center;
+}
+/* A chevron drawn with borders rather than a glyph, so it looks the same in every face. */
+.travel .recent li + li::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  margin: 0 5px 0 3px;
+  border-top: 1.5px solid var(--aerie-muted);
+  border-right: 1.5px solid var(--aerie-muted);
+  transform: rotate(45deg);
+}
+.travel .recent button {
+  width: 112px;
+  height: 26px;
+  padding: 0 8px;
+  overflow: hidden;
+  border: 0;
+  background: none;
+  font:
+    400 13px 'Source Sans 3',
+    system-ui,
+    sans-serif;
+  color: var(--aerie-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: background-color var(--aerie-hover) ease;
+}
+.travel .recent button:hover {
+  background: var(--aerie-band-1);
+  color: var(--aerie-ink);
+}
+.travel .recent button[aria-current='true'] {
+  background: var(--aerie-band-1);
+  color: var(--aerie-ink);
+  font-weight: 600;
+  cursor: default;
+}
+
 /* Read by screen readers only (INT-105, INT-903). */
 .sr-only {
   position: absolute;
@@ -386,10 +471,11 @@ input:focus-visible,
 }
 
 /* The stage's notice ("Showing the last version without errors", INT-806 and INT-854) and what is
-   shown over the stage, such as watch mode's error list (INT-852). */
+   shown over the stage, such as watch mode's error list (INT-852), both below the buttons at the
+   stage's top (LOOK-806, LOOK-808). */
 .notice {
   position: absolute;
-  top: 12px;
+  top: 52px;
   left: 50%;
   z-index: 1;
   margin: 0;
@@ -406,7 +492,7 @@ input:focus-visible,
 }
 .overlay {
   position: absolute;
-  top: 56px;
+  top: 96px;
   left: 24px;
   right: 24px;
   z-index: 1;
@@ -1018,6 +1104,10 @@ input:focus-visible,
 }
 .page.presenting .camera {
   top: 72px;
+}
+/* INT-557: a presentation has its own Back and Next. */
+.page.presenting .travel {
+  display: none;
 }
 /* INT-303 and INT-704: containers are not opened or closed while presenting. */
 .page.presenting svg.aerie .control {

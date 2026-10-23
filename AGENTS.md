@@ -178,8 +178,11 @@ has the steps for opening a model and choosing a view and audience with clicks).
   after a drill-down; the stage is `overflow: clip`, so Playwright cannot scroll an off-stage box
   into view: journeys reach it with `focus()` and keys, or press "Fit all" first. Every picture
   change goes through `Viewer.change()`, which writes the picture into the address's fragment
-  (`link.ts`, INT-501) and adds a history entry only when the view or activity changes (INT-506);
-  new controls just call it. Motion timings are
+  (`link.ts`, INT-501) and, for a reader's change that reaches another visit (`visitKey`), adds a
+  visit and a history entry (INT-551, `visits.ts`); new controls just call it. Each visit keeps the
+  camera through the stage's `moved` callback, and Back and Forward bring it back as
+  `Arrival.camera`; the visits live in session storage, so a test comparing two pages' pixels
+  hides `.travel` (Back, Forward and the recent visits). Motion timings are
   read from the stylesheet's `--aerie-*` properties, so reduced motion needs no code path of its
   own. In an interactive drawing each box's `.shape` rect, not its group, is the focusable, named
   button (the accessibility audit, SCORE-005, rejects a button whose visible text is not in its

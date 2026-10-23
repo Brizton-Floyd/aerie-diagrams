@@ -273,6 +273,17 @@ runs it on this repository's own pull requests, against a fixture with planted d
 | unit  | Whole runs against a GitHub in memory: exit codes, the cannot-run comment, no pull request, and a comment the token cannot post                                           | DRIFT-605    |
 | unit  | Tokens: git's header only in its environment, every form masked first, and none in a log line, the summary or a thrown message, also in a real run against a local server | DRIFT-606    |
 
+### After v1: Back and Forward through visits
+
+An enhancement asked for after v1 (read log `nav-history.md`): choosing an element moved the camera
+to another part of the diagram, and the reader had to search for where they had been.
+
+| Suite       | What it proves                                                                                               | Requirements                    |
+| ----------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------- |
+| unit        | Visits in history order: new, replaced, gone back to, the recent ones, kept for a reload, named per audience | INT-551 to INT-556              |
+| journeys    | Back, Forward, the recent visits, the keys and the browser bring back the exact picture and camera           | JOURNEY-011, INT-551 to INT-557 |
+| screenshots | Back, Forward and the recent visits at the stage's top left                                                  | LOOK-808                        |
+
 ## Browser journeys
 
 Journeys run against the production build with the Lotto sample, at 1600 x 900, as a reader would use
@@ -303,7 +314,7 @@ below is from the final sample, `samples/lotto.aerie`.
   steps, then to step 8. Press Esc: reading mode, same view.
 - **JOURNEY-006 Reopen from a shared link.** Set Services, Executive, Engine service open, Pick
   generation selected, and press "Fit all", since a link opens fitted (INT-353). Copy the link and open it in a new page: the same picture (same address, same
-  panel, same boxes, same screenshot). Open the link with `sel=nothing-here` added: the notice of
+  panel, same boxes, same screenshot but for the recent visits, which are the reader's own). Open the link with `sel=nothing-here` added: the notice of
   INT-505 appears and the rest of the picture is shown.
 - **JOURNEY-007 Edit live.** Open the editor and change `screen-api` to `screen-apu` in the line
   `website gets screen data from screen-api`. The error list reads "Line 213, column 31: There is no
@@ -314,8 +325,9 @@ below is from the final sample, `samples/lotto.aerie`.
   walkthrough "A tour of the Lotto suite", with Big picture marked. Choose Services: it is marked, the
   address holds `view=services`, and the whole view fits the stage. Press 1: the Engineering view is
   listed as "How the code is organised". Choose "Results poll": it is marked and shows "1/6". Press
-  the browser's Back: Services again, for the Executive, with nothing playing. Back again: the Big
-  picture, with no fragment in the address.
+  the browser's Back: Services again, for the Executive, with nothing playing. Back again: Services
+  for the Manager, since switching the audience was a visit (INT-551). Back again: the Big picture,
+  with no fragment in the address.
 - **JOURNEY-009 Watch a file.** Run `aerie watch` on a copy of the sample and open the address it
   prints. Choose Services and Engineer. Rename the Website in the file and save: the page shows the
   new name, still on Services for the Engineer. Save the change of JOURNEY-007: the last picture
@@ -327,3 +339,11 @@ below is from the final sample, `samples/lotto.aerie`.
   Select Draw history lookup with the keyboard: it is in view and the scale is unchanged. Close the
   Results store, Engine service and the Analysis engine: the picture is drawn as it first was, at the
   first scale. Press "Fit all": the whole picture fits the stage.
+- **JOURNEY-011 Go back to where you were.** Open the Big picture. Open the Analysis engine and Engine
+  service inside it, and select Pick generation. In the side panel choose Draw history lookup, then
+  Draw history service: the Results store opens around it and the camera moves to it. Press Back twice:
+  Pick generation is selected again, the Results store is closed, Engine service is open, and the
+  camera is exactly where it was. Press Forward twice: the Draw history service again, with its camera.
+  The browser's Back and Forward, and Alt+Left and Alt+Right, do the same. The recent visits read
+  "Analysis engine", "Engine service", "Pick generation", "Draw history lookup" and "Draw history
+  service", the last one marked; choosing "Analysis engine" goes back three visits at once.
