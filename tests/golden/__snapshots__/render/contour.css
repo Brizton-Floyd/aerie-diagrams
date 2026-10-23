@@ -179,16 +179,20 @@
 .aerie .label.dim, .aerie .head.dim { opacity: 0.2; }
 .aerie .head { transition: opacity var(--aerie-dimming) ease; }
 
-/* The scenario trail (LOOK-701 to LOOK-704). */
+/* The scenario trail (LOOK-701 to LOOK-704). It is drawn over everything but answers no pointer,
+   so a box or open control under a curve or badge can still be clicked (INT-303). */
+.aerie .trail, .aerie .badges { pointer-events: none; }
 .aerie .step .curve { fill: none; stroke: var(--aerie-accent); stroke-width: 2.4px; stroke-linecap: round; }
 .aerie .step .arrow { fill: none; stroke: var(--aerie-accent); stroke-width: 2.4px; stroke-linecap: round; stroke-linejoin: round; }
 .aerie .step.reply .curve { stroke: var(--aerie-trail-back); stroke-width: 2.6px; stroke-dasharray: 1 5; }
 .aerie .step.past .curve, .aerie .step.past .arrow { stroke-width: 1.6px; opacity: 0.55; }
+/* Filled backwards only: once drawn, the curve and arrowhead are in their own resting state, so
+   the finished animations end and the page counts as still. */
 .aerie .step.now.call .curve {
   stroke-dasharray: 1 1;
-  animation: aerie-draw var(--aerie-step-draw) var(--aerie-ease) both;
+  animation: aerie-draw var(--aerie-step-draw) var(--aerie-ease) backwards;
 }
-.aerie .step.now.call .arrow { animation: aerie-arrive 1ms linear var(--aerie-step-draw) both; }
+.aerie .step.now.call .arrow { animation: aerie-arrive 1ms linear var(--aerie-step-draw) backwards; }
 @keyframes aerie-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes aerie-arrive { from { opacity: 0; } to { opacity: 1; } }
 .aerie .badge circle { fill: var(--aerie-paper); stroke: var(--aerie-accent); stroke-width: 1.6px; }

@@ -137,7 +137,11 @@ has the steps for opening a model and choosing a view and audience with clicks).
   properties, so reduced motion needs no code path of its own. In an interactive drawing each
   box's `.shape` rect, not its group, is the focusable, named button (the accessibility audit,
   SCORE-005, rejects a button whose visible text is not in its name). Journeys wait for
-  `document.getAnimations()` to empty (`settled` in `tests/journeys/reader.ts`).
+  `document.getAnimations()` to empty (`settled` in `tests/journeys/reader.ts`), so CSS animations
+  never fill forwards. Scenario playback (A8) is `scenario.ts` (side panel, caption, autoplay);
+  other parts of the page start and end one with `Viewer.playScenario` and `endScenario`.
+  Screenshot runs hide the side panel's content, so they press its controls with
+  `dispatchEvent('click')`.
 
 ## Plan
 

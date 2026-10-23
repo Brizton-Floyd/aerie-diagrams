@@ -20,6 +20,11 @@ export const MOTION = {
   hover: 250,
   /** The current trail step draws itself. */
   stepDraw: 900,
+  /**
+   * Scenario autoplay: one step this often. It is the reading pace, not motion, so it is not a
+   * custom property and reduced motion keeps it (LOOK-903).
+   */
+  autoplay: 2400,
 } as const;
 
 /** The custom property of a colour token. */
@@ -192,16 +197,20 @@ ${bands}
 .aerie .label.dim, .aerie .head.dim { opacity: ${String(op.dim)}; }
 .aerie .head { transition: opacity var(--aerie-dimming) ease; }
 
-/* The scenario trail (LOOK-701 to LOOK-704). */
+/* The scenario trail (LOOK-701 to LOOK-704). It is drawn over everything but answers no pointer,
+   so a box or open control under a curve or badge can still be clicked (INT-303). */
+.aerie .trail, .aerie .badges { pointer-events: none; }
 .aerie .step .curve { fill: none; stroke: ${v('accent')}; stroke-width: 2.4px; stroke-linecap: round; }
 .aerie .step .arrow { fill: none; stroke: ${v('accent')}; stroke-width: 2.4px; stroke-linecap: round; stroke-linejoin: round; }
 .aerie .step.reply .curve { stroke: ${v('trail-back')}; stroke-width: 2.6px; stroke-dasharray: 1 5; }
 .aerie .step.past .curve, .aerie .step.past .arrow { stroke-width: 1.6px; opacity: ${String(op.past)}; }
+/* Filled backwards only: once drawn, the curve and arrowhead are in their own resting state, so
+   the finished animations end and the page counts as still. */
 .aerie .step.now.call .curve {
   stroke-dasharray: 1 1;
-  animation: aerie-draw var(--aerie-step-draw) var(--aerie-ease) both;
+  animation: aerie-draw var(--aerie-step-draw) var(--aerie-ease) backwards;
 }
-.aerie .step.now.call .arrow { animation: aerie-arrive 1ms linear var(--aerie-step-draw) both; }
+.aerie .step.now.call .arrow { animation: aerie-arrive 1ms linear var(--aerie-step-draw) backwards; }
 @keyframes aerie-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes aerie-arrive { from { opacity: 0; } to { opacity: 1; } }
 .aerie .badge circle { fill: ${v('paper')}; stroke: ${v('accent')}; stroke-width: 1.6px; }

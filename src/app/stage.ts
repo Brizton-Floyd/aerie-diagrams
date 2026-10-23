@@ -1,7 +1,8 @@
 // The stage (docs/spec/interaction.md): the drawing in the middle of the page, the camera that
 // places it (INT-351 to INT-353, LAYOUT-404), the change from one picture to the next (LAYOUT-402,
-// LAYOUT-403, LOOK-901), the clicks a reader makes on it (INT-201, INT-302), and the sentences a
-// screen reader hears after it (INT-903).
+// LAYOUT-403, LOOK-901), the clicks a reader makes on it (INT-201, INT-302), the sentences a
+// screen reader hears after it (INT-903), and a playing scenario's caption bar (INT-603, LOOK-805)
+// and cross-fade between the map and lanes (INT-604).
 import type { Id } from '../lines/index.ts';
 import type { Tree } from '../model/index.ts';
 import {
@@ -16,13 +17,15 @@ import {
   transitionPlan,
   type Box,
   type Camera,
+  type LanesLayout,
   type Point,
   type Size,
   type StructureLayout,
 } from '../layout/index.ts';
 import { SHAPE } from '../render/index.ts';
 import { h } from './dom.ts';
-import { Choreography, glideEase, timing } from './motion.ts';
+import { Choreography, Swap, glideEase, timing } from './motion.ts';
+import { captionText, type Caption } from './scenario.ts';
 
 /** What the stage is asked to show. */
 export interface Showing {
@@ -30,8 +33,12 @@ export interface Showing {
   markup: string;
   /** The structure layout it draws, so a change can glide; null for lanes. */
   layout: StructureLayout | null;
+  /** The lanes layout it draws (INT-604); null on the map. */
+  lanes: LanesLayout | null;
   /** The sentences of every drawn relationship, for screen readers (INT-903). */
   sentences: readonly string[];
+  /** A playing scenario's caption bar (INT-603); null when no scenario plays. */
+  caption: Caption | null;
 }
 
 /** How a new picture arrives. */
@@ -65,11 +72,26 @@ const LAYER_OF = { node: 'boxes', head: 'heads' } as const;
 const byId = (root: ParentNode, kind: 'node' | 'head', id: Id): Element | null =>
   root.querySelector(`:scope > g.${LAYER_OF[kind]} > g.${kind}[data-id="${CSS.escape(id)}"]`);
 
-/** The layers whose groups are matched one to one when only wording and emphasis change. */
-const LAYERS = ['boxes', 'edges', 'heads', 'labels'] as const;
+/**
+ * The layers of each kind of drawing whose groups are matched one to one (by `data-id`, or
+ * `data-step` for a lanes label) when only wording and emphasis change, and the layers that are
+ * replaced whole when they change at all: the trail, and the rows and lines of the lanes.
+ */
+const MATCHED = {
+  map: ['boxes', 'edges', 'heads', 'labels'],
+  lanes: ['bands', 'boxes', 'labels'],
+} as const;
+const WHOLE = {
+  map: ['trail', 'badges'],
+  lanes: ['rows', 'lanes', 'trail', 'badges'],
+} as const;
 
-/** The layers that are redrawn whole on every change: lines and the trail. */
+/** The layers that fade in after a glide: lines and the trail. */
 const LINES = ['edges', 'labels', 'trail', 'badges'] as const;
+
+/** The key a group is matched by when a drawing changes in place. */
+const keyOf = (group: Element): string | null =>
+  group.getAttribute('data-id') ?? group.getAttribute('data-step');
 
 /** Attributes of a box's button that change with the audience or the selection. */
 const SPOKEN = ['aria-label', 'aria-pressed', 'aria-expanded'];
@@ -92,6 +114,10 @@ export class Stage {
   private readonly motion = new Choreography();
   private svg: SVGSVGElement | null = null;
   private layout: StructureLayout | null = null;
+  private lanes: LanesLayout | null = null;
+  /** INT-603 and LOOK-805: the caption bar, shown while a scenario plays. */
+  private readonly captionBar: HTMLElement;
+  private readonly captionSwap: Swap;
   private camera: Camera = { scale: 1, x: 0, y: 0, mode: 'fit' };
   private drag: { pointer: number; start: Point; camera: Camera; moved: boolean } | null = null;
   private swallowClick = false;
@@ -120,9 +146,19 @@ export class Stage {
         this.fit(true);
       }),
     ]);
+    // INT-904: captions are announced as they change.
+    this.captionBar = h('div', {
+      class: 'caption-bar',
+      role: 'status',
+      'aria-live': 'polite',
+      'aria-label': 'Step',
+      hidden: true,
+    });
+    this.captionSwap = new Swap(this.captionBar);
     this.element = h('main', { class: 'aerie-stage', 'aria-label': 'Diagram' }, [
       this.holder,
       this.sentences,
+      this.captionBar,
       camera,
     ]);
     this.listen();
@@ -136,14 +172,30 @@ export class Stage {
     this.motion.finish();
     this.svg = null;
     this.layout = null;
+    this.lanes = null;
     this.holder.replaceChildren(content);
     this.sentences.replaceChildren();
+    this.setCaption(null);
+  }
+
+  /** True while the caption bar shows, so fitting keeps clear of it (LAYOUT-451). */
+  private get captioned(): boolean {
+    return !this.captionBar.hidden;
+  }
+
+  /** Shows the caption bar's words, or hides it; true when it appeared or went. */
+  private setCaption(caption: Caption | null): boolean {
+    const was = this.captioned;
+    this.captionBar.hidden = caption === null;
+    if (caption !== null) this.captionSwap.set(h('div', {}, [captionText(caption)]));
+    return was !== this.captioned;
   }
 
   /**
    * Shows a picture. The same layout as before (another audience, selection or step) changes in
-   * place; another layout of a structure view glides (LAYOUT-402); anything else is replaced.
-   * A change still moving is first finished at once (LAYOUT-403).
+   * place; another layout of a structure view glides (LAYOUT-402); the map and the lanes
+   * cross-fade (INT-604); anything else is replaced. A change still moving is first finished at
+   * once (LAYOUT-403).
    */
   show(showing: Showing, arrival: Arrival = {}): void {
     this.motion.finish();
@@ -155,14 +207,21 @@ export class Stage {
     const old = this.svg;
     const before = this.layout;
     const after = showing.layout;
+    const wasLanes = this.lanes;
     this.sentences.replaceChildren(...showing.sentences.map((each) => h('li', {}, [each])));
-    if (old !== null && before !== null && after !== null && before.result === after.result) {
-      if (this.morph(old, next)) return;
+    const captionMoved = this.setCaption(showing.caption);
+    const samePlaces =
+      (before !== null && after !== null && before.result === after.result) ||
+      (wasLanes !== null && wasLanes === showing.lanes);
+    if (old !== null && samePlaces && this.morph(old, next, after === null ? 'lanes' : 'map')) {
+      // The caption bar's room changes the fitted picture (LAYOUT-451).
+      if (arrival.fit === true || (captionMoved && this.camera.mode === 'fit')) this.fit(true);
+      return;
     }
     const size = this.sizeOf(next);
     const was = this.camera;
     if (arrival.fit === true || this.camera.mode === 'fit' || old === null) {
-      this.camera = fitCamera(size, this.stageSize());
+      this.camera = fitCamera(size, this.stageSize(), this.captioned);
     } else if (arrival.anchor !== undefined && before !== null && after !== null) {
       const from = before.result.boxes[arrival.anchor];
       const to = after.result.boxes[arrival.anchor];
@@ -170,13 +229,37 @@ export class Stage {
     }
     this.svg = next;
     this.layout = after;
-    this.holder.replaceChildren(next);
+    this.lanes = showing.lanes;
     next.style.transform = cameraTransform(this.camera);
     const tree = this.tree();
+    const crossing = old !== null && (wasLanes !== null) !== (showing.lanes !== null);
+    if (crossing && timing('glide') > 0) {
+      this.crossFade(old, next);
+    } else {
+      this.holder.replaceChildren(next);
+    }
     if (old !== null && before !== null && after !== null && tree !== null) {
       this.glide(old, next, tree, before, after, was);
     }
     this.restoreFocus(focused);
+  }
+
+  /**
+   * INT-604: switching between the map and the lanes cross-fades over the glide time: the old
+   * drawing fades out where it is, out of reach of the pointer and the keyboard, as the new one
+   * fades in.
+   */
+  private crossFade(old: SVGSVGElement, next: SVGSVGElement): void {
+    const duration = timing('glide');
+    old.setAttribute('inert', '');
+    old.setAttribute('aria-hidden', 'true');
+    old.classList.add('fading');
+    this.holder.replaceChildren(old, next);
+    this.motion.animate(old, [{ opacity: 1 }, { opacity: 0 }], { duration, fill: 'forwards' });
+    this.motion.animate(next, [{ opacity: 0 }, { opacity: 1 }], { duration });
+    this.motion.after(duration, () => {
+      old.remove();
+    });
   }
 
   // ------------------------------------------------------------ changing in place
@@ -186,9 +269,9 @@ export class Stage {
    * dimming and highlighting fade by the stylesheet (LOOK-901), and changed wording fades out and
    * back in (INT-102). False when the two drawings do not match group for group.
    */
-  private morph(old: SVGSVGElement, next: SVGSVGElement): boolean {
+  private morph(old: SVGSVGElement, next: SVGSVGElement, kind: 'map' | 'lanes'): boolean {
     const pairs: [Element, Element][] = [];
-    for (const layer of LAYERS) {
+    for (const layer of MATCHED[kind]) {
       const was = old.querySelector(`:scope > g.${layer}`);
       const now = next.querySelector(`:scope > g.${layer}`);
       if (was === null || now === null) return false;
@@ -197,7 +280,7 @@ export class Stage {
         const a = was.children[i];
         const b = now.children[i];
         if (a === undefined || b === undefined) return false;
-        if (a.getAttribute('data-id') !== b.getAttribute('data-id')) return false;
+        if (keyOf(a) !== keyOf(b)) return false;
         pairs.push([a, b]);
       }
     }
@@ -216,11 +299,15 @@ export class Stage {
       if (button !== null && named !== null) copyAttributes(button, named, SPOKEN);
       if (wordsOf(a) !== wordsOf(b)) reworded.push([a, b]);
     }
-    // The trail is redrawn whole, so the current step draws itself again (LOOK-701).
-    for (const layer of ['trail', 'badges']) old.querySelector(`:scope > g.${layer}`)?.remove();
-    for (const layer of ['trail', 'badges']) {
-      const found = next.querySelector(`:scope > g.${layer}`);
-      if (found !== null) old.append(found);
+    // A trail that changed is replaced whole, so a new current step draws itself (LOOK-701); one
+    // that did not, as when only the audience changes, stays as it is and does not draw again.
+    for (const layer of WHOLE[kind]) {
+      const was = old.querySelector(`:scope > g.${layer}`);
+      const now = next.querySelector(`:scope > g.${layer}`);
+      if (was !== null && now !== null && was.outerHTML === now.outerHTML) continue;
+      if (now === null) was?.remove();
+      else if (was === null) old.append(now);
+      else was.replaceWith(now);
     }
     if (reworded.length === 0) return true;
     const swap = timing('swap');
@@ -381,7 +468,7 @@ export class Stage {
   /** LAYOUT-451 and INT-352: fits the whole picture and returns the camera to fit mode. */
   fit(glide: boolean): void {
     if (this.svg === null) return;
-    this.place(fitCamera(this.sizeOf(this.svg), this.stageSize()), glide);
+    this.place(fitCamera(this.sizeOf(this.svg), this.stageSize(), this.captioned), glide);
   }
 
   /** INT-352: the camera buttons and keys magnify around the middle of the stage. */

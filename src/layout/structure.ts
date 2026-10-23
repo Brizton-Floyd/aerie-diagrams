@@ -117,6 +117,8 @@ export class Layouter {
   readonly semantics: Semantics;
   readonly engine: LayoutEngine;
   private readonly kept = new Map<string, Promise<StructureLayout>>();
+  /** Each kept structure layout's scenario lanes, so stepping or rewording reuses them. */
+  private readonly keptLanes = new WeakMap<StructureLayout, Map<Id, LanesLayout>>();
 
   constructor(semantics: Semantics, engine: LayoutEngine) {
     this.semantics = semantics;
@@ -157,10 +159,22 @@ export class Layouter {
 
   /**
    * A scenario as lanes on a view at a zoom state (LAYOUT-601), which must be the scenario's stage
-   * view (MODEL-404). The lanes keep the arrangement of that view's structure layout.
+   * view (MODEL-404). The lanes keep the arrangement of that view's structure layout, and are kept
+   * with it: the same scenario on the same structure layout is the same lanes layout.
    */
   async lanes(scenario: Id, view: Id, zoom: Zoom): Promise<LanesLayout> {
-    return layoutLanes(this.semantics, scenario, await this.structure(view, zoom));
+    const structure = await this.structure(view, zoom);
+    let kept = this.keptLanes.get(structure);
+    if (kept === undefined) {
+      kept = new Map();
+      this.keptLanes.set(structure, kept);
+    }
+    let found = kept.get(scenario);
+    if (found === undefined) {
+      found = layoutLanes(this.semantics, scenario, structure);
+      kept.set(scenario, found);
+    }
+    return found;
   }
 
   /** A picture's view, zoom state and audience, laid out with the audience's text in place. */
