@@ -35,7 +35,7 @@ export type {
   Suggestion,
 } from './findings.ts';
 export { evidenceLine, MATCHES, type EvidenceLine, type MatchId } from './links.ts';
-export { commentMarker, prComment } from './comment.ts';
+export { commentMarker, fence, prComment } from './comment.ts';
 export { driftDocument, FORMAT, jsonReport, type DriftDocument, type JsonFinding } from './json.ts';
 export { diffHunks, unifiedDiff } from './patch.ts';
 export { allEdits, summarise, type Run, type Summary } from './report.ts';

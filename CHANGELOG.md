@@ -5,6 +5,20 @@ functional spec for each version is [docs/spec/](docs/spec/overview.md).
 
 ## Unreleased
 
+### Checking against the code: the GitHub Action (D7)
+
+- This repository is a GitHub Action (`action.yml`, [docs/spec/drift.md](docs/spec/drift.md),
+  section 8): it runs `aerie drift` on each model file a workflow names, posts one sticky comment
+  per model file on the pull request (edited in place on every run), suggests edits as GitHub
+  `suggestion` review comments on the lines the pull request adds, adds each report to the job
+  summary, and fails on drift (`fail-on: likely` for likely findings too).
+- A multi-repo system's sibling repos are checked out beside the repository, read only, from the
+  repository of each folder's name under the same owner (the `repos` input names others; a
+  `repos-token` reads private ones), with the token given to git only through its environment,
+  masked in the log in every form and redacted from everything the Action prints. `.github/workflows/drift.yml` runs the Action on this
+  repository's pull requests against a fixture with planted drift. Other CIs run
+  `npx aerie drift --format json` and use the exit code.
+
 ### Checking against the code: the reports and `aerie drift` (D6)
 
 - `aerie drift <model>` checks a model against its code and prints what it finds

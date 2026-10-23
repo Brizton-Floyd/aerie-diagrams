@@ -52,7 +52,13 @@ export default defineConfig(
     languageOptions: { globals: globals.browser },
   },
   {
-    files: ['scripts/**/*.ts', 'tests/**/*.ts', 'src/cli/**/*.ts', '*.config.{ts,js}'],
+    files: [
+      'scripts/**/*.ts',
+      'tests/**/*.ts',
+      'src/cli/**/*.ts',
+      'src/action/**/*.ts',
+      '*.config.{ts,js}',
+    ],
     languageOptions: { globals: globals.node },
   },
   {

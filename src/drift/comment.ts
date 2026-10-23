@@ -38,7 +38,7 @@ function cell(text: string): string {
 }
 
 /** A fence longer than any run of backticks in the text, so the text cannot close it. */
-function fence(lines: readonly string[], language = ''): string[] {
+export function fence(lines: readonly string[], language = ''): string[] {
   const longest = Math.max(
     2,
     ...lines.map((line) => Math.max(0, ...(line.match(/`+/g) ?? []).map((run) => run.length))),

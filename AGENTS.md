@@ -148,6 +148,10 @@ has the steps for opening a model and choosing a view and audience with clicks).
   labels every finding by hand in `truth.txt` (a new finding fails until labelled) and keeps its
   scores in `benchmark.json`, which may never get worse: update it with
   `AERIE_UPDATE_DRIFT=1 npx vitest run --project unit tests/unit/drift/lotto.test.ts`.
+- The GitHub Action (D7) is `action.yml` (composite: Node, `npm ci --omit=dev`, then
+  `src/action/main.ts`, which runs `aerie drift` in process and calls the REST API through an `Api`
+  the tests keep in memory). `.github/workflows/drift.yml` runs it on pull requests that touch it and
+  checks the comments; it posts real comments on that pull request, from the fixtures, by design.
 - Text is measured from `src/layout/text/advances.json`, written from the bundled Fontsource fonts by
   `node scripts/font-metrics.ts`; rerun it when a font package changes (a unit test compares them).
 - The split editor (A10) is CodeMirror 6 in `src/app/editor.ts`, loaded only when "Edit" is pressed
