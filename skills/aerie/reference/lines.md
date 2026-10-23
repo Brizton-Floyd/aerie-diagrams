@@ -24,7 +24,8 @@ The first characters of a statement decide what it is:
 | an id and a space              | sentence     | `web sends orders to orders`                       |
 
 The keywords, all of them: `model`, `audiences`, `view`, `scenario`, `walkthrough`, `step`, `show`,
-`kind`, `icon`, `open`, `close`, `for`. None of them can be an id.
+`kind`, `icon`, `open`, `close`, `for`, `system`, `repo`, `compose`, `code`, `ignore`. None of them
+can be an id.
 
 **Ids** are lowercase letters, digits and single hyphens, start with a letter and do not end with a
 hyphen: `web`, `screen-api`, `v2-store`. Not `Web`, `screen_api` or `api-`. Elements, views,
@@ -33,18 +34,19 @@ separate, so the model and its system may share an id. Tags and kinds are spelle
 
 **What may go inside what.** Anything else is out of place:
 
-| Owner                                                                  | May hold                                                                         |
-| ---------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| the top level                                                          | `model`, `audiences`, elements, relationships, `view`, `scenario`, `walkthrough` |
-| `model`                                                                | descriptions, rewordings                                                         |
-| an element                                                             | elements (its children), `icon`, descriptions, rewordings                        |
-| a relationship                                                         | descriptions, rewordings                                                         |
-| `view`                                                                 | `show`, `kind`, descriptions, rewordings                                         |
-| `scenario`                                                             | steps (sentences), descriptions, rewordings                                      |
-| a scenario step                                                        | descriptions, rewordings                                                         |
-| `walkthrough`                                                          | `step`, descriptions, rewordings                                                 |
-| a walkthrough `step`                                                   | `open`, `close`, `for`, descriptions, rewordings                                 |
-| `audiences`, `show`, `kind`, `icon`, `open`, `close`, `for`, `@level:` | nothing                                                                          |
+| Owner                                                                                                       | May hold                                                                                             |
+| ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| the top level                                                                                               | `model`, `audiences`, `system`, elements, relationships, `view`, `scenario`, `walkthrough`, `ignore` |
+| `model`                                                                                                     | descriptions, rewordings                                                                             |
+| `system`                                                                                                    | `repo`, `compose`                                                                                    |
+| an element                                                                                                  | elements (its children), `icon`, `code`, descriptions, rewordings                                    |
+| a relationship                                                                                              | descriptions, rewordings                                                                             |
+| `view`                                                                                                      | `show`, `kind`, descriptions, rewordings                                                             |
+| `scenario`                                                                                                  | steps (sentences), descriptions, rewordings                                                          |
+| a scenario step                                                                                             | descriptions, rewordings                                                                             |
+| `walkthrough`                                                                                               | `step`, descriptions, rewordings                                                                     |
+| a walkthrough `step`                                                                                        | `open`, `close`, `for`, descriptions, rewordings                                                     |
+| `audiences`, `show`, `kind`, `icon`, `code`, `repo`, `compose`, `open`, `close`, `for`, `ignore`, `@level:` | nothing                                                                                              |
 
 **Words** (names, taglines, verb phrases, titles) are one line of plain text, with no Markdown; runs
 of spaces count as one. Write
@@ -250,6 +252,47 @@ walkthrough tour: A tour of the shop
 - Inside a step: `open <id>, ...` and `close <id>, ...` open or close containers first; `for
 <audience>` switches the audience; descriptions are the narration.
 
+## Tying the model to the code
+
+Optional lines for checking the diagram against the code with `aerie drift`, which is still being
+built: `aerie check` already validates them, and only drift will read them. They never change what
+a reader sees.
+
+```aerie
+model shop: Corner shop
+
+system
+  repo .
+  repo ../shop-web
+  compose deploy/compose.yaml
+
+shop: Shop [system]
+  web: Storefront [service]
+    code compose:web npm:shop-web
+  api: Orders API [service]
+    code compose:api maven:orders-api
+    pricing: Pricing rules [module]
+      code class:com.shop.orders.pricing.*
+
+web sends orders to api
+
+ignore drift maven:orders-legacy - retiring with the old admin app
+```
+
+- `system` (once, at the top level, alone on its line) holds `repo <path>` lines, the repos that form
+  the system, and `compose <path>` lines, the Compose files that are the truth (not stale copies).
+  Paths are relative to the folder that holds the `.aerie` file, with forward slashes; `repo .` is
+  the file's own repo. Without `repo` lines the system is the file's own repo. Each Compose file must
+  be inside one of the repos.
+- `code <unit> ...` under an element lists the code it stands for, units separated by spaces:
+  `compose:<service>`, `maven:<artifactId>`, `npm:<package.json name>`, and for parts
+  `class:<Class>`, `class:<com.pkg.Class>` or `class:<com.pkg>.*`. Several `code` lines add up. A
+  unit belongs to one element; an element drawn above code level (a service built from several
+  modules) lists all its units.
+- `ignore drift <subject> - <reason>` (top level) marks a difference from the code as meant. The
+  subject is an element id, a code unit, or `a to b` for the connection from one to the other. The
+  reason is required.
+
 ## The commands
 
 `aerie` below means the command you found as SKILL.md says.
@@ -294,55 +337,69 @@ The JSON from `check --format json`:
 Every message says what is wrong and how to fix it; follow it, and take the "Did you mean" suggestion
 when it is right. This table adds the usual cause.
 
-| Id   | Usual cause                                                  | Fix                                                                          |
-| ---- | ------------------------------------------------------------ | ---------------------------------------------------------------------------- |
-| E001 | a tab in the indent                                          | indent with spaces                                                           |
-| E002 | a line in a block indented differently from the rest         | give every line in the block the same indent                                 |
-| E003 | a line under an owner that cannot hold it                    | move it (see "What may go inside what"); `show` and `kind` go inside a view  |
-| E004 | a line that starts with none of the line kinds               | start with an id, a keyword, `>`, `@` or `//`                                |
-| E005 | an id with capitals, underscores or a trailing hyphen        | `screen_api` becomes `screen-api`                                            |
-| E006 | a keyword used as an id (`view`, `step`, `for` ...)          | choose another id                                                            |
-| E007 | the same id twice                                            | rename one; views and scenarios share ids with elements                      |
-| E008 | a typo, or an element not declared yet                       | take the suggestion, or declare the element                                  |
-| E009 | a `[` with no `]`                                            | close it, or write `\[`                                                      |
-| E010 | a marker with nothing after it                               | add the wording, or remove the line                                          |
-| E011 | `id:` with no name or title                                  | add one                                                                      |
-| E012 | text after the tags                                          | move it before the `[`                                                       |
-| E013 | empty brackets `[]`                                          | add a tag, or remove them                                                    |
-| E014 | a doubled or trailing comma in a list                        | remove it                                                                    |
-| E101 | two `model` lines                                            | keep one                                                                     |
-| E102 | two `audiences` lines                                        | merge them into one                                                          |
-| E103 | an audience listed twice                                     | remove one                                                                   |
-| E104 | two audiences marked `(default)`                             | keep one mark                                                                |
-| E105 | more than six audiences                                      | merge audiences                                                              |
-| E106 | a flag other than `default` or `code`                        | use `(default)`, `(code)` or both                                            |
-| E107 | an audience written wrongly                                  | `dev "Developer" (code)`                                                     |
-| E201 | an icon name not in the set                                  | take the suggestion, or choose from the list above                           |
-| E202 | two `icon` lines on one element                              | keep one                                                                     |
-| E301 | a rewording for an undeclared audience                       | use a declared audience id, or add it to `audiences`                         |
-| E302 | two `@a:` lines for one audience under one owner             | keep one                                                                     |
-| E303 | `@a:` under a walkthrough step, or a `\|` outside an element | use `@a >` or `@a >>`; remove the `\|`                                       |
-| E304 | `>>` with no audience                                        | write `@a >> text`                                                           |
-| E401 | the object is not the last word                              | reword so the element comes last: "asks for prices from pricing"             |
-| E402 | a sentence with no verb phrase                               | add one between the two ids                                                  |
-| E403 | a relationship from an element to itself                     | relate it to the part it really talks to, or remove it                       |
-| E404 | a relationship between an element and its container          | remove it: nesting already says the container holds it                       |
-| E405 | the same relationship twice                                  | remove the copy                                                              |
-| E406 | more than one kind in brackets                               | keep one kind                                                                |
-| E501 | a `show` item that is not `id`, `id +N` or `[tag]`           | write it in one of those forms                                               |
-| E502 | `show [tag]` with a tag no element has                       | fix the tag, or tag the elements                                             |
-| E503 | `kind` naming a kind no relationship has                     | fix the kind, or mark the relationships                                      |
-| E601 | a scenario with no steps                                     | add steps                                                                    |
-| E602 | a step with several objects                                  | write one step per object                                                    |
-| E603 | a step with a `[kind]`                                       | remove it                                                                    |
-| E604 | no view shows everything a scenario names                    | add the named top-level element to a view's `show` line                      |
-| W601 | a step with no relationship behind it                        | see "Warnings" in SKILL.md: fix the model or the step, never delete the step |
-| E701 | a walkthrough with no steps                                  | add `step <view>` lines                                                      |
-| E702 | `step` naming no view or scenario                            | take the suggestion                                                          |
-| E703 | focusing on an element hidden in a closed container          | add `open <container>` to the step, or show it deeper in the view            |
-| E704 | step numbers after a view                                    | put element ids after a view                                                 |
-| E705 | element ids after a scenario                                 | put step numbers after a scenario                                            |
-| E706 | step numbers the scenario does not have                      | use numbers from 1 to the number of steps                                    |
-| E707 | `open` or `close` on an element with nothing inside          | remove it                                                                    |
-| E708 | two `for` lines in one step                                  | keep one                                                                     |
-| W001 | a file with no elements                                      | add elements                                                                 |
+| Id   | Usual cause                                                           | Fix                                                                                                                                         |
+| ---- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| E001 | a tab in the indent                                                   | indent with spaces                                                                                                                          |
+| E002 | a line in a block indented differently from the rest                  | give every line in the block the same indent                                                                                                |
+| E003 | a line under an owner that cannot hold it                             | move it (see "What may go inside what"); `show` and `kind` go inside a view; `code` inside an element; `repo` and `compose` inside `system` |
+| E004 | a line that starts with none of the line kinds                        | start with an id, a keyword, `>`, `@` or `//`                                                                                               |
+| E005 | an id with capitals, underscores or a trailing hyphen                 | `screen_api` becomes `screen-api`                                                                                                           |
+| E006 | a keyword used as an id (`view`, `step`, `for`, `code`, `system` ...) | choose another id                                                                                                                           |
+| E007 | the same id twice                                                     | rename one; views and scenarios share ids with elements                                                                                     |
+| E008 | a typo, or an element not declared yet                                | take the suggestion, or declare the element                                                                                                 |
+| E009 | a `[` with no `]`                                                     | close it, or write `\[`                                                                                                                     |
+| E010 | a marker with nothing after it                                        | add the wording, or remove the line                                                                                                         |
+| E011 | `id:` with no name or title                                           | add one                                                                                                                                     |
+| E012 | text after the tags                                                   | move it before the `[`                                                                                                                      |
+| E013 | empty brackets `[]`                                                   | add a tag, or remove them                                                                                                                   |
+| E014 | a doubled or trailing comma in a list                                 | remove it                                                                                                                                   |
+| E101 | two `model` lines                                                     | keep one                                                                                                                                    |
+| E102 | two `audiences` lines                                                 | merge them into one                                                                                                                         |
+| E103 | an audience, repo, Compose file or code unit listed twice             | remove one                                                                                                                                  |
+| E104 | two audiences marked `(default)`                                      | keep one mark                                                                                                                               |
+| E105 | more than six audiences                                               | merge audiences                                                                                                                             |
+| E106 | a flag other than `default` or `code`                                 | use `(default)`, `(code)` or both                                                                                                           |
+| E107 | an audience written wrongly                                           | `dev "Developer" (code)`                                                                                                                    |
+| E201 | an icon name not in the set                                           | take the suggestion, or choose from the list above                                                                                          |
+| E202 | two `icon` lines on one element                                       | keep one                                                                                                                                    |
+| E301 | a rewording for an undeclared audience                                | use a declared audience id, or add it to `audiences`                                                                                        |
+| E302 | two `@a:` lines for one audience under one owner                      | keep one                                                                                                                                    |
+| E303 | `@a:` under a walkthrough step, or a `\|` outside an element          | use `@a >` or `@a >>`; remove the `\|`                                                                                                      |
+| E304 | `>>` with no audience                                                 | write `@a >> text`                                                                                                                          |
+| E401 | the object is not the last word                                       | reword so the element comes last: "asks for prices from pricing"                                                                            |
+| E402 | a sentence with no verb phrase                                        | add one between the two ids                                                                                                                 |
+| E403 | a relationship from an element to itself                              | relate it to the part it really talks to, or remove it                                                                                      |
+| E404 | a relationship between an element and its container                   | remove it: nesting already says the container holds it                                                                                      |
+| E405 | the same relationship twice                                           | remove the copy                                                                                                                             |
+| E406 | more than one kind in brackets                                        | keep one kind                                                                                                                               |
+| E501 | a `show` item that is not `id`, `id +N` or `[tag]`                    | write it in one of those forms                                                                                                              |
+| E502 | `show [tag]` with a tag no element has                                | fix the tag, or tag the elements                                                                                                            |
+| E503 | `kind` naming a kind no relationship has                              | fix the kind, or mark the relationships                                                                                                     |
+| E601 | a scenario with no steps                                              | add steps                                                                                                                                   |
+| E602 | a step with several objects                                           | write one step per object                                                                                                                   |
+| E603 | a step with a `[kind]`                                                | remove it                                                                                                                                   |
+| E604 | no view shows everything a scenario names                             | add the named top-level element to a view's `show` line                                                                                     |
+| W601 | a step with no relationship behind it                                 | see "Warnings" in SKILL.md: fix the model or the step, never delete the step                                                                |
+| E701 | a walkthrough with no steps                                           | add `step <view>` lines                                                                                                                     |
+| E702 | `step` naming no view or scenario                                     | take the suggestion                                                                                                                         |
+| E703 | focusing on an element hidden in a closed container                   | add `open <container>` to the step, or show it deeper in the view                                                                           |
+| E704 | step numbers after a view                                             | put element ids after a view                                                                                                                |
+| E705 | element ids after a scenario                                          | put step numbers after a scenario                                                                                                           |
+| E706 | step numbers the scenario does not have                               | use numbers from 1 to the number of steps                                                                                                   |
+| E707 | `open` or `close` on an element with nothing inside                   | remove it                                                                                                                                   |
+| E708 | two `for` lines in one step                                           | keep one                                                                                                                                    |
+| E801 | text after `system`                                                   | move it to `repo` or `compose` lines under `system`                                                                                         |
+| E802 | two `system` blocks                                                   | merge them into one                                                                                                                         |
+| E803 | a `system` block with nothing under it                                | add `repo` or `compose` lines, or remove it                                                                                                 |
+| E804 | an absolute path, `~`, a web address or backslashes                   | write the path relative to the `.aerie` file's folder, with `/`                                                                             |
+| E805 | a Compose file outside every listed repo                              | add a `repo` line for its repo, or fix the path                                                                                             |
+| E806 | a code unit with no `kind:`                                           | write `compose:`, `maven:`, `npm:` or `class:` before the name                                                                              |
+| E807 | an unknown kind of code unit                                          | use `compose`, `maven`, `npm` or `class`                                                                                                    |
+| E808 | a name the kind does not allow                                        | follow the message's rule for that kind                                                                                                     |
+| E809 | one code unit under two elements                                      | keep it on the one element it belongs to                                                                                                    |
+| E810 | an `ignore` line without `drift` or a subject                         | write `ignore drift <subject> - <reason>`                                                                                                   |
+| E811 | an `ignore` line without a reason                                     | add a hyphen, a space and the reason                                                                                                        |
+| E812 | a subject that is not an id, a unit or `a to b`                       | write one of those                                                                                                                          |
+| E813 | `a to a`                                                              | name two different ends                                                                                                                     |
+| E814 | the same subject ignored twice                                        | keep one line                                                                                                                               |
+| W001 | a file with no elements                                               | add elements                                                                                                                                |

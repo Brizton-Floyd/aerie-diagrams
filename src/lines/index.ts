@@ -9,6 +9,7 @@ export {
   type DiagnosticId,
   type Severity,
 } from './catalogue.ts';
+export { CODE_KINDS, CODE_NAMES, type CodeKind } from './code.ts';
 export {
   completionsAt,
   highlight,

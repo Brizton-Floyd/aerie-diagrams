@@ -1,0 +1,9 @@
+shop: Shop [system]
+  web: Storefront [service]
+    code compose:web
+    > The pages customers see.
+    code   npm:shop-web
+  api: Orders API [service]
+    code compose:api maven:orders-api
+    pricing: Pricing rules
+      code class:PricingRules class:com.shop.orders.pricing.Discounts

@@ -1,0 +1,8 @@
+system
+  repo /Users/me/shop
+  repo ~/shop
+  repo C:/shop
+  repo ..\shop
+  repo https://github.com/shop/web
+  compose /srv/compose.yaml
+web: Website

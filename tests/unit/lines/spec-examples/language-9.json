@@ -1,0 +1,70 @@
+{
+  "model": {
+    "format": "aerie-model/1",
+    "id": "shop",
+    "title": {
+      "base": "Corner shop",
+      "set": {}
+    },
+    "about": {
+      "base": null,
+      "set": {},
+      "add": {}
+    },
+    "audiences": [
+      {
+        "id": "exec",
+        "name": "Executive",
+        "code": false
+      },
+      {
+        "id": "manager",
+        "name": "Manager",
+        "code": false
+      },
+      {
+        "id": "engineer",
+        "name": "Engineer",
+        "code": true
+      }
+    ],
+    "defaultAudience": "manager",
+    "system": {
+      "repos": [
+        ".",
+        "../shop-web"
+      ],
+      "compose": [
+        "deploy/compose.yaml"
+      ]
+    },
+    "elements": [
+      {
+        "id": "web",
+        "parent": null,
+        "name": {
+          "base": "Storefront",
+          "set": {}
+        },
+        "tagline": {
+          "base": null,
+          "set": {}
+        },
+        "tags": [],
+        "icon": null,
+        "code": [],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      }
+    ],
+    "relationships": [],
+    "views": [],
+    "scenarios": [],
+    "walkthroughs": [],
+    "ignores": []
+  },
+  "diagnostics": []
+}

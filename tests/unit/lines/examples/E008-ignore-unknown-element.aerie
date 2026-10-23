@@ -1,0 +1,5 @@
+website: Website
+screen-api: Screen API
+ignore drift webiste - drawn before it is built
+ignore drift website to screen-apu - through the proxy
+ignore drift Website to screen-api - capitals are not ids

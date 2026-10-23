@@ -1,0 +1,124 @@
+{
+  "format": "aerie-model/1",
+  "id": null,
+  "title": {
+    "base": null,
+    "set": {}
+  },
+  "about": {
+    "base": null,
+    "set": {},
+    "add": {}
+  },
+  "audiences": [
+    {
+      "id": "exec",
+      "name": "Executive",
+      "code": false
+    },
+    {
+      "id": "manager",
+      "name": "Manager",
+      "code": false
+    },
+    {
+      "id": "engineer",
+      "name": "Engineer",
+      "code": true
+    }
+  ],
+  "defaultAudience": "manager",
+  "system": null,
+  "elements": [
+    {
+      "id": "engine",
+      "parent": null,
+      "name": {
+        "base": "Analysis engine",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [
+        "service"
+      ],
+      "icon": null,
+      "code": [
+        {
+          "kind": "compose",
+          "name": "core"
+        },
+        {
+          "kind": "maven",
+          "name": "engine-server"
+        },
+        {
+          "kind": "maven",
+          "name": "engine-strategies"
+        },
+        {
+          "kind": "maven",
+          "name": "engine-formats"
+        }
+      ],
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "ui",
+      "parent": null,
+      "name": {
+        "base": "Website",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [
+        "service"
+      ],
+      "icon": null,
+      "code": [
+        {
+          "kind": "compose",
+          "name": "web-ui"
+        },
+        {
+          "kind": "npm",
+          "name": "lotto-ui"
+        }
+      ],
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "subject": "ui",
+      "verb": {
+        "base": "calls",
+        "set": {}
+      },
+      "object": "engine",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "views": [],
+  "scenarios": [],
+  "walkthroughs": [],
+  "ignores": []
+}

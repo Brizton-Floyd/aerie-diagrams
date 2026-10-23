@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E802",
+    "severity": "error",
+    "line": 4,
+    "column": 1,
+    "endLine": 4,
+    "endColumn": 7,
+    "message": "There is already a `system` block on line 1. Declare the system once, with all its repos and Compose files."
+  }
+]

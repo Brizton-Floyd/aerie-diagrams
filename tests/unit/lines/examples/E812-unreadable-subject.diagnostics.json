@@ -1,0 +1,29 @@
+[
+  {
+    "id": "E812",
+    "severity": "error",
+    "line": 3,
+    "column": 14,
+    "endLine": 3,
+    "endColumn": 21,
+    "message": "`web api` is not something drift can ignore. Write an element id, a code unit such as `maven:legacy`, or two of them joined by `to`, such as `web to api`."
+  },
+  {
+    "id": "E812",
+    "severity": "error",
+    "line": 4,
+    "column": 14,
+    "endLine": 4,
+    "endColumn": 27,
+    "message": "`web calls api` is not something drift can ignore. Write an element id, a code unit such as `maven:legacy`, or two of them joined by `to`, such as `web to api`."
+  },
+  {
+    "id": "E812",
+    "severity": "error",
+    "line": 5,
+    "column": 14,
+    "endLine": 5,
+    "endColumn": 31,
+    "message": "`web to api to web` is not something drift can ignore. Write an element id, a code unit such as `maven:legacy`, or two of them joined by `to`, such as `web to api`."
+  }
+]

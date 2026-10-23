@@ -1,0 +1,6 @@
+system: System
+code: Code
+web: Website
+  repo: Repo
+  compose: Compose
+view ignore: Ignore

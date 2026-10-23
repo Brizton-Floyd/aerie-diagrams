@@ -1,0 +1,8 @@
+system
+  repo .
+  repo ../shop-api
+  compose compose.yaml
+  compose ../shop-api/deploy/compose.yaml
+  compose ./deploy/../compose.prod.yaml
+
+web: Storefront

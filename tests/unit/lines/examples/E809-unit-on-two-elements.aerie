@@ -1,0 +1,6 @@
+engine: Analysis engine
+  code compose:core
+  service: Engine service
+    code compose:core maven:engine-server
+api: Screen API
+  code maven:engine-server

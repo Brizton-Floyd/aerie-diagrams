@@ -28,6 +28,7 @@
     }
   ],
   "defaultAudience": "manager",
+  "system": null,
   "elements": [
     {
       "id": "suite",
@@ -42,6 +43,7 @@
       },
       "tags": [],
       "icon": null,
+      "code": [],
       "about": {
         "base": null,
         "set": {},
@@ -61,6 +63,7 @@
       },
       "tags": [],
       "icon": null,
+      "code": [],
       "about": {
         "base": null,
         "set": {},
@@ -80,6 +83,7 @@
       },
       "tags": [],
       "icon": null,
+      "code": [],
       "about": {
         "base": null,
         "set": {},
@@ -99,6 +103,7 @@
       },
       "tags": [],
       "icon": null,
+      "code": [],
       "about": {
         "base": null,
         "set": {},
@@ -118,6 +123,7 @@
       },
       "tags": [],
       "icon": null,
+      "code": [],
       "about": {
         "base": null,
         "set": {},
@@ -162,5 +168,6 @@
     }
   ],
   "scenarios": [],
-  "walkthroughs": []
+  "walkthroughs": [],
+  "ignores": []
 }

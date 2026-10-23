@@ -1,6 +1,6 @@
 # Model semantics
 
-What a canonical model ([language.md](language.md#11-the-canonical-json-model)) means: how elements
+What a canonical model ([language.md](language.md#12-the-canonical-json-model)) means: how elements
 nest, how wording resolves for an audience, what a view draws, how relationships are lifted to the
 elements a reader can see, how scenarios and walkthroughs turn into pictures, and the full state of
 what a reader is looking at. Everything here is pure computation over the model, with no layout or
@@ -28,6 +28,10 @@ Requirement ids: `MODEL-nnn`. Conventions are in [overview.md](overview.md#readi
   "Outside the system" for `external`, otherwise its first tag with hyphens read as spaces and the
   first letter in upper case (`data-pipeline` gives "Data pipeline"), and "Element" when it has no
   tags. A nested element's label adds " in " and its parent's name: "Service in Lotto suite".
+- **MODEL-006** An element's `code` units, the model's `system` and its `ignores` (LANG-751) mean
+  nothing to a reader. Two models that differ only in them have the same views, drawn sets, edges,
+  labels, scenarios, walkthrough pictures, layouts and drawings, for every audience and zoom state.
+  They are read only by drift detection ([drift.md](drift.md)).
 
 ## Audience resolution
 

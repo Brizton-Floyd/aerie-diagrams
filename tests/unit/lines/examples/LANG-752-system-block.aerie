@@ -1,0 +1,9 @@
+model shop: Corner shop
+audiences owner "Owner" (default), developer "Developer" (code)
+
+system
+  repo ../shop-api
+  compose ../shop-api/compose.yaml
+  repo ../shop-web
+
+web: Storefront

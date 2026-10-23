@@ -1,0 +1,74 @@
+[
+  {
+    "id": "E808",
+    "severity": "error",
+    "line": 2,
+    "column": 8,
+    "endLine": 2,
+    "endColumn": 16,
+    "message": "`compose:` does not name a Compose service. A service name uses letters, digits, `.`, `_` and `-`, as in `compose:orders-api`."
+  },
+  {
+    "id": "E808",
+    "severity": "error",
+    "line": 2,
+    "column": 17,
+    "endLine": 2,
+    "endColumn": 31,
+    "message": "`compose:web/ui` does not name a Compose service. A service name uses letters, digits, `.`, `_` and `-`, as in `compose:orders-api`."
+  },
+  {
+    "id": "E808",
+    "severity": "error",
+    "line": 2,
+    "column": 32,
+    "endLine": 2,
+    "endColumn": 48,
+    "message": "`maven:orders$api` does not name a Maven module. Write the module's artifactId, which uses letters, digits, `.`, `_` and `-`, as in `maven:orders-core`."
+  },
+  {
+    "id": "E808",
+    "severity": "error",
+    "line": 2,
+    "column": 49,
+    "endLine": 2,
+    "endColumn": 61,
+    "message": "`npm:Shop-Web` does not name an npm package. Write the `name` from its package.json, in lower case, as in `npm:orders-web` or `npm:@shop/orders-web`."
+  },
+  {
+    "id": "E808",
+    "severity": "error",
+    "line": 2,
+    "column": 62,
+    "endLine": 2,
+    "endColumn": 71,
+    "message": "`npm:@shop` does not name an npm package. Write the `name` from its package.json, in lower case, as in `npm:orders-web` or `npm:@shop/orders-web`."
+  },
+  {
+    "id": "E808",
+    "severity": "error",
+    "line": 2,
+    "column": 72,
+    "endLine": 2,
+    "endColumn": 86,
+    "message": "`class:1Pricing` does not name a class. Write a class name, as in `class:OrderService` or `class:com.shop.orders.OrderService`, or a package and `.*`, as in `class:com.shop.orders.*`."
+  },
+  {
+    "id": "E808",
+    "severity": "error",
+    "line": 2,
+    "column": 87,
+    "endLine": 2,
+    "endColumn": 102,
+    "message": "`class:com..shop` does not name a class. Write a class name, as in `class:OrderService` or `class:com.shop.orders.OrderService`, or a package and `.*`, as in `class:com.shop.orders.*`."
+  },
+  {
+    "id": "E808",
+    "severity": "error",
+    "line": 2,
+    "column": 103,
+    "endLine": 2,
+    "endColumn": 110,
+    "message": "`class:*` does not name a class. Write a class name, as in `class:OrderService` or `class:com.shop.orders.OrderService`, or a package and `.*`, as in `class:com.shop.orders.*`."
+  }
+]

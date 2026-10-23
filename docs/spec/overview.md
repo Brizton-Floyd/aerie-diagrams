@@ -69,6 +69,8 @@ new decision.
 - An importer from other diagram formats. An optional importer, as a separate module that maps onto
   the canonical model, may come after v1.
 - Checking a model against the code or infrastructure it describes, and showing change over time.
+  Checking against the code comes after v1 ([decision 0006](../decisions/0006-drift-detection.md),
+  [drift.md](drift.md)).
 - Embedding a diagram in other pages, and exporting to images or documents.
 - Search, comments, accounts, hosting and real-time collaboration.
 - Models split across several files.
@@ -87,6 +89,7 @@ new decision.
 | [interaction.md](interaction.md)   | everything a reader and an author do                                      | `INT`                            |
 | [acceptance.md](acceptance.md)     | test suites per slice, and the browser journeys                           | `ACC`, `JOURNEY`                 |
 | [claude-skill.md](claude-skill.md) | the Aerie skill for Claude                                                | `SKILL`                          |
+| [drift.md](drift.md)               | drift detection: checking a model against the code (after v1)             | `DRIFT`                          |
 
 - **Requirements** are the numbered statements, written in bold as `PREFIX-nnn` at the start of a
   list item. Each states one testable behaviour in the present tense ("is", "shows", "never moves").
@@ -142,3 +145,4 @@ they can be reviewed, and each can be changed by a pull request to this spec.
 | [0003 Lines](../decisions/0003-lines-language.md)                | [language.md](language.md); MODEL-301 to MODEL-306                                                                                            |
 | [0004 ELK hybrid layout](../decisions/0004-elk-hybrid-layout.md) | [layout.md](layout.md)                                                                                                                        |
 | [0005 Contour](../decisions/0005-contour-look.md)                | [look.md](look.md)                                                                                                                            |
+| [0006 Drift detection](../decisions/0006-drift-detection.md)     | [drift.md](drift.md); LANG-751 to LANG-759 in section 11 of [language.md](language.md); MODEL-006                                             |

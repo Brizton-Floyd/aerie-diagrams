@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // The `aerie` command: check, format and print the model of Lines files
-// (docs/spec/language.md, section 14), and watch one (docs/spec/interaction.md, INT-851).
+// (docs/spec/language.md, section 15), and watch one (docs/spec/interaction.md, INT-851).
 import { readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { format, serializeModel, type Diagnostic } from '../lines/index.ts';

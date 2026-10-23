@@ -1,0 +1,7 @@
+system
+  repo ../shop-api
+  repo ../shop-web
+  compose ../shop-api/compose.yaml
+  compose ../shop-api-old/compose.yaml
+  compose ../shop-web/../compose.yaml
+web: Website

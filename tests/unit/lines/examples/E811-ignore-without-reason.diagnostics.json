@@ -1,0 +1,29 @@
+[
+  {
+    "id": "E811",
+    "severity": "error",
+    "line": 3,
+    "column": 17,
+    "endLine": 3,
+    "endColumn": 17,
+    "message": "Say why this drift is ignored: end the line with a hyphen, a space and the reason, as in `ignore drift web - retiring next year`."
+  },
+  {
+    "id": "E811",
+    "severity": "error",
+    "line": 4,
+    "column": 26,
+    "endLine": 4,
+    "endColumn": 26,
+    "message": "Say why this drift is ignored: end the line with a hyphen, a space and the reason, as in `ignore drift web to api - retiring next year`."
+  },
+  {
+    "id": "E811",
+    "severity": "error",
+    "line": 5,
+    "column": 31,
+    "endLine": 5,
+    "endColumn": 31,
+    "message": "Say why this drift is ignored: end the line with a hyphen, a space and the reason, as in `ignore drift compose:metrics - retiring next year`."
+  }
+]

@@ -28,6 +28,7 @@
     }
   ],
   "defaultAudience": "manager",
+  "system": null,
   "elements": [
     {
       "id": "web",
@@ -44,6 +45,7 @@
         "module"
       ],
       "icon": null,
+      "code": [],
       "about": {
         "base": null,
         "set": {},
@@ -65,6 +67,7 @@
         "module"
       ],
       "icon": null,
+      "code": [],
       "about": {
         "base": null,
         "set": {},
@@ -75,9 +78,9 @@
   "relationships": [],
   "views": [
     {
-      "id": "code",
+      "id": "build",
       "title": {
-        "base": "Code",
+        "base": "Build",
         "set": {}
       },
       "about": {
@@ -99,5 +102,6 @@
     }
   ],
   "scenarios": [],
-  "walkthroughs": []
+  "walkthroughs": [],
+  "ignores": []
 }

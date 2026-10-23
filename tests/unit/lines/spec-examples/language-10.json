@@ -1,0 +1,151 @@
+{
+  "model": {
+    "format": "aerie-model/1",
+    "id": null,
+    "title": {
+      "base": null,
+      "set": {}
+    },
+    "about": {
+      "base": null,
+      "set": {},
+      "add": {}
+    },
+    "audiences": [
+      {
+        "id": "exec",
+        "name": "Executive",
+        "code": false
+      },
+      {
+        "id": "manager",
+        "name": "Manager",
+        "code": false
+      },
+      {
+        "id": "engineer",
+        "name": "Engineer",
+        "code": true
+      }
+    ],
+    "defaultAudience": "manager",
+    "system": null,
+    "elements": [
+      {
+        "id": "shop",
+        "parent": null,
+        "name": {
+          "base": "Shop",
+          "set": {}
+        },
+        "tagline": {
+          "base": null,
+          "set": {}
+        },
+        "tags": [
+          "system"
+        ],
+        "icon": null,
+        "code": [],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "id": "web",
+        "parent": "shop",
+        "name": {
+          "base": "Storefront",
+          "set": {}
+        },
+        "tagline": {
+          "base": null,
+          "set": {}
+        },
+        "tags": [
+          "service"
+        ],
+        "icon": null,
+        "code": [
+          {
+            "kind": "compose",
+            "name": "web"
+          },
+          {
+            "kind": "npm",
+            "name": "shop-web"
+          }
+        ],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "id": "api",
+        "parent": "shop",
+        "name": {
+          "base": "Orders API",
+          "set": {}
+        },
+        "tagline": {
+          "base": null,
+          "set": {}
+        },
+        "tags": [
+          "service"
+        ],
+        "icon": null,
+        "code": [
+          {
+            "kind": "compose",
+            "name": "api"
+          },
+          {
+            "kind": "maven",
+            "name": "orders-api"
+          }
+        ],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "id": "pricing",
+        "parent": "api",
+        "name": {
+          "base": "Pricing rules",
+          "set": {}
+        },
+        "tagline": {
+          "base": null,
+          "set": {}
+        },
+        "tags": [],
+        "icon": null,
+        "code": [
+          {
+            "kind": "class",
+            "name": "com.shop.orders.pricing.*"
+          }
+        ],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      }
+    ],
+    "relationships": [],
+    "views": [],
+    "scenarios": [],
+    "walkthroughs": [],
+    "ignores": []
+  },
+  "diagnostics": []
+}

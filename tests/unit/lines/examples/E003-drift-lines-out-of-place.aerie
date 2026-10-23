@@ -1,0 +1,15 @@
+code compose:web
+repo .
+web: Website
+  system
+  repo .
+  compose compose.yaml
+  ignore drift web - nested
+system
+  > The repos.
+  code compose:web
+  web-two: Website two
+  compose compose.yaml
+    code compose:web
+view main: Main
+  code compose:web

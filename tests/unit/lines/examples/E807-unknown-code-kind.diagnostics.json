@@ -1,0 +1,20 @@
+[
+  {
+    "id": "E807",
+    "severity": "error",
+    "line": 2,
+    "column": 8,
+    "endLine": 2,
+    "endColumn": 16,
+    "message": "There is no kind of code called `composer`. Did you mean `compose`? The kinds are `compose`, `maven`, `npm`, `class`."
+  },
+  {
+    "id": "E807",
+    "severity": "error",
+    "line": 2,
+    "column": 21,
+    "endLine": 2,
+    "endColumn": 27,
+    "message": "There is no kind of code called `gradle`. The kinds are `compose`, `maven`, `npm`, `class`."
+  }
+]

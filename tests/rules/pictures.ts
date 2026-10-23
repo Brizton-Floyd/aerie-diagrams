@@ -14,6 +14,8 @@ const ROOT = join(import.meta.dirname, '../..');
 export interface Source {
   /** The file, relative to the repository, such as `samples/lotto.aerie`. */
   path: string;
+  /** The file's text. */
+  text: string;
   semantics: Semantics;
   layouter: Layouter;
 }
@@ -25,10 +27,11 @@ export const SOURCES: Source[] = ['samples', 'docs/spec/examples'].flatMap((dir)
     .sort()
     .map((file) => {
       const path = `${dir}/${file}`;
-      const result = parse(readFileSync(join(ROOT, path), 'utf8'));
+      const text = readFileSync(join(ROOT, path), 'utf8');
+      const result = parse(text);
       if (result.model === null) throw new Error(`${path} has no model`);
       const semantics = new Semantics(result.model);
-      return { path, semantics, layouter: new Layouter(semantics, inProcessEngine()) };
+      return { path, text, semantics, layouter: new Layouter(semantics, inProcessEngine()) };
     }),
 );
 

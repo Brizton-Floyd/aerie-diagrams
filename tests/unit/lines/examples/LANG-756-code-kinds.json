@@ -1,0 +1,134 @@
+{
+  "format": "aerie-model/1",
+  "id": null,
+  "title": {
+    "base": null,
+    "set": {}
+  },
+  "about": {
+    "base": null,
+    "set": {},
+    "add": {}
+  },
+  "audiences": [
+    {
+      "id": "exec",
+      "name": "Executive",
+      "code": false
+    },
+    {
+      "id": "manager",
+      "name": "Manager",
+      "code": false
+    },
+    {
+      "id": "engineer",
+      "name": "Engineer",
+      "code": true
+    }
+  ],
+  "defaultAudience": "manager",
+  "system": null,
+  "elements": [
+    {
+      "id": "web",
+      "parent": null,
+      "name": {
+        "base": "Storefront",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "code": [
+        {
+          "kind": "compose",
+          "name": "web_1.blue-green"
+        },
+        {
+          "kind": "npm",
+          "name": "@shop/web-ui"
+        },
+        {
+          "kind": "npm",
+          "name": "shop-web"
+        }
+      ],
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "api",
+      "parent": null,
+      "name": {
+        "base": "Orders API",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "code": [
+        {
+          "kind": "maven",
+          "name": "orders-api"
+        },
+        {
+          "kind": "maven",
+          "name": "Orders_Core.v2"
+        }
+      ],
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "rules",
+      "parent": null,
+      "name": {
+        "base": "Pricing rules",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "code": [
+        {
+          "kind": "class",
+          "name": "com.shop.orders.pricing.*"
+        },
+        {
+          "kind": "class",
+          "name": "$Generated"
+        },
+        {
+          "kind": "class",
+          "name": "PricingRules"
+        }
+      ],
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "relationships": [],
+  "views": [],
+  "scenarios": [],
+  "walkthroughs": [],
+  "ignores": []
+}

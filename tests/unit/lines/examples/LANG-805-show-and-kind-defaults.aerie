@@ -1,7 +1,7 @@
 web: Website
 view main: Main
   show web
-view code: Code
+view build: Build
   kind code, code
 api: Screen API
 web uses api [code]

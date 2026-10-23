@@ -1,0 +1,56 @@
+[
+  {
+    "id": "E804",
+    "severity": "error",
+    "line": 2,
+    "column": 8,
+    "endLine": 2,
+    "endColumn": 22,
+    "message": "`/Users/me/shop` is not a path from this file's folder. Write it relative to the folder that holds this file, with forward slashes, such as `../orders-api`."
+  },
+  {
+    "id": "E804",
+    "severity": "error",
+    "line": 3,
+    "column": 8,
+    "endLine": 3,
+    "endColumn": 14,
+    "message": "`~/shop` is not a path from this file's folder. Write it relative to the folder that holds this file, with forward slashes, such as `../orders-api`."
+  },
+  {
+    "id": "E804",
+    "severity": "error",
+    "line": 4,
+    "column": 8,
+    "endLine": 4,
+    "endColumn": 15,
+    "message": "`C:/shop` is not a path from this file's folder. Write it relative to the folder that holds this file, with forward slashes, such as `../orders-api`."
+  },
+  {
+    "id": "E804",
+    "severity": "error",
+    "line": 5,
+    "column": 8,
+    "endLine": 5,
+    "endColumn": 15,
+    "message": "`..\\shop` is not a path from this file's folder. Write it relative to the folder that holds this file, with forward slashes, such as `../orders-api`."
+  },
+  {
+    "id": "E804",
+    "severity": "error",
+    "line": 6,
+    "column": 8,
+    "endLine": 6,
+    "endColumn": 35,
+    "message": "`https://github.com/shop/web` is not a path from this file's folder. Write it relative to the folder that holds this file, with forward slashes, such as `../orders-api`."
+  },
+  {
+    "id": "E804",
+    "severity": "error",
+    "line": 7,
+    "column": 11,
+    "endLine": 7,
+    "endColumn": 28,
+    "message": "`/srv/compose.yaml` is not a path from this file's folder. Write it relative to the folder that holds this file, with forward slashes, such as `../orders-api`."
+  }
+]

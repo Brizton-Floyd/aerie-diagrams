@@ -1,5 +1,5 @@
 // The formatter: rewrites a Lines file in one stable style, changing only spacing and keeping
-// everything the author wrote, comments included (docs/spec/language.md, section 13).
+// everything the author wrote, comments included (docs/spec/language.md, section 14).
 import type { Diagnostic } from './catalogue.ts';
 import { readDocument, type List, type Piece, type Read, type ShowItemRead } from './read.ts';
 import { collapseSpaces, findUnescaped } from './text.ts';
@@ -153,6 +153,14 @@ export function formatRead(raw: string, read: Read): string {
     case 'icon':
     case 'for':
       return joined(read.kind, words(read.value));
+    case 'repo':
+    case 'compose':
+      // A path is kept as written: spaces inside it are part of it (LANG-933).
+      return joined(read.kind, read.value?.text ?? '');
+    case 'system':
+    case 'code':
+    case 'ignore':
+      return whole();
     case 'show':
       return read.items === null ? 'show' : `show ${read.all.map(showItem).join(', ')}`;
     case 'kind':

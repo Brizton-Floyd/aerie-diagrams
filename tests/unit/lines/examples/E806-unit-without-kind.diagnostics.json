@@ -1,0 +1,20 @@
+[
+  {
+    "id": "E806",
+    "severity": "error",
+    "line": 2,
+    "column": 20,
+    "endLine": 2,
+    "endColumn": 26,
+    "message": "`web-ui` does not say what kind of code it is. Write the kind and a colon first, as in `compose:web-ui`."
+  },
+  {
+    "id": "E806",
+    "severity": "error",
+    "line": 2,
+    "column": 27,
+    "endLine": 2,
+    "endColumn": 37,
+    "message": "`web-admin` does not say what kind of code it is. Write the kind and a colon first, as in `compose:web-admin`."
+  }
+]

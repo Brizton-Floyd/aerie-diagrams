@@ -1,0 +1,6 @@
+web: Storefront
+api: Orders API
+web calls api
+
+ignore   drift   maven:orders-legacy   -   retiring  with the desktop app - next spring
+ignore drift web - kept on the diagram for the walkthrough, not built yet

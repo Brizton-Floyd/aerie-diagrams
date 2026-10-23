@@ -149,6 +149,39 @@ describe('highlighting', () => {
     ]);
   });
 
+  it('INT-802 the system block, code lines and ignore lines: keywords, code units as tags, ids', () => {
+    const source = [
+      'system',
+      '  repo ../shop-web',
+      '  compose deploy/compose.yaml',
+      'web: Storefront',
+      '  code compose:web npm:shop-web',
+      'ignore drift web to compose:api - through the gateway',
+      'ignore drift maven:legacy - retiring',
+      'ignore web - no drift word',
+    ].join('\n');
+    expect(coloured(source, 1)).toEqual([['system', 'keyword']]);
+    expect(coloured(source, 2)).toEqual([['repo', 'keyword']]);
+    expect(coloured(source, 3)).toEqual([['compose', 'keyword']]);
+    expect(coloured(source, 5)).toEqual([
+      ['code', 'keyword'],
+      ['compose:web', 'tag'],
+      ['npm:shop-web', 'tag'],
+    ]);
+    expect(coloured(source, 6)).toEqual([
+      ['ignore', 'keyword'],
+      ['drift', 'keyword'],
+      ['web', 'id'],
+      ['compose:api', 'tag'],
+    ]);
+    expect(coloured(source, 7)).toEqual([
+      ['ignore', 'keyword'],
+      ['drift', 'keyword'],
+      ['maven:legacy', 'tag'],
+    ]);
+    expect(coloured(source, 8)).toEqual([['ignore', 'keyword']]);
+  });
+
   it('INT-802 lines the parser cannot read, and the blocks under them, are still coloured', () => {
     const broken = ['\tweb: Storefront', '  > Still a description', '+ not a line'].join('\n');
     expect(coloured(broken, 1)).toEqual([['web', 'id']]);
@@ -216,6 +249,14 @@ describe('indenting on Enter', () => {
     expect(after(13)).toBe('    ');
     expect(after(14)).toBe('');
     expect(after(15)).toBe('');
+  });
+
+  it('INT-803 Enter adds two spaces after a system line, and keeps the indent in its block', () => {
+    const source = 'system\n  repo .\nweb: Web\n  code npm:web\nignore drift web - later\n';
+    expect(newLineIndent(source, 1, Infinity)).toBe('  ');
+    expect(newLineIndent(source, 2, Infinity)).toBe('  ');
+    expect(newLineIndent(source, 4, Infinity)).toBe('  ');
+    expect(newLineIndent(source, 5, Infinity)).toBe('');
   });
 
   it('INT-803 a description continuing over lines does not open a block, whatever its words', () => {

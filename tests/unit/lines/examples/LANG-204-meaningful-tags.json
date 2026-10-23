@@ -28,6 +28,7 @@
     }
   ],
   "defaultAudience": "manager",
+  "system": null,
   "elements": [
     {
       "id": "user",
@@ -44,6 +45,7 @@
         "person"
       ],
       "icon": null,
+      "code": [],
       "about": {
         "base": null,
         "set": {},
@@ -65,6 +67,7 @@
         "external"
       ],
       "icon": null,
+      "code": [],
       "about": {
         "base": null,
         "set": {},
@@ -86,6 +89,7 @@
         "store"
       ],
       "icon": null,
+      "code": [],
       "about": {
         "base": null,
         "set": {},
@@ -96,5 +100,6 @@
   "relationships": [],
   "views": [],
   "scenarios": [],
-  "walkthroughs": []
+  "walkthroughs": [],
+  "ignores": []
 }

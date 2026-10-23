@@ -1,0 +1,2 @@
+web: Website
+  code compose:web web-ui :web-admin

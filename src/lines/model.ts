@@ -1,5 +1,6 @@
-// The canonical JSON model every Lines file parses to (docs/spec/language.md, section 11).
+// The canonical JSON model every Lines file parses to (docs/spec/language.md, section 12).
 // Field order here is the serialisation order (LANG-806).
+import type { CodeKind } from './code.ts';
 
 export type Id = string;
 
@@ -26,11 +27,15 @@ export interface Model {
   about: Prose;
   audiences: Audience[];
   defaultAudience: Id;
+  /** What the `system` block says, or null without one (LANG-752). */
+  system: System | null;
   elements: Element[];
   relationships: Relationship[];
   views: View[];
   scenarios: Scenario[];
   walkthroughs: Walkthrough[];
+  /** The `ignore drift` lines, in the order written (LANG-758). */
+  ignores: Ignore[];
 }
 
 export interface Audience {
@@ -48,7 +53,32 @@ export interface Element {
   tags: Id[];
   /** Only what an icon line says. */
   icon: string | null;
+  /** The code units its `code` lines name, in the order written (LANG-755). */
+  code: CodeUnit[];
   about: Prose;
+}
+
+/** One piece of code a diagram element stands for, such as `compose:bff` (LANG-756). */
+export interface CodeUnit {
+  kind: CodeKind;
+  name: string;
+}
+
+/** The repos and Compose files that form the system, as written (LANG-753, LANG-754). */
+export interface System {
+  repos: string[];
+  compose: string[];
+}
+
+/** One end of an ignored difference: an element or a code unit (LANG-759). */
+export type DriftEnd = { element: Id } | { unit: CodeUnit };
+
+/** What an `ignore drift` line excuses: one end, or the connection from one end to another. */
+export type DriftSubject = DriftEnd | { from: DriftEnd; to: DriftEnd };
+
+export interface Ignore {
+  subject: DriftSubject;
+  reason: string;
 }
 
 export interface Relationship {

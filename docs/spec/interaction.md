@@ -198,7 +198,7 @@ walkthrough step.
 - **INT-802** The editor shows line numbers and colours each line by its kind (keywords, ids,
   rewordings, descriptions, comments, tags and kinds), in Source Code Pro.
 - **INT-803** Pressing Enter keeps the indent, and adds two spaces after a line that opens a block (a
-  `model`, element, `view`, `scenario`, `walkthrough` or walkthrough `step` line). Tab and Shift+Tab
+  `model`, `system`, element, `view`, `scenario`, `walkthrough` or walkthrough `step` line). Tab and Shift+Tab
   indent and outdent by two spaces.
 - **INT-804** Completion offers: element ids at the start of a sentence, at the end of a sentence, and
   in `show`, `open`, `close` and focus lists; tags after `[` in `show`; views and scenarios after

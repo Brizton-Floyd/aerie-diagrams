@@ -33,6 +33,7 @@
     }
   ],
   "defaultAudience": "product",
+  "system": null,
   "elements": [
     {
       "id": "web",
@@ -47,6 +48,7 @@
       },
       "tags": [],
       "icon": null,
+      "code": [],
       "about": {
         "base": null,
         "set": {},
@@ -57,5 +59,6 @@
   "relationships": [],
   "views": [],
   "scenarios": [],
-  "walkthroughs": []
+  "walkthroughs": [],
+  "ignores": []
 }

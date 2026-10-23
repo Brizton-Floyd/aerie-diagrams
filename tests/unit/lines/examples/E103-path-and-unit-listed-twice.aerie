@@ -1,0 +1,8 @@
+system
+  repo ../shop
+  repo ../shop/
+  compose ../shop/compose.yaml
+  compose ../shop/./compose.yaml
+web: Website
+  code compose:web npm:web compose:web
+  code npm:web

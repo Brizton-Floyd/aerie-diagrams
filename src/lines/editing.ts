@@ -97,6 +97,25 @@ function tokensOf(read: Read, line: number, end: number): Token[] {
       piece(read.head, 'keyword');
       piece(read.value, 'id');
       break;
+    case 'system':
+    case 'repo':
+    case 'compose':
+      piece(read.head, 'keyword');
+      break;
+    case 'code':
+      piece(read.head, 'keyword');
+      for (const unit of read.units) piece(unit, 'tag');
+      break;
+    case 'ignore':
+      // `ignore drift`, then element ids and code units; the `to` between them and the reason are
+      // plain.
+      piece(read.head, 'keyword');
+      if (read.what?.text === 'drift') piece(read.what, 'keyword');
+      read.subject.forEach((word, index) => {
+        if (word.text.includes(':')) piece(word, 'tag');
+        else if (index !== 1 || word.text !== 'to') piece(word, 'id');
+      });
+      break;
     case 'show':
       piece(read.head, 'keyword');
       for (const item of read.items ?? []) {
@@ -172,6 +191,7 @@ const OPENERS: ReadonlySet<Read['kind']> = new Set([
   'scenario',
   'walkthrough',
   'walk-step',
+  'system',
 ]);
 
 /**

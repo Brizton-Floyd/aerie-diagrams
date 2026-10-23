@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E801",
+    "severity": "error",
+    "line": 1,
+    "column": 8,
+    "endLine": 1,
+    "endColumn": 13,
+    "message": "Nothing goes after `system` on its line. Put each repo and Compose file on its own line under it, such as `repo ../orders-api`."
+  }
+]

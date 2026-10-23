@@ -1,0 +1,69 @@
+{
+  "format": "aerie-model/1",
+  "id": null,
+  "title": {
+    "base": null,
+    "set": {}
+  },
+  "about": {
+    "base": null,
+    "set": {},
+    "add": {}
+  },
+  "audiences": [
+    {
+      "id": "exec",
+      "name": "Executive",
+      "code": false
+    },
+    {
+      "id": "manager",
+      "name": "Manager",
+      "code": false
+    },
+    {
+      "id": "engineer",
+      "name": "Engineer",
+      "code": true
+    }
+  ],
+  "defaultAudience": "manager",
+  "system": {
+    "repos": [
+      ".",
+      "../shop-api"
+    ],
+    "compose": [
+      "compose.yaml",
+      "../shop-api/deploy/compose.yaml",
+      "./deploy/../compose.prod.yaml"
+    ]
+  },
+  "elements": [
+    {
+      "id": "web",
+      "parent": null,
+      "name": {
+        "base": "Storefront",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "code": [],
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "relationships": [],
+  "views": [],
+  "scenarios": [],
+  "walkthroughs": [],
+  "ignores": []
+}

@@ -6,6 +6,8 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
   CATALOGUE,
+  CODE_KINDS,
+  CODE_NAMES,
   DEFAULT_AUDIENCES,
   format,
   parse,
@@ -114,11 +116,13 @@ describe('the canonical model', () => {
       'about',
       'audiences',
       'defaultAudience',
+      'system',
       'elements',
       'relationships',
       'views',
       'scenarios',
       'walkthroughs',
+      'ignores',
     ]);
     expect(Object.keys(model.title)).toEqual(words);
     expect(Object.keys(model.about)).toEqual(prose);
@@ -133,6 +137,7 @@ describe('the canonical model', () => {
         'tagline',
         'tags',
         'icon',
+        'code',
         'about',
       ]);
       expect(element.name.base).not.toBeNull();
@@ -164,6 +169,76 @@ describe('the canonical model', () => {
         ]);
       }
     }
+  });
+
+  it('LANG-809 writes the system, code units and ignores with exactly their fields, in order', () => {
+    const model = modelOf(
+      [
+        'system',
+        '  compose ../web/compose.yaml',
+        '  repo ../web/',
+        '  repo  ../my  api',
+        'web: Website',
+        '  code npm:web',
+        '  code compose:web class:com.web.*',
+        'api: API',
+        'ignore drift web - not built yet',
+        'ignore drift maven:legacy - retiring',
+        'ignore drift web to compose:metrics -  sends  numbers  there',
+        '',
+      ].join('\n'),
+    );
+    expect(model.system).toEqual({
+      repos: ['../web/', '../my  api'],
+      compose: ['../web/compose.yaml'],
+    });
+    expect(Object.keys(model.system ?? {})).toEqual(['repos', 'compose']);
+    expect(model.elements[0]?.code).toEqual([
+      { kind: 'npm', name: 'web' },
+      { kind: 'compose', name: 'web' },
+      { kind: 'class', name: 'com.web.*' },
+    ]);
+    expect(model.elements[1]?.code).toEqual([]);
+    expect(model.ignores).toEqual([
+      { subject: { element: 'web' }, reason: 'not built yet' },
+      { subject: { unit: { kind: 'maven', name: 'legacy' } }, reason: 'retiring' },
+      {
+        subject: { from: { element: 'web' }, to: { unit: { kind: 'compose', name: 'metrics' } } },
+        reason: 'sends numbers there',
+      },
+    ]);
+    for (const ignore of model.ignores) {
+      expect(Object.keys(ignore)).toEqual(['subject', 'reason']);
+    }
+    const plain = modelOf('web: Website\n');
+    expect(plain.system).toBeNull();
+    expect(plain.ignores).toEqual([]);
+    expect(serializeModel(plain)).toContain('"system": null');
+  });
+
+  it('LANG-807 maps the system, code units and ignores to where they came from', () => {
+    const source = [
+      'system',
+      '  repo ../web',
+      'web: Website',
+      '  code npm:web compose:web',
+      'ignore drift web to compose:db - later',
+      '',
+    ].join('\n');
+    const { sourceMap } = parse(source);
+    const at = (line: number, column: number, endColumn: number): object => ({
+      line,
+      column,
+      endLine: line,
+      endColumn,
+    });
+    expect(sourceMap['/system']).toEqual(at(1, 1, 7));
+    expect(sourceMap['/system/repos/0']).toEqual(at(2, 8, 14));
+    expect(sourceMap['/elements/0/code/0']).toEqual(at(4, 8, 15));
+    expect(sourceMap['/elements/0/code/1']).toEqual(at(4, 16, 27));
+    expect(sourceMap['/ignores/0']).toEqual(at(5, 1, 39));
+    expect(sourceMap['/ignores/0/subject']).toEqual(at(5, 14, 31));
+    expect(sourceMap['/ignores/0/reason']).toEqual(at(5, 34, 39));
   });
 
   it('LANG-802 always lists the audiences and sets the default audience', () => {
@@ -324,6 +399,17 @@ describe('diagnostics', () => {
       E706: ['{scenario}', '{count}', '{range}'],
       E707: ['{id}'],
       E708: ['{line}'],
+      E802: ['{line}'],
+      E804: ['{path}'],
+      E805: ['{path}'],
+      E806: ['{text}'],
+      E807: ['{kind}', '{suggestion}', '{list}'],
+      E808: ['{unit}', '{what}', '{how}'],
+      E809: ['{unit}', '{id}', '{line}'],
+      E811: ['{subject}'],
+      E812: ['{subject}'],
+      E813: ['{subject}', '{end}'],
+      E814: ['{subject}', '{line}'],
     };
     const render = (id: DiagnosticId): string => {
       const build = CATALOGUE[id] as (...args: string[]) => string;
@@ -342,7 +428,8 @@ describe('diagnostics', () => {
     expect([
       e003({ rule: 'top-level', keyword: '{keyword}' }),
       e003({ rule: 'in-view', keyword: '{keyword}' }),
-      e003({ rule: 'in-element' }),
+      e003({ rule: 'in-element', keyword: '{keyword}' }),
+      e003({ rule: 'in-system', keyword: '{keyword}' }),
       e003({ rule: 'in-walkthrough' }),
       e003({ rule: 'in-walk-step', keyword: '{keyword}' }),
       e003({ rule: 'element' }),
@@ -351,6 +438,14 @@ describe('diagnostics', () => {
       e003({ rule: 'rewording', audience: '{audience}' }),
       e003({ rule: 'holds-nothing', line: '{kind}' }),
     ]).toEqual(outOfPlace);
+    const kinds = rows('E808 wording, by the kind').map(([kind = '', what, how]) => [
+      kind.replace(/`/g, ''),
+      what,
+      how,
+    ]);
+    expect(kinds).toEqual(
+      CODE_KINDS.map((kind) => [kind, CODE_NAMES[kind].what, CODE_NAMES[kind].how]),
+    );
     const rewording = rows('E303 messages:').map((row) => row[1]);
     const what = '{verb phrase or title}' as 'title';
     expect([
@@ -362,7 +457,7 @@ describe('diagnostics', () => {
   it('LANG-903 no message uses the words the spec rules out', () => {
     const banned = /\b(?:token|parse|syntax|unexpected|EOF|null|undefined)\b/i;
     const all = read('docs/spec/language.md');
-    const catalogue = all.slice(all.indexOf('### Catalogue'), all.indexOf('## 13.'));
+    const catalogue = all.slice(all.indexOf('### Catalogue'), all.indexOf('## 14.'));
     expect(catalogue).not.toMatch(banned);
     for (const source of [SHOP, LOTTO, 'web: Website\nweb calls nope\n']) {
       for (const found of parse(source).diagnostics) {
@@ -413,7 +508,7 @@ describe('diagnostics', () => {
 });
 
 describe('the worked example', () => {
-  it('ACC-013 examples/lotto.aerie has the shape section 15 of the language spec describes', () => {
+  it('ACC-013 examples/lotto.aerie has the shape section 16 of the language spec describes', () => {
     const model = modelOf(LOTTO);
     expect(model.elements).toHaveLength(18);
     expect(Math.max(...model.elements.map((element) => depthOf(model, element.id)))).toBe(3);

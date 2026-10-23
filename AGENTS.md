@@ -169,6 +169,12 @@ decisions live in [docs/decisions/](docs/decisions/). The functional spec is
 [docs/spec/](docs/spec/overview.md): build from it, cite its requirement ids at the start of test
 titles, and map your slice's tests through [docs/spec/acceptance.md](docs/spec/acceptance.md).
 
+After v1, drift detection (`aerie drift`, checking a model against the code) is built in slices D1
+to D8, specified in [docs/spec/drift.md](docs/spec/drift.md) ([decision 0006](docs/decisions/0006-drift-detection.md)).
+Its model lines (`system`, `code`, `ignore drift`) are read only by drift and change no drawing
+(MODEL-006, `tests/rules/drift-lines.test.ts`); record each slice's open choices in `drift.md` and
+give what it builds `DRIFT-nnn` ids.
+
 ## Maintaining this file
 
 Keep this file for knowledge useful to almost every future agent session in this project.

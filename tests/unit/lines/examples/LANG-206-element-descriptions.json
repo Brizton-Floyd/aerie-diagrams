@@ -28,6 +28,7 @@
     }
   ],
   "defaultAudience": "manager",
+  "system": null,
   "elements": [
     {
       "id": "web",
@@ -42,6 +43,7 @@
       },
       "tags": [],
       "icon": null,
+      "code": [],
       "about": {
         "base": "What the website does.\n\nWhy it matters.",
         "set": {},
@@ -52,5 +54,6 @@
   "relationships": [],
   "views": [],
   "scenarios": [],
-  "walkthroughs": []
+  "walkthroughs": [],
+  "ignores": []
 }

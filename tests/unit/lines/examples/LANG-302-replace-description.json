@@ -28,6 +28,7 @@
     }
   ],
   "defaultAudience": "manager",
+  "system": null,
   "elements": [
     {
       "id": "web",
@@ -42,6 +43,7 @@
       },
       "tags": [],
       "icon": null,
+      "code": [],
       "about": {
         "base": "What it is.",
         "set": {
@@ -54,5 +56,6 @@
   "relationships": [],
   "views": [],
   "scenarios": [],
-  "walkthroughs": []
+  "walkthroughs": [],
+  "ignores": []
 }

@@ -29,6 +29,7 @@
       }
     ],
     "defaultAudience": "manager",
+    "system": null,
     "elements": [
       {
         "id": "store",
@@ -45,6 +46,7 @@
           "service"
         ],
         "icon": "cylinder",
+        "code": [],
         "about": {
           "base": "Downloads winning numbers, keeps every past draw, and answers the engine's questions.",
           "set": {},
@@ -66,6 +68,7 @@
           "store"
         ],
         "icon": null,
+        "code": [],
         "about": {
           "base": null,
           "set": {},
@@ -76,7 +79,8 @@
     "relationships": [],
     "views": [],
     "scenarios": [],
-    "walkthroughs": []
+    "walkthroughs": [],
+    "ignores": []
   },
   "diagnostics": []
 }

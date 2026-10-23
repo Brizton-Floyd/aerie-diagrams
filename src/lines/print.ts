@@ -1,6 +1,16 @@
 // The printer: writes a canonical model as Lines, for tools that make models
 // (docs/spec/language.md, LANG-937 and LANG-941). Its output is already formatted.
-import type { Element, Model, Prose, ShowItem, WalkStep, Words } from './model.ts';
+import type {
+  CodeUnit,
+  DriftEnd,
+  DriftSubject,
+  Element,
+  Model,
+  Prose,
+  ShowItem,
+  WalkStep,
+  Words,
+} from './model.ts';
 import { encodeWords } from './text.ts';
 
 const INDENT = '  ';
@@ -53,6 +63,14 @@ export function print(model: Model): string {
   });
   blocks.push([`audiences ${audienceLine.join(', ')}`]);
 
+  if (model.system !== null) {
+    blocks.push([
+      'system',
+      ...model.system.repos.map((path) => `${INDENT}repo ${path}`),
+      ...model.system.compose.map((path) => `${INDENT}compose ${path}`),
+    ]);
+  }
+
   const element = (item: Element, depth: number): string[] => {
     const pad = INDENT.repeat(depth);
     let line = `${pad}${item.id}: ${encodeWords(item.name.base ?? '')}`;
@@ -60,6 +78,7 @@ export function print(model: Model): string {
     if (item.tags.length > 0) line += ` [${item.tags.join(' ')}]`;
     const lines = [line];
     if (item.icon !== null) lines.push(`${pad}${INDENT}icon ${item.icon}`);
+    if (item.code.length > 0) lines.push(`${pad}${INDENT}code ${item.code.map(unit).join(' ')}`);
     lines.push(
       ...wording(depth + 1, item.about, (audience) => {
         const name = item.name.set[audience];
@@ -124,7 +143,25 @@ export function print(model: Model): string {
     blocks.push(lines);
   }
 
+  if (model.ignores.length > 0) {
+    blocks.push(
+      model.ignores.map((ignore) => `ignore drift ${subject(ignore.subject)} - ${ignore.reason}`),
+    );
+  }
+
   return blocks.map((lines) => lines.join('\n')).join('\n\n') + '\n';
+}
+
+function unit(code: CodeUnit): string {
+  return `${code.kind}:${code.name}`;
+}
+
+function end(value: DriftEnd): string {
+  return 'unit' in value ? unit(value.unit) : value.element;
+}
+
+function subject(value: DriftSubject): string {
+  return 'from' in value ? `${end(value.from)} to ${end(value.to)}` : end(value);
 }
 
 /** The paragraphs of one part of a description. */

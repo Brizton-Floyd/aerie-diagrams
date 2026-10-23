@@ -1,0 +1,29 @@
+[
+  {
+    "id": "E810",
+    "severity": "error",
+    "line": 2,
+    "column": 1,
+    "endLine": 2,
+    "endColumn": 27,
+    "message": "An `ignore` line says `ignore drift`, what to ignore, a hyphen with a space on each side, and why, as in `ignore drift maven:legacy - retiring with the desktop app`."
+  },
+  {
+    "id": "E810",
+    "severity": "error",
+    "line": 3,
+    "column": 1,
+    "endLine": 3,
+    "endColumn": 29,
+    "message": "An `ignore` line says `ignore drift`, what to ignore, a hyphen with a space on each side, and why, as in `ignore drift maven:legacy - retiring with the desktop app`."
+  },
+  {
+    "id": "E810",
+    "severity": "error",
+    "line": 4,
+    "column": 1,
+    "endLine": 4,
+    "endColumn": 7,
+    "message": "An `ignore` line says `ignore drift`, what to ignore, a hyphen with a space on each side, and why, as in `ignore drift maven:legacy - retiring with the desktop app`."
+  }
+]
