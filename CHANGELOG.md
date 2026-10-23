@@ -14,7 +14,8 @@ functional spec for each version is [docs/spec/](docs/spec/overview.md).
   summary, and fails on drift (`fail-on: likely` for likely findings too).
 - A multi-repo system's sibling repos are checked out beside the repository, read only, from the
   repository of each folder's name under the same owner (the `repos` input names others; a
-  `repos-token` reads private ones). `.github/workflows/drift.yml` runs the Action on this
+  `repos-token` reads private ones), with the token given to git only through its environment,
+  masked in the log in every form and redacted from everything the Action prints. `.github/workflows/drift.yml` runs the Action on this
   repository's pull requests against a fixture with planted drift. Other CIs run
   `npx aerie drift --format json` and use the exit code.
 

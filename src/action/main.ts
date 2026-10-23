@@ -12,6 +12,7 @@ import { parse, type System } from '../lines/index.ts';
 import { addedLines, postSuggestions, suggestionComments, upsertComment } from './comments.ts';
 import { listAll, pullRequestOf, restApi, type Api, type PullRequest } from './github.ts';
 import { BadInput, readInputs, type Inputs } from './inputs.ts';
+import { maskCommands, redact, secretForms } from './secrets.ts';
 import { cloneSibling, siblingsOf, type Sibling } from './siblings.ts';
 
 export interface Context {
@@ -158,18 +159,27 @@ export async function driftInProcess(
   return { code, ...ran };
 }
 
+/** The tokens' forms, kept for redacting what the action prints when it fails outside a run. */
+let secrets: string[] = [];
+
 async function main(env: NodeJS.ProcessEnv): Promise<number> {
-  const log = (line: string): void => {
-    process.stdout.write(`${line}\n`);
-  };
   let inputs: Inputs;
   try {
     inputs = readInputs(env);
   } catch (error) {
     if (!(error instanceof BadInput)) throw error;
-    log(`::error title=Aerie drift::${command(error.message)}`);
+    process.stdout.write(`::error title=Aerie drift::${command(error.message)}\n`);
     return 2;
   }
+  // DRIFT-606: masked first, so the job's log hides every form before anything else is printed,
+  // and redacted from every line, summary and message as well.
+  for (const line of maskCommands(inputs.token, inputs.reposToken)) {
+    process.stdout.write(`${line}\n`);
+  }
+  secrets = secretForms(inputs.token, inputs.reposToken);
+  const log = (line: string): void => {
+    process.stdout.write(`${redact(line, secrets)}\n`);
+  };
   const repository = env['GITHUB_REPOSITORY'] ?? '';
   const eventPath = env['GITHUB_EVENT_PATH'] ?? '';
   const event: unknown = eventPath === '' ? null : JSON.parse(readFileSync(eventPath, 'utf8'));
@@ -188,7 +198,7 @@ async function main(env: NodeJS.ProcessEnv): Promise<number> {
           : restApi(env['GITHUB_API_URL'] ?? 'https://api.github.com', inputs.token),
       log,
       summary: (markdown) => {
-        append('GITHUB_STEP_SUMMARY', `${markdown}\n`);
+        append('GITHUB_STEP_SUMMARY', `${redact(markdown, secrets)}\n`);
       },
       clone: (sibling) => {
         cloneSibling(sibling, server, inputs.reposToken);
@@ -206,7 +216,7 @@ if (import.meta.main) {
     },
     (error: unknown) => {
       process.stdout.write(
-        `::error title=Aerie drift::${command(error instanceof Error ? error.message : String(error))}\n`,
+        `::error title=Aerie drift::${command(redact(error instanceof Error ? error.message : String(error), secrets))}\n`,
       );
       process.exitCode = 2;
     },

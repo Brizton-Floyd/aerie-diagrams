@@ -879,8 +879,8 @@ write`), `repos-token` (reads the sibling repos; `token` when empty) and `repos`
   `pull_request` or `pull_request_target` event; on any other event the action only reports.
 - **DRIFT-602** Sibling repos: each `repo` line of the system root that points outside the model's
   own repository, at a folder that is not there, is checked out there before drift runs: a shallow
-  clone of the default branch, with `repos-token` sent as a header for that command only, never
-  stored in the clone and never pushed to. The remote is the repository named like the folder under
+  clone of the default branch, with `repos-token` sent as a header for that command only
+  (DRIFT-606), never stored in the clone and never pushed to. The remote is the repository named like the folder under
   the same owner as the repository the workflow runs in (`repo ../lotto-options-core` in
   `acme/lotto-diagram` is `acme/lotto-options-core`), on the same GitHub server; a line of the
   `repos` input, `<repo line or folder>=<owner>/<name>[@<branch or tag>]`, names another. A folder
@@ -904,6 +904,14 @@ write`), `repos-token` (reads the sibling repos; `token` when empty) and `repos`
   and its `exit-code` output, is the worst of the model files': 0 for no drift, 1 for drift (or
   likely, with `fail-on: likely`), 2 when drift cannot run. The job fails on 1 or 2, so a workflow
   that should only report sets `continue-on-error`.
+- **DRIFT-606** Tokens never reach the log, the summary or a message. Before anything else the
+  action masks each token, and the base64 of the header git sends with it, with `::add-mask::` (what
+  `core.setSecret` writes), and it redacts both forms from every line it prints, the summary and
+  any error. git gets the header only through its environment (`GIT_CONFIG_COUNT`,
+  `GIT_CONFIG_KEY_<n>` and `GIT_CONFIG_VALUE_<n>`, after any configuration the environment already
+  gives), never as an argument, which the machine's process list would show. A failed clone reports
+  git's own words, or else the error's message, redacted, and never the error itself, which holds
+  the whole command.
 
 `.github/workflows/drift.yml` runs the Action on this repository's pull requests that change it: a
 matching fixture must pass with a green comment, and the Compose fixture's planted drifts (copied to

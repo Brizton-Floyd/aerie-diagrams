@@ -43,7 +43,9 @@ This repository's own GitHub issues, read with `gh-axi`:
 
 General, product-neutral references, from knowledge only (no page was opened): the GitHub Actions
 documentation (composite actions, workflow commands, `GITHUB_OUTPUT` and `GITHUB_STEP_SUMMARY`) and
-the GitHub REST API documentation (issue comments, pull request files, review comments and reviews).
+the GitHub REST API documentation (issue comments, pull request files, review comments and
+reviews), and git's documentation of `GIT_CONFIG_COUNT`, `GIT_CONFIG_KEY_<n>` and
+`GIT_CONFIG_VALUE_<n>`, for the token hardening firstmate asked for after review.
 
 ## Forbidden sources opened
 

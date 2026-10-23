@@ -264,13 +264,14 @@ Slice D7 of drift detection ([drift.md](drift.md#the-github-action-slice-d7), re
 `d7-action.md`): the Action that runs `aerie drift` on pull requests. `.github/workflows/drift.yml`
 runs it on this repository's own pull requests, against a fixture with planted drifts.
 
-| Suite | What it proves                                                                                                                    | Requirements |
-| ----- | --------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| unit  | The inputs, their defaults and their plain messages, and the pull request from the event                                          | DRIFT-601    |
-| unit  | Sibling repos: which `repo` lines are checked out and from where, a shallow clone from a remote on the disk, and drift reading it | DRIFT-602    |
-| unit  | One sticky comment per model file: posted, edited in place, found past the first page, `on-findings` and `never`                  | DRIFT-603    |
-| unit  | Suggestions on the lines a pull request adds, left out elsewhere, posted once as one review                                       | DRIFT-604    |
-| unit  | Whole runs against a GitHub in memory: exit codes, the cannot-run comment, no pull request, and a comment the token cannot post   | DRIFT-605    |
+| Suite | What it proves                                                                                                                                                            | Requirements |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| unit  | The inputs, their defaults and their plain messages, and the pull request from the event                                                                                  | DRIFT-601    |
+| unit  | Sibling repos: which `repo` lines are checked out and from where, a shallow clone from a remote on the disk, and drift reading it                                         | DRIFT-602    |
+| unit  | One sticky comment per model file: posted, edited in place, found past the first page, `on-findings` and `never`                                                          | DRIFT-603    |
+| unit  | Suggestions on the lines a pull request adds, left out elsewhere, posted once as one review                                                                               | DRIFT-604    |
+| unit  | Whole runs against a GitHub in memory: exit codes, the cannot-run comment, no pull request, and a comment the token cannot post                                           | DRIFT-605    |
+| unit  | Tokens: git's header only in its environment, every form masked first, and none in a log line, the summary or a thrown message, also in a real run against a local server | DRIFT-606    |
 
 ## Browser journeys
 

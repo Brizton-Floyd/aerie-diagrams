@@ -6,6 +6,7 @@ import { basename, dirname, join, resolve } from 'node:path';
 import { repositoryOf } from '../cli/project.ts';
 import type { System } from '../lines/index.ts';
 import type { RepoSource } from './inputs.ts';
+import { redact, secretForms, tokenHeader } from './secrets.ts';
 
 /** Written into a clone's `.git`, so a later run on the same machine knows the folder is its own. */
 const CLONED = 'aerie-drift-clone';
@@ -42,25 +43,46 @@ export function siblingsOf(
   });
 }
 
+/** Runs git with its arguments and extra environment; throws as `execFileSync` does. */
+export type Git = (args: string[], env: Record<string, string>) => void;
+
+const runGit: Git = (args, env) => {
+  execFileSync('git', args, {
+    env: { ...process.env, ...env },
+    stdio: ['ignore', 'ignore', 'pipe'],
+    encoding: 'utf8',
+  });
+};
+
 /**
- * Checks a sibling out: a shallow clone from `server` (`GITHUB_SERVER_URL`), the token sent as a
- * header for that one command so it is never stored in the clone. Throws with git's message.
+ * DRIFT-606: the environment that gives git the token's header for one command, after any
+ * configuration the environment already gives it (`GIT_CONFIG_COUNT`), so the token is never an
+ * argument (which the machine's process list shows) and never stored in the clone.
  */
-export function cloneSibling(sibling: Sibling, server: string, token: string): void {
+export function headerEnv(
+  server: string,
+  token: string,
+  env: Readonly<Record<string, string | undefined>> = process.env,
+): Record<string, string> {
+  if (token === '' || !/^https?:/.test(server)) return {};
+  const index = Number(env['GIT_CONFIG_COUNT'] ?? '0') || 0;
+  return {
+    GIT_CONFIG_COUNT: String(index + 1),
+    [`GIT_CONFIG_KEY_${String(index)}`]: `http.${server}/.extraheader`,
+    [`GIT_CONFIG_VALUE_${String(index)}`]: tokenHeader(token),
+  };
+}
+
+/**
+ * Checks a sibling out: a shallow clone from `server` (`GITHUB_SERVER_URL`), with the token's
+ * header in git's environment (DRIFT-606). Throws with git's message, the token redacted.
+ */
+export function cloneSibling(sibling: Sibling, server: string, token: string, git = runGit): void {
   rmSync(sibling.path, { recursive: true, force: true });
-  const auth =
-    token === '' || !/^https?:/.test(server)
-      ? []
-      : [
-          '-c',
-          `http.${server}/.extraheader=AUTHORIZATION: basic ${Buffer.from(`x-access-token:${token}`).toString('base64')}`,
-        ];
   const { repository, ref } = sibling.source;
   try {
-    execFileSync(
-      'git',
+    git(
       [
-        ...auth,
         'clone',
         '--quiet',
         '--depth',
@@ -70,13 +92,24 @@ export function cloneSibling(sibling: Sibling, server: string, token: string): v
         `${server}/${repository}.git`,
         sibling.path,
       ],
-      { stdio: ['ignore', 'ignore', 'pipe'], encoding: 'utf8' },
+      headerEnv(server, token),
     );
   } catch (error) {
-    const said = (error as { stderr?: string }).stderr?.trim() ?? String(error);
+    // git's own words when it gave any, else the error's message alone (never its whole value).
+    const stderr = (error as { stderr?: unknown }).stderr;
+    const said =
+      typeof stderr === 'string' && stderr.trim() !== ''
+        ? stderr.trim()
+        : error instanceof Error
+          ? error.message
+          : 'git failed';
+    // The cause is left off on purpose: git's error holds the whole command, never printed.
+    // eslint-disable-next-line preserve-caught-error
     throw new Error(
-      `Aerie could not check out ${repository}${ref === null ? '' : `@${ref}`} for the line repo ${sibling.written}: ${said}`,
-      { cause: error },
+      redact(
+        `Aerie could not check out ${repository}${ref === null ? '' : `@${ref}`} for the line repo ${sibling.written}: ${said}`,
+        secretForms(token),
+      ),
     );
   }
   writeFileSync(join(sibling.path, '.git', CLONED), `${repository}\n`);
