@@ -1,0 +1,10 @@
+aerie drift tests/unit/drift/fixtures/spring/shop.aerie
+Checked against shop (7 Maven modules, 2 apps) in 0.9 s.
+
+Not checked (2): code cannot show these, or drift could not read them
+  The Maven module `maven:shop-testkit` is used only by tests, so it is not checked.
+  The wording (names, taglines and descriptions) is not checked: wrong details are checked in phase
+    2.
+
+11 of 11 elements and 10 of 10 lines confirmed by the code.
+No drift. Exit code 0.

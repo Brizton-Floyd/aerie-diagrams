@@ -1,0 +1,689 @@
+{
+  "format": "aerie-drift/1",
+  "model": "tests/unit/drift/fixtures/spring/shop-drift.aerie",
+  "repos": [
+    "shop"
+  ],
+  "summary": {
+    "drift": 5,
+    "likely": 1,
+    "suggestions": 0,
+    "notChecked": 4,
+    "ignored": 1,
+    "excused": 1,
+    "elements": 10,
+    "confirmedElements": 9,
+    "lines": 6,
+    "confirmedLines": 4,
+    "failOn": "drift",
+    "exitCode": 1
+  },
+  "findings": [
+    {
+      "id": "D01",
+      "key": "renamed-code:ledger:class:com.shop.billing.Ledger>class:com.shop.billing.ledger.Ledger",
+      "level": "drift",
+      "kind": "renamed-code",
+      "title": "The code line of Ledger names `class:com.shop.billing.Ledger`, which the code no longer has; it has `class:com.shop.billing.ledger.Ledger` instead, which no element names.",
+      "detail": "An exact check: the code has no Java type of that name, and `class:com.shop.billing.ledger.Ledger` is the closest one no element names.",
+      "elements": [
+        "ledger"
+      ],
+      "diagram": 32,
+      "techniques": [
+        "java-class"
+      ],
+      "evidence": [
+        {
+          "technique": "java-class",
+          "name": "Java type",
+          "at": "shop/billing/src/main/java/com/shop/billing/ledger/Ledger.java:7",
+          "detail": "maven:shop-billing declares class com.shop.billing.ledger.Ledger, a subtype of com.shop.common.LedgerPort",
+          "corroborates": false
+        }
+      ],
+      "edits": [
+        {
+          "at": 32,
+          "remove": [
+            "    code class:com.shop.billing.Ledger"
+          ],
+          "add": [
+            "    code class:com.shop.billing.ledger.Ledger"
+          ]
+        }
+      ],
+      "instead": [
+        {
+          "at": 47,
+          "remove": [],
+          "add": [
+            "ignore drift class:com.shop.billing.Ledger - why this difference is meant"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "D02",
+      "key": "missing-dependency:billing>catalog",
+      "level": "drift",
+      "kind": "missing-dependency",
+      "title": "The diagram says Billing depends on Catalog, but in the code Billing does not depend on Catalog.",
+      "detail": "An exact check: the Maven poms list every dependency between modules, and none runs this way.",
+      "elements": [
+        "billing",
+        "catalog"
+      ],
+      "diagram": 44,
+      "techniques": [],
+      "evidence": [],
+      "edits": [
+        {
+          "at": 44,
+          "remove": [
+            "billing depends on catalog [code]"
+          ],
+          "add": []
+        }
+      ],
+      "instead": [
+        {
+          "at": 47,
+          "remove": [],
+          "add": [
+            "ignore drift billing to catalog - why this difference is meant"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "D03",
+      "key": "undrawn-code:maven:shop-common",
+      "level": "drift",
+      "kind": "undrawn-code",
+      "title": "Orders depends on the Maven module `maven:shop-common`, but no element stands for it.",
+      "detail": "An exact check: a drawn module depends on it, and the Maven poms list every dependency.",
+      "elements": [
+        "orders",
+        "billing",
+        "catalog"
+      ],
+      "diagram": null,
+      "techniques": [
+        "maven-module",
+        "maven-dependency"
+      ],
+      "evidence": [
+        {
+          "technique": "maven-module",
+          "name": "Maven module",
+          "at": "shop/common/pom.xml:9",
+          "detail": "maven:shop-common",
+          "corroborates": false
+        },
+        {
+          "technique": "maven-dependency",
+          "name": "Maven dependency",
+          "at": "shop/billing/pom.xml:12",
+          "detail": "maven:shop-billing depends on maven:shop-common (compile)",
+          "corroborates": false
+        },
+        {
+          "technique": "maven-dependency",
+          "name": "Maven dependency",
+          "at": "shop/catalog/pom.xml:12",
+          "detail": "maven:shop-catalog depends on maven:shop-common (compile)",
+          "corroborates": false
+        },
+        {
+          "technique": "maven-dependency",
+          "name": "Maven dependency",
+          "at": "shop/orders/pom.xml:16",
+          "detail": "maven:shop-orders depends on maven:shop-common (compile)",
+          "corroborates": false
+        },
+        {
+          "technique": "maven-dependency",
+          "name": "Maven dependency",
+          "at": "shop/testkit/pom.xml:12",
+          "detail": "maven:shop-testkit depends on maven:shop-common (compile)",
+          "corroborates": false
+        }
+      ],
+      "edits": [
+        {
+          "at": 37,
+          "remove": [],
+          "add": [
+            "",
+            "shop-common: shop-common [module]",
+            "  code maven:shop-common"
+          ]
+        },
+        {
+          "at": 45,
+          "remove": [],
+          "add": [
+            "billing depends on shop-common [code]",
+            "catalog depends on shop-common [code]",
+            "orders depends on shop-common [code]"
+          ]
+        }
+      ],
+      "instead": [
+        {
+          "at": 47,
+          "remove": [],
+          "add": [
+            "ignore drift maven:shop-common - why this difference is meant"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "D04",
+      "key": "undrawn-connection:billing-client>invoices",
+      "level": "drift",
+      "kind": "undrawn-connection",
+      "title": "Billing client calls Invoices in the code, but no line in the diagram joins them.",
+      "detail": "2 techniques found it: HTTP call matched to an endpoint and WebClient call.",
+      "elements": [
+        "billing-client",
+        "invoices"
+      ],
+      "diagram": null,
+      "techniques": [
+        "endpoint-match",
+        "webclient-call"
+      ],
+      "evidence": [
+        {
+          "technique": "endpoint-match",
+          "name": "HTTP call matched to an endpoint",
+          "at": "shop/orders/src/main/java/com/shop/orders/billing/BillingClient.java:17",
+          "detail": "maven:shop-orders calls POST http://localhost:8082/invoices, which maven:shop-billing answers (InvoiceController.invoice) at shop/billing/src/main/java/com/shop/billing/web/InvoiceController.java:16",
+          "corroborates": false
+        },
+        {
+          "technique": "webclient-call",
+          "name": "WebClient call",
+          "at": "shop/orders/src/main/java/com/shop/orders/billing/BillingClient.java:17",
+          "detail": "maven:shop-orders calls POST http://localhost:8082/invoices on maven:shop-billing (BillingClient.invoice)",
+          "corroborates": false
+        }
+      ],
+      "edits": [
+        {
+          "at": 43,
+          "remove": [],
+          "add": [
+            "billing-client calls invoices"
+          ]
+        }
+      ],
+      "instead": [
+        {
+          "at": 47,
+          "remove": [],
+          "add": [
+            "ignore drift billing-client to invoices - why this difference is meant"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "D05",
+      "key": "undrawn-dependency:orders>catalog",
+      "level": "drift",
+      "kind": "undrawn-dependency",
+      "title": "Orders depends on Catalog in the code, but no `[code]` line in the diagram joins them.",
+      "detail": "An exact check: the Maven poms list every dependency between modules.",
+      "elements": [
+        "orders",
+        "catalog"
+      ],
+      "diagram": null,
+      "techniques": [
+        "maven-dependency"
+      ],
+      "evidence": [
+        {
+          "technique": "maven-dependency",
+          "name": "Maven dependency",
+          "at": "shop/orders/pom.xml:12",
+          "detail": "maven:shop-orders depends on maven:shop-catalog (compile)",
+          "corroborates": false
+        }
+      ],
+      "edits": [
+        {
+          "at": 45,
+          "remove": [],
+          "add": [
+            "orders depends on catalog [code]"
+          ]
+        }
+      ],
+      "instead": [
+        {
+          "at": 47,
+          "remove": [],
+          "add": [
+            "ignore drift orders to catalog - why this difference is meant"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "L01",
+      "key": "undrawn-connection:web>service",
+      "level": "likely",
+      "kind": "undrawn-connection",
+      "title": "Order API uses the code of Ordering in the code, but no line in the diagram joins them.",
+      "detail": "One technique found it: Java type reference.",
+      "elements": [
+        "web",
+        "service"
+      ],
+      "diagram": null,
+      "techniques": [
+        "java-reference"
+      ],
+      "evidence": [
+        {
+          "technique": "java-reference",
+          "name": "Java type reference",
+          "at": "shop/orders/src/main/java/com/shop/orders/web/OrderController.java:12",
+          "detail": "maven:shop-orders com.shop.orders.web.OrderController uses com.shop.orders.service.OrderService",
+          "corroborates": false
+        }
+      ],
+      "edits": [
+        {
+          "at": 43,
+          "remove": [],
+          "add": [
+            "web calls service"
+          ]
+        }
+      ],
+      "instead": [
+        {
+          "at": 47,
+          "remove": [],
+          "add": [
+            "ignore drift web to service - why this difference is meant"
+          ]
+        }
+      ]
+    }
+  ],
+  "suggestions": [],
+  "notChecked": [
+    {
+      "subject": {
+        "relationship": 4
+      },
+      "reason": "same-code",
+      "text": "The line “Order listener writes orders to Audit trail” is not checked: its ends are checked as Order listener and Billing, which holds it, so drift cannot tell them apart.",
+      "elements": [
+        "listener",
+        "audit"
+      ],
+      "diagram": 42,
+      "evidence": []
+    },
+    {
+      "subject": {
+        "unit": {
+          "kind": "maven",
+          "name": "shop-testkit"
+        }
+      },
+      "reason": "test-support",
+      "text": "The Maven module `maven:shop-testkit` is used only by tests, so it is not checked.",
+      "elements": [],
+      "diagram": null,
+      "evidence": [
+        {
+          "technique": "maven-dependency",
+          "name": "Maven dependency",
+          "at": "shop/orders/pom.xml:20",
+          "detail": "maven:shop-orders depends on maven:shop-testkit (test)",
+          "corroborates": false
+        }
+      ]
+    },
+    {
+      "subject": {
+        "element": "audit"
+      },
+      "reason": "part",
+      "text": "Audit trail has no `class:` hints, so it is not checked, and its lines are checked as Billing's.",
+      "elements": [
+        "audit"
+      ],
+      "diagram": 33,
+      "evidence": []
+    },
+    {
+      "subject": {
+        "wording": true
+      },
+      "reason": "wording",
+      "text": "The wording (names, taglines and descriptions) is not checked: wrong details are checked in phase 2.",
+      "elements": [],
+      "diagram": null,
+      "evidence": []
+    }
+  ],
+  "ignored": [
+    {
+      "subject": "maven:shop-legacy",
+      "reason": "retiring with the old reports",
+      "diagram": 46,
+      "excused": [
+        {
+          "id": null,
+          "key": "undrawn-code:maven:shop-legacy",
+          "level": "likely",
+          "kind": "undrawn-code",
+          "title": "The code has the Maven module `maven:shop-legacy`, but no element stands for it.",
+          "detail": "One technique found it: Maven module.",
+          "elements": [],
+          "diagram": null,
+          "techniques": [
+            "maven-module"
+          ],
+          "evidence": [
+            {
+              "technique": "maven-module",
+              "name": "Maven module",
+              "at": "shop/legacy/pom.xml:9",
+              "detail": "maven:shop-legacy",
+              "corroborates": false
+            }
+          ],
+          "edits": [
+            {
+              "at": 37,
+              "remove": [],
+              "add": [
+                "",
+                "shop-legacy: shop-legacy [module]",
+                "  code maven:shop-legacy"
+              ]
+            }
+          ],
+          "instead": [
+            {
+              "at": 47,
+              "remove": [],
+              "add": [
+                "ignore drift maven:shop-legacy - why this difference is meant"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "confirmed": [
+    {
+      "subject": {
+        "relationship": 0
+      },
+      "text": "The line “Ordering prices items with Catalog” is in the code.",
+      "diagram": 38,
+      "techniques": [
+        "java-reference"
+      ],
+      "evidence": [
+        {
+          "technique": "java-reference",
+          "name": "Java type reference",
+          "at": "shop/orders/src/main/java/com/shop/orders/service/OrderService.java:11",
+          "detail": "maven:shop-orders com.shop.orders.service.OrderService uses com.shop.catalog.CatalogService in maven:shop-catalog",
+          "corroborates": false
+        }
+      ]
+    },
+    {
+      "subject": {
+        "relationship": 1
+      },
+      "text": "The line “Ordering asks for invoices through Billing client” is in the code.",
+      "diagram": 39,
+      "techniques": [
+        "java-reference"
+      ],
+      "evidence": [
+        {
+          "technique": "java-reference",
+          "name": "Java type reference",
+          "at": "shop/orders/src/main/java/com/shop/orders/service/OrderService.java:12",
+          "detail": "maven:shop-orders com.shop.orders.service.OrderService uses com.shop.orders.billing.BillingClient",
+          "corroborates": false
+        }
+      ]
+    },
+    {
+      "subject": {
+        "relationship": 2
+      },
+      "text": "The line “Ordering announces orders to Order listener” is in the code.",
+      "diagram": 40,
+      "techniques": [
+        "spring-config-url",
+        "channel-match"
+      ],
+      "evidence": [
+        {
+          "technique": "spring-config-url",
+          "name": "Spring configuration URL",
+          "at": "shop/orders/src/main/resources/application.yml:5",
+          "detail": "maven:shop-orders to maven:shop-billing (billing.url=http://localhost:8082)",
+          "corroborates": false
+        },
+        {
+          "technique": "channel-match",
+          "name": "Message matched to its receiver",
+          "at": "shop/orders/src/main/java/com/shop/orders/service/OrderService.java:22",
+          "detail": "maven:shop-orders sends to kafka orders.created, which maven:shop-billing receives at shop/billing/src/main/java/com/shop/billing/events/OrderListener.java:8",
+          "corroborates": false
+        }
+      ]
+    },
+    {
+      "subject": {
+        "relationship": 3
+      },
+      "text": "The line “Invoices records charges in Ledger” is in the code.",
+      "diagram": 41,
+      "techniques": [
+        "java-reference"
+      ],
+      "evidence": [
+        {
+          "technique": "java-reference",
+          "name": "Java type reference",
+          "at": "shop/billing/src/main/java/com/shop/billing/web/InvoiceController.java:10",
+          "detail": "maven:shop-billing com.shop.billing.web.InvoiceController uses com.shop.common.LedgerPort in maven:shop-common, which com.shop.billing.ledger.Ledger extends or implements",
+          "corroborates": false
+        }
+      ]
+    },
+    {
+      "subject": {
+        "element": "orders"
+      },
+      "text": "Orders stands for `maven:shop-orders`, which the code has.",
+      "diagram": 16,
+      "techniques": [
+        "maven-module"
+      ],
+      "evidence": [
+        {
+          "technique": "maven-module",
+          "name": "Maven module",
+          "at": "shop/orders/pom.xml:9",
+          "detail": "maven:shop-orders",
+          "corroborates": false
+        }
+      ]
+    },
+    {
+      "subject": {
+        "element": "web"
+      },
+      "text": "Order API stands for `class:com.shop.orders.web.*`, which the code has.",
+      "diagram": 18,
+      "techniques": [
+        "java-class"
+      ],
+      "evidence": [
+        {
+          "technique": "java-class",
+          "name": "Java type",
+          "at": "shop/orders/src/main/java/com/shop/orders/web/OrderController.java:9",
+          "detail": "maven:shop-orders declares class com.shop.orders.web.OrderController",
+          "corroborates": false
+        }
+      ]
+    },
+    {
+      "subject": {
+        "element": "service"
+      },
+      "text": "Ordering stands for `class:com.shop.orders.service.*`, which the code has.",
+      "diagram": 20,
+      "techniques": [
+        "java-class"
+      ],
+      "evidence": [
+        {
+          "technique": "java-class",
+          "name": "Java type",
+          "at": "shop/orders/src/main/java/com/shop/orders/service/OrderService.java:9",
+          "detail": "maven:shop-orders declares class com.shop.orders.service.OrderService",
+          "corroborates": false
+        }
+      ]
+    },
+    {
+      "subject": {
+        "element": "billing-client"
+      },
+      "text": "Billing client stands for `class:com.shop.orders.billing.BillingClient`, which the code has.",
+      "diagram": 22,
+      "techniques": [
+        "java-class"
+      ],
+      "evidence": [
+        {
+          "technique": "java-class",
+          "name": "Java type",
+          "at": "shop/orders/src/main/java/com/shop/orders/billing/BillingClient.java:8",
+          "detail": "maven:shop-orders declares class com.shop.orders.billing.BillingClient",
+          "corroborates": false
+        }
+      ]
+    },
+    {
+      "subject": {
+        "element": "billing"
+      },
+      "text": "Billing stands for `maven:shop-billing`, which the code has.",
+      "diagram": 25,
+      "techniques": [
+        "maven-module"
+      ],
+      "evidence": [
+        {
+          "technique": "maven-module",
+          "name": "Maven module",
+          "at": "shop/billing/pom.xml:9",
+          "detail": "maven:shop-billing",
+          "corroborates": false
+        }
+      ]
+    },
+    {
+      "subject": {
+        "element": "invoices"
+      },
+      "text": "Invoices stands for `class:com.shop.billing.web.*`, which the code has.",
+      "diagram": 27,
+      "techniques": [
+        "java-class"
+      ],
+      "evidence": [
+        {
+          "technique": "java-class",
+          "name": "Java type",
+          "at": "shop/billing/src/main/java/com/shop/billing/web/InvoiceController.java:8",
+          "detail": "maven:shop-billing declares class com.shop.billing.web.InvoiceController",
+          "corroborates": false
+        }
+      ]
+    },
+    {
+      "subject": {
+        "element": "listener"
+      },
+      "text": "Order listener stands for `class:com.shop.billing.events.OrderListener`, which the code has.",
+      "diagram": 29,
+      "techniques": [
+        "java-class"
+      ],
+      "evidence": [
+        {
+          "technique": "java-class",
+          "name": "Java type",
+          "at": "shop/billing/src/main/java/com/shop/billing/events/OrderListener.java:6",
+          "detail": "maven:shop-billing declares class com.shop.billing.events.OrderListener",
+          "corroborates": false
+        }
+      ]
+    },
+    {
+      "subject": {
+        "element": "ledger"
+      },
+      "text": "Ledger stands for `class:com.shop.billing.ledger.Ledger`, which the code has.",
+      "diagram": 31,
+      "techniques": [
+        "java-class"
+      ],
+      "evidence": [
+        {
+          "technique": "java-class",
+          "name": "Java type",
+          "at": "shop/billing/src/main/java/com/shop/billing/ledger/Ledger.java:7",
+          "detail": "maven:shop-billing declares class com.shop.billing.ledger.Ledger, a subtype of com.shop.common.LedgerPort",
+          "corroborates": false
+        }
+      ]
+    },
+    {
+      "subject": {
+        "element": "catalog"
+      },
+      "text": "Catalog stands for `maven:shop-catalog`, which the code has.",
+      "diagram": 35,
+      "techniques": [
+        "maven-module"
+      ],
+      "evidence": [
+        {
+          "technique": "maven-module",
+          "name": "Maven module",
+          "at": "shop/catalog/pom.xml:9",
+          "detail": "maven:shop-catalog",
+          "corroborates": false
+        }
+      ]
+    }
+  ],
+  "problems": []
+}

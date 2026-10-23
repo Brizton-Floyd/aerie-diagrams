@@ -1,0 +1,163 @@
+aerie drift tests/unit/drift/lotto/lotto.aerie
+Checked against lotto-options-core, lotto-options-ui, lottery-result-persistence-service (4 Compose services, 14 Maven modules, 1 npm package, 4 apps) in 0.9 s.
+
+Drift (7): the diagram and the code disagree: several techniques agree, or an exact check failed
+
+D01 The diagram says Strategies library depends on Shared data formats, but in the code Strategies
+    library does not depend on Shared data formats.
+    Diagram: tests/unit/drift/lotto/lotto.aerie:275
+    An exact check: the Maven poms list every dependency between modules, and none runs this way.
+    Suggested edit:
+      tests/unit/drift/lotto/lotto.aerie:275
+      - strategies depends on formats [code]
+    Or, if it is meant to differ:
+      tests/unit/drift/lotto/lotto.aerie, after line 412
+      +
+      + ignore drift strategies to formats - why this difference is meant
+
+D02 The diagram says Screen API uses the shapes in Shared data formats, but in the code Screen API
+    does not depend on Shared data formats.
+    Diagram: tests/unit/drift/lotto/lotto.aerie:277
+    An exact check: the Maven poms list every dependency between modules, and none runs this way.
+    Suggested edit:
+      tests/unit/drift/lotto/lotto.aerie:277-278
+      - screen-api uses the shapes in formats [code]
+      -   @engineer: depends on
+    Or, if it is meant to differ:
+      tests/unit/drift/lotto/lotto.aerie, after line 412
+      +
+      + ignore drift screen-api to formats - why this difference is meant
+
+D03 Screen API depends on the Maven module `maven:lotto-options-core-api-contract`, but no element
+    stands for it.
+    An exact check: a drawn module depends on it, and the Maven poms list every dependency.
+    Code:
+      lotto-options-core/lotto-options-core-api-contract/pom.xml:12  Maven module: maven:lotto-options-core-api-contract
+      lotto-options-core/lotto-options-core-bff/pom.xml:16  Maven dependency: maven:lotto-options-core-bff depends on maven:lotto-options-core-api-contract (compile)
+      lotto-options-core/lotto-options-core-server/pom.xml:32  Maven dependency: maven:lotto-options-core-server depends on maven:lotto-options-core-api-contract (compile)
+    Suggested edit:
+      tests/unit/drift/lotto/lotto.aerie, after line 234
+      +
+      +   lotto-options-core-api-contract: lotto-options-core-api-contract [module]
+      +     code maven:lotto-options-core-api-contract
+      tests/unit/drift/lotto/lotto.aerie, after line 278
+      + screen-api depends on lotto-options-core-api-contract [code]
+      + engine-service depends on lotto-options-core-api-contract [code]
+    Or, if it is meant to differ:
+      tests/unit/drift/lotto/lotto.aerie, after line 412
+      +
+      + ignore drift maven:lotto-options-core-api-contract - why this difference is meant
+
+D04 Engine service depends on the Maven module `maven:lotto-options-core-application`, but no
+    element stands for it.
+    An exact check: a drawn module depends on it, and the Maven poms list every dependency.
+    Code:
+      lotto-options-core/lotto-options-core-application/pom.xml:12  Maven module: maven:lotto-options-core-application
+      lotto-options-core/lotto-options-core-application/pom.xml:16  Maven dependency: maven:lotto-options-core-application depends on maven:lotto-options-core-domain (compile)
+      lotto-options-core/lotto-options-core-server/pom.xml:28  Maven dependency: maven:lotto-options-core-server depends on maven:lotto-options-core-application (compile)
+    Suggested edit:
+      tests/unit/drift/lotto/lotto.aerie, after line 174
+      +
+      +     lotto-options-core-application: lotto-options-core-application [module]
+      +       code maven:lotto-options-core-application
+      tests/unit/drift/lotto/lotto.aerie, after line 278
+      + lotto-options-core-application depends on lotto-options-core-domain [code]
+      + engine-service depends on lotto-options-core-application [code]
+    Or, if it is meant to differ:
+      tests/unit/drift/lotto/lotto.aerie, after line 412
+      +
+      + ignore drift maven:lotto-options-core-application - why this difference is meant
+
+D05 Engine service depends on the Maven module `maven:lotto-options-core-domain`, but no element
+    stands for it.
+    An exact check: a drawn module depends on it, and the Maven poms list every dependency.
+    Code:
+      lotto-options-core/lotto-options-core-domain/pom.xml:12  Maven module: maven:lotto-options-core-domain
+      lotto-options-core/lotto-options-core-application/pom.xml:16  Maven dependency: maven:lotto-options-core-application depends on maven:lotto-options-core-domain (compile)
+      lotto-options-core/lotto-options-core-result-analyzer/pom.xml:17  Maven dependency: maven:lotto-options-core-result-analyzer depends on maven:lotto-options-core-domain (compile)
+      lotto-options-core/lotto-options-core-server/pom.xml:24  Maven dependency: maven:lotto-options-core-server depends on maven:lotto-options-core-domain (compile)
+    Suggested edit:
+      tests/unit/drift/lotto/lotto.aerie, after line 174
+      +
+      +     lotto-options-core-domain: lotto-options-core-domain [module]
+      +       code maven:lotto-options-core-domain
+      tests/unit/drift/lotto/lotto.aerie, after line 278
+      + strategies depends on lotto-options-core-domain [code]
+      + engine-service depends on lotto-options-core-domain [code]
+    Or, if it is meant to differ:
+      tests/unit/drift/lotto/lotto.aerie, after line 412
+      +
+      + ignore drift maven:lotto-options-core-domain - why this difference is meant
+
+D06 Engine service depends on Results store in the code, but no `[code]` line in the diagram joins
+    them.
+    An exact check: the Maven poms list every dependency between modules.
+    Code:
+      lotto-options-core/lotto-options-core-server/pom.xml:44  Maven dependency: maven:lotto-options-core-server depends on maven:lottery-result-persistence-service-models (compile)
+    Suggested edit:
+      tests/unit/drift/lotto/lotto.aerie, after line 278
+      + engine-service depends on store [code]
+    Or, if it is meant to differ:
+      tests/unit/drift/lotto/lotto.aerie, after line 412
+      +
+      + ignore drift engine-service to store - why this difference is meant
+
+D07 Legacy desktop support depends on Results store in the code, but no `[code]` line in the diagram
+    joins them.
+    An exact check: the Maven poms list every dependency between modules.
+    Code:
+      lotto-options-core/lotto-options-core-legacy-desktop/pom.xml:25  Maven dependency: maven:lotto-options-core-legacy-desktop depends on maven:lottery-result-persistence-service-models (compile)
+    Suggested edit:
+      tests/unit/drift/lotto/lotto.aerie, after line 278
+      + legacy depends on store [code]
+    Or, if it is meant to differ:
+      tests/unit/drift/lotto/lotto.aerie, after line 412
+      +
+      + ignore drift legacy to store - why this difference is meant
+
+Likely (2): one technique found it, or reading the code cannot rule it out; worth a look
+
+L01 Legacy desktop support makes 15 calls that no endpoint of the system answers.
+    Diagram: tests/unit/drift/lotto/lotto.aerie:165
+    WebClient call found the calls, and no endpoint of the system matches their verbs and paths, so
+    this is only likely.
+    Code:
+      lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/grouping/HttpLotteryPersistenceClient.java:61  WebClient call: maven:lotto-options-core-legacy-desktop calls POST {?}/api/v1/lottery-targeting/patterns/{configId} (HttpLotteryPersistenceClient.storePatternGroups)
+      lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/grouping/HttpLotteryPersistenceClient.java:80  WebClient call: maven:lotto-options-core-legacy-desktop calls GET {?}/api/v1/lottery-targeting/patterns/{configId} (HttpLotteryPersistenceClient.getPatternGroups)
+      lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/grouping/HttpLotteryPersistenceClient.java:107  WebClient call: maven:lotto-options-core-legacy-desktop calls POST {?}/api/v1/lottery-targeting/sessions (HttpLotteryPersistenceClient.saveSession)
+      lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/grouping/HttpLotteryPersistenceClient.java:132  WebClient call: maven:lotto-options-core-legacy-desktop calls GET {?}/api/v1/lottery-targeting/configurations/{configId} (HttpLotteryPersistenceClient.getLotteryConfiguration)
+      lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/grouping/HttpLotteryPersistenceClient.java:305  WebClient call: maven:lotto-options-core-legacy-desktop calls GET {?}/api/v1/lottery-targeting/hot-numbers/{configId} (HttpLotteryPersistenceClient.getHotNumbers)
+      lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/grouping/HttpLotteryPersistenceClient.java:341  WebClient call: maven:lotto-options-core-legacy-desktop calls GET {?}/api/v1/lottery-targeting/combinations/{configId} (HttpLotteryPersistenceClient.getProvenCombinations)
+      lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/grouping/HttpLotteryPersistenceClient.java:429  WebClient call: maven:lotto-options-core-legacy-desktop calls POST {?}/api/v1/lottery-targeting/combinations (HttpLotteryPersistenceClient.publishProvenCombination)
+      lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/grouping/HttpLotteryPersistenceClient.java:458  WebClient call: maven:lotto-options-core-legacy-desktop calls POST {?}/api/v1/lottery-targeting/hot-numbers/batch (HttpLotteryPersistenceClient.updateHotNumbers)
+      and 7 more
+    Or, if it is meant to differ:
+      tests/unit/drift/lotto/lotto.aerie, after line 412
+      +
+      + ignore drift legacy - why this difference is meant
+
+L02 The diagram says Draw history service reads Saved draws, but the code shows no call from Draw
+    history service to Saved draws.
+    Diagram: tests/unit/drift/lotto/lotto.aerie:264
+    No technique found a call between them, and reading the code cannot rule one out, so this is
+    only likely.
+    Suggested edit:
+      tests/unit/drift/lotto/lotto.aerie:264
+      - history-service reads saved-draws
+    Or, if it is meant to differ:
+      tests/unit/drift/lotto/lotto.aerie, after line 412
+      +
+      + ignore drift history-service to saved-draws - why this difference is meant
+
+Not checked (4): code cannot show these, or drift could not read them
+  The Maven module `maven:lotto-options-core-test-fixtures` is used only by tests, so it is not
+    checked.
+  tests/unit/drift/lotto/lotto.aerie:19  User is a person, which code cannot show. The line “User
+    uses Website” (line 246) is not checked either.
+  2 scenarios (`generate-picks` and `results-poll`) are not checked: scenarios are checked against
+    real call paths in phase 2.
+  The wording (names, taglines and descriptions) is not checked: wrong details are checked in phase
+    2.
+
+17 of 19 elements and 17 of 21 lines confirmed by the code.
+7 drift, 2 likely. Exit code 1. `aerie drift --format diff` prints every suggested edit as a patch.

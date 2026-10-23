@@ -1,0 +1,52 @@
+--- a/tests/unit/drift/lotto/lotto.aerie
++++ b/tests/unit/drift/lotto/lotto.aerie
+@@ -172,6 +172,12 @@
+         and `LottoOptionsCoreController` (`/api/v1/lotto-options-core/games/*`). Packaged in the
+         engine's jar at runtime scope only, so no engine class compiles against it. Deleted with
+         the desktop client.
++
++    lotto-options-core-application: lotto-options-core-application [module]
++      code maven:lotto-options-core-application
++
++    lotto-options-core-domain: lotto-options-core-domain [module]
++      code maven:lotto-options-core-domain
+ 
+   store: Results store | Keeps each game's past draws [service]
+     icon cylinder
+@@ -232,6 +238,9 @@
+       @engineer >> `LotteryGameSerializer` writes one Java-serialized `LotteryGame` at
+         `{lottery.storage.base-dir}/{STATE}/{Game}.ser` (temp file, fsync, then rename).
+         `base-dir` is `tmp` locally and `/data` in the container, the `draw-data` volume.
++
++  lotto-options-core-api-contract: lotto-options-core-api-contract [module]
++    code maven:lotto-options-core-api-contract
+ 
+ texas: Texas Lottery website | Publishes winning numbers per game [external]
+   > The official source of results. The suite downloads one file per game from it.
+@@ -261,7 +270,6 @@
+   @engineer: POSTs /api/v1/state/games to
+ legacy reads draw history from history-service
+   @engineer: calls /api/v1/state-games/* on
+-history-service reads saved-draws
+ updater has each game refreshed by reader
+ reader downloads results from texas
+   @engineer: fetches CSV exports from
+@@ -272,10 +280,15 @@
+ engine-service depends on strategies, formats [code]
+ engine-service ships with legacy [code]
+   @engineer: has a runtime-only dependency on
+-strategies depends on formats [code]
+ legacy depends on formats [code]
+-screen-api uses the shapes in formats [code]
+-  @engineer: depends on
++screen-api depends on lotto-options-core-api-contract [code]
++engine-service depends on lotto-options-core-api-contract [code]
++lotto-options-core-application depends on lotto-options-core-domain [code]
++engine-service depends on lotto-options-core-application [code]
++strategies depends on lotto-options-core-domain [code]
++engine-service depends on lotto-options-core-domain [code]
++engine-service depends on store [code]
++legacy depends on store [code]
+ 
+ // ------------------------------------------------------------------- views
+ 
