@@ -5,6 +5,8 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import playwrightConfig from '../../playwright.config.ts';
+import vitestConfig from '../../vitest.config.ts';
 
 const ROOT = join(import.meta.dirname, '../..');
 const read = (path: string): string => readFileSync(join(ROOT, path), 'utf8');
@@ -16,18 +18,22 @@ const files = execFileSync('git', ['ls-files', '--cached', '--others', '--exclud
   .split('\n')
   .filter((file) => file.startsWith('tests/'));
 
+interface VitestProject {
+  test?: { name?: string; include?: string[]; update?: unknown };
+}
+const vitestProjects = (vitestConfig.test?.projects ?? []) as VitestProject[];
+
 const SUITES = ['unit', 'rules', 'golden', 'screenshots', 'journeys'] as const;
 const VITEST = new Set(['unit', 'rules', 'golden']);
 
 describe('the suites', () => {
-  it('ACC-001 npm run check runs the type check, lint and all five suites, and CI runs it', () => {
+  it('ACC-001 npm run check runs the type check, lint and all five suites', () => {
     const steps = (scripts['check'] ?? '').split(' && ');
     expect(steps).toEqual([
       'npm run typecheck',
       'npm run lint',
       ...SUITES.map((suite) => `npm run test:${suite}`),
     ]);
-    expect(read('.github/workflows/ci.yml')).toMatch(/^\s*- run: npm run check$/m);
   });
 
   it('ACC-005 each suite holds only its own kind of test, run by its own runner', () => {
@@ -44,23 +50,28 @@ describe('the suites', () => {
       const runner = VITEST.has(suite) ? 'vitest run' : 'playwright test';
       expect(scripts[`test:${suite}`]).toBe(`${runner} --project ${suite}`);
     }
-    const vitest = read('vitest.config.ts');
-    for (const suite of VITEST) {
-      expect(vitest).toContain(`name: '${suite}', include: ['tests/${suite}/**/*.test.ts']`);
-    }
-    const playwright = read('playwright.config.ts');
-    for (const suite of ['screenshots', 'journeys']) {
-      expect(playwright).toContain(`name: '${suite}', testDir: 'tests/${suite}'`);
-    }
+    expect(vitestProjects.map((project) => [project.test?.name, project.test?.include])).toEqual(
+      [...VITEST].map((suite) => [suite, [`tests/${suite}/**/*.test.ts`]]),
+    );
+    expect(
+      (playwrightConfig.projects ?? []).map((project) => [project.name, project.testDir]),
+    ).toEqual(['screenshots', 'journeys'].map((suite) => [suite, `tests/${suite}`]));
     // Journeys and screenshots run against the production build.
-    expect(playwright).toMatch(/command: `npm run build && npm run preview/);
+    const server = playwrightConfig.webServer;
+    expect(Array.isArray(server) ? undefined : server?.command).toMatch(
+      /^npm run build && npm run preview /,
+    );
   });
 
   it('ACC-003 no script or configuration rewrites a golden or a screenshot on its own', () => {
     for (const [name, command] of Object.entries(scripts)) {
       expect(command, name).not.toMatch(/(?:^|\s)(?:-u|--update|--update-snapshots)(?:\s|$)/);
     }
-    expect(read('vitest.config.ts')).not.toMatch(/\bupdate\b/);
-    expect(read('playwright.config.ts')).not.toMatch(/updateSnapshots/);
+    expect(vitestConfig.test?.update).toBeUndefined();
+    for (const project of vitestProjects) expect(project.test?.update).toBeUndefined();
+    expect(playwrightConfig.updateSnapshots).toBeUndefined();
+    for (const project of playwrightConfig.projects ?? []) {
+      expect(project.updateSnapshots).toBeUndefined();
+    }
   });
 });

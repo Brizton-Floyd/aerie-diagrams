@@ -52,7 +52,8 @@ describe('the record of the Lotto sample', () => {
   });
 
   it('SKILL-201 and SKILL-202 agrees the scope, then reads the project in the order the skill gives', () => {
-    expect(section('Scope')).toMatch(/\*\*System\*\*.*\*\*Audiences\*\*.*\*\*File\*\*/s);
+    const scope = [...section('Scope').matchAll(/^- \*\*(\w+)\*\*: (\S.*)/gm)].map((m) => m[1]);
+    expect(scope).toEqual(['System', 'Audiences', 'File']);
     const steps = [...section('What the skill read').matchAll(/^\| (\d)\. /gm)].map(
       (match) => match[1],
     );
