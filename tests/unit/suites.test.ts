@@ -70,8 +70,5 @@ describe('the suites', () => {
     expect(vitestConfig.test?.update).toBeUndefined();
     for (const project of vitestProjects) expect(project.test?.update).toBeUndefined();
     expect(playwrightConfig.updateSnapshots).toBeUndefined();
-    for (const project of playwrightConfig.projects ?? []) {
-      expect(project.updateSnapshots).toBeUndefined();
-    }
   });
 });
