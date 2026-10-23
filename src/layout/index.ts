@@ -22,8 +22,9 @@
 //   (kerning and ligatures off, LAYOUT-102) in the face `faceOf(ROLES[role].face)` gives.
 // - A change between two pictures: `transitionPlan` matches their layouts by element id (who
 //   glides, fades in or leaves, LAYOUT-402) and `timings` gives each part's delay and duration.
-//   The camera (`fitCamera`, `focusCamera`, `magnify`, `pan`, `keepCorner`) places the picture on
-//   the stage (LAYOUT-404, LAYOUT-451, INT-351 to INT-353, INT-702).
+//   The camera (`fitCamera`, `focusCamera`, `followCamera`, `revealCamera`, `magnify`, `pan`,
+//   `keepCorner`) places the picture on the stage (LAYOUT-404, LAYOUT-451 to LAYOUT-455, INT-351 to
+//   INT-354, INT-702); `followBoxes` gives what following an element frames.
 // - `checkStructure`, `checkLanes` and `scores` are the rule checks and readability scores the
 //   rules suite runs on every sample.
 export { BOX, TEXT_LEFT, control } from './anatomy.ts';
@@ -32,10 +33,13 @@ export {
   dragged,
   fitCamera,
   focusCamera,
+  followBoxes,
+  followCamera,
   keepCorner,
   magnify,
   onScreen,
   pan,
+  revealCamera,
   type Camera,
   type Size,
 } from './camera.ts';

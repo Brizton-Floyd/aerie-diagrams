@@ -252,9 +252,11 @@ input {
 
 /* The stage: the diagram, placed by the camera (LAYOUT-451, INT-351), over the texture
    (LOOK-307). The drawing fills the stage, so empty stage can be clicked and dragged. */
+/* Clipped, not hidden: the browser never scrolls the stage behind the camera's back, as it would to
+   show a focused element; the camera brings it into view instead (INT-354). */
 .aerie-stage {
   position: relative;
-  overflow: hidden;
+  overflow: clip;
   min-width: 0;
 }
 .drawing {
@@ -303,7 +305,7 @@ input {
   transition: background-color var(--aerie-hover) ease;
 }
 .camera .cam:last-child {
-  width: 44px;
+  width: 60px;
   font-size: 13px;
 }
 .camera .cam:hover {

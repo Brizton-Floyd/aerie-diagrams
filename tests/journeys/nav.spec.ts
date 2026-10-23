@@ -317,6 +317,8 @@ test.describe('opening a shared link', () => {
     await button(page, 'engine-service').focus();
     await page.keyboard.press('o');
     await clickElement(page, 'pick-generation');
+    // The camera is not part of the picture, and a link opens fitted (INT-353).
+    await page.getByRole('button', { name: 'Fit all' }).click();
     await settled(page);
     await copy(page).click();
     await expect(copy(page)).toHaveText('Link copied');

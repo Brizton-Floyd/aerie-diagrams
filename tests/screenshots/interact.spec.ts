@@ -1,6 +1,7 @@
-// Screenshots of a reader's changes to the Lotto sample (acceptance A6): a selection, and a
-// container opened in place, in both themes at 1600 x 900, compared only with Aerie's earlier
-// screenshots (ACC-003, ACC-006). Update deliberately:
+// Screenshots of a reader's changes to the Lotto sample (acceptance A6): a selection, a container
+// opened in place, and two opened one inside the other with the camera following (LAYOUT-453), in
+// both themes at 1600 x 900, compared only with Aerie's earlier screenshots (ACC-003, ACC-006).
+// Update deliberately:
 // `npx playwright test --project screenshots --update-snapshots`.
 import { expect, test, type Page } from '@playwright/test';
 import { HIDE_TEXT, openModel, show } from './page.ts';
@@ -41,6 +42,23 @@ for (const theme of ['light', 'dark'] as const) {
       await expect(page.locator('svg.aerie g.node[data-id="request-handling"]')).toBeAttached();
       await still(page);
       await expect(page).toHaveScreenshot(`lotto-services-engine-open-${theme}.png`);
+    });
+
+    test(`LOOK-302 and LAYOUT-453 the Analysis engine and Engine service opened in place on the Big picture, followed by the camera, ${theme}`, async ({
+      page,
+    }) => {
+      await openModel(page, 'samples/lotto.aerie');
+      await page.addStyleTag({ content: HIDE_TEXT });
+      await show(page, 'big-picture', 'manager');
+      for (const [id, inside] of [
+        ['engine', 'engine-service'],
+        ['engine-service', 'request-handling'],
+      ] as const) {
+        await page.locator(`svg.aerie g.node[data-id="${id}"] .control`).click();
+        await expect(page.locator(`svg.aerie g.node[data-id="${inside}"]`)).toBeAttached();
+        await still(page);
+      }
+      await expect(page).toHaveScreenshot(`lotto-big-picture-drilled-${theme}.png`);
     });
   });
 }

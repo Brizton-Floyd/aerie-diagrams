@@ -1,6 +1,7 @@
-// Changes between pictures and the camera (docs/spec/layout.md, LAYOUT-401 to LAYOUT-452;
-// docs/spec/interaction.md, INT-351 to INT-353): the transition plan (who glides, who fades in,
-// who leaves and toward where, when the lines come back), fitting, and magnifying and moving.
+// Changes between pictures and the camera (docs/spec/layout.md, LAYOUT-401 to LAYOUT-455;
+// docs/spec/interaction.md, INT-351 to INT-354): the transition plan (who glides, who fades in,
+// who leaves and toward where, when the lines come back), fitting, following and revealing, and
+// magnifying and moving.
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_ZOOM, type Zoom } from '../../../src/model/index.ts';
 import {
@@ -10,14 +11,19 @@ import {
   fitCamera,
   fitScale,
   focusCamera,
+  followBoxes,
+  followCamera,
   headerMiddle,
   keepCorner,
   magnify,
   onScreen,
   pan,
+  revealCamera,
   timings,
   transitionPlan,
+  type Box,
   type Camera,
+  type Point,
 } from '../../../src/layout/index.ts';
 import { LOTTO, layouter } from './helpers.ts';
 
@@ -226,5 +232,111 @@ describe('the camera', () => {
     const now = onScreen(next, to);
     expect(now.x).toBeCloseTo(was.x);
     expect(now.y).toBeCloseTo(was.y);
+  });
+});
+
+describe('following the reader', () => {
+  const stage = { width: 1042, height: 842 };
+  const OPEN_ENGINE: Zoom = new Map([['engine', 'open']]);
+
+  it('LAYOUT-453 an opened container is followed with its directly connected neighbours, nearest first', async () => {
+    const layout = await layouter(LOTTO).structure('big-picture', OPEN_ENGINE);
+    const boxes = followBoxes(LOTTO.tree, layout, 'engine');
+    const { result } = layout;
+    expect(boxes[0]).toEqual(result.boxes['engine']);
+    // The Screen API asks Request handling, inside the engine; the engine asks the Results store.
+    // The Lotto suite holds the engine, so it is no neighbour; the User and Texas are not joined to it.
+    const ids = boxes.map((box) =>
+      Object.keys(result.boxes).find((id) => result.boxes[id] === box),
+    );
+    expect(ids.slice(1).sort()).toEqual(['screen-api', 'store']);
+    const middle = (box: Box): Point => ({ x: box.x + box.width / 2, y: box.y + box.height / 2 });
+    const far = boxes.slice(1).map((box) => {
+      const [a, b] = [middle(box), middle(boxes[0] ?? box)];
+      return Math.hypot(a.x - b.x, a.y - b.y);
+    });
+    expect(far).toEqual([...far].sort((a, b) => a - b));
+    expect(followBoxes(LOTTO.tree, layout, 'nothing-here')).toEqual([]);
+  });
+
+  it('LAYOUT-453 following fits the whole picture while it fits at scale 1 or more', () => {
+    const picture = { width: 800, height: 600 };
+    const focus = [{ x: 100, y: 100, width: 200, height: 80 }];
+    expect(followCamera(focus, picture, stage)).toEqual(fitCamera(picture, stage));
+    expect(followCamera([], { width: 4000, height: 3000 }, stage)).toEqual(
+      fitCamera({ width: 4000, height: 3000 }, stage),
+    );
+  });
+
+  it('LAYOUT-453 following frames the element and the neighbours that fit at scale 1, at no less than 1 nor more than 1.15', () => {
+    const picture = { width: 3000, height: 2400 };
+    const element = { x: 1200, y: 1000, width: 400, height: 300 };
+    const near = { x: 1200, y: 700, width: 300, height: 100 };
+    const far = { x: 100, y: 100, width: 300, height: 100 };
+    const camera = followCamera([element, far, near], picture, stage);
+    expect(camera.mode).toBe('fit');
+    expect(camera.scale).toBeGreaterThanOrEqual(CAMERA.readable);
+    expect(camera.scale).toBeLessThanOrEqual(PAGE.maxScale);
+    // The far neighbour would make the frame too large at scale 1, so it is left out.
+    const top = onScreen(camera, { x: near.x, y: near.y });
+    const bottom = onScreen(camera, {
+      x: element.x + element.width,
+      y: element.y + element.height,
+    });
+    expect(top.y).toBeGreaterThanOrEqual(PAGE.margin - 0.001);
+    expect(bottom.y).toBeLessThanOrEqual(stage.height - PAGE.margin + 0.001);
+    expect(onScreen(camera, { x: far.x, y: far.y }).y).toBeLessThan(0);
+    // The frame (near and element) is centred on the stage.
+    expect((top.y + bottom.y) / 2).toBeCloseTo(stage.height / 2);
+    // The frame alone would magnify above 1.15, so the scale stops there.
+    const small = followCamera([{ x: 1200, y: 1000, width: 100, height: 40 }], picture, stage);
+    expect(small.scale).toBe(PAGE.maxScale);
+  });
+
+  it('LAYOUT-453 a frame too large for the stage shows its top left, and a larger picture leaves no more than the margin empty', () => {
+    const picture = { width: 3000, height: 2400 };
+    const huge = { x: 1000, y: 800, width: 1500, height: 1200 };
+    const camera = followCamera([huge], picture, stage);
+    expect(camera.scale).toBe(CAMERA.readable);
+    const corner = onScreen(camera, { x: huge.x, y: huge.y });
+    expect(corner.x).toBeCloseTo(PAGE.margin);
+    expect(corner.y).toBeCloseTo(PAGE.margin);
+    // An element at the picture's edge does not pull the picture away from the stage's edge.
+    const edge = followCamera([{ x: 0, y: 0, width: 200, height: 80 }], picture, stage);
+    expect(edge.x).toBeCloseTo(PAGE.margin);
+    expect(edge.y).toBeCloseTo(PAGE.margin);
+    const end = followCamera([{ x: 2800, y: 2320, width: 200, height: 80 }], picture, stage);
+    expect(end.x + picture.width * end.scale).toBeCloseTo(stage.width - PAGE.margin);
+    expect(end.y + picture.height * end.scale).toBeCloseTo(stage.height - PAGE.margin);
+    // A picture narrow enough to fit across is centred across.
+    const narrow = followCamera(
+      [{ x: 100, y: 1000, width: 200, height: 80 }],
+      { width: 600, height: 2400 },
+      stage,
+    );
+    expect(narrow.x).toBeCloseTo((stage.width - 600 * narrow.scale) / 2);
+  });
+
+  it('LAYOUT-454 revealing moves the picture the least it must, never changes the scale, and leaves boxes in view alone', () => {
+    const picture = { width: 3000, height: 2400 };
+    const camera: Camera = { scale: 0.7, x: -100, y: -50, mode: 'free' };
+    const seen = { x: 400, y: 300, width: 200, height: 80 };
+    expect(revealCamera(camera, [seen], picture, stage)).toEqual(camera);
+    const right = { x: 1600, y: 300, width: 200, height: 80 };
+    const moved = revealCamera(camera, [right], picture, stage);
+    expect(moved.scale).toBe(camera.scale);
+    expect(moved.mode).toBe('free');
+    expect(moved.y).toBe(camera.y);
+    expect(onScreen(moved, { x: right.x + right.width, y: 0 }).x).toBeCloseTo(
+      stage.width - PAGE.margin,
+    );
+    // Its neighbours come too, as many as fit, and a fitted camera stays fitted.
+    const neighbour = { x: 1600, y: 700, width: 200, height: 80 };
+    const both = revealCamera({ ...camera, mode: 'fit' }, [right, neighbour], picture, stage);
+    expect(both.mode).toBe('fit');
+    expect(onScreen(both, { x: 0, y: neighbour.y + neighbour.height }).y).toBeLessThanOrEqual(
+      stage.height - PAGE.margin + 0.001,
+    );
+    expect(revealCamera(camera, [], picture, stage)).toEqual(camera);
   });
 });

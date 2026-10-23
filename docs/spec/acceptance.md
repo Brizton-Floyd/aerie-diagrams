@@ -91,7 +91,7 @@ are in [overview.md](overview.md#reading-this-spec).
 
 | Suite       | What it proves                                                                                 | Requirements                                 |
 | ----------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------- |
-| unit        | The transition plan (who glides, fades in, leaves, when lines return), fitting and the camera  | LAYOUT-401 to LAYOUT-452, INT-351 to INT-353 |
+| unit        | The transition plan (who glides, fades in, leaves, when lines return), fitting and the camera  | LAYOUT-401 to LAYOUT-455, INT-351 to INT-354 |
 | journeys    | Audience switch, select and side panel, open in place, camera, keyboard and screen reader text | INT-001 to INT-304, INT-901 to INT-905       |
 | journeys    | Reduced motion makes every change instant; an accessibility audit finds no problems            | LOOK-901 to LOOK-903, SCORE-005              |
 | screenshots | A selection, and an open container                                                             | LOOK-601, LOOK-602                           |
@@ -161,6 +161,17 @@ transcript summary is committed with that slice (SKILL-301).
   not cited by a test title (ACC-002).
 - **ACC-102** Before the v1 tag, every slice has its read log in `docs/clean-room/read-log/`.
 
+### After v1: the camera follows the reader
+
+A fix reported after v1 (read log `zoom-focus.md`): opening containers in place shrank the whole
+picture until its text could not be read.
+
+| Suite       | What it proves                                                                                       | Requirements             |
+| ----------- | ---------------------------------------------------------------------------------------------------- | ------------------------ |
+| unit        | Following frames an element and its neighbours at a readable scale; revealing pans without shrinking | LAYOUT-453 to LAYOUT-455 |
+| journeys    | Drilling down keeps the opened container readable and in view; selecting brings it into view         | JOURNEY-010, INT-354     |
+| screenshots | An open container, followed by the camera, and the Fit all button                                    | LOOK-302, LOOK-806       |
+
 ## Browser journeys
 
 Journeys run against the production build with the Lotto sample, at 1600 x 900, as a reader would use
@@ -190,7 +201,7 @@ below is from the final sample, `samples/lotto.aerie`.
   Pick generation focused. Go to step 7: the Generate picks scenario plays; forward moves through its
   steps, then to step 8. Press Esc: reading mode, same view.
 - **JOURNEY-006 Reopen from a shared link.** Set Services, Executive, Engine service open, Pick
-  generation selected. Copy the link and open it in a new page: the same picture (same address, same
+  generation selected, and press "Fit all", since a link opens fitted (INT-353). Copy the link and open it in a new page: the same picture (same address, same
   panel, same boxes, same screenshot). Open the link with `sel=nothing-here` added: the notice of
   INT-505 appears and the rest of the picture is shown.
 - **JOURNEY-007 Edit live.** Open the editor and change `screen-api` to `screen-apu` in the line
@@ -209,3 +220,9 @@ below is from the final sample, `samples/lotto.aerie`.
   new name, still on Services for the Engineer. Save the change of JOURNEY-007: the last picture
   stays and the error list over the stage reads the same message. Save the sample again: the error
   list goes. Press Ctrl+C in the terminal: the server stops and says "Stopped watching."
+- **JOURNEY-010 Drill down and read.** Open the Big picture, which fits the stage only below scale 1.
+  Open the Analysis engine, then Engine service inside it, then the Results store. After each, the
+  opened container's top left is on the stage and its name is drawn at 13.5 px or more on screen.
+  Select Draw history lookup with the keyboard: it is in view and the scale is unchanged. Close the
+  Results store, Engine service and the Analysis engine: the picture is drawn as it first was, at the
+  first scale. Press "Fit all": the whole picture fits the stage.

@@ -137,11 +137,17 @@ has the steps for opening a model and choosing a view and audience with clicks).
   as wide as measured on Linux too. Before pushing new baselines, run the suite on Linux as CI does,
   in `mcr.microsoft.com/playwright:v1.64.1-noble` with a fresh `npm ci` (macOS `node_modules` hold
   native binaries). Screenshot runs also hide the side panel's content, which wraps per platform.
+  Playwright's default per-pixel colour threshold still passes faint changes (dark-theme borders),
+  so after changing page chrome regenerate with `--update-snapshots=all`, not only the failures.
 - The page (`src/app/`): `viewer.ts` holds the picture and the keys, `stage.ts` shows drawings (in
   place when the layout is the same, else gliding by `transitionPlan`) and runs the camera,
-  `panel.ts` builds the side panel. Every picture change goes through `Viewer.change()`, which
-  writes the picture into the address's fragment (`link.ts`, INT-501) and adds a history entry
-  only when the view or activity changes (INT-506); new controls just call it. Motion timings are
+  `panel.ts` builds the side panel. In fit mode the camera follows the container the reader opened
+  or closed (LAYOUT-453, `followCamera`) at scale 1 or more, so most of the picture is off the stage
+  after a drill-down; the stage is `overflow: clip`, so Playwright cannot scroll an off-stage box
+  into view: journeys reach it with `focus()` and keys, or press "Fit all" first. Every picture
+  change goes through `Viewer.change()`, which writes the picture into the address's fragment
+  (`link.ts`, INT-501) and adds a history entry only when the view or activity changes (INT-506);
+  new controls just call it. Motion timings are
   read from the stylesheet's `--aerie-*` properties, so reduced motion needs no code path of its
   own. In an interactive drawing each box's `.shape` rect, not its group, is the focusable, named
   button (the accessibility audit, SCORE-005, rejects a button whose visible text is not in its

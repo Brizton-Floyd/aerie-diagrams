@@ -519,7 +519,8 @@ export class Viewer {
     const current = picture.activity.kind === 'selected' ? picture.activity.element : null;
     const next = id === null || id === current ? null : id;
     if (next === current) return;
-    this.change(select(opened.semantics, picture, next));
+    // LAYOUT-454: a selected element and its connections come into view.
+    this.change(select(opened.semantics, picture, next), next === null ? {} : { reveal: next });
   }
 
   /** Selects an element, revealing it if needed (INT-205, MODEL-207). */
@@ -527,7 +528,7 @@ export class Viewer {
     const opened = this.opened;
     const picture = this.picture;
     if (opened === null || picture === null) return;
-    this.change(select(opened.semantics, picture, id));
+    this.change(select(opened.semantics, picture, id), { reveal: id });
   }
 
   /** INT-302: opens a closed container in place, or closes an open one. */
@@ -542,7 +543,7 @@ export class Viewer {
     const open = semantics.scope(picture.view).state(drawn, id) === 'open';
     this.change(
       open ? closeContainer(semantics, picture, id) : openContainer(semantics, picture, id),
-      { anchor: id },
+      { anchor: id, closing: open },
     );
   }
 
