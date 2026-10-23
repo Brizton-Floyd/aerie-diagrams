@@ -38,7 +38,8 @@ npm run dev
 ```
 
 It opens the Lotto sample; pick another bundled sample or open a local `.aerie` file from the
-sidebar, then choose a view, an audience, a zoom, a selection or a scenario step. "Edit" opens the
+sidebar, then choose a view, an audience or a scenario step. Click a box to select it, open
+containers in place, and zoom with the wheel, the +/-/Fit buttons or the keys. "Edit" opens the
 live split editor: the Lines text beside the diagram, which updates as you type.
 
 To write a model in your own editor and see its diagram update on every save, build the page once
