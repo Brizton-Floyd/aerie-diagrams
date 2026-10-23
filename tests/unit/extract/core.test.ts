@@ -69,6 +69,7 @@ describe('facts', () => {
       '/w/docker-compose.override.yaml',
       '/w/.env',
       '/w/compose.yaml',
+      '/w/package.json',
     ]);
   });
 

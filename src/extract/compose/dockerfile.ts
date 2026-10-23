@@ -11,6 +11,8 @@ export interface Stage {
   /** The image or earlier stage it starts from, with arguments filled in. */
   base: string;
   line: number;
+  /** The working folder at the stage's end (WORKDIR), from which relative destinations start. */
+  workdir: string;
   copies: Copy[];
   env: { name: string; value: string; line: number }[];
   expose: { port: string; protocol: string; line: number }[];
@@ -21,6 +23,8 @@ export interface Copy {
   from: string | null;
   /** Paths in the context or stage it copies from, as written (a glob stays a glob). */
   sources: string[];
+  /** Where they land in the image: an absolute path in the container. */
+  destination: string;
   line: number;
 }
 
@@ -40,7 +44,17 @@ export function readDockerfile(text: string, args: ReadonlyMap<string, string | 
     if (keyword === 'FROM') {
       const base = interpolate(words[0] ?? '', globals).text;
       const named = words[1]?.toUpperCase() === 'AS' ? (words[2] ?? null) : null;
-      stage = { index: stages.length, name: named, base, line, copies: [], env: [], expose: [] };
+      const from = stages.find((each) => each.name?.toLowerCase() === base.toLowerCase());
+      stage = {
+        index: stages.length,
+        name: named,
+        base,
+        line,
+        workdir: from?.workdir ?? '/',
+        copies: [],
+        env: [],
+        expose: [],
+      };
       stages.push(stage);
       scope = new Map(baseChain(stages, stage).flatMap((each) => envOf(each)));
       continue;
@@ -59,7 +73,9 @@ export function readDockerfile(text: string, args: ReadonlyMap<string, string | 
       continue;
     }
     if (stage === null) continue;
-    if (keyword === 'ENV' && 'getProperties' in instruction) {
+    if (keyword === 'WORKDIR') {
+      stage.workdir = inContainer(stage.workdir, fill(words[0] ?? '.'));
+    } else if (keyword === 'ENV' && 'getProperties' in instruction) {
       const properties = (
         instruction as unknown as {
           getProperties(): { getName(): string; getValue(): string | null }[];
@@ -83,7 +99,8 @@ export function readDockerfile(text: string, args: ReadonlyMap<string, string | 
         .slice(0, -1)
         .filter((each) => !/^[A-Za-z][A-Za-z0-9+.-]*:\/\//.test(each) && !each.startsWith('git@'));
       if (sources.length > 0) {
-        stage.copies.push({ from: from === null ? null : fill(from), sources, line });
+        const destination = inContainer(stage.workdir, paths.at(-1) ?? '.');
+        stage.copies.push({ from: from === null ? null : fill(from), sources, destination, line });
       }
     } else if (keyword === 'RUN') {
       for (const mount of flagsNamed(instruction, 'mount')) {
@@ -100,6 +117,10 @@ export function readDockerfile(text: string, args: ReadonlyMap<string, string | 
         stage.copies.push({
           from: from === null ? null : fill(from),
           sources: [fill(options.get('source') ?? options.get('src') ?? '.')],
+          destination: inContainer(
+            stage.workdir,
+            fill(options.get('target') ?? options.get('dst') ?? options.get('destination') ?? '.'),
+          ),
           line,
         });
       }
@@ -128,6 +149,19 @@ export function baseChain(stages: readonly Stage[], stage: Stage): Stage[] {
     chain.unshift(at);
   }
   return chain;
+}
+
+/** A path in the container, from the working folder; a trailing `/` (a folder) is kept. */
+function inContainer(workdir: string, path: string): string {
+  const joined = path.startsWith('/') ? path : `${workdir.replace(/\/$/, '')}/${path}`;
+  const parts: string[] = [];
+  for (const part of joined.split('/')) {
+    if (part === '' || part === '.') continue;
+    if (part === '..') parts.pop();
+    else parts.push(part);
+  }
+  const folder = path.endsWith('/') || path === '.' || path.endsWith('/.');
+  return `/${parts.join('/')}${folder && parts.length > 0 ? '/' : ''}`;
 }
 
 function envOf(stage: Stage): [string, string][] {

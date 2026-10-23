@@ -1,6 +1,6 @@
 // The extractor's file access on a real disk (src/extract/index.ts): absolute, forward-slash paths,
 // read only. `aerie drift` (slice D6) builds its extractor input with `modelInput`.
-import { readFileSync, statSync } from 'node:fs';
+import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import type { ExtractInput, ProjectFiles } from '../extract/index.ts';
 import type { System } from '../lines/index.ts';
@@ -10,7 +10,7 @@ export function slashes(path: string): string {
   return path.replace(/\\/g, '/');
 }
 
-/** Reads files from the disk; never writes, lists or runs anything. */
+/** Reads files and lists folders on the disk; never writes or runs anything. */
 export function projectFiles(): ProjectFiles {
   return {
     read(path) {
@@ -25,6 +25,13 @@ export function projectFiles(): ProjectFiles {
         return statSync(path).isDirectory();
       } catch {
         return false;
+      }
+    },
+    list(path) {
+      try {
+        return readdirSync(path).sort();
+      } catch {
+        return [];
       }
     },
   };

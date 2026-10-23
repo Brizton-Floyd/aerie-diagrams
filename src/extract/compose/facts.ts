@@ -11,11 +11,53 @@ import { HOST_KEY, LOOPBACK, hideSecrets, hostsIn } from './hosts.ts';
 import { folderProjectName, loadProject, type ComposeProject, type Loading } from './load.ts';
 import { isRemote, type ServiceDef } from './service.ts';
 
-/** The facts of the Compose project made of `paths`, merged in order. */
-export function composeFacts(paths: readonly string[], loading: Loading): Fact[] {
+/**
+ * What the Node and nginx extractors (slice D4) need from a Compose project: the names that reach
+ * each service, and for each service its environment, the ports the host publishes and what its
+ * image is built from and holds.
+ */
+export interface ComposeView {
+  /** Every name that reaches a service from another, in lower case, to the service's name. */
+  byName: ReadonlyMap<string, string>;
+  services: ServiceView[];
+}
+
+export interface ServiceView {
+  unit: CodeUnit;
+  /** Its environment as the container sees it: Compose's, over the image's own `ENV`. */
+  environment: ReadonlyMap<string, { value: string; at: At }>;
+  /** The host ports it publishes. */
+  published: string[];
+  /** Every file or folder of the system its image is built from: build contexts and copies. */
+  sources: string[];
+  /** What the final image holds from the system's files: each copy into its target stage chain. */
+  files: ImageFile[];
+}
+
+export interface ImageFile {
+  /** The file or folder copied, absolute. */
+  source: string;
+  /** Where it lands in the container: absolute, ending in `/` when it is a folder. */
+  destination: string;
+  /** Whether several sources are copied at once, so each lands inside the destination. */
+  many: boolean;
+  /** The line that copies it. */
+  at: At;
+}
+
+/**
+ * The facts of the Compose project made of `paths`, merged in order. When `views` is given, what
+ * the Node and nginx extractors need from the project is added to it.
+ */
+export function composeFacts(
+  paths: readonly string[],
+  loading: Loading,
+  views?: ComposeView[],
+): Fact[] {
   const project = loadProject(paths, loading);
   if (project === null) return [];
   const facts: Fact[] = [];
+  const view: ComposeView = { byName: new Map(), services: [] };
   const at = (where: At) => loading.locator.evidence(where.file, where.line);
   facts.push(
     project.name === null
@@ -33,6 +75,8 @@ export function composeFacts(paths: readonly string[], loading: Loading): Fact[]
         },
   );
   const hosts = hostNames(project);
+  view.byName = hosts.byName;
+  views?.push(view);
   for (const service of project.services) {
     const unit: CodeUnit = { kind: 'compose', name: service.name };
     facts.push({ kind: 'unit', technique: 'compose-service', at: at(service.at), unit });
@@ -78,10 +122,21 @@ export function composeFacts(paths: readonly string[], loading: Loading): Fact[]
         environment.set(env.name, { value: env.value, at: env.at });
       }
     }
+    const known = new Map<string, { value: string; at: At }>();
     for (const [key, each] of environment) {
       if (each.value === null) continue;
+      known.set(key, { value: each.value, at: each.at });
       facts.push(...connections(service, key, each.value, at(each.at), hosts));
     }
+    view.services.push({
+      unit,
+      environment: known,
+      published: service.ports.flatMap((port) =>
+        port.value.published === null ? [] : [port.value.published],
+      ),
+      sources: built?.sources ?? [],
+      files: built?.files ?? [],
+    });
     for (const [name, where] of service.dependsOn) {
       if (!hosts.services.has(name)) continue;
       facts.push(dependency('compose-depends-on', unit, name, at(where)));
@@ -255,7 +310,11 @@ function buildFacts(
   project: ComposeProject,
   loading: Loading,
   facts: Fact[],
-): { env: { name: string; value: string; at: At }[] } | null {
+): {
+  env: { name: string; value: string; at: At }[];
+  sources: string[];
+  files: ImageFile[];
+} | null {
   const build = service.build;
   if (build === null) return null;
   const at = (where: At) => loading.locator.evidence(where.file, where.line);
@@ -298,7 +357,7 @@ function buildFacts(
       at: where,
       message: PROBLEMS['inline-dockerfile'](service.name),
     });
-    return null;
+    return { env: [], sources: [context], files: [] };
   }
   const content = loading.files.read(path);
   if (content === undefined) {
@@ -308,14 +367,14 @@ function buildFacts(
       at: where,
       message: PROBLEMS['missing-dockerfile'](service.name, loading.locator.place(path).path),
     });
-    return null;
+    return { env: [], sources: [context], files: [] };
   }
   loading.read.add(path);
   const args = new Map([...build.args].map(([key, each]) => [key, each.value]));
   const stages = readDockerfile(content, args);
   const target =
     build.target === null ? stages.at(-1) : (stageNamed(stages, build.target.value) ?? undefined);
-  if (target === undefined) return null;
+  if (target === undefined) return { env: [], sources: [context], files: [] };
   // Every stage the target needs: its bases and the stages it copies from, and theirs.
   const needed: Stage[] = [];
   const visit = (stage: Stage): void => {
@@ -330,6 +389,9 @@ function buildFacts(
     }
   };
   visit(target);
+  const image = baseChain(stages, target);
+  const sources = [context];
+  const files: ImageFile[] = [];
   for (const stage of needed.sort((a, b) => a.index - b.index)) {
     for (const copy of stage.copies) {
       let folder: string | null = context;
@@ -339,18 +401,27 @@ function buildFacts(
       }
       if (folder === null) continue;
       for (const source of copy.sources) {
+        const place = resolve(folder, source.replace(/^\/+/, '') || '.');
+        sources.push(place);
+        if (image.includes(stage)) {
+          files.push({
+            source: place,
+            destination: copy.destination,
+            many: copy.sources.length > 1,
+            at: { file: path, line: copy.line },
+          });
+        }
         facts.push({
           kind: 'source',
           technique: 'dockerfile-copy',
           at: at({ file: path, line: copy.line }),
           unit,
-          place: loading.locator.place(resolve(folder, source.replace(/^\/+/, '') || '.')),
+          place: loading.locator.place(place),
           stage: stage.name,
         });
       }
     }
   }
-  const image = baseChain(stages, target);
   for (const stage of image) {
     for (const port of stage.expose) {
       facts.push({
@@ -374,5 +445,5 @@ function buildFacts(
       });
     }
   }
-  return { env: [...env.values()] };
+  return { env: [...env.values()], sources, files };
 }

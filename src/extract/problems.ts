@@ -26,7 +26,26 @@ export const PROBLEMS = {
     `An included Compose file declares service \`${service}\` again; the first one is kept.`,
   'unset-variable': (name: string) =>
     `\`${name}\` has no value here or in the \`.env\` file and no default, so it reads as empty: the value it sets is not checked.`,
+  'bad-json': (what: string, detail: string) =>
+    `This ${what} is not valid JSON, so what it holds is not checked: ${detail}.`,
+  'unnamed-package': () =>
+    'This package.json has no `name`, so no code line can name the package, and its code is not checked.',
+  'proxy-code': (path: string) =>
+    `The dev-server proxy \`${path}\` is code, which drift never runs, so where it sends calls is not checked.`,
+  interceptor: (names: string) =>
+    `The HTTP interceptors here (${names}) may change where HttpClient calls go, which drift does not follow, so it checks their URLs as written.`,
+  'unknown-url': (written: string) =>
+    `The URL of this HTTP call, ${code(written)}, is known only at run time, so where it goes is not checked.`,
+  'runtime-config': (path: string) =>
+    `The app reads \`${path}\` from its own server at run time, which drift does not read, so the addresses it holds are not checked.`,
+  'nginx-variable': (name: string) =>
+    `\`${name}\` has no value drift can read, so where this proxy_pass sends calls is not checked.`,
 } as const;
+
+/** Text in backticks, fenced with two when it holds one, as Markdown writes code. */
+function code(text: string): string {
+  return text.includes('`') ? `\`\` ${text} \`\`` : `\`${text}\``;
+}
 
 export type ProblemId = keyof typeof PROBLEMS;
 

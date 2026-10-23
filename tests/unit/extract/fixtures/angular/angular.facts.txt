@@ -1,0 +1,66 @@
+shop-deploy/compose.yaml:1  Compose project: shop
+shop-deploy/compose.yaml:4  Compose service: compose:web
+shop-deploy/compose.yaml:6  Compose build context: compose:web builds in shop-web (shop-web/Dockerfile)
+shop-deploy/compose.yaml:8  Compose environment URL: compose:web to compose:billing (BILLING_URL=http://billing:9100)
+shop-deploy/compose.yaml:10  Compose port: compose:web publishes 80/tcp on 8081
+shop-deploy/compose.yaml:11  Compose service: compose:orders
+shop-deploy/compose.yaml:12  Compose image: compose:orders runs shop/orders
+shop-deploy/compose.yaml:14  Compose port: compose:orders publishes 9000/tcp on 127.0.0.1:9000
+shop-deploy/compose.yaml:15  Compose service: compose:billing
+shop-deploy/compose.yaml:16  Compose image: compose:billing runs shop/billing
+shop-deploy/compose.yaml:18  Compose port: compose:billing publishes 9100/tcp on 9100
+shop-web/Dockerfile:3  Dockerfile COPY: compose:web is built from shop-web/package.json (stage build)
+shop-web/Dockerfile:4  Dockerfile COPY: compose:web is built from shop-web/src (stage build)
+shop-web/Dockerfile:8  Dockerfile COPY: compose:web is built from shop-web/nginx
+shop-web/Dockerfile:10  Dockerfile EXPOSE: compose:web exposes 80/tcp
+shop-web/angular.json:4  Angular project: npm:shop-web has Angular application storefront (shop-web/src/main.ts)
+shop-web/angular.json:36  Angular project: npm:shop-web has Angular application admin (shop-web/projects/admin/src/main.ts)
+shop-web/angular.json:48  Angular project: npm:@shop/ui-kit has Angular library ui-kit
+shop-web/libs/ui-kit/package.json:2  package.json name: npm:@shop/ui-kit
+shop-web/libs/ui-kit/package.json:4  package.json dependency: npm:@shop/ui-kit uses Angular ^21.0.0
+shop-web/libs/ui-kit/src/lib/status.service.ts:9  Angular HttpClient through nginx: npm:@shop/ui-kit to compose:orders (GET /api/orders/status)
+shop-web/libs/ui-kit/src/lib/status.service.ts:9  Angular HttpClient through nginx: npm:@shop/ui-kit to host orders-replica.internal (GET /api/orders/status)
+shop-web/libs/ui-kit/src/lib/status.service.ts:9  Angular HttpClient through the dev proxy: npm:@shop/ui-kit to compose:orders (GET /api/orders/status)
+shop-web/libs/ui-kit/src/lib/status.service.ts:9  Angular HttpClient: npm:@shop/ui-kit calls GET /api/orders/status
+shop-web/nginx/snippets/metrics.conf:5  nginx proxy_pass: compose:web to host stats.example.com (/stats=https://stats.example.com)
+shop-web/nginx/templates/default.conf.template:11  nginx proxy_pass: compose:web to compose:orders (/api/=http://orders:9000)
+shop-web/nginx/templates/default.conf.template:11  nginx proxy_pass: compose:web to host orders-replica.internal (/api/=http://orders-replica.internal:9000)
+shop-web/nginx/templates/default.conf.template:20  nginx proxy_pass: compose:web to compose:billing (^~ /billing/=http://billing:9100)
+shop-web/package.json:2  package.json name: npm:shop-web
+shop-web/package.json:6  package.json dependency: npm:shop-web uses Angular ^21.0.0
+shop-web/projects/admin/src/main.ts:6  Angular HttpClient: npm:shop-web calls GET /admin/users
+shop-web/proxy.conf.json:5  Angular dev-server proxy: npm:shop-web to compose:orders (/api/carts=http://localhost:9000)
+shop-web/proxy.conf.json:5  Angular dev-server proxy: npm:shop-web to compose:orders (/api/orders=http://localhost:9000)
+shop-web/proxy.conf.json:9  Angular dev-server proxy: npm:shop-web to compose:billing (/billing=http://localhost:9100)
+shop-web/proxy.docker.json:2  Angular dev-server proxy: npm:shop-web to compose:orders (/api/**=http://orders:9000)
+shop-web/proxy.docker.json:3  Angular dev-server proxy: npm:shop-web to host reports.example.com (^/report=https://reports.example.com)
+shop-web/src/app/billing/billing.service.ts:8  Angular HttpClient through nginx: npm:shop-web to compose:billing (GET /billing/plans/{})
+shop-web/src/app/billing/billing.service.ts:8  Angular HttpClient through the dev proxy: npm:shop-web to compose:billing (GET /billing/plans/{})
+shop-web/src/app/billing/billing.service.ts:8  Angular HttpClient: npm:shop-web calls GET /billing/plans/{}
+shop-web/src/app/billing/billing.service.ts:13  Angular HttpClient: npm:shop-web calls PUT http://localhost:9100/pay
+shop-web/src/app/billing/billing.service.ts:13  Angular HttpClient: npm:shop-web calls PUT https://billing.shop.example/pay
+shop-web/src/app/billing/billing.service.ts:13  Angular HttpClient: npm:shop-web to compose:billing (PUT http://localhost:9100/pay)
+shop-web/src/app/billing/billing.service.ts:13  Angular HttpClient: npm:shop-web to host billing.shop.example (PUT https://billing.shop.example/pay)
+shop-web/src/app/orders/orders.service.ts:14  Angular HttpClient through nginx: npm:shop-web to compose:orders (GET /api/orders)
+shop-web/src/app/orders/orders.service.ts:14  Angular HttpClient through nginx: npm:shop-web to host orders-replica.internal (GET /api/orders)
+shop-web/src/app/orders/orders.service.ts:14  Angular HttpClient through the dev proxy: npm:shop-web to compose:orders (GET /api/orders)
+shop-web/src/app/orders/orders.service.ts:14  Angular HttpClient: npm:shop-web calls GET /api/orders
+shop-web/src/app/orders/orders.service.ts:18  Angular HttpClient through nginx: npm:shop-web to compose:orders (GET /api/orders/{})
+shop-web/src/app/orders/orders.service.ts:18  Angular HttpClient through nginx: npm:shop-web to host orders-replica.internal (GET /api/orders/{})
+shop-web/src/app/orders/orders.service.ts:18  Angular HttpClient through the dev proxy: npm:shop-web to compose:orders (GET /api/orders/{})
+shop-web/src/app/orders/orders.service.ts:18  Angular HttpClient: npm:shop-web calls GET /api/orders/{}
+shop-web/src/app/orders/orders.service.ts:22  Angular HttpClient through nginx: npm:shop-web to compose:orders (POST /api/carts/checkout)
+shop-web/src/app/orders/orders.service.ts:22  Angular HttpClient through nginx: npm:shop-web to host orders-replica.internal (POST /api/carts/checkout)
+shop-web/src/app/orders/orders.service.ts:22  Angular HttpClient through the dev proxy: npm:shop-web to compose:orders (POST /api/carts/checkout)
+shop-web/src/app/orders/orders.service.ts:22  Angular HttpClient: npm:shop-web calls POST /api/carts/checkout
+shop-web/src/app/orders/orders.service.ts:26  Angular HttpClient: npm:shop-web calls GET http://localhost:9100/invoices
+shop-web/src/app/orders/orders.service.ts:26  Angular HttpClient: npm:shop-web calls GET https://billing.shop.example/invoices
+shop-web/src/app/orders/orders.service.ts:26  Angular HttpClient: npm:shop-web to compose:billing (GET http://localhost:9100/invoices)
+shop-web/src/app/orders/orders.service.ts:26  Angular HttpClient: npm:shop-web to host billing.shop.example (GET https://billing.shop.example/invoices)
+shop-web/src/app/orders/orders.service.ts:30  Angular HttpClient: npm:shop-web calls GET report/daily
+shop-web/src/app/orders/orders.service.ts:30  Angular HttpClient: npm:shop-web calls GET report/weekly
+shop-web/src/app/orders/orders.service.ts:34  Angular HttpClient: npm:shop-web calls GET assets/config.json
+shop-web/src/environments/environment.prod.ts:3  Angular environment file: npm:shop-web to host billing.shop.example (environment.billingUrl=https://billing.shop.example)
+shop-web/src/environments/environment.prod.ts:4  Angular environment file: npm:shop-web to host stats.example.com (environment.analytics.url=https://stats.example.com/collect)
+shop-web/src/environments/environment.ts:3  Angular environment file: npm:shop-web to compose:billing (environment.billingUrl=http://localhost:9100)
+shop-web/src/environments/environment.ts:4  Angular environment file: npm:shop-web to host stats.example.com (environment.analytics.url=https://stats.example.com/collect)

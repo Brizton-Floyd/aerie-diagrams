@@ -1,7 +1,8 @@
 // The extractor (docs/spec/drift.md, section 4): reads a project statically and returns facts, each
 // with its evidence (`repo/path:line`) and the technique that found it. Pure TypeScript like the
 // language and the model: it builds only on src/lines/index.ts and the parsers it is allowed
-// (`yaml`, `dockerfile-ast`), and reads files only through `ProjectFiles`.
+// (`yaml`, `dockerfile-ast`, `jsonc-parser`, `typescript`), and reads files only through
+// `ProjectFiles`.
 //
 // How drift (slices D5 and D6) uses it:
 //
@@ -16,8 +17,10 @@
 // - Each technique is in `TECHNIQUES`; one that only corroborates (`depends_on`) never counts as
 //   evidence on its own when D5 counts how many techniques agree.
 // - Only the Compose files the system root names are read, or else the default ones in each repo's
-//   root (DRIFT-007). Slices D3 and D4 add the Spring, Maven, Node and Angular extractors beside
-//   compose/, each returning facts the same way.
+//   root (DRIFT-007). node/ (D4) then reads each repo's package.json and what it leads to: npm
+//   workspaces, angular.json, proxy files, the TypeScript an application imports, and the nginx in
+//   the images Compose builds, which `composeFacts` describes for it as `ComposeView`s. Slice D3
+//   adds the Spring and Maven extractor beside them, returning facts the same way.
 export { extract, type Extraction } from './extract.ts';
 export {
   evidenceText,
@@ -26,10 +29,13 @@ export {
   placeText,
   sortFacts,
   unitText,
+  type AppFact,
   type BuildFact,
+  type CallFact,
   type ConnectionFact,
   type Evidence,
   type Fact,
+  type FrameworkFact,
   type HealthcheckFact,
   type ImageFact,
   type Place,

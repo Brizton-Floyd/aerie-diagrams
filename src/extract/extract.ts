@@ -1,8 +1,9 @@
 // The extractor's one entry point: a model's system root and read access to the project in, facts
 // with evidence and problems out (docs/spec/drift.md, section 4; DRIFT-001 to DRIFT-007).
-import { composeFacts } from './compose/facts.ts';
+import { composeFacts, type ComposeView } from './compose/facts.ts';
 import type { Loading } from './compose/load.ts';
 import { factText, sortFacts, type Fact, type Place } from './facts.ts';
+import { nodeFacts } from './node/facts.ts';
 import type { Problem } from './problems.ts';
 import { Locator, resolveSystem, type ExtractInput, type Repo } from './project.ts';
 
@@ -28,7 +29,9 @@ export function extract(input: ExtractInput): Extraction {
     read: new Set(),
   };
   const facts: Fact[] = [];
-  for (const paths of system.compose) facts.push(...composeFacts(paths, loading));
+  const views: ComposeView[] = [];
+  for (const paths of system.compose) facts.push(...composeFacts(paths, loading, views));
+  facts.push(...nodeFacts(system.repos, views, loading));
   const seen = new Set<string>();
   const once = sortFacts(facts).filter((fact) => {
     const key = factText(fact);

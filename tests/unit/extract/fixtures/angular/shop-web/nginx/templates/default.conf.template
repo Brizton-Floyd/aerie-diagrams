@@ -1,0 +1,30 @@
+# The storefront's server: ${BILLING_URL} comes from the container's environment.
+upstream orders_pool {
+    server orders:9000;
+    server orders-replica.internal:9000;
+}
+
+server {
+    listen 80;
+
+    location /api/ {
+        proxy_pass http://orders_pool;
+    }
+
+    location = /billing/health {
+        return 200 "ok";
+    }
+
+    location ^~ /billing/ {
+        set $billing ${BILLING_URL};
+        proxy_pass $billing;
+    }
+
+    location ~ ^/report {
+        proxy_pass http://$report_host;
+    }
+
+    location / {
+        try_files $uri /index.html;
+    }
+}

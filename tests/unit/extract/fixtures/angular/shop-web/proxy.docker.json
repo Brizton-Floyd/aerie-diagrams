@@ -1,0 +1,4 @@
+{
+  "/api/**": { "target": "http://orders:9000" },
+  "^/report": "https://reports.example.com"
+}
