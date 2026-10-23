@@ -5,6 +5,20 @@ functional spec for each version is [docs/spec/](docs/spec/overview.md).
 
 ## Unreleased
 
+### Checking against the code: the reports and `aerie drift` (D6)
+
+- `aerie drift <model>` checks a model against its code and prints what it finds
+  ([docs/spec/drift.md](docs/spec/drift.md), section 7): a plain-English terminal report by default
+  (drift, likely, what is not checked collapsed per element, suggestions and ignore lines; each
+  finding one sentence in the diagram's names with its `repo/path:line` evidence, a copy-pasteable
+  Lines edit and the ignore line to use instead), `--format diff` (every suggested edit as one patch
+  for `git apply`; Aerie never writes the model), `--format json` (`aerie-drift/1`, with a stable key
+  per finding) and `--format pr` (the body of a sticky pull request comment, found again by a hidden
+  marker).
+- Exit codes: 0 for no drift, 1 for drift (or likely too, with `--fail-on likely`), 2 when drift
+  cannot run (a model with errors, a missing repo or Compose file). Golden reports of every fixture
+  and of the Lotto benchmark; applying the patch and running again reports no drift.
+
 ### Checking against the code: matching, lifting and levels (D5)
 
 - Drift compares a model with its code ([docs/spec/drift.md](docs/spec/drift.md), sections 5 and 6):

@@ -136,8 +136,12 @@ has the steps for opening a model and choosing a view and audience with clicks).
   have their em dashes written as hyphens, for `check-text`.
 - `src/drift/` (drift's comparison, D5 on) is pure TypeScript too, built only on the entry points of
   the language, the model and the extractor; API notes in [src/drift/index.ts](src/drift/index.ts).
-  It returns the finding model (D6 prints it); edits are operations on the model file's lines
-  (`file.ts`) so several findings combine into one patch. Its fixture projects in
+  It returns the finding model, which the reports (D6: `text.ts`, `patch.ts`, `json.ts`,
+  `comment.ts`) print for `aerie drift`; edits are operations on the model file's lines
+  (`file.ts`) so several findings combine into one patch. The reports of the fixtures and the
+  benchmark are golden files in `tests/unit/drift/reports/` (Prettier skips them), updated with
+  `npx vitest run --project unit -u`; their round trip runs `git apply` on a copy of the model
+  beside it, so drift's tests write and delete `*.round-trip.aerie` files there. Its fixture projects in
   `tests/unit/drift/fixtures/` (skipped by Prettier, ESLint and `tsc`) each pair a model that
   matches its code with one whose planted drifts its opening comment lists; `<model>.findings.txt`
   updates with `npx vitest run --project unit -u`. The Lotto benchmark (`tests/unit/drift/lotto/`)

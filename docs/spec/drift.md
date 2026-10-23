@@ -782,6 +782,74 @@ cleanly and re-running gave no drift; three repos took 0.9 s.
 - Wording follows the error catalogue's rules (LANG-903): plain English, the author's own ids in
   backticks.
 
+### `aerie drift` and the four forms (slice D6)
+
+The reports are `src/drift/` too (`report.ts`, `text.ts`, `patch.ts`, `json.ts`, `comment.ts`), pure
+like the comparison: each prints one run (the model file as the author named it, its text and model,
+the extraction, the finding model of D5 and `--fail-on`) and reads nothing. The command is in
+`src/cli/aerie.ts`.
+
+- **DRIFT-501** `aerie drift <file> [--format text|diff|json|pr] [--fail-on drift|likely]` checks one
+  model file against its code: it reads the file, stops if `aerie check` finds an error in it (each
+  printed as LANG-962 prints it), extracts the system its system root names with the Java parser
+  loaded, stops if extraction finds an error (each printed `repo/path:line: message`, DRIFT-005),
+  compares, and prints the report to standard output. What stops it goes to standard error.
+- **DRIFT-502** Every form gives the same counts: the drift and likely findings, the suggestions, what
+  is not checked, the ignore lines that excused something and how many differences, the elements and
+  the lines of the diagram (one per object) with how many of each the code confirms, `--fail-on` and
+  the exit code. The terminal header names the repos and what was found in them (Compose services,
+  Maven modules, npm packages, and apps: Spring Boot applications and Angular applications) and the
+  time taken, to a tenth of a second.
+- **DRIFT-503** Exit codes, for every form: 0 when nothing at or above `--fail-on` was found (drift
+  by default), 1 when something was, and 2 when drift cannot run: a model that cannot be read or has
+  errors, an extraction error (a missing repo or Compose file), or a wrong option, with a plain
+  message.
+- **DRIFT-504** What is not checked is collapsed per element: an element that stands for no code (a
+  person, an uncertain match, no matching name) takes, in one line, every line of the diagram that is
+  not checked because it is an end ("The line “User uses Website” (line 246) is not checked
+  either."); the scenarios share one line; then each warning of the extractor, at its place in the
+  code, says what drift could not read.
+- **DRIFT-505** The terminal report (the default, `--format text`): `aerie drift <file>` and the
+  header; then Drift, Likely, Not checked, Suggestions and Ignored, each with its count and left out
+  when empty. A finding is its id and title, `Diagram:` and the model's line when it has one, why it
+  has its level, `Code:` with its evidence (the first 8 lines, then how many more), `Suggested edit:`
+  with each hunk under its place (`file:24`, `file:29-30`, or `file, after line 38`) as `-` and `+`
+  Lines, and `Or, if it is meant to differ:` with the ignore line. Prose is wrapped at 100 columns;
+  evidence and Lines never are, so they can be copied. A suggestion is printed like a finding,
+  without the ignore line; an ignore line as its place, subject, reason and how many differences it
+  excused. The footer gives how much the code confirms, the counts and the exit code, and points to
+  `--format diff` when there are edits. On a terminal (standard output a TTY, `NO_COLOR` unset) the
+  ids, headings, places and Lines are coloured; anywhere else the text is plain.
+- **DRIFT-506** `--format diff` prints one unified diff of the model file (`--- a/<file>` and
+  `+++ b/<file>` as named on the command line, three lines of context, `\ No newline at end of file`
+  where it applies) with the edits of every finding and of every certain suggestion (DRIFT-427,
+  `used`), combined as DRIFT-431 combines them; nothing when there are none. It applies with
+  `git apply` or `patch -p1` from the folder drift ran in; on every fixture and on the Lotto
+  benchmark, the patched model then reports no drift.
+- **DRIFT-507** `--format json` prints one document: `format` (`aerie-drift/1`), `model`, `repos`,
+  `summary` (DRIFT-502), then `findings`, `suggestions`, `notChecked`, `ignored` (each ignore line's
+  subject, reason, line and the findings it `excused`, whose `id` is null) and `confirmed`, as D5
+  builds them (DRIFT-424 to DRIFT-427), and `problems`, the extractor's warnings. Evidence is
+  `{technique, name, at, detail, corroborates}` with `at` as `repo/path:line`; edits and `instead`
+  are hunks (`at`, `remove`, `add`) against the model file. Every finding keeps its stable `key`.
+- **DRIFT-508** `--format pr` prints the body of a pull request comment: the hidden marker
+  `<!-- aerie-drift: <file> -->` that finds the comment of that model file again, a heading with a
+  status dot (red for drift, yellow for likely only, green for neither) and one summary sentence
+  that says what fails the check, a table of findings (id, title, the model's line or "not drawn"),
+  each finding folded with its evidence, its edit as a `diff` block with context, and its ignore
+  line; then what is not checked, the suggestions and the ignore lines, folded together.
+- **DRIFT-509** The reports of every fixture project and of the Lotto benchmark are kept as golden
+  files in `tests/unit/drift/reports/` (every form for each model with planted drifts, the text of
+  each matching model, the text and the patch of the benchmark).
+
+Choices D6 made, where this document left them open: the default form is called `text`, as for
+`aerie check`; the patch also carries the certain suggestions, which change nothing drift finds, but
+not the uncertain ones, which need the author's choice; evidence is cut to 8 lines in the text and
+the comment (all of it is in the JSON); the time of a run is printed only in the text report, so the
+JSON of two runs differs only where the findings do; and the inline `suggestion` review comments on
+lines a pull request touches are left to the GitHub Action (D7), which knows the pull request's
+lines and builds them from the JSON's hunks.
+
 ## 8. CI (slice D7)
 
 Decided in #55.

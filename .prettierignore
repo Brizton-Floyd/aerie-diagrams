@@ -12,3 +12,5 @@ src/layout/text/advances.json
 # The extractor's and drift's fixture projects, and the copies of Lotto's repos, stay as written.
 tests/unit/extract/fixtures/
 tests/unit/drift/fixtures/
+# Drift's golden reports are byte-exact output of `aerie drift` (DRIFT-509).
+tests/unit/drift/reports/
