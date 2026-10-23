@@ -7,13 +7,19 @@ import { PROBLEMS, type Problem } from './problems.ts';
 
 /**
  * Read access to the project's files. Paths are absolute, with forward slashes. The extractor only
- * reads what the system root leads it to; it never lists folders, runs anything or writes.
+ * reads what the system root leads it to; it never runs anything or writes.
  */
 export interface ProjectFiles {
   /** A file's text, or undefined when there is no such file. */
   read(path: string): string | undefined;
   /** Whether there is a folder at this path. */
   isFolder(path: string): boolean;
+  /**
+   * The names of the files and folders in a folder, sorted; empty when there is no such folder.
+   * The extractor lists a folder only where a file it reads names a pattern of folders (npm
+   * workspaces) or copies a whole folder into an image (nginx configuration).
+   */
+  list(path: string): string[];
 }
 
 export interface ExtractInput {

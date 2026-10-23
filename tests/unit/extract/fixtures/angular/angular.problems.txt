@@ -1,0 +1,6 @@
+warning  shop-web/nginx/templates/default.conf.template:24  `$report_host` has no value drift can read, so where this proxy_pass sends calls is not checked.
+warning  shop-web/src/app/app.config.ts:8  The HTTP interceptors here (`authInterceptor`) may change where HttpClient calls go, which drift does not follow, so it checks their URLs as written.
+warning  shop-web/src/app/orders/orders.service.ts:34  The app reads `/shop/assets/config.json` from its own server at run time, which drift does not read, so the addresses it holds are not checked.
+warning  shop-web/src/app/orders/orders.service.ts:38  The URL of this HTTP call, `url`, is known only at run time, so where it goes is not checked.
+warning  shop-web/angular.json:44  The dev-server proxy `projects/admin/proxy.conf.js` is code, which drift never runs, so where it sends calls is not checked.
+warning  shop-web/libs/legacy/package.json:1  This package.json has no `name`, so no code line can name the package, and its code is not checked.

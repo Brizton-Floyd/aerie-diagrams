@@ -1,0 +1,9 @@
+{
+  "name": "shop-web",
+  "private": true,
+  "workspaces": ["libs/*"],
+  "dependencies": {
+    "@angular/core": "^21.0.0",
+    "rxjs": "~7.8.0"
+  }
+}

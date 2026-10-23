@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "projects": {
+    "storefront": {
+      "projectType": "application",
+      "root": "",
+      "sourceRoot": "src",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "src/main.ts",
+            "tsConfig": "tsconfig.app.json",
+            "baseHref": "/shop/"
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "options": { "proxyConfig": "proxy.conf.json" },
+          "configurations": {
+            "docker": { "proxyConfig": "proxy.docker.json" }
+          }
+        }
+      }
+    },
+    "admin": {
+      "projectType": "application",
+      "root": "projects/admin",
+      "architect": {
+        "build": {
+          "options": { "browser": "projects/admin/src/main.ts" }
+        },
+        "serve": {
+          "options": { "proxyConfig": "projects/admin/proxy.conf.js" }
+        }
+      }
+    },
+    "ui-kit": {
+      "projectType": "library",
+      "root": "libs/ui-kit"
+    }
+  }
+}

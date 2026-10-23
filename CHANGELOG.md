@@ -5,6 +5,22 @@ functional spec for each version is [docs/spec/](docs/spec/overview.md).
 
 ## Unreleased
 
+### Checking against the code: Node and Angular (D4)
+
+- The extractor reads Node and Angular code too ([docs/spec/drift.md](docs/spec/drift.md)): each
+  package (repo roots, npm workspaces, Angular projects and the folders an image is built from) as
+  an `npm:` code unit with its frameworks, angular.json projects, dev-server proxy files,
+  environment files, and `HttpClient` and `httpResource` calls with URLs read from literals,
+  templates, `+`, constants and environment settings, following only the code the application
+  imports.
+- Each relative call is followed to where it goes, through the dev proxy and through the nginx of
+  the image that serves the application (templates filled in from the container's environment,
+  `include`, `set` and `upstream`, and nginx's own choice of location); `proxy_pass` is a connection
+  of its own. Proxy files that are code, interceptors and configuration fetched at run time are
+  warnings, never guesses.
+- New dependency: `jsonc-parser`; `typescript` (6.0.3) is now a runtime dependency (both recorded in
+  THIRD_PARTY_NOTICES.md). Nothing reads the facts yet; matching and reports come in D5 and D6.
+
 ### Checking against the code: the extractor and Docker Compose (D2)
 
 - Aerie's own static extractor (`src/extract/`, [docs/spec/drift.md](docs/spec/drift.md)): it reads

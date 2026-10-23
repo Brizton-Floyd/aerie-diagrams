@@ -121,10 +121,12 @@ has the steps for opening a model and choosing a view and audience with clicks).
   `contourStyle()` writes from the tokens, so a theme switch redraws nothing and colours never
   appear outside `tokens.ts` (a unit test enforces it).
 - `src/extract/` (drift's extractor, D2 on) is pure TypeScript too, built only on
-  `src/lines/index.ts` and its parsers (`yaml`, `dockerfile-ast`); it reads a project only through
-  `ProjectFiles` (the Node one is `src/cli/project.ts`). API notes in
+  `src/lines/index.ts` and its parsers (`yaml`, `dockerfile-ast`, `jsonc-parser`, and `typescript`
+  for `createSourceFile` only); it reads a project only through `ProjectFiles` (the Node one is
+  `src/cli/project.ts`). Each stack is a folder (`compose/`, `node/`); API notes in
   [src/extract/index.ts](src/extract/index.ts). Its fixture projects in `tests/unit/extract/fixtures/`
-  (Prettier skips them) hold every expected fact in `<model>.facts.txt`, updated with
+  (Prettier, ESLint and `tsc` skip them, since they hold other projects' code, such as the Lotto UI
+  copies) hold every expected fact in `<model>.facts.txt`, updated with
   `npx vitest run --project unit -u`; check a new one against `docker compose config`, run with
   `env -i PATH=$PATH HOME=$HOME` so no shell variable leaks in.
 - Text is measured from `src/layout/text/advances.json`, written from the bundled Fontsource fonts by

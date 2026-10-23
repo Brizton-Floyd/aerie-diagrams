@@ -200,6 +200,19 @@ reports yet.
 | unit  | Fixture projects with known facts (interpolation, merging, connections, builds, details): every fact found, nothing more, checked against `docker compose config` | DRIFT-102 to DRIFT-113            |
 | unit  | Copies of the Lotto Compose files give its four services and three Compose connections, and only from the file the system root names                              | DRIFT-114                         |
 
+### After v1: D4, Node and Angular
+
+Slice D4 of drift detection ([drift.md](drift.md#node-and-angular-slice-d4), read log `d4.md`):
+packages, Angular projects, dev-server proxies, environment files, HTTP calls and the nginx that
+serves an application, each relative call followed to where it goes. No matching or reports yet.
+
+| Suite | What it proves                                                                                                                                                                | Requirements           |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| unit  | Each Node, Angular and nginx rule, from JSON with comments and workspaces to calls, URLs, proxies, templates and location choice                                              | DRIFT-301 to DRIFT-309 |
+| unit  | A fixture workspace with every planted pattern (two proxies, environment files, a library, an unnamed package, interceptors, nginx templates): every fact found, nothing more | DRIFT-302 to DRIFT-309 |
+| unit  | Copies of the Lotto UI give its package, its nine calls and the website's connection to the Screen API by four techniques, as the Lotto repos do                              | DRIFT-310              |
+| unit  | The two new parsers are pinned, runtime dependencies and in the notices                                                                                                       | DRIFT-311              |
+
 ## Browser journeys
 
 Journeys run against the production build with the Lotto sample, at 1600 x 900, as a reader would use

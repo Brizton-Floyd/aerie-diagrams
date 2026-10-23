@@ -5,8 +5,8 @@
 export interface Technique {
   /** How a report names it, before the fact's detail: "Compose environment URL: ...". */
   name: string;
-  /** The stack whose files it reads. */
-  stack: 'compose';
+  /** The stack whose files it reads: Compose (and Dockerfiles), or Node and Angular (and nginx). */
+  stack: 'compose' | 'node';
   /** Whether it only supports what other techniques find, and is never evidence on its own. */
   corroborates: boolean;
 }
@@ -28,6 +28,19 @@ export const TECHNIQUES = {
   'compose-volume': { name: 'Compose volume', stack: 'compose', corroborates: false },
   'compose-profile': { name: 'Compose profile', stack: 'compose', corroborates: false },
   'compose-healthcheck': { name: 'Compose healthcheck', stack: 'compose', corroborates: false },
+  'npm-package': { name: 'package.json name', stack: 'node', corroborates: false },
+  'npm-dependency': { name: 'package.json dependency', stack: 'node', corroborates: false },
+  'angular-project': { name: 'Angular project', stack: 'node', corroborates: false },
+  'angular-proxy': { name: 'Angular dev-server proxy', stack: 'node', corroborates: false },
+  'angular-environment': { name: 'Angular environment file', stack: 'node', corroborates: false },
+  'angular-http': { name: 'Angular HttpClient', stack: 'node', corroborates: false },
+  'http-dev-proxy': {
+    name: 'Angular HttpClient through the dev proxy',
+    stack: 'node',
+    corroborates: false,
+  },
+  'http-nginx': { name: 'Angular HttpClient through nginx', stack: 'node', corroborates: false },
+  'nginx-proxy-pass': { name: 'nginx proxy_pass', stack: 'node', corroborates: false },
 } as const satisfies Record<string, Technique>;
 
 export type TechniqueId = keyof typeof TECHNIQUES;

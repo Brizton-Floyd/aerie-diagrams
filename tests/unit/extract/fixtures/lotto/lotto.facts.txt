@@ -95,3 +95,35 @@ lotto-options-core/deploy/web-ui/Dockerfile:18  Dockerfile COPY: compose:web-ui 
 lotto-options-core/deploy/web-ui/Dockerfile:19  Dockerfile COPY: compose:web-ui is built from lotto-options-ui/src (stage build)
 lotto-options-core/deploy/web-ui/Dockerfile:25  Dockerfile COPY: compose:web-ui is built from lotto-options-core/deploy/web-ui/default.conf.template
 lotto-options-core/deploy/web-ui/Dockerfile:27  Dockerfile EXPOSE: compose:web-ui exposes 80/tcp
+lotto-options-core/deploy/web-ui/default.conf.template:18  nginx proxy_pass: compose:web-ui to compose:bff (/ui/=http://bff:8080)
+lotto-options-ui/angular.json:9  Angular project: npm:lotto-options-ui has Angular application lotto-options-ui (lotto-options-ui/src/main.ts)
+lotto-options-ui/package.json:2  package.json name: npm:lotto-options-ui
+lotto-options-ui/package.json:18  package.json dependency: npm:lotto-options-ui uses Angular ^21.2.0
+lotto-options-ui/proxy.conf.json:3  Angular dev-server proxy: npm:lotto-options-ui to compose:bff (/ui=http://localhost:8080)
+lotto-options-ui/src/app/dashboard/dashboard.service.ts:42  Angular HttpClient through nginx: npm:lotto-options-ui to compose:bff (GET /ui/dashboard/{}/{})
+lotto-options-ui/src/app/dashboard/dashboard.service.ts:42  Angular HttpClient through the dev proxy: npm:lotto-options-ui to compose:bff (GET /ui/dashboard/{}/{})
+lotto-options-ui/src/app/dashboard/dashboard.service.ts:42  Angular HttpClient: npm:lotto-options-ui calls GET /ui/dashboard/{}/{}
+lotto-options-ui/src/app/dashboard/dashboard.service.ts:46  Angular HttpClient through nginx: npm:lotto-options-ui to compose:bff (GET /ui/dashboard/{}/{}/matrix)
+lotto-options-ui/src/app/dashboard/dashboard.service.ts:46  Angular HttpClient through the dev proxy: npm:lotto-options-ui to compose:bff (GET /ui/dashboard/{}/{}/matrix)
+lotto-options-ui/src/app/dashboard/dashboard.service.ts:46  Angular HttpClient: npm:lotto-options-ui calls GET /ui/dashboard/{}/{}/matrix
+lotto-options-ui/src/app/dashboard/dashboard.service.ts:52  Angular HttpClient through nginx: npm:lotto-options-ui to compose:bff (GET /ui/dashboard/{}/{}/position-trend)
+lotto-options-ui/src/app/dashboard/dashboard.service.ts:52  Angular HttpClient through the dev proxy: npm:lotto-options-ui to compose:bff (GET /ui/dashboard/{}/{}/position-trend)
+lotto-options-ui/src/app/dashboard/dashboard.service.ts:52  Angular HttpClient: npm:lotto-options-ui calls GET /ui/dashboard/{}/{}/position-trend
+lotto-options-ui/src/app/dashboard/dashboard.service.ts:63  Angular HttpClient through nginx: npm:lotto-options-ui to compose:bff (GET /ui/dashboard/{}/{}/pattern-edge)
+lotto-options-ui/src/app/dashboard/dashboard.service.ts:63  Angular HttpClient through the dev proxy: npm:lotto-options-ui to compose:bff (GET /ui/dashboard/{}/{}/pattern-edge)
+lotto-options-ui/src/app/dashboard/dashboard.service.ts:63  Angular HttpClient: npm:lotto-options-ui calls GET /ui/dashboard/{}/{}/pattern-edge
+lotto-options-ui/src/app/dashboard/dashboard.service.ts:69  Angular HttpClient through nginx: npm:lotto-options-ui to compose:bff (POST /ui/dashboard/{}/{}/generate)
+lotto-options-ui/src/app/dashboard/dashboard.service.ts:69  Angular HttpClient through the dev proxy: npm:lotto-options-ui to compose:bff (POST /ui/dashboard/{}/{}/generate)
+lotto-options-ui/src/app/dashboard/dashboard.service.ts:69  Angular HttpClient: npm:lotto-options-ui calls POST /ui/dashboard/{}/{}/generate
+lotto-options-ui/src/app/dashboard/dashboard.service.ts:76  Angular HttpClient through nginx: npm:lotto-options-ui to compose:bff (POST /ui/dashboard/{}/{}/betslip/pdf)
+lotto-options-ui/src/app/dashboard/dashboard.service.ts:76  Angular HttpClient through the dev proxy: npm:lotto-options-ui to compose:bff (POST /ui/dashboard/{}/{}/betslip/pdf)
+lotto-options-ui/src/app/dashboard/dashboard.service.ts:76  Angular HttpClient: npm:lotto-options-ui calls POST /ui/dashboard/{}/{}/betslip/pdf
+lotto-options-ui/src/app/ping/ping.service.ts:13  Angular HttpClient through nginx: npm:lotto-options-ui to compose:bff (GET /ui/ping)
+lotto-options-ui/src/app/ping/ping.service.ts:13  Angular HttpClient through the dev proxy: npm:lotto-options-ui to compose:bff (GET /ui/ping)
+lotto-options-ui/src/app/ping/ping.service.ts:13  Angular HttpClient: npm:lotto-options-ui calls GET /ui/ping
+lotto-options-ui/src/app/range-analysis/range-analysis.service.ts:28  Angular HttpClient through nginx: npm:lotto-options-ui to compose:bff (POST /ui/range-analysis)
+lotto-options-ui/src/app/range-analysis/range-analysis.service.ts:28  Angular HttpClient through the dev proxy: npm:lotto-options-ui to compose:bff (POST /ui/range-analysis)
+lotto-options-ui/src/app/range-analysis/range-analysis.service.ts:28  Angular HttpClient: npm:lotto-options-ui calls POST /ui/range-analysis
+lotto-options-ui/src/app/shell/state-game-picker.component.ts:200  Angular HttpClient through nginx: npm:lotto-options-ui to compose:bff (GET /ui/catalog/states)
+lotto-options-ui/src/app/shell/state-game-picker.component.ts:200  Angular HttpClient through the dev proxy: npm:lotto-options-ui to compose:bff (GET /ui/catalog/states)
+lotto-options-ui/src/app/shell/state-game-picker.component.ts:200  Angular HttpClient: npm:lotto-options-ui calls GET /ui/catalog/states

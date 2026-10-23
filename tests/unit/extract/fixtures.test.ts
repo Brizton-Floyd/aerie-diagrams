@@ -8,7 +8,14 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { modelInput, slashes } from '../../../src/cli/project.ts';
-import { evidenceText, extract, factText, type Extraction } from '../../../src/extract/index.ts';
+import {
+  evidenceText,
+  extract,
+  factText,
+  TECHNIQUES,
+  unitText,
+  type Extraction,
+} from '../../../src/extract/index.ts';
 import { parse } from '../../../src/lines/index.ts';
 
 const DIR = join(import.meta.dirname, 'fixtures');
@@ -22,6 +29,13 @@ export function extractFixture(fixture: string, model: string): Extraction {
     ...modelInput(file, parsed.model.system),
     homeRepo: slashes(join(DIR, fixture)),
   });
+}
+
+/** The names of the code units of one kind the extraction found, in order. */
+function units(found: Extraction, kind: string): string[] {
+  return found.facts.flatMap((fact) =>
+    fact.kind === 'unit' && fact.unit.kind === kind ? [fact.unit.name] : [],
+  );
 }
 
 async function expectFixture(fixture: string, model: string): Promise<Extraction> {
@@ -63,8 +77,7 @@ describe('fixture projects', () => {
 
   it('DRIFT-114 the Lotto Compose files: only the file the system root names', async () => {
     const found = await expectFixture('lotto', 'lotto');
-    const services = found.facts.flatMap((fact) => (fact.kind === 'unit' ? [fact.unit.name] : []));
-    expect(services).toEqual(['results-service', 'core', 'bff', 'web-ui']);
+    expect(units(found, 'compose')).toEqual(['results-service', 'core', 'bff', 'web-ui']);
     // The three service connections Compose shows on Lotto (#51): the environment URLs, which
     // `depends_on` corroborates. The fourth, the store's downloads, is in Spring configuration (D3).
     const calls = (technique: string): string[] =>
@@ -80,8 +93,7 @@ describe('fixture projects', () => {
 
   it('DRIFT-114 without a compose line, the Lotto repos default to every root Compose file, the stale one too', async () => {
     const found = await expectFixture('lotto', 'lotto-default');
-    const services = found.facts.flatMap((fact) => (fact.kind === 'unit' ? [fact.unit.name] : []));
-    expect(services).toEqual([
+    expect(units(found, 'compose')).toEqual([
       'lotto-options-core-service',
       'lotto-persistence-service',
       'results-service',
@@ -89,5 +101,43 @@ describe('fixture projects', () => {
       'bff',
       'web-ui',
     ]);
+  });
+
+  it('DRIFT-302 to DRIFT-309 a Node and Angular workspace: packages, projects, proxies, environments, calls and nginx', async () => {
+    await expectFixture('angular', 'angular');
+  });
+
+  it('DRIFT-310 the Lotto UI: its package, its nine calls, and the website to Screen API connection by four techniques', async () => {
+    const found = await expectFixture('lotto', 'lotto');
+    expect(units(found, 'npm')).toEqual(['lotto-options-ui']);
+    const calls = found.facts.flatMap((fact) =>
+      fact.kind === 'call' ? [`${fact.method} ${fact.url}`] : [],
+    );
+    expect(calls).toEqual([
+      'GET /ui/dashboard/{}/{}',
+      'GET /ui/dashboard/{}/{}/matrix',
+      'GET /ui/dashboard/{}/{}/position-trend',
+      'GET /ui/dashboard/{}/{}/pattern-edge',
+      'POST /ui/dashboard/{}/{}/generate',
+      'POST /ui/dashboard/{}/{}/betslip/pdf',
+      'GET /ui/ping',
+      'POST /ui/range-analysis',
+      'GET /ui/catalog/states',
+    ]);
+    // Every connection the Node extractor finds runs from the website (its npm package, or the
+    // web-ui service that serves it) to the Screen API's bff service, and nothing else.
+    const techniques = new Map<string, Set<string>>();
+    for (const fact of found.facts) {
+      if (fact.kind !== 'connection' || TECHNIQUES[fact.technique].stack !== 'node') continue;
+      const edge = `${unitText(fact.from)} > ${'host' in fact.to ? fact.to.host : unitText(fact.to)}`;
+      techniques.set(edge, (techniques.get(edge) ?? new Set()).add(fact.technique));
+    }
+    expect(
+      Object.fromEntries([...techniques].map(([edge, each]) => [edge, [...each].sort()])),
+    ).toEqual({
+      'compose:web-ui > compose:bff': ['nginx-proxy-pass'],
+      'npm:lotto-options-ui > compose:bff': ['angular-proxy', 'http-dev-proxy', 'http-nginx'],
+    });
+    expect(found.problems).toEqual([]);
   });
 });

@@ -28,7 +28,7 @@ export interface ProjectFact extends Found<'project'> {
   name: string;
 }
 
-/** A code unit exists: a Compose service. */
+/** A code unit exists: a Compose service, or a Node or Angular package. */
 export interface UnitFact extends Found<'unit'> {
   unit: CodeUnit;
 }
@@ -102,6 +102,33 @@ export interface HealthcheckFact extends Found<'healthcheck'> {
   test: string;
 }
 
+/** A package is built on a framework (Angular, Express and others), as its package.json declares. */
+export interface FrameworkFact extends Found<'framework'> {
+  unit: CodeUnit;
+  framework: string;
+  /** The version range package.json asks for. */
+  version: string;
+}
+
+/** An Angular project of a package: an application, with the file it starts from, or a library. */
+export interface AppFact extends Found<'app'> {
+  unit: CodeUnit;
+  name: string;
+  type: 'application' | 'library';
+  /** The application's entry point (`browser` or `main`), or null for a library or none given. */
+  entry: Place | null;
+}
+
+/**
+ * A package's code makes an HTTP call. The URL is as far as the code shows it: text it cannot read
+ * (a value known only at run time) is `{}`.
+ */
+export interface CallFact extends Found<'call'> {
+  unit: CodeUnit;
+  method: string;
+  url: string;
+}
+
 export type Fact =
   | ProjectFact
   | UnitFact
@@ -112,7 +139,10 @@ export type Fact =
   | ConnectionFact
   | VolumeFact
   | ProfileFact
-  | HealthcheckFact;
+  | HealthcheckFact
+  | FrameworkFact
+  | AppFact
+  | CallFact;
 
 /** `kind:name`, as a code line writes a code unit. */
 export function unitText(unit: CodeUnit): string {
@@ -181,6 +211,14 @@ export function factDetail(fact: Fact): string {
       return `${unitText(fact.unit)} is in profile ${fact.profile}`;
     case 'healthcheck':
       return `${unitText(fact.unit)} checks itself with ${fact.test}`;
+    case 'framework':
+      return `${unitText(fact.unit)} uses ${fact.framework} ${fact.version}`;
+    case 'app': {
+      const entry = fact.entry === null ? '' : ` (${placeText(fact.entry)})`;
+      return `${unitText(fact.unit)} has Angular ${fact.type} ${fact.name}${entry}`;
+    }
+    case 'call':
+      return `${unitText(fact.unit)} calls ${fact.method} ${fact.url}`;
   }
 }
 

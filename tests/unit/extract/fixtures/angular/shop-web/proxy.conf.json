@@ -1,0 +1,11 @@
+// The dev server's proxy, in the array form.
+[
+  {
+    "context": ["/api/orders", "/api/carts"],
+    "target": "http://localhost:9000",
+  },
+  {
+    "context": "/billing",
+    "target": { "protocol": "http:", "host": "localhost", "port": 9100 },
+  },
+]

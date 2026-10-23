@@ -379,13 +379,17 @@ describe('builds and the Dockerfile', () => {
       new Map([['BASE', 'node:24']]),
     );
     expect(stages.map((each) => [each.name, each.base, each.copies])).toEqual([
-      ['Build', 'node:24', [{ from: null, sources: ['web/package.json'], line: 5 }]],
+      [
+        'Build',
+        'node:24',
+        [{ from: null, sources: ['web/package.json'], destination: '/', line: 5 }],
+      ],
       [
         null,
         'build',
         [
-          { from: '0', sources: ['/a'], line: 11 },
-          { from: 'BUILD', sources: ['/c'], line: 12 },
+          { from: '0', sources: ['/a'], destination: '/b', line: 11 },
+          { from: 'BUILD', sources: ['/c'], destination: '/d', line: 12 },
         ],
       ],
     ]);

@@ -1,0 +1,10 @@
+{
+  /* Paths the application imports by name. */
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@shop/ui-kit": ["libs/ui-kit/src/index.ts"],
+      "@app/*": ["src/app/*"]
+    }
+  }
+}

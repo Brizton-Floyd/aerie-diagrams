@@ -145,11 +145,14 @@ API notes are in `src/extract/index.ts`.
 - **DRIFT-001** `extract` takes a model's system root, the folder that holds the model file, the
   repository that holds it, and read access to the project's files, and returns **facts**: what the
   code shows, each with its technique and its evidence. It reads files only through that access, never
-  lists folders, runs a command, opens the network or writes, and reads only what the system root
-  leads it to (the Compose files, the `.env` and env files, included and extended files, and the
-  Dockerfiles they build with). A fact is one of: a Compose project, a code unit (a service), an
-  image, a port, a build, a source an image is built from, a connection (one unit naming another, or
-  a host outside the system), a volume, a profile or a healthcheck.
+  runs a command, opens the network or writes, and reads only what the system root leads it to (the
+  Compose files, the `.env` and env files, included and extended files, and the Dockerfiles they
+  build with; from D4, each repo's package.json and what section "Node and Angular" follows from
+  it). It lists a folder only where a file it reads names a pattern of folders (npm workspaces) or
+  copies a whole folder into an image (nginx configuration). A fact is one of: a Compose project, a
+  code unit (a service or a package), an image, a port, a build, a source an image is built from, a
+  connection (one unit naming another, or a host outside the system), a volume, a profile, a
+  healthcheck, a framework, an Angular project or an HTTP call.
 - **DRIFT-002** Evidence is a line of a file, printed `repo/path:line`, with lines counting from 1. A
   fact prints as one line, `repo/path:line  technique: detail`, with code units as `kind:name`; this
   is the evidence line of a report (section 7).
@@ -180,7 +183,7 @@ API notes are in `src/extract/index.ts`.
   anchor or a merge key is evidenced where it is written.
 - **DRIFT-009** The parsers it uses, `yaml` and `dockerfile-ast` (with the two packages
   `dockerfile-ast` needs), are pinned to exact versions, unpatched, and recorded with their licences
-  and sources in `THIRD_PARTY_NOTICES.md`; nothing else is added for D2.
+  and sources in `THIRD_PARTY_NOTICES.md`; nothing else is added for D2 (D4 adds two, DRIFT-311).
 
 ### Docker Compose (slice D2)
 
@@ -264,6 +267,117 @@ DRIFT-007; variables come only from `.env` files (DRIFT-102); the top-level `job
 specification) and `dockerfile_inline` are not read; a port range is one fact; the image's `ENV`
 counts as environment (DRIFT-108); and nginx configuration, which the research read as glue between
 Compose and the Web UI, belongs with the Node and Angular extractor (D4).
+
+### Node and Angular (slice D4)
+
+The Node extractor reads a system's Node packages and Angular applications, and the nginx that
+serves them, from the files alone: it never installs, builds or runs anything. It follows the code
+from what the system root leads it to, so code that nothing imports is never read.
+
+- **DRIFT-301** package.json, angular.json, tsconfig files and `.json` dev-server proxy files are
+  read as JSON with comments and trailing commas (the Angular CLI's own reading), with
+  `jsonc-parser`, keeping the line of every value. A file that is not valid is a warning, and what
+  it holds is not checked.
+- **DRIFT-302** The **packages** are each repo's own package.json, the packages its npm workspaces
+  name (`workspaces` as a list or as `{ packages }`; a plain path as it is, `*` and `**` parts by
+  listing folders, never `node_modules`, and `!` patterns skipped), the roots of an Angular
+  workspace's projects, and every folder a Compose service's image is built from (DRIFT-107). A
+  package with a `name` is the code unit `npm:<name>` ("package.json name"). Its frameworks
+  (Angular, NestJS, SvelteKit, Express, Fastify, Hono, Koa, Next.js, Nuxt, React, Svelte, Vue) come
+  from `dependencies`, then `devDependencies`, then `peerDependencies`, each once, with the version
+  range asked for ("package.json dependency"). A package without a name is no code unit; it is a
+  warning when it has a framework or code drift reads, since no code line can name it.
+- **DRIFT-303** An `angular.json` beside a package.json is an Angular workspace. Each project is an
+  "Angular project" fact, an application or a library, belonging to the package whose folder holds
+  the project's `root`; paths in angular.json start from the workspace folder. For an application,
+  the build target (`architect` or `targets`) gives its entry point (`browser`, or `main` for older
+  builders), `tsConfig` and `baseHref` from its options, and `fileReplacements` (`replace` and
+  `with`, or the older `src` and `replaceWith`) from its options and every configuration; the serve
+  target gives `proxyConfig` from its options and every configuration. A missing entry point,
+  environment file or proxy file is a warning.
+- **DRIFT-304** A **dev-server proxy** file is read in either form the Angular CLI accepts: an object
+  of contexts, or an array of entries with a `context` (one path or a list). A target is a URL or an
+  object with `host`, `port` and `protocol`. Each route is a connection from the application's
+  package ("Angular dev-server proxy", with the context and the target as evidence). A context
+  matches a request path as the dev server matches it: from `^` a regular expression, a glob
+  pattern (`*`, `**`, `?`, `{a,b}`) as a glob over the whole path, anything else as a prefix; the
+  first route that matches takes the call. A proxy file that is not `.json` (`proxy.conf.js`,
+  `.mjs`, `.ts`) is code the CLI runs, so drift never reads it: a warning says where it sends calls
+  is not checked.
+- **DRIFT-305** An application's **code** is its entry point and every file it imports, statically or
+  with `import('...')` (lazy routes), and every file those import: relative paths, and names the
+  tsconfig's `paths` map (from `baseUrl`, or the folder of the tsconfig that sets `paths`; its
+  relative `extends` are followed). A `.js` name reads the `.ts` file, a folder its `index.ts`;
+  `import type` is not followed, nor a package from `node_modules`, nor anything outside the
+  system's repos; an import of a file that does not exist is left to the compiler. Every file
+  `fileReplacements` may swap in is read wherever the file it replaces is imported. Files are parsed
+  with the `typescript` compiler API (`createSourceFile` only; nothing is compiled or type-checked).
+  The **environment files** (the files `fileReplacements` names) give one connection for each
+  string setting of an exported object constant that is an absolute URL ("Angular environment
+  file", with the setting as `environment.apiUrl` and its value).
+- **DRIFT-306** An **HTTP call** is an `HttpClient` method (`get`, `post`, `put`, `delete`, `patch`,
+  `head`, `options`, `jsonp`, or `request` with its method first) called on a value the file
+  declares as an `HttpClient` imported from `@angular/common/http` (a property or variable typed so
+  or set to `inject(HttpClient)`, a parameter typed so; an alias counts), or `httpResource` (with
+  `.text` and the other forms) given a URL or a function returning a URL or a request object.
+  A receiver's name alone never makes a call, so `map.get('/x')` is none. The URL is read as far as
+  the code shows it: string literals, templates, `+`, both branches of `? :`, `const` values in
+  scope or imported (through `export { a as b }` and `export *`), class properties
+  (`this.base`, static ones), and properties of object constants (`environment.apiUrl`, in every
+  environment file the build may swap in). Anything else is a hole, printed `{}`. Each URL is an
+  "Angular HttpClient" fact (`calls GET /api/orders/{}`), owned by the package whose folder holds
+  the file. A call whose URL does not start with text drift can read is a warning, and so is every
+  interceptor the application installs (`withInterceptors`, `HTTP_INTERCEPTORS`): it may change
+  where calls go, so drift checks their URLs as written.
+- **DRIFT-307** **Where a call goes**: a URL with a host goes there ("Angular HttpClient"). Code on
+  the developer's machine or in a browser (the dev server, the application) reaches a Compose
+  service through the port the host publishes: a loopback address (`localhost`, `127.0.0.1`, `::1`)
+  goes to the one service that publishes its port (80 and 443 by default), or else stays a host
+  with its port (`localhost:8080`), since only the port tells which program on the machine it
+  means; another name goes to the service it names, or is a host outside the system. A relative URL
+  is a path from the application's base href; it goes through the first dev proxy route that matches
+  ("Angular HttpClient through the dev proxy") and through the nginx of every Compose service whose
+  image is built from the package's folder or a folder inside it ("Angular HttpClient through
+  nginx", DRIFT-309). A relative `.json` that neither forwards is configuration the application
+  reads from its own server at run time, which drift does not read: a warning.
+- **DRIFT-308** **nginx** is read from the files a Compose service's final image holds under
+  `/etc/nginx` (its target stage and the stages it starts from; a folder copied in is listed). As the
+  nginx image does when it starts, each file under the template folder that ends with the template
+  suffix (`/etc/nginx/templates`, `.template`, into `/etc/nginx/conf.d`, or the image's
+  `NGINX_ENVSUBST_TEMPLATE_DIR`, `_SUFFIX` and `_OUTPUT_DIR`) is filled in with the container's
+  environment (DRIFT-109): `${NAME}` and `$NAME` for every variable it defines, the rest left alone.
+  The configuration is the image's own `/etc/nginx/nginx.conf` if it holds one, or else, as the
+  image's default does, every `/etc/nginx/conf.d/*.conf`; `include` is followed through the files
+  the image holds (relative to `/etc/nginx`). Aerie reads nginx itself: directives with their file
+  and line, comments, quotes and `${}` words.
+- **DRIFT-309** Each `location` with a `proxy_pass` (also inside its `if` and `limit_except`) gives a
+  connection from the service ("nginx proxy_pass", with the location and the address as evidence).
+  The address takes `set` variables from the location, then the server, and an `upstream` name
+  gives each of its servers; a variable nothing sets in the address is a warning. Inside the
+  container, a loopback address is the container itself, a name is a service of its Compose
+  project, and any other host is outside the system. For a call (DRIFT-307), the location is
+  chosen as nginx chooses it: an exact match (`=`), else the longest prefix if it is `^~`, else
+  the first regular expression that matches (`~`, `~*`), else the longest prefix, looking first
+  into its nested locations.
+- **DRIFT-310** On copies of the Lotto UI (its package.json, angular.json, proxy and tsconfig files,
+  and the TypeScript files from `src/main.ts` to the four that call the BFF) and of the nginx
+  template of the Web UI image, with the system root of DRIFT-114, the extractor finds the package
+  `npm:lotto-options-ui` on Angular, its nine calls, and the website's connection to the Screen API
+  (`compose:bff`) by four techniques: the dev proxy, the calls through it, the calls through
+  nginx, and nginx's own `proxy_pass` from `compose:web-ui`. Nothing else is found, and run on the
+  Lotto repos themselves it finds the same.
+- **DRIFT-311** The two parsers D4 adds, `jsonc-parser` and `typescript` (until now only a
+  development tool, pinned at 6.0.x as the last version with a compiler API), are runtime
+  dependencies pinned to exact versions, unpatched, and recorded with their licences and sources in
+  `THIRD_PARTY_NOTICES.md`.
+
+Choices D4 made, where this document left them open: the code read is what the entry point imports
+(so code nothing imports is not checked); dev-server proxy files that are code, interceptors and
+configuration fetched at run time are warnings, never guesses; `fetch`, `axios` and other HTTP
+clients, server-side rendering entry points, URLs in package.json scripts (build-time, as the
+research found), Nx `project.json` and `pnpm-workspace.yaml` are not read; nginx is read only in
+the images Compose builds; a proxy's `pathRewrite` and nginx's rewriting of the path change where on
+the target a call lands, not which target, so they are left to endpoint matching (D5).
 
 ## 5. Matching and lifting (slice D5)
 

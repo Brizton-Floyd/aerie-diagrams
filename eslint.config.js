@@ -22,7 +22,17 @@ const EXTRACT_UP = { regex: String.raw`^\.\./(?!lines/index\.ts$)` };
 const EXTRACT_UP_TWO = { regex: String.raw`^\.\./\.\./(?!lines/index\.ts$)` };
 
 export default defineConfig(
-  { ignores: ['dist/', 'coverage/', 'test-results/', 'playwright-report/', 'blob-report/'] },
+  {
+    ignores: [
+      'dist/',
+      'coverage/',
+      'test-results/',
+      'playwright-report/',
+      'blob-report/',
+      // The extractor's fixture projects hold other projects' code as written (src/extract/).
+      'tests/unit/extract/fixtures/',
+    ],
+  },
   js.configs.recommended,
   tseslint.configs.strictTypeChecked,
   tseslint.configs.stylisticTypeChecked,

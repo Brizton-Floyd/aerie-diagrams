@@ -1,0 +1,10 @@
+model shop: Corner shop
+
+system
+  repo shop-web
+  repo shop-deploy
+  compose shop-deploy/compose.yaml
+
+web: Storefront
+orders: Orders
+billing: Billing

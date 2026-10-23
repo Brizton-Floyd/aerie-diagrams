@@ -1,0 +1,6 @@
+{
+  "name": "@shop/ui-kit",
+  "peerDependencies": {
+    "@angular/core": "^21.0.0"
+  }
+}

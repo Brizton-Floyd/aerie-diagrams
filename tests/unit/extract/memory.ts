@@ -12,7 +12,7 @@ export interface MemoryFiles extends ProjectFiles {
   reads: string[];
 }
 
-/** Files by absolute path; a folder exists when some file is inside it. */
+/** Files by absolute path; a folder exists when some file is inside it, and lists what is in it. */
 export function memoryFiles(files: Record<string, string>): MemoryFiles {
   const reads: string[] = [];
   return {
@@ -23,6 +23,12 @@ export function memoryFiles(files: Record<string, string>): MemoryFiles {
     },
     isFolder(path) {
       return Object.keys(files).some((each) => each.startsWith(`${path}/`));
+    },
+    list(path) {
+      const names = Object.keys(files).flatMap((each) =>
+        each.startsWith(`${path}/`) ? [each.slice(path.length + 1).split('/')[0] ?? ''] : [],
+      );
+      return [...new Set(names)].sort();
     },
   };
 }
