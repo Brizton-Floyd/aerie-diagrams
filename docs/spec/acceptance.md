@@ -213,6 +213,21 @@ serves an application, each relative call followed to where it goes. No matching
 | unit  | Copies of the Lotto UI give its package, its nine calls and the website's connection to the Screen API by four techniques, as the Lotto repos do                              | DRIFT-310              |
 | unit  | The two new parsers are pinned, runtime dependencies and in the notices                                                                                                       | DRIFT-311              |
 
+### After v1: D3, Spring Boot and Maven
+
+Slice D3 of drift detection ([drift.md](drift.md#spring-boot-and-maven-slice-d3), read log
+`d3-spring.md`): the Maven modules from the raw poms, and the Spring configuration and Java of each.
+No matching or reports yet.
+
+| Suite | What it proves                                                                                                                                   | Requirements                      |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------- |
+| unit  | Modules from each repo's root pom, inheritance from parents in the system, dependencies with their scopes, and the warnings                      | DRIFT-201 to DRIFT-203            |
+| unit  | Configuration files, profiles, placeholders and relaxed binding; the properties and connections an address names, with hosts resolved to modules | DRIFT-205 to DRIFT-207            |
+| unit  | Java read into the model, names resolved as the compiler does; the parsers and the kept grammar pinned and noticed                               | DRIFT-208, DRIFT-215              |
+| unit  | Apps, endpoints, calls by declared receiver type with their base URLs and address text, channels, events and schedules                           | DRIFT-204, DRIFT-209 to DRIFT-213 |
+| unit  | A Spring fixture project with one of each pattern and its traps: every fact found, nothing more                                                  | DRIFT-201 to DRIFT-213            |
+| unit  | Copies of the Lotto Spring repos give their apps, ports, module graph, endpoints, calls, event and the Texas downloads                           | DRIFT-214                         |
+
 ## Browser journeys
 
 Journeys run against the production build with the Lotto sample, at 1600 x 900, as a reader would use

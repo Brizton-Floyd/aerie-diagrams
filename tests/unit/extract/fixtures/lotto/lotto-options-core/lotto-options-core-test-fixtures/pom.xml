@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>lotto-options-core</artifactId>
+        <groupId>com.floyd.lottoptions</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>jar</packaging>
+    <artifactId>lotto-options-core-test-fixtures</artifactId>
+    <description>
+        The snapshot safety net's frozen HTTP fixtures and the code that reads and compares them:
+        the results service's captured responses (served by the core-server results-service stub),
+        the Core API goldens (served by the BFF's Core API stub), the BFF route goldens, and the
+        golden format and comparison classes (com.floyd.lottoptions.snapshot) both snapshot suites
+        share. Also the architecture-rule support both apps' ArchUnit tests share
+        (com.floyd.lottoptions.architecture). Test-scope dependency only; see capture-fixtures.sh
+        for provenance.
+    </description>
+
+    <dependencies>
+        <!-- GoldenFiles reports mismatches as AssertJ failures. -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
+        <!-- PdfFingerprint parses betslip PDFs. -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+        </dependency>
+        <!-- The architecture-rule support (com.floyd.lottoptions.architecture). -->
+        <dependency>
+            <groupId>com.tngtech.archunit</groupId>
+            <artifactId>archunit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Used directly by this module's tests: declared, not left to arrive transitively. -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Spring annotations on the reachability test's sample classes. -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>

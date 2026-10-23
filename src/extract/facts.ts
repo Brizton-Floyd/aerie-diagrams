@@ -111,7 +111,7 @@ export interface FrameworkFact extends Found<'framework'> {
 }
 
 /** An Angular project of a package: an application, with the file it starts from, or a library. */
-export interface AppFact extends Found<'app'> {
+export interface AngularAppFact extends Found<'app'> {
   unit: CodeUnit;
   name: string;
   type: 'application' | 'library';
@@ -123,11 +123,109 @@ export interface AppFact extends Found<'app'> {
  * A package's code makes an HTTP call. The URL is as far as the code shows it: text it cannot read
  * (a value known only at run time) is `{}`.
  */
-export interface CallFact extends Found<'call'> {
+export interface AngularCallFact extends Found<'call'> {
   unit: CodeUnit;
   method: string;
   url: string;
 }
+
+/** A Maven module's packaging, its folder and the module it inherits from, if that is in the system. */
+export interface ModuleFact extends Found<'module'> {
+  unit: CodeUnit;
+  packaging: string;
+  folder: Place;
+  parent: CodeUnit | null;
+}
+
+/** A Maven module depends on another, or on an artifact from outside the system (`group:artifact`). */
+export interface DependencyFact extends Found<'dependency'> {
+  from: CodeUnit;
+  to: CodeUnit | { artifact: string };
+  scope: string;
+  optional: boolean;
+}
+
+/** A Spring Boot application: the class annotated `@SpringBootApplication`. */
+export interface SpringAppFact extends Found<'app'> {
+  unit: CodeUnit;
+  className: string;
+}
+
+/**
+ * A Spring property drift reads: the server's port, address and paths, the application's name, and
+ * every property that holds an address. `env` is the environment variable that overrides it.
+ */
+export interface PropertyFact extends Found<'property'> {
+  unit: CodeUnit;
+  key: string;
+  /** With placeholders filled in and secrets hidden. */
+  value: string;
+  /** The profile it applies in, as written; null when it always applies. */
+  profile: string | null;
+  env: string;
+}
+
+/** A request a module answers: a `@RestController` or `@Controller` method's mapping. */
+export interface EndpointFact extends Found<'endpoint'> {
+  unit: CodeUnit;
+  className: string;
+  method: string;
+  /** `GET`, `POST` and so on, or `ANY` for a mapping without a method. */
+  verb: string;
+  /** With path variables as written (`/games/{id}`) and `{?}` where a part is not known. */
+  path: string;
+}
+
+/** A request a module sends, through WebClient, RestClient, RestTemplate, Feign or an HTTP interface. */
+export interface SpringCallFact extends Found<'call'> {
+  unit: CodeUnit;
+  className: string;
+  method: string;
+  /** The verb, or `ANY` when it is not known. */
+  verb: string;
+  /** The address, with `{?}` for each part known only at run time. */
+  url: string;
+  /** What its host names: a module listening there, an outside host, or null when not known. */
+  to: CodeUnit | { host: string } | null;
+}
+
+/** A message a module sends to, or receives from, a channel of a broker. */
+export interface ChannelFact extends Found<'channel'> {
+  unit: CodeUnit;
+  /** Null for a channel declared in configuration. */
+  className: string | null;
+  method: string | null;
+  direction: 'sends' | 'receives';
+  broker: 'kafka' | 'rabbit' | 'jms' | 'stream';
+  /** A topic, queue, exchange, destination or binding, with `{?}` for a part not known. */
+  channel: string;
+  /** A RabbitMQ routing key, when one is given. */
+  key: string | null;
+}
+
+/** An in-process Spring event a class publishes or listens for, by its type. */
+export interface EventFact extends Found<'event'> {
+  unit: CodeUnit;
+  className: string;
+  method: string;
+  direction: 'publishes' | 'listens';
+  event: string;
+}
+
+/** A method Spring runs on a schedule. */
+export interface ScheduleFact extends Found<'schedule'> {
+  unit: CodeUnit;
+  className: string;
+  method: string;
+  /** When: `on cron 0 0 3 * * *`, `every 5000 ms` or `5000 ms after each run`. */
+  schedule: string;
+}
+
+/** An application: an Angular project of a package, or a Spring Boot application. */
+export type AppFact = AngularAppFact | SpringAppFact;
+
+/** An HTTP call: from a package's TypeScript, or from a module's Java (with its class). */
+export type CallFact = AngularCallFact | SpringCallFact;
 
 export type Fact =
   | ProjectFact
@@ -142,7 +240,27 @@ export type Fact =
   | HealthcheckFact
   | FrameworkFact
   | AppFact
-  | CallFact;
+  | CallFact
+  | ModuleFact
+  | DependencyFact
+  | PropertyFact
+  | EndpointFact
+  | ChannelFact
+  | EventFact
+  | ScheduleFact;
+
+/** `Class.method`, by the class's simple name, as a report prints where code is. */
+function inCode(className: string | null, method: string | null): string {
+  if (className === null) return '';
+  const simple = className.slice(className.lastIndexOf('.') + 1);
+  return ` (${method === null ? simple : `${simple}.${method}`})`;
+}
+
+function toText(to: CodeUnit | { host: string } | { artifact: string }): string {
+  if ('host' in to) return `host ${to.host}`;
+  if ('artifact' in to) return to.artifact;
+  return unitText(to);
+}
 
 /** `kind:name`, as a code line writes a code unit. */
 export function unitText(unit: CodeUnit): string {
@@ -214,11 +332,43 @@ export function factDetail(fact: Fact): string {
     case 'framework':
       return `${unitText(fact.unit)} uses ${fact.framework} ${fact.version}`;
     case 'app': {
+      if ('className' in fact)
+        return `${unitText(fact.unit)} runs the Spring Boot app ${fact.className}`;
       const entry = fact.entry === null ? '' : ` (${placeText(fact.entry)})`;
       return `${unitText(fact.unit)} has Angular ${fact.type} ${fact.name}${entry}`;
     }
-    case 'call':
-      return `${unitText(fact.unit)} calls ${fact.method} ${fact.url}`;
+    case 'call': {
+      if (!('className' in fact)) return `${unitText(fact.unit)} calls ${fact.method} ${fact.url}`;
+      const to = fact.to === null ? '' : ` on ${toText(fact.to)}`;
+      return `${unitText(fact.unit)} calls ${fact.verb} ${fact.url}${to}${inCode(fact.className, fact.method)}`;
+    }
+    case 'module': {
+      const parent = fact.parent === null ? '' : ` (parent ${unitText(fact.parent)})`;
+      return `${unitText(fact.unit)} is packaged as ${fact.packaging} in ${placeText(fact.folder)}${parent}`;
+    }
+    case 'dependency': {
+      const how = fact.optional ? `${fact.scope}, optional` : fact.scope;
+      return `${unitText(fact.from)} depends on ${toText(fact.to)} (${how})`;
+    }
+    case 'property': {
+      const profile = fact.profile === null ? '' : ` in profile ${fact.profile}`;
+      return `${unitText(fact.unit)} sets ${fact.key}=${fact.value}${profile} (env ${fact.env})`;
+    }
+    case 'endpoint':
+      return `${unitText(fact.unit)} answers ${fact.verb} ${fact.path}${inCode(fact.className, fact.method)}`;
+    case 'channel': {
+      const way = fact.direction === 'sends' ? 'sends to' : 'receives from';
+      const key = fact.key === null ? '' : `, routing key ${fact.key}`;
+      return `${unitText(fact.unit)} ${way} ${fact.broker} ${fact.channel}${key}${inCode(fact.className, fact.method)}`;
+    }
+    case 'event': {
+      const way = fact.direction === 'publishes' ? 'publishes' : 'listens for';
+      return `${unitText(fact.unit)} ${way} ${fact.event}${inCode(fact.className, fact.method)}`;
+    }
+    case 'schedule': {
+      const simple = fact.className.slice(fact.className.lastIndexOf('.') + 1);
+      return `${unitText(fact.unit)} runs ${simple}.${fact.method} ${fact.schedule}`;
+    }
   }
 }
 

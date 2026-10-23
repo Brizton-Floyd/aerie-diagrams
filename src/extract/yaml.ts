@@ -1,7 +1,16 @@
 // YAML read into a plain tree that keeps the file and line of every node (DRIFT-008), with aliases
 // resolved and merge keys (`<<: *anchor`) applied, since the `yaml` package's own plain output
 // loses positions. Keys and scalars are text; a YAML null is null.
-import { isAlias, isMap, isScalar, isSeq, LineCounter, parseDocument, type Document } from 'yaml';
+import {
+  isAlias,
+  isMap,
+  isScalar,
+  isSeq,
+  LineCounter,
+  parseAllDocuments,
+  parseDocument,
+  type Document,
+} from 'yaml';
 
 /** Where a node is: an absolute path and a line counted from 1. */
 export interface At {
@@ -58,6 +67,33 @@ export function readYaml(text: string, file: string): YamlRead {
   if (errors.length > 0) return { root: null, errors };
   const read = new Reader(doc, file, lineOf);
   return { root: doc.contents === null ? null : read.node(doc.contents, []), errors };
+}
+
+/**
+ * Reads every document of a YAML stream as Spring Boot does (DRIFT-205): YAML 1.1, as SnakeYAML
+ * reads it, with merge keys on. Errors stop the whole file, since Spring would not start with it.
+ */
+export function readYamlDocuments(
+  text: string,
+  file: string,
+): { roots: (YNode | null)[]; errors: YamlRead['errors'] } {
+  const lines = new LineCounter();
+  const docs = parseAllDocuments(text, { version: '1.1', merge: true, lineCounter: lines });
+  const lineOf = (offset: number): number => lines.linePos(offset).line;
+  const all = Array.isArray(docs) ? docs : [];
+  const errors = all.flatMap((doc) =>
+    doc.errors.map((error) => ({
+      line: lineOf(error.pos[0]),
+      message: error.message.split('\n')[0] ?? error.message,
+    })),
+  );
+  if (errors.length > 0) return { roots: [], errors };
+  return {
+    roots: all.map((doc) =>
+      doc.contents === null ? null : new Reader(doc, file, lineOf).node(doc.contents, []),
+    ),
+    errors,
+  };
 }
 
 class Reader {

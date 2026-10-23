@@ -29,7 +29,19 @@ export function projectFiles(): ProjectFiles {
     },
     list(path) {
       try {
-        return readdirSync(path).sort();
+        return readdirSync(path, { withFileTypes: true })
+          .flatMap((entry) => {
+            // A link counts as what it points to, but a linked folder is not followed (no loops).
+            if (entry.isSymbolicLink()) {
+              try {
+                return statSync(`${path}/${entry.name}`).isFile() ? [entry.name] : [];
+              } catch {
+                return [];
+              }
+            }
+            return entry.isDirectory() || entry.isFile() ? [entry.name] : [];
+          })
+          .sort();
       } catch {
         return [];
       }

@@ -1,0 +1,135 @@
+server:
+  port: 8001
+
+lottery:
+  storage:
+    # Base directory for the .ser draw store. Relative to the process working directory.
+    base-dir: tmp
+  polling:
+    # Bounded parallelism for the draw-result poll.
+    pool-size: 4
+
+resilience4j:
+  retry:
+    instances:
+      lotteryFetch:
+        max-attempts: 3
+        wait-duration: 2s
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+        retry-exceptions:
+          - java.io.IOException
+  ratelimiter:
+    instances:
+      lotteryFetch:
+        # Be polite to the upstream lottery source: at most N downloads per refresh window.
+        limit-for-period: 4
+        limit-refresh-period: 1s
+        timeout-duration: 30s
+
+us:
+  state:
+    regions:
+      - US-AR
+      - US-AZ
+      - US-CA
+      - US-CO
+      - US-CT
+      - US-DE
+      - US-FL
+      - US-GA
+      - US-IA
+      - US-ID
+      - US-IL
+      - US-IN
+      - US-KS
+      - US-KY
+      - US-LA
+      - US-MA
+      - US-MD
+      - US-ME
+      - US-VT
+      - US-MO
+      - US-MT
+      - US-NC
+      - US-ND
+      - US-NE
+      - US-NH
+      - US-NJ
+      - US-NM
+      - US-NY
+      - US-OH
+      - US-OK
+      - US-OR
+      - US-PA
+      - US-RI
+      - US-SC
+      - US-SD
+      - US-TN
+      - US-TX
+      - US-VA
+      - US-WA
+      - US-WI
+      - US-WV
+      - US-WY
+      - US-AS
+      - US-DC
+      - US-GU
+      - US-MI
+      - US-MN
+      - US-MP
+      - US-PR
+      - US-VI
+      - US-MS
+
+urls:
+  allStateGames:
+      - name: Powerball
+        url: https://www.texaslottery.com/export/sites/lottery/Games/Powerball/Winning_Numbers/powerball.csv
+      - name: Mega Millions
+        url: https://www.texaslottery.com/export/sites/lottery/Games/Mega_Millions/Winning_Numbers/megamillions.csv
+  states:
+    - name: Texas
+      gameInfo:
+        - name: Cash Five
+          url: https://www.texaslottery.com/export/sites/lottery/Games/Cash_Five/Winning_Numbers/cashfive.csv
+        - name: Lotto Texas
+          url: https://www.texaslottery.com/export/sites/lottery/Games/Lotto_Texas/Winning_Numbers/lottotexas.csv
+        - name: Texas Two Step
+          url: https://www.texaslottery.com/export/sites/lottery/Games/Texas_Two_Step/Winning_Numbers/texastwostep.csv
+        - name: Pick 3 Morning
+          url: https://www.texaslottery.com/export/sites/lottery/Games/Pick_3/Winning_Numbers/pick3morning.csv
+        - name: Pick 3 Day
+          url: https://www.texaslottery.com/export/sites/lottery/Games/Pick_3/Winning_Numbers/pick3day.csv
+        - name: Pick 3 Evening
+          url: https://www.texaslottery.com/export/sites/lottery/Games/Pick_3/Winning_Numbers/pick3evening.csv
+        - name: Pick 3 Night
+          url: https://www.texaslottery.com/export/sites/lottery/Games/Pick_3/Winning_Numbers/pick3night.csv
+        - name: Daily 4 Morning
+          url: https://www.texaslottery.com/export/sites/lottery/Games/Daily_4/Winning_Numbers/daily4morning.csv
+        - name: Daily 4 Day
+          url: https://www.texaslottery.com/export/sites/lottery/Games/Daily_4/Winning_Numbers/daily4day.csv
+        - name: Daily 4 Evening
+          url: https://www.texaslottery.com/export/sites/lottery/Games/Daily_4/Winning_Numbers/daily4evening.csv
+        - name: Daily 4 Night
+          url: https://www.texaslottery.com/export/sites/lottery/Games/Daily_4/Winning_Numbers/daily4night.csv
+        - name: All or Nothing Morning
+          url: https://www.texaslottery.com/export/sites/lottery/Games/All_or_Nothing/Winning_Numbers/allornothingmorning.csv
+        - name: All or Nothing Day
+          url: https://www.texaslottery.com/export/sites/lottery/Games/All_or_Nothing/Winning_Numbers/allornothingday.csv
+        - name: All or Nothing Evening
+          url: https://www.texaslottery.com/export/sites/lottery/Games/All_or_Nothing/Winning_Numbers/allornothingevening.csv
+        - name: All or Nothing Night
+          url: https://www.texaslottery.com/export/sites/lottery/Games/All_or_Nothing/Winning_Numbers/allornothingnight.csv
+        - name: Powerball
+          url: https://www.texaslottery.com/export/sites/lottery/Games/Powerball/Winning_Numbers/powerball.csv
+        - name: Mega Millions
+          url: https://www.texaslottery.com/export/sites/lottery/Games/Mega_Millions/Winning_Numbers/megamillions.csv
+#    - name: Louisiana
+#      gameInfo:
+#        - name: Easy 5
+#          url: https://louisianalottery.com/winning-numbers/pdf/easy-5
+#        - name: Lotto
+#          url: https://louisianalottery.com/winning-numbers/pdf/lotto
+#        - name: Pick 5
+#          url: https://louisianalottery.com/winning-numbers/pdf/pick-5

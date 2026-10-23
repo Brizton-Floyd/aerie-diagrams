@@ -1,0 +1,21 @@
+name: shop
+
+services:
+  orders:
+    image: shop/orders:1.0
+    environment:
+      BILLING_URL: http://billing:8082
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    ports:
+      - "8081:8081"
+  billing:
+    image: shop/billing:1.0
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/billing
+      SPRING_RABBITMQ_HOST: rabbit
+  kafka:
+    image: apache/kafka:4.1.0
+  rabbit:
+    image: rabbitmq:4
+  db:
+    image: postgres:18

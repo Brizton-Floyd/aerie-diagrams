@@ -1,0 +1,1 @@
+warning  shop/billing/src/main/resources/application.properties:6  `ledger.url` takes its value from `${LEDGER_URL}`, which has no value in the configuration and no default, so the address it holds is not checked.

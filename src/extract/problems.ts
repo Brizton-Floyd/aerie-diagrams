@@ -40,6 +40,20 @@ export const PROBLEMS = {
     `The app reads \`${path}\` from its own server at run time, which drift does not read, so the addresses it holds are not checked.`,
   'nginx-variable': (name: string) =>
     `\`${name}\` has no value drift can read, so where this proxy_pass sends calls is not checked.`,
+  'bad-pom': (detail: string) =>
+    `This pom cannot be read (${detail}), so its module and what it holds are not checked.`,
+  'missing-module': (module: string, path: string) =>
+    `The pom lists the module \`${module}\`, but there is no \`${path}\`, so it is not checked.`,
+  'duplicate-module': (module: string) =>
+    `Another pom of the system declares the module \`${module}\` already; the first one is kept.`,
+  'bad-config': (detail: string) =>
+    `This Spring configuration file is not valid YAML: ${detail}. What it sets is not checked.`,
+  'unresolved-placeholder': (key: string, placeholder: string) =>
+    `\`${key}\` takes its value from \`${placeholder}\`, which has no value in the configuration and no default, so the address it holds is not checked.`,
+  'java-not-loaded': (unit: string) =>
+    `The Java parser was not loaded, so the Java source of \`${unit}\` is not checked.`,
+  'java-syntax': () =>
+    `This Java file has a syntax error here, so what the code around it holds may be missed.`,
 } as const;
 
 /** Text in backticks, fenced with two when it holds one, as Markdown writes code. */

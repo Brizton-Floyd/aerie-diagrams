@@ -1,0 +1,41 @@
+server:
+  port: 8002
+  compression:
+    enabled: true
+    mime-types: application/json,text/plain,text/html
+    min-response-size: 1024
+  tomcat:
+    threads:
+      max: 250
+
+persistence-service:
+  host: http://localhost:8001/
+  games: api/v1/state/games
+  
+spring:
+  batch:
+    job:
+      enabled: false
+  jackson:
+    # Boot 4 runs Jackson 3; keep the Jackson 2 defaults Boot 3 used, so the JSON Core
+    # serves and sends does not change. JacksonConfiguration restores the rest.
+    use-jackson2-defaults: true
+
+sums:
+  fiveDigit:
+    35: [60, 120]
+    69: [127, 224]
+    37: [86, 142]
+  sixDigit:
+    54: [122, 205]
+    44: [98, 160]
+
+# Carried over from the analyzer jar's former application.yml, which Core loaded from the classpath.
+logging:
+  level:
+    com.floyd.lottoptions.legacy.desktop.grouping: INFO
+    com.floyd.lottoptions.legacy.desktop.quality: INFO
+    com.floyd.lottoptions.legacy.desktop.generation: INFO
+    org.springframework.web.reactive.function.client: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

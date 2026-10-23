@@ -21,6 +21,24 @@ functional spec for each version is [docs/spec/](docs/spec/overview.md).
 - New dependency: `jsonc-parser`; `typescript` (6.0.3) is now a runtime dependency (both recorded in
   THIRD_PARTY_NOTICES.md). Nothing reads the facts yet; matching and reports come in D5 and D6.
 
+### Checking against the code: Spring Boot and Maven (D3)
+
+- Maven: each repo's root pom and the modules it lists (profiles and Maven 4 subprojects too), read
+  from the raw poms with what each inherits from its parents in the system; every module as a
+  `maven:` code unit, with its packaging and its dependencies and their scopes.
+- Spring configuration: the `application` files of each module, every profile and document kept
+  apart, placeholders filled in and relaxed binding (so `COREAPI_BASEURL` overrides
+  `core-api.base-url`); the server's port, address and paths, and every address a property holds,
+  with the module or outside host it names.
+- Java, read with a WebAssembly parser and resolved as the compiler resolves names: Spring Boot apps,
+  `@RestController` endpoints, outbound calls through WebClient, RestClient, RestTemplate, Feign and
+  HTTP interfaces with their base URLs and the text of their addresses (through constants, helper
+  methods and `@ConfigurationProperties`), Kafka, RabbitMQ, JMS and Stream channels, in-process events
+  and schedules. A call or template counts only on a receiver declared with its type.
+- New dependencies: `web-tree-sitter`, `@xmldom/xmldom` and `properties-file`, with the
+  `tree-sitter-java-orchard` grammar kept as its released WebAssembly file (recorded in
+  THIRD_PARTY_NOTICES.md). Nothing reads the facts yet; matching and reports come in D5 and D6.
+
 ### Checking against the code: the extractor and Docker Compose (D2)
 
 - Aerie's own static extractor (`src/extract/`, [docs/spec/drift.md](docs/spec/drift.md)): it reads

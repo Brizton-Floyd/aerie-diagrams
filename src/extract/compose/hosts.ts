@@ -9,6 +9,8 @@ export interface HostMention {
   host: string;
   /** Whether a port follows the host. */
   port: boolean;
+  /** The port that follows it, if one does. */
+  portNumber: string | null;
 }
 
 const URL_END = /[\s'"<>;)]/;
@@ -21,7 +23,15 @@ export function hostsIn(value: string): HostMention[] {
   const covered: [number, number][] = [];
   for (const match of value.matchAll(ORACLE)) {
     const [all, host = '', port] = match;
-    found.push({ at: match.index, mention: { kind: 'jdbc', host: hostName(host), port: !!port } });
+    found.push({
+      at: match.index,
+      mention: {
+        kind: 'jdbc',
+        host: hostName(host),
+        port: !!port,
+        portNumber: port?.slice(1) ?? null,
+      },
+    });
     covered.push([match.index, match.index + all.length]);
   }
   for (let at = value.indexOf('://'); at >= 0; at = value.indexOf('://', at + 3)) {
@@ -47,7 +57,12 @@ export function hostsIn(value: string): HostMention[] {
       if (match === null) continue;
       found.push({
         at: start,
-        mention: { kind, host: hostName(match[1] ?? ''), port: !!match[2] },
+        mention: {
+          kind,
+          host: hostName(match[1] ?? ''),
+          port: !!match[2],
+          portNumber: match[2] ?? null,
+        },
       });
     }
   }
@@ -61,7 +76,12 @@ export function hostsIn(value: string): HostMention[] {
     if (match === null) continue;
     found.push({
       at: token.index,
-      mention: { kind: 'host', host: hostName(match[1] ?? ''), port: !!match[2] },
+      mention: {
+        kind: 'host',
+        host: hostName(match[1] ?? ''),
+        port: !!match[2],
+        portNumber: match[2] ?? null,
+      },
     });
   }
   return found.sort((a, b) => a.at - b.at).map((each) => each.mention);

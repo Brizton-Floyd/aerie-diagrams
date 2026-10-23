@@ -57,8 +57,8 @@ licence. The full licence texts follow the list.
 
 - What: the parsers drift detection reads a project with ([drift.md](docs/spec/drift.md), section 4),
   each used unmodified and only by `aerie` on the command line, never in the page:
-  - `yaml` 2.9.1 - Copyright Eemeli Aro; licence ISC, text below. Reads Compose files with their
-    positions. Source: <https://github.com/eemeli/yaml>, release
+  - `yaml` 2.9.1 - Copyright Eemeli Aro; licence ISC, text below. Reads Compose files and Spring
+    configuration with their positions. Source: <https://github.com/eemeli/yaml>, release
     <https://www.npmjs.com/package/yaml/v/2.9.1>.
   - `dockerfile-ast` 0.7.1 - Copyright (c) 2017-2021 Remy Suen; licence MIT, text below. Reads
     Dockerfiles. Source: <https://github.com/rcjsuen/dockerfile-ast>, release
@@ -77,8 +77,33 @@ licence. The full licence texts follow the list.
     compiled or type-checked). The package's own third-party notices are in its
     `ThirdPartyNoticeText.txt`. Source: <https://github.com/microsoft/TypeScript>, release
     <https://www.npmjs.com/package/typescript/v/6.0.3>.
+  - `@xmldom/xmldom` 0.9.12 - Copyright 2019 - present Christopher J. Brody and other contributors,
+    and Copyright 2012 - 2017 @jindw and other contributors; licence MIT, text below. Reads Maven
+    poms with their line numbers. Source: <https://github.com/xmldom/xmldom>, release
+    <https://www.npmjs.com/package/@xmldom/xmldom/v/0.9.12>.
+  - `properties-file` 5.0.7 - Copyright (c) 2022 Nicolas Bouvrette; licence MIT, text below. Reads
+    Spring `.properties` files with their line numbers. Source:
+    <https://github.com/properties-file/properties-file>, release
+    <https://www.npmjs.com/package/properties-file/v/5.0.7>.
+  - `web-tree-sitter` 0.27.1 - Copyright (c) 2018 Max Brunsfeld; licence MIT, text below. Parses
+    Java, as WebAssembly (its own `web-tree-sitter.wasm` included). Source:
+    <https://github.com/tree-sitter/tree-sitter> (`lib/binding_web`), release
+    <https://www.npmjs.com/package/web-tree-sitter/v/0.27.1>.
+  - `tree-sitter-java-orchard` 0.5.22 - Copyright (c) 2017 Ayman Nadeem; licence MIT, text below.
+    The Java grammar `web-tree-sitter` parses with. Aerie keeps the package's own compiled grammar,
+    `tree-sitter-java_orchard.wasm`, unchanged at `src/extract/java/` instead of installing the
+    package, whose install step compiles a native add-on that Aerie never uses (and that fails
+    where no compiler is installed). The file's SHA-256 is
+    `5975a019b815387c193aa13920ab03f8a47329611bcab2d0b15e3b75252c9996`, checked by a unit test; it
+    comes from the release tarball
+    <https://registry.npmjs.org/tree-sitter-java-orchard/-/tree-sitter-java-orchard-0.5.22.tgz>
+    (integrity
+    `sha512-C0bAAWwMQ40oicZ9NtWdt47CrbQeTQ0K46aaiFRe21E6fIOQ34TYG6gdxcRzf7l/TMQ4H7LIARdFknS/hNdKMg==`).
+    Source: <https://codeberg.org/grammar-orchard/tree-sitter-java-orchard>, release
+    <https://www.npmjs.com/package/tree-sitter-java-orchard/v/0.5.22>.
 - Aerie writes the rest itself: Compose interpolation and the `.env` format, which never run
-  `$(...)`, and nginx configuration.
+  `$(...)`; nginx configuration; Spring placeholders, profiles and relaxed binding; and reading the
+  parsed Java into its own model.
 
 ## Eclipse Public License 2.0
 

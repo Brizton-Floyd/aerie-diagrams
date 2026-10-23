@@ -1,0 +1,12 @@
+model shop: Shop
+
+system
+  repo shop
+  compose shop/compose.yaml
+
+orders: Orders [service]
+  code compose:orders maven:shop-orders
+billing: Billing [service]
+  code compose:billing maven:shop-billing
+
+orders charges billing

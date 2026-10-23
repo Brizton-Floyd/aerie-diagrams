@@ -67,6 +67,8 @@ describe('facts', () => {
       '/w/compose.override.yaml',
       '/w/docker-compose.override.yml',
       '/w/docker-compose.override.yaml',
+      // DRIFT-201: the repo's root pom, which it does not have, so no Java is read.
+      '/w/pom.xml',
       '/w/.env',
       '/w/compose.yaml',
       '/w/package.json',

@@ -1,0 +1,35 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /shop
+
+spring:
+  application:
+    name: orders
+  kafka:
+    bootstrap-servers: localhost:9092
+  cloud:
+    stream:
+      bindings:
+        audit-out-0:
+          destination: audit-trail
+
+billing:
+  url: ${BILLING_URL:http://localhost:8082}
+
+inventory:
+  base-url: http://inventory.example.com
+  stock-path: /v1/stock/{sku}
+
+app:
+  cors:
+    allowed-origins: http://localhost:4200
+  reminders: yes
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+billing:
+  url: http://billing:8082
