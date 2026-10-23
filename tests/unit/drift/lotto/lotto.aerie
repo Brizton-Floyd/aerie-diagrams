@@ -1,4 +1,4 @@
-// The Lotto benchmark (docs/spec/drift.md, DRIFT-450): samples/lotto.aerie with a system root that
+// The Lotto benchmark (docs/spec/drift.md, DRIFT-433): samples/lotto.aerie with a system root that
 // names the copies of the Lotto repos in tests/unit/extract/fixtures/lotto/, and a code line under
 // each element saying which of today's code it stands for. Nothing else differs from the sample, so
 // what drift reports is how the sample has drifted from that code.

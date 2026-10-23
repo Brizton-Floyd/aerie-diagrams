@@ -273,6 +273,23 @@ runs it on this repository's own pull requests, against a fixture with planted d
 | unit  | Whole runs against a GitHub in memory: exit codes, the cannot-run comment, no pull request, and a comment the token cannot post                                           | DRIFT-605    |
 | unit  | Tokens: git's header only in its environment, every form masked first, and none in a log line, the summary or a thrown message, also in a real run against a local server | DRIFT-606    |
 
+### After v1: D8, the skill, the benchmark and the release
+
+Slice D8 of drift detection ([drift.md](drift.md#9-the-claude-skill-slice-d8), read log
+`d8-release.md`): the Aerie skill writes the lines that tie a model to its code, runs `aerie drift`
+until clean, and keeps the model in step with code it changes. The Lotto benchmark (DRIFT-433) and
+the fixture projects (DRIFT-432) stay part of `npm run check`.
+
+| Suite | What it proves                                                                                                                         | Requirements                    |
+| ----- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| unit  | Worked example 1 has a system root and a code line for each part drift reads, and drift confirms them                                  | SKILL-211                       |
+| unit  | Its drift rounds are what `aerie drift` prints, from the first draft to a clean run; the reference's sample finding and fix table hold | SKILL-212, SKILL-302            |
+| unit  | A code change that adds a service is found, and the model's update in the same change ends clean                                       | SKILL-213, SKILL-302            |
+| unit  | The skill names `aerie drift` as the help lists it, and its description says it keeps a model in step with the code                    | SKILL-001, SKILL-205, SKILL-212 |
+
+SKILL-209's report and SKILL-213's judgement of which code changes alter the architecture are
+verified by human review of the skill, as SKILL-201 and SKILL-210 are.
+
 ## Browser journeys
 
 Journeys run against the production build with the Lotto sample, at 1600 x 900, as a reader would use

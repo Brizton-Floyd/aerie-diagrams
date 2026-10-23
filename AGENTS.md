@@ -81,9 +81,12 @@ same. The individual suites are the `test:*` scripts in [package.json](package.j
   `npx aerie` works only inside this checkout: elsewhere npm fetches an unrelated package of the same
   name, so run `node <checkout>/src/cli/aerie.ts` instead. `npx aerie watch <file>` (INT-851) serves
   the built `dist/`, so run `npm run build` first; its journeys spawn it on `--port 0`.
-- [skills/aerie/](skills/aerie/SKILL.md) is the Claude skill for writing models (A12).
-  `tests/unit/skill/` runs every Lines example in it through the CLI and holds its language summary
-  to the parser, so a language change that breaks the skill fails `test:unit`.
+- [skills/aerie/](skills/aerie/SKILL.md) is the Claude skill for writing models (A12), and keeping
+  them in step with the code through drift (D8). `tests/unit/skill/` runs every Lines example in it
+  through the CLI and holds its language summary to the parser, so a language change that breaks the
+  skill fails `test:unit`. Worked example 1 (`examples/recipe-box/`) is a project drift reads, and
+  its `recipe-box.md` quotes `aerie check` and `aerie drift` output, patches and footers that the
+  tests compare byte for byte, so a change to either report's wording moves them too.
 
 Each later slice adds its own screenshots and journeys next to A5's (`tests/screenshots/page.ts`
 has the steps for opening a model and choosing a view and audience with clicks).

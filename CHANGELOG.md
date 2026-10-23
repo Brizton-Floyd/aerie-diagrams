@@ -3,7 +3,26 @@
 All notable changes to Aerie. Versions follow [Semantic Versioning](https://semver.org/); the
 functional spec for each version is [docs/spec/](docs/spec/overview.md).
 
-## Unreleased
+## 1.1.0 - 2026-10-23
+
+Drift detection: `aerie drift` checks a model against the code it describes, on the command line and
+on every pull request, and the Aerie skill keeps models in step with the code
+([docs/spec/drift.md](docs/spec/drift.md)). Phase 1 checks that the diagram's services, modules,
+packages and connections exist, for Docker Compose, Spring Boot with Maven, and Node with Angular.
+
+### Checking against the code: the skill, the benchmark and the release (D8)
+
+- The Aerie skill ([skills/aerie/](skills/aerie/SKILL.md)) ties every model it writes to the code: a
+  system root and a `code` line for each part drift reads, added without being asked. After
+  `aerie check` it runs `aerie drift` and fixes every drift and likely finding until there are
+  none, fixing the model where it is wrong and adding an ignore line with the reason where a
+  difference is meant. When Claude changes code in a way that changes the architecture, the skill
+  runs drift and updates the model in the same change.
+- The skill's reference gives the drift commands, its JSON, and the usual fix of every kind of
+  finding. Worked example 1 (Recipe box) now holds the project's deployment and build files, and its
+  drift rounds and a later code change are tested against what the commands print.
+- The Lotto benchmark (precision 0.889, recall 0.889, every drift-level finding real) and the fixture
+  projects per stack stay part of `npm run check`, and may never get worse.
 
 ### Checking against the code: the GitHub Action (D7)
 
