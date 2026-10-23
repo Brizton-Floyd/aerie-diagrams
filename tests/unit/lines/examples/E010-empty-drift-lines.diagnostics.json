@@ -1,0 +1,29 @@
+[
+  {
+    "id": "E010",
+    "severity": "error",
+    "line": 2,
+    "column": 3,
+    "endLine": 2,
+    "endColumn": 7,
+    "message": "There is no text after `repo`. Add the wording, or remove the line."
+  },
+  {
+    "id": "E010",
+    "severity": "error",
+    "line": 3,
+    "column": 3,
+    "endLine": 3,
+    "endColumn": 10,
+    "message": "There is no text after `compose`. Add the wording, or remove the line."
+  },
+  {
+    "id": "E010",
+    "severity": "error",
+    "line": 5,
+    "column": 3,
+    "endLine": 5,
+    "endColumn": 7,
+    "message": "There is no text after `code`. Add the wording, or remove the line."
+  }
+]

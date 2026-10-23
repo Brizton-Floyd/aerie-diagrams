@@ -1,0 +1,8 @@
+// Paths are kept as written; `.` parts, `..` parts and a trailing slash do not make a new path.
+system
+  repo .
+  repo ../shop-web/
+  repo ./tools/../services/orders
+  repo ../My Projects/shop-admin
+
+web: Storefront

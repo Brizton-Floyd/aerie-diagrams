@@ -1,0 +1,62 @@
+{
+  "format": "aerie-model/1",
+  "id": "shop",
+  "title": {
+    "base": "Corner shop",
+    "set": {}
+  },
+  "about": {
+    "base": null,
+    "set": {},
+    "add": {}
+  },
+  "audiences": [
+    {
+      "id": "owner",
+      "name": "Owner",
+      "code": false
+    },
+    {
+      "id": "developer",
+      "name": "Developer",
+      "code": true
+    }
+  ],
+  "defaultAudience": "owner",
+  "system": {
+    "repos": [
+      "../shop-api",
+      "../shop-web"
+    ],
+    "compose": [
+      "../shop-api/compose.yaml"
+    ]
+  },
+  "elements": [
+    {
+      "id": "web",
+      "parent": null,
+      "name": {
+        "base": "Storefront",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "code": [],
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "relationships": [],
+  "views": [],
+  "scenarios": [],
+  "walkthroughs": [],
+  "ignores": []
+}

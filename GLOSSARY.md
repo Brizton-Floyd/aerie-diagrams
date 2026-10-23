@@ -50,6 +50,18 @@ any scenario or walkthrough step. A shared link carries the picture.
 
 **Reserve**: Space set aside for the longest wording of every audience level, so switching audience moves nothing.
 
+**Drift**: A difference between a model and the code it describes. `aerie drift` reports it, with a suggested Lines
+edit.
+
+**Code unit**: One piece of code an element stands for, written `kind:name`: a Compose service (`compose:bff`), a
+Maven module, an npm package or a class.
+
+**Code line**: The `code` line under an element that lists its code units. It never changes what a reader sees.
+
+**System root**: The `system` block that names the repos and Compose files that form the system.
+
+**Ignore line**: `ignore drift <subject> - <reason>`: a difference between the model and the code that is meant.
+
 ## Words to avoid
 
 - "resource", "perspective" and "sequence": another product's terms. Say element, view and scenario.

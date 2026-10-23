@@ -75,9 +75,36 @@ export interface ElementRead {
 }
 
 export interface ValueRead {
-  kind: 'icon' | 'for';
+  kind: 'icon' | 'for' | 'repo' | 'compose';
   head: Piece;
   value: Piece | null;
+}
+
+export interface SystemRead {
+  kind: 'system';
+  head: Piece;
+  /** Text after the keyword (E801), or null. */
+  rest: Piece | null;
+}
+
+export interface CodeRead {
+  kind: 'code';
+  head: Piece;
+  /** The code units, split on spaces. */
+  units: Piece[];
+}
+
+export interface IgnoreRead {
+  kind: 'ignore';
+  head: Piece;
+  /** The word after `ignore`, which should be `drift`, or null. */
+  what: Piece | null;
+  /** The words between that word and the ` - `, split on spaces. */
+  subject: Piece[];
+  /** The offset of the `-` that starts the reason, or null without one. */
+  dash: number | null;
+  /** The trimmed text after the `-`, or null without one. */
+  reason: Piece | null;
 }
 
 export type ShowItemRead =
@@ -153,6 +180,9 @@ export type Read =
   | AudiencesRead
   | ElementRead
   | ValueRead
+  | SystemRead
+  | CodeRead
+  | IgnoreRead
   | ShowRead
   | ListRead
   | WalkStepRead
@@ -462,6 +492,41 @@ function readSentence(raw: string, start: number, end: number, head: Piece): Sen
   };
 }
 
+/**
+ * `ignore drift <subject> - <reason>`: the reason starts at the first `-` with a space before it
+ * and a space or the end of the line after it.
+ */
+function readIgnore(raw: string, head: Piece, end: number): IgnoreRead {
+  const rest = trimmed(raw, head.end, end);
+  const read: IgnoreRead = {
+    kind: 'ignore',
+    head,
+    what: null,
+    subject: [],
+    dash: null,
+    reason: null,
+  };
+  if (rest.text === '') {
+    return read;
+  }
+  const what = splitWords(raw, rest.start, rest.end)[0] ?? null;
+  read.what = what;
+  const from = what?.end ?? rest.start;
+  let dash = -1;
+  for (let i = from; i < end; i++) {
+    if (raw[i] === '-' && raw[i - 1] === ' ' && (i + 1 === end || raw[i + 1] === ' ')) {
+      dash = i;
+      break;
+    }
+  }
+  read.subject = splitWords(raw, from, dash === -1 ? end : dash);
+  if (dash !== -1) {
+    read.dash = dash;
+    read.reason = trimmed(raw, dash + 1, end);
+  }
+  return read;
+}
+
 const REWORDING = /^@([^ :>]*) *(>>|>|:)/;
 
 /** Reads one statement: `start` is the end of its indent, `end` the end of its text (LANG-007). */
@@ -512,12 +577,22 @@ export function readStatement(raw: string, start: number, end: number): Read {
       case 'close':
         return readList(word, raw, head, end);
       case 'icon':
-      case 'for': {
+      case 'for':
+      case 'repo':
+      case 'compose': {
         const value = trimmed(raw, head.end, end);
         return { kind: word, head, value: value.text === '' ? null : value };
       }
       case 'step':
         return readWalkStep(raw, head, end);
+      case 'system': {
+        const rest = trimmed(raw, head.end, end);
+        return { kind: 'system', head, rest: rest.text === '' ? null : rest };
+      }
+      case 'code':
+        return { kind: 'code', head, units: splitWords(raw, head.end, end) };
+      case 'ignore':
+        return readIgnore(raw, head, end);
     }
   }
   const headWord = /^[^ :]+/.exec(text)?.[0] ?? '';

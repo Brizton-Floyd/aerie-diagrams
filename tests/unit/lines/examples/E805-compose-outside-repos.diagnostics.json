@@ -1,0 +1,20 @@
+[
+  {
+    "id": "E805",
+    "severity": "error",
+    "line": 5,
+    "column": 11,
+    "endLine": 5,
+    "endColumn": 39,
+    "message": "`../shop-api-old/compose.yaml` is not inside any repo of the system. Add a `repo` line for the repo that holds it, or correct the path."
+  },
+  {
+    "id": "E805",
+    "severity": "error",
+    "line": 6,
+    "column": 11,
+    "endLine": 6,
+    "endColumn": 38,
+    "message": "`../shop-web/../compose.yaml` is not inside any repo of the system. Add a `repo` line for the repo that holds it, or correct the path."
+  }
+]

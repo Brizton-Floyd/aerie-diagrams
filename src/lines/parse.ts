@@ -1,5 +1,5 @@
 // The Lines parser: from text to the canonical model, with every diagnostic it can find
-// (docs/spec/language.md, sections 2 to 12). Checks that need the model's meaning (E604, E703)
+// (docs/spec/language.md, sections 2 to 13). Checks that need the model's meaning (E604, E703)
 // belong to the model stage.
 import {
   diagnostic,
@@ -9,10 +9,15 @@ import {
   type DiagnosticId,
   type OutOfPlace,
 } from './catalogue.ts';
+import { CODE_KINDS, CODE_NAMES, isCodeKind, isInside, relativePath } from './code.ts';
 import { ICON_NAMES } from './icons.ts';
 import type {
   Audience,
+  CodeUnit,
+  DriftEnd,
+  DriftSubject,
   Element,
+  Ignore,
   Model,
   Prose,
   Relationship,
@@ -20,6 +25,7 @@ import type {
   ShowItem,
   Span,
   Step,
+  System,
   View,
   WalkStep,
   Walkthrough,
@@ -30,12 +36,15 @@ import {
   spanAt,
   trimmed,
   type AudiencesRead,
+  type CodeRead,
   type ElementRead,
+  type IgnoreRead,
   type List,
   type Piece,
   type RewordingRead,
   type SentenceRead,
   type Statement,
+  type SystemRead,
   type TagGroup,
   type TitleRead,
   type WalkStepRead,
@@ -104,6 +113,7 @@ type OwnerKind =
   | 'scenario-step'
   | 'walkthrough'
   | 'walk-step'
+  | 'system'
   | 'leaf';
 
 /** What a block's statements belong to: where their descriptions and rewordings go. */
@@ -129,7 +139,30 @@ interface ElementB {
   tags: Located[];
   tagsSpan: Span | null;
   icon: Located | null;
+  code: { unit: CodeUnit; span: Span }[];
   about: ProseB;
+}
+
+/** A path of the `system` block: as written, and normalised for comparing (LANG-753). */
+interface PathB {
+  path: Located;
+  normal: string;
+}
+
+interface SystemB {
+  span: Span;
+  repos: PathB[];
+  compose: PathB[];
+}
+
+/** An end of an ignore line's subject: a code unit, or an element still to check (E008). */
+type EndB = { unit: CodeUnit } | { element: Placed };
+
+interface IgnoreB {
+  statement: Statement;
+  subject: EndB | { from: EndB; to: EndB };
+  subjectSpan: Span;
+  reason: Located;
 }
 
 interface RelationshipB {
@@ -227,15 +260,26 @@ function owner(kind: OwnerKind, fields: Partial<Omit<Owner, 'kind' | 'reworded'>
 
 /** LANG-006: what each owner may hold. */
 const ALLOWED: Record<OwnerKind, readonly string[]> = {
-  root: ['model', 'audiences', 'element', 'sentence', 'view', 'scenario', 'walkthrough'],
+  root: [
+    'model',
+    'audiences',
+    'system',
+    'element',
+    'sentence',
+    'view',
+    'scenario',
+    'walkthrough',
+    'ignore',
+  ],
   model: ['description', 'rewording'],
-  element: ['element', 'icon', 'description', 'rewording'],
+  element: ['element', 'icon', 'code', 'description', 'rewording'],
   relationship: ['description', 'rewording'],
   view: ['show', 'kind', 'description', 'rewording'],
   scenario: ['sentence', 'description', 'rewording'],
   'scenario-step': ['description', 'rewording'],
   walkthrough: ['walk-step', 'description', 'rewording'],
   'walk-step': ['open', 'close', 'for', 'description', 'rewording'],
+  system: ['repo', 'compose'],
   leaf: [],
 };
 
@@ -251,12 +295,18 @@ function outOfPlace(statement: Statement, holder: Owner): OutOfPlace {
     case 'view':
     case 'scenario':
     case 'walkthrough':
+    case 'system':
+    case 'ignore':
       return { rule: 'top-level', keyword: read.kind };
     case 'show':
     case 'kind':
       return { rule: 'in-view', keyword: read.kind };
     case 'icon':
-      return { rule: 'in-element' };
+    case 'code':
+      return { rule: 'in-element', keyword: read.kind };
+    case 'repo':
+    case 'compose':
+      return { rule: 'in-system', keyword: read.kind };
     case 'walk-step':
       return { rule: 'in-walkthrough' };
     case 'open':
@@ -303,6 +353,13 @@ class Parser {
   readonly views: ViewB[] = [];
   readonly scenarios: ScenarioB[] = [];
   readonly walkthroughs: WalkthroughB[] = [];
+  /** The first `system` block, or null (LANG-752). */
+  system: SystemB | null = null;
+  readonly ignores: IgnoreB[] = [];
+  /** Each code unit's element and the line that names it (E809), by `kind:name`. */
+  readonly unitOwners = new Map<string, { element: ElementB; line: number }>();
+  /** Each ignored subject's line (E814), by the subject as written. */
+  readonly ignored = new Map<string, number>();
   /** Element, view, scenario and walkthrough ids, which share one set (LANG-008). */
   readonly declarations: Declaration[] = [];
   /** Rewordings and `for` lines, checked once the audiences are known (E301). */
@@ -393,6 +450,26 @@ class Parser {
         if (parent !== null) {
           this.visitIcon(statement, read.head, read.value, parent);
         }
+        return;
+      case 'code':
+        this.leafChildren(statement, 'code');
+        if (parent !== null) {
+          this.visitCode(statement, read, parent);
+        }
+        return;
+      case 'system':
+        this.visitSystem(statement, read);
+        return;
+      case 'repo':
+      case 'compose':
+        this.leafChildren(statement, read.kind);
+        if (read.value === null) {
+          this.report('E010', this.span(statement, read.head), read.kind);
+        }
+        return;
+      case 'ignore':
+        this.leafChildren(statement, 'ignore');
+        this.visitIgnore(statement, read);
         return;
       case 'view':
       case 'scenario':
@@ -562,6 +639,7 @@ class Parser {
       tags: [],
       tagsSpan: null,
       icon: null,
+      code: [],
       about: newProse(),
     };
     const name = decodeWords(read.name.text);
@@ -639,6 +717,157 @@ class Parser {
       this.report('E201', this.span(statement, value), value.text, hint, codeList(icons));
     }
     element.icon = this.located(statement, value);
+  }
+
+  /** A code unit, `kind:name` (E806, E807, E808); null when it is in error. */
+  readUnit(statement: Statement, piece: Piece): CodeUnit | null {
+    const colon = piece.text.indexOf(':');
+    if (colon <= 0) {
+      this.report('E806', this.span(statement, piece), piece.text.slice(colon + 1));
+      return null;
+    }
+    const kind = piece.text.slice(0, colon);
+    const name = piece.text.slice(colon + 1);
+    if (!isCodeKind(kind)) {
+      const at = this.span(statement, { start: piece.start, end: piece.start + colon });
+      this.report('E807', at, kind, suggestion(kind, CODE_KINDS), codeList(CODE_KINDS));
+      return null;
+    }
+    const rule = CODE_NAMES[kind];
+    if (!rule.pattern.test(name)) {
+      this.report('E808', this.span(statement, piece), piece.text, rule.what, rule.how);
+      return null;
+    }
+    return { kind, name };
+  }
+
+  /** `code` lines (E010, E103, E809; LANG-755 to LANG-757). */
+  visitCode(statement: Statement, read: CodeRead, element: ElementB): void {
+    if (read.units.length === 0) {
+      this.report('E010', this.span(statement, read.head), 'code');
+      return;
+    }
+    for (const piece of read.units) {
+      const unit = this.readUnit(statement, piece);
+      if (unit === null) {
+        continue;
+      }
+      const key = `${unit.kind}:${unit.name}`;
+      const span = this.span(statement, piece);
+      const owner = this.unitOwners.get(key);
+      if (owner?.element === element) {
+        this.report('E103', span, key);
+        continue;
+      }
+      if (owner !== undefined) {
+        this.report('E809', span, key, owner.element.id, owner.line);
+        continue;
+      }
+      this.unitOwners.set(key, { element, line: statement.line });
+      element.code.push({ unit, span });
+    }
+  }
+
+  /** The `system` block and its `repo` and `compose` lines (LANG-752 to LANG-754). */
+  visitSystem(statement: Statement, read: SystemRead): void {
+    const system: SystemB = { span: this.lineSpan(statement), repos: [], compose: [] };
+    if (this.system !== null) {
+      this.report('E802', this.span(statement, read.head), this.system.span.line);
+    } else {
+      this.system = system;
+    }
+    if (read.rest !== null) {
+      this.report('E801', this.span(statement, read.rest));
+    }
+    if (statement.children.length === 0) {
+      this.report('E803', this.span(statement, read.head));
+    }
+    const holder = owner('system');
+    for (const child of statement.children) {
+      this.visit(child, holder, null);
+      this.fillSystem(child, system);
+    }
+  }
+
+  /** A `repo` or `compose` line fills in its block (E804, E103). */
+  fillSystem(statement: Statement, system: SystemB): void {
+    const read = statement.read;
+    if ((read.kind !== 'repo' && read.kind !== 'compose') || read.value === null) {
+      return;
+    }
+    const path = this.located(statement, read.value);
+    const normal = relativePath(path.text);
+    if (normal === null) {
+      this.report('E804', path.span, path.text);
+      return;
+    }
+    const into = read.kind === 'repo' ? system.repos : system.compose;
+    if (into.some((known) => known.normal === normal)) {
+      this.report('E103', path.span, path.text);
+      return;
+    }
+    into.push({ path, normal });
+  }
+
+  /** `ignore drift <subject> - <reason>` (E810, E811, E812, E813, E814; LANG-758, LANG-759). */
+  visitIgnore(statement: Statement, read: IgnoreRead): void {
+    const words = read.subject;
+    const first = words[0];
+    const last = words.at(-1);
+    if (read.what?.text !== 'drift' || first === undefined || last === undefined) {
+      this.report('E810', this.lineSpan(statement));
+      return;
+    }
+    const subjectText = words.map((word) => word.text).join(' ');
+    const subjectSpan = this.span(statement, { start: first.start, end: last.end });
+    const pair = words.length === 3 && words[1]?.text === 'to';
+    if (words.length !== 1 && !pair) {
+      this.report('E812', subjectSpan, subjectText);
+      return;
+    }
+    const reason = read.reason === null ? '' : collapseSpaces(read.reason.text);
+    if (read.reason === null || reason === '') {
+      this.report('E811', this.endOfLine(statement), subjectText);
+    }
+    const end = (piece: Piece): EndB | null => {
+      if (!piece.text.includes(':')) {
+        return { element: { piece, statement } };
+      }
+      const unit = this.readUnit(statement, piece);
+      return unit === null ? null : { unit };
+    };
+    let subject: IgnoreB['subject'] | null;
+    if (pair) {
+      const from = end(first);
+      const to = end(last);
+      subject = from === null || to === null ? null : { from, to };
+      if (first.text === last.text) {
+        this.report('E813', subjectSpan, subjectText, first.text);
+        subject = null;
+      }
+    } else {
+      subject = end(first);
+    }
+    const seen = this.ignored.get(subjectText);
+    if (seen !== undefined) {
+      this.report('E814', subjectSpan, subjectText, seen);
+      return;
+    }
+    this.ignored.set(subjectText, statement.line);
+    if (subject !== null) {
+      // Pushed even without a reason, so its element ids are still checked (E008).
+      const at = read.reason ?? {
+        text: '',
+        start: statement.raw.length,
+        end: statement.raw.length,
+      };
+      this.ignores.push({
+        statement,
+        subject,
+        subjectSpan,
+        reason: this.located(statement, at, reason),
+      });
+    }
   }
 
   visitTitled(statement: Statement, read: TitleRead): void {
@@ -1177,6 +1406,31 @@ class Parser {
     }
   }
 
+  /** E805: with `repo` lines, every Compose file is inside one of the repos (LANG-754). */
+  checkSystem(): void {
+    const system = this.system;
+    if (system === null || system.repos.length === 0) {
+      return;
+    }
+    for (const file of system.compose) {
+      if (!system.repos.some((repo) => isInside(file.normal, repo.normal))) {
+        this.report('E805', file.path.span, file.path.text);
+      }
+    }
+  }
+
+  /** E008 for the element ids an ignore line names (LANG-759). */
+  checkIgnores(): void {
+    for (const ignore of this.ignores) {
+      const subject = ignore.subject;
+      for (const end of 'from' in subject ? [subject.from, subject.to] : [subject]) {
+        if ('element' in end) {
+          this.checkElement(end.element);
+        }
+      }
+    }
+  }
+
   /** E601, E008, E401 and W601 for scenario steps. */
   checkScenarios(relationships: RelationshipB[]): void {
     const joined = new Set<string>();
@@ -1296,6 +1550,8 @@ class Parser {
     this.checkViews();
     this.checkScenarios(relationships);
     this.checkWalkthroughs();
+    this.checkSystem();
+    this.checkIgnores();
     if (this.elements.length === 0) {
       this.report('W001', { line: 1, column: 1, endLine: 1, endColumn: 1 });
     }
@@ -1383,6 +1639,7 @@ class ModelWriter {
       about,
       audiences: parser.audiences.map((audience) => ({ ...audience })),
       defaultAudience: parser.defaultAudience,
+      system: this.system(),
       elements: parser.elements.map((element, index) => this.element(element, index)),
       relationships: this.relationships(),
       views: parser.views.map((view, index) => this.view(view, index)),
@@ -1390,7 +1647,35 @@ class ModelWriter {
       walkthroughs: parser.walkthroughs.map((walkthrough, index) =>
         this.walkthrough(walkthrough, index),
       ),
+      ignores: parser.ignores.map((ignore, index) => this.ignore(ignore, index)),
     };
+  }
+
+  system(): System | null {
+    const system = this.parser.system;
+    if (system === null) {
+      return null;
+    }
+    this.put('/system', system.span);
+    const paths = (list: PathB[], name: string): string[] =>
+      list.map((entry, index) => {
+        this.put(`/system/${name}/${String(index)}`, entry.path.span);
+        return entry.path.text;
+      });
+    return { repos: paths(system.repos, 'repos'), compose: paths(system.compose, 'compose') };
+  }
+
+  ignore(ignore: IgnoreB, index: number): Ignore {
+    const at = `/ignores/${String(index)}`;
+    this.put(at, this.parser.lineSpan(ignore.statement));
+    this.put(`${at}/subject`, ignore.subjectSpan);
+    this.put(`${at}/reason`, ignore.reason.span);
+    const end = (value: EndB): DriftEnd =>
+      'unit' in value ? { unit: { ...value.unit } } : { element: value.element.piece.text };
+    const subject = ignore.subject;
+    const written: DriftSubject =
+      'from' in subject ? { from: end(subject.from), to: end(subject.to) } : end(subject);
+    return { subject: written, reason: ignore.reason.text };
   }
 
   element(element: ElementB, index: number): Element {
@@ -1399,6 +1684,9 @@ class ModelWriter {
     this.put(`${at}/id`, element.idSpan);
     this.put(`${at}/tags`, element.tagsSpan);
     this.put(`${at}/icon`, element.icon?.span);
+    element.code.forEach((entry, j) => {
+      this.put(`${at}/code/${String(j)}`, entry.span);
+    });
     return {
       id: element.id,
       parent: element.parent,
@@ -1406,6 +1694,7 @@ class ModelWriter {
       tagline: this.words(`${at}/tagline`, element.tagline),
       tags: element.tags.map((tag) => tag.text),
       icon: element.icon?.text ?? null,
+      code: element.code.map((entry) => ({ ...entry.unit })),
       about: this.prose(`${at}/about`, element.about),
     };
   }

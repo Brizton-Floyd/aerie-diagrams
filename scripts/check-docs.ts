@@ -34,6 +34,7 @@ const PREFIXES = [
   'ACC',
   'JOURNEY',
   'SKILL',
+  'DRIFT',
 ];
 export const REQUIREMENT = `(?:${PREFIXES.join('|')})-\\d{3}`;
 const DIAGNOSTIC = '[EW]\\d{3}';

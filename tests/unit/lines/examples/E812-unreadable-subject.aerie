@@ -1,0 +1,5 @@
+web: Website
+api: Screen API
+ignore drift web api - two ends need `to`
+ignore drift web calls api - no verbs here
+ignore drift web to api to web - one connection at a time

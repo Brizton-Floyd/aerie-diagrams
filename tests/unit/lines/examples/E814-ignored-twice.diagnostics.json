@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E814",
+    "severity": "error",
+    "line": 4,
+    "column": 16,
+    "endLine": 4,
+    "endColumn": 28,
+    "message": "Drift for `web to api` is already ignored on line 3. Keep one `ignore` line."
+  }
+]

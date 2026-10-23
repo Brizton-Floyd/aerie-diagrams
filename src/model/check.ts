@@ -1,5 +1,5 @@
 // The model stage of checking: the diagnostics that need the model's meaning, E604 and E703
-// (docs/spec/language.md, section 12), and `check`, which adds them to the parser's.
+// (docs/spec/language.md, section 13), and `check`, which adds them to the parser's.
 import {
   diagnostic,
   parse,

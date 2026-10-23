@@ -28,6 +28,7 @@
     }
   ],
   "defaultAudience": "manager",
+  "system": null,
   "elements": [
     {
       "id": "user",
@@ -44,6 +45,7 @@
         "person"
       ],
       "icon": null,
+      "code": [],
       "about": {
         "base": "Opens the website, picks a state and game, and asks for numbers. The browser only ever talks to the website.",
         "set": {},
@@ -69,6 +71,7 @@
         "system"
       ],
       "icon": null,
+      "code": [],
       "about": {
         "base": "The four parts of the suite, started together and wired to each other.",
         "set": {},
@@ -94,6 +97,7 @@
         "service"
       ],
       "icon": "web",
+      "code": [],
       "about": {
         "base": "The screens the user sees: the dashboard, the Smart Generator with its betslip printout, and range analysis (how often winning numbers fall in each band of numbers). Every request goes to the Screen API.",
         "set": {},
@@ -124,6 +128,7 @@
         "module"
       ],
       "icon": "api",
+      "code": [],
       "about": {
         "base": "Takes what the Analysis engine returns and shapes it into exactly what one screen needs. Some dashboard statistics are still worked out here, and are due to move into the engine.",
         "set": {},
@@ -153,6 +158,7 @@
         "service"
       ],
       "icon": "gear",
+      "code": [],
       "about": {
         "base": "The brains of the suite: game dashboards, suggested numbers, range analysis and printable betslips. Only the Screen API talks to it.",
         "set": {
@@ -182,6 +188,7 @@
         "module"
       ],
       "icon": null,
+      "code": [],
       "about": {
         "base": "The part of the engine that runs: it takes requests, works out dashboards and picks, and looks up draw history.",
         "set": {},
@@ -205,6 +212,7 @@
         "part"
       ],
       "icon": "route",
+      "code": [],
       "about": {
         "base": "Accepts each request and hands it to the right service.",
         "set": {},
@@ -228,6 +236,7 @@
         "part"
       ],
       "icon": "grid",
+      "code": [],
       "about": {
         "base": "Builds the dashboard's statistics, the range analysis and the printable betslips from a game's past draws.",
         "set": {},
@@ -251,6 +260,7 @@
         "part"
       ],
       "icon": "dice",
+      "code": [],
       "about": {
         "base": "Gets the game's draw history, then keeps making sets of numbers with the strategy the user chose and checking how each would have done in past draws, for up to about 20 seconds, until it finds a set whose target prize is due.",
         "set": {},
@@ -274,6 +284,7 @@
         "part"
       ],
       "icon": "search",
+      "code": [],
       "about": {
         "base": "How the engine gets draw data: it asks the Results store for a game's history and waits for the answer.",
         "set": {},
@@ -301,6 +312,7 @@
         "module"
       ],
       "icon": "books",
+      "code": [],
       "about": {
         "base": "The three ways to pick numbers: Balanced Spread (copies the most common mix of low and high, odd and even numbers in past draws), Secure Random and Fast Random. Also the dashboard analyzers and the ticket scorer.",
         "set": {},
@@ -328,6 +340,7 @@
         "module"
       ],
       "icon": null,
+      "code": [],
       "about": {
         "base": "The definitions of what a request and a result look like, shared by the engine and the Screen API so both sides agree.",
         "set": {},
@@ -356,6 +369,7 @@
         "legacy"
       ],
       "icon": "monitor",
+      "code": [],
       "about": {
         "base": "Code kept only until the old desktop app is retired. Nothing else in the suite uses it, but it still reads draws from the Results store on its own.",
         "set": {},
@@ -383,6 +397,7 @@
         "service"
       ],
       "icon": "cylinder",
+      "code": [],
       "about": {
         "base": "Downloads winning numbers, keeps each game's past draws, and answers the engine's questions about them.",
         "set": {
@@ -408,6 +423,7 @@
         "part"
       ],
       "icon": "history",
+      "code": [],
       "about": {
         "base": "Lists the states and games on file and returns a game's draw history on request, remembering recent answers until the next refresh.",
         "set": {},
@@ -431,6 +447,7 @@
         "part"
       ],
       "icon": "refresh",
+      "code": [],
       "about": {
         "base": "Every two hours, and once at start-up, has every game's results refreshed: four games at a time, at most four downloads a second, retrying a game up to three times. A game that fails keeps its previous file.",
         "set": {},
@@ -454,6 +471,7 @@
         "part"
       ],
       "icon": "document",
+      "code": [],
       "about": {
         "base": "Downloads a game's results file, turns its rows into draws, and saves the latest 8,000 of them.",
         "set": {},
@@ -477,6 +495,7 @@
         "store"
       ],
       "icon": "archive",
+      "code": [],
       "about": {
         "base": "Where the draws live: one file per game, replaced whole each time new results come in, so a half-written file is never read.",
         "set": {},
@@ -500,6 +519,7 @@
         "external"
       ],
       "icon": null,
+      "code": [],
       "about": {
         "base": "The official source of results. The suite downloads one file per game from it.",
         "set": {},
@@ -1372,5 +1392,6 @@
         }
       ]
     }
-  ]
+  ],
+  "ignores": []
 }

@@ -17,7 +17,7 @@ Requirement ids: `SKILL-nnn`. Conventions are in [overview.md](overview.md#readi
   `reference/lines.md` (the language in brief), `reference/wording.md` (how to write for each
   audience) and `examples/` (small valid models, one per idea).
 - **SKILL-003** The skill is self-contained: it needs only its own folder and the `aerie` command
-  ([language.md](language.md#14-command-line-tools)). It never tells Claude to read Aerie's source
+  ([language.md](language.md#15-command-line-tools)). It never tells Claude to read Aerie's source
   code.
 - **SKILL-004** Every Lines example in the skill passes `aerie check` with no errors and is already
   formatted.

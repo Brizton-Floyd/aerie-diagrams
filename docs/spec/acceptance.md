@@ -172,6 +172,20 @@ picture until its text could not be read.
 | journeys    | Drilling down keeps the opened container readable and in view; selecting brings it into view         | JOURNEY-010, INT-354     |
 | screenshots | An open container, followed by the camera, and the Fit all button                                    | LOOK-302, LOOK-806       |
 
+### After v1: D1, the lines for checking against the code
+
+Slice D1 of drift detection ([drift.md](drift.md), read log `d1-lang.md`): the `system` block, `code`
+lines and `ignore` lines in the Lines language. No extraction yet.
+
+| Suite | What it proves                                                                                                                             | Requirements                 |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
+| unit  | Every rule of the system root, code lines and ignore lines parses to its known canonical model, and E801 to E814 come with line and column | LANG-751 to LANG-759         |
+| unit  | The canonical model's `system`, `code` and `ignores` fields: shape, order and defaults                                                     | LANG-801, LANG-809           |
+| unit  | The formatter keeps paths and normalises the new lines; the printer writes them in order and round-trips                                   | LANG-933, LANG-937, LANG-941 |
+| unit  | The editor colours the new lines and indents under `system`                                                                                | INT-802, INT-803             |
+| unit  | The skill's language summary lists the new keywords, ownership rows and diagnostics                                                        | SKILL-101, SKILL-206         |
+| rules | Adding code lines, a system root and ignore lines to every sample changes no drawing, for every view, audience and zoom state              | MODEL-006                    |
+
 ## Browser journeys
 
 Journeys run against the production build with the Lotto sample, at 1600 x 900, as a reader would use

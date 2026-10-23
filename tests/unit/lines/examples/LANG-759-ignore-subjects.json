@@ -1,0 +1,163 @@
+{
+  "format": "aerie-model/1",
+  "id": null,
+  "title": {
+    "base": null,
+    "set": {}
+  },
+  "about": {
+    "base": null,
+    "set": {},
+    "add": {}
+  },
+  "audiences": [
+    {
+      "id": "exec",
+      "name": "Executive",
+      "code": false
+    },
+    {
+      "id": "manager",
+      "name": "Manager",
+      "code": false
+    },
+    {
+      "id": "engineer",
+      "name": "Engineer",
+      "code": true
+    }
+  ],
+  "defaultAudience": "manager",
+  "system": null,
+  "elements": [
+    {
+      "id": "web",
+      "parent": null,
+      "name": {
+        "base": "Storefront",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "code": [],
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "api",
+      "parent": null,
+      "name": {
+        "base": "Orders API",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "code": [],
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "subject": "web",
+      "verb": {
+        "base": "calls",
+        "set": {}
+      },
+      "object": "api",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "views": [],
+  "scenarios": [],
+  "walkthroughs": [],
+  "ignores": [
+    {
+      "subject": {
+        "element": "api"
+      },
+      "reason": "drawn as one service, built as two"
+    },
+    {
+      "subject": {
+        "unit": {
+          "kind": "compose",
+          "name": "metrics"
+        }
+      },
+      "reason": "monitoring is outside this diagram"
+    },
+    {
+      "subject": {
+        "from": {
+          "element": "web"
+        },
+        "to": {
+          "element": "api"
+        }
+      },
+      "reason": "only in local development"
+    },
+    {
+      "subject": {
+        "from": {
+          "element": "api"
+        },
+        "to": {
+          "unit": {
+            "kind": "compose",
+            "name": "payments"
+          }
+        }
+      },
+      "reason": "payments are drawn in another model"
+    },
+    {
+      "subject": {
+        "from": {
+          "unit": {
+            "kind": "maven",
+            "name": "orders-batch"
+          }
+        },
+        "to": {
+          "unit": {
+            "kind": "maven",
+            "name": "orders-core"
+          }
+        }
+      },
+      "reason": "a test-only dependency"
+    },
+    {
+      "subject": {
+        "from": {
+          "element": "api"
+        },
+        "to": {
+          "element": "web"
+        }
+      },
+      "reason": "the callback is drawn as a reply in the scenario"
+    }
+  ]
+}

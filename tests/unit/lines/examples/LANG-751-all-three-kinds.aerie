@@ -1,0 +1,17 @@
+model shop: Corner shop
+
+system
+  repo .
+  compose compose.yaml
+
+web: Storefront [service]
+  code compose:web npm:shop-web
+api: Orders API [service]
+  code compose:api maven:orders-api
+
+web sends orders to api
+
+view overview: Overview
+  show web, api
+
+ignore drift web to api - the storefront calls the API through the gateway

@@ -1,4 +1,4 @@
 web: Website [module]
 api: Screen API [module]
-view code: Code
+view build: Build
   show [module], [ module ]

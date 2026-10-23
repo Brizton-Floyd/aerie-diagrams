@@ -1,0 +1,10 @@
+web: Storefront
+api: Orders API
+web calls api
+
+ignore drift api - drawn as one service, built as two
+ignore drift compose:metrics - monitoring is outside this diagram
+ignore drift web to api - only in local development
+ignore drift api to compose:payments - payments are drawn in another model
+ignore drift maven:orders-batch to maven:orders-core - a test-only dependency
+ignore drift api to web - the callback is drawn as a reply in the scenario

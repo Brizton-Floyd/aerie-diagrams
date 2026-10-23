@@ -28,6 +28,7 @@
     }
   ],
   "defaultAudience": "manager",
+  "system": null,
   "elements": [
     {
       "id": "cafe",
@@ -42,6 +43,7 @@
       },
       "tags": [],
       "icon": null,
+      "code": [],
       "about": {
         "base": "Serves ünïcödé guests 😀.",
         "set": {},
@@ -52,5 +54,6 @@
   "relationships": [],
   "views": [],
   "scenarios": [],
-  "walkthroughs": []
+  "walkthroughs": [],
+  "ignores": []
 }

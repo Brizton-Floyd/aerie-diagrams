@@ -1,0 +1,20 @@
+[
+  {
+    "id": "E813",
+    "severity": "error",
+    "line": 2,
+    "column": 14,
+    "endLine": 2,
+    "endColumn": 24,
+    "message": "`web to web` joins `web` to itself. Ignore drift between two different things."
+  },
+  {
+    "id": "E813",
+    "severity": "error",
+    "line": 3,
+    "column": 14,
+    "endLine": 3,
+    "endColumn": 40,
+    "message": "`compose:web to compose:web` joins `compose:web` to itself. Ignore drift between two different things."
+  }
+]

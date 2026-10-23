@@ -1,4 +1,4 @@
-// The formatter and the printer (docs/spec/language.md, section 13). Idempotence, meaning kept and
+// The formatter and the printer (docs/spec/language.md, section 14). Idempotence, meaning kept and
 // round trips are also checked over every fixture in examples.test.ts.
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -172,7 +172,7 @@ describe('the printer', () => {
       'api: Screen API',
       'web uses the shapes in api [code]',
       'api reads web, page',
-      'view code: Code',
+      'view build: Build',
       '  show web +1, [service]',
       '  kind code, runtime',
       'scenario flow: Flow',
@@ -181,7 +181,7 @@ describe('the printer', () => {
       'walkthrough tour: Tour',
       '  step flow: 2',
       '  step flow: 1-2',
-      '  step code: page',
+      '  step build: page',
       '    close web',
       '    open web',
       '    for engineer',
@@ -205,7 +205,7 @@ describe('the printer', () => {
         'api reads web',
         'api reads page',
         '',
-        'view code: Code',
+        'view build: Build',
         '  show web +1, [service]',
         '  kind code, runtime',
         '',
@@ -216,10 +216,50 @@ describe('the printer', () => {
         'walkthrough tour: Tour',
         '  step flow: 2',
         '  step flow: 1-2',
-        '  step code: page',
+        '  step build: page',
         '    open web',
         '    close web',
         '    for engineer',
+        '',
+      ].join('\n'),
+    );
+  });
+
+  it('LANG-937 prints the system block after the audiences, code lines after the icon, ignores last', () => {
+    const source = [
+      'ignore drift web to api - only in development',
+      'web: Website',
+      '  > About.',
+      '  code npm:web',
+      '  icon web',
+      '  code compose:web',
+      'api: Screen API',
+      'web calls api',
+      'system',
+      '  compose ../web/compose.yaml',
+      '  repo ../web',
+      'ignore drift maven:legacy - retiring',
+      '',
+    ].join('\n');
+    expect(print(modelOf(source))).toBe(
+      [
+        'audiences exec "Executive", manager "Manager" (default), engineer "Engineer" (code)',
+        '',
+        'system',
+        '  repo ../web',
+        '  compose ../web/compose.yaml',
+        '',
+        'web: Website',
+        '  icon web',
+        '  code npm:web compose:web',
+        '  > About.',
+        '',
+        'api: Screen API',
+        '',
+        'web calls api',
+        '',
+        'ignore drift web to api - only in development',
+        'ignore drift maven:legacy - retiring',
         '',
       ].join('\n'),
     );

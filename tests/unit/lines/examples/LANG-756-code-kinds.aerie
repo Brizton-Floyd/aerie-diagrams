@@ -1,0 +1,6 @@
+web: Storefront
+  code compose:web_1.blue-green npm:@shop/web-ui npm:shop-web
+api: Orders API
+  code maven:orders-api maven:Orders_Core.v2
+rules: Pricing rules
+  code class:com.shop.orders.pricing.* class:$Generated class:PricingRules

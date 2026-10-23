@@ -1,0 +1,6 @@
+// An element drawn above the level of the code lists every unit it stands for.
+engine: Analysis engine [service]
+  code compose:core maven:engine-server maven:engine-strategies maven:engine-formats
+ui: Website [service]
+  code compose:web-ui npm:lotto-ui
+ui calls engine

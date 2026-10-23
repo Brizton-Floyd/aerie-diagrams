@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E803",
+    "severity": "error",
+    "line": 1,
+    "column": 1,
+    "endLine": 1,
+    "endColumn": 7,
+    "message": "The `system` block lists nothing yet. Add a `repo` or `compose` line under it, such as `repo ../orders-api`."
+  }
+]

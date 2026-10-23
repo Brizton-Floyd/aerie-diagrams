@@ -1,0 +1,47 @@
+[
+  {
+    "id": "E006",
+    "severity": "error",
+    "line": 1,
+    "column": 1,
+    "endLine": 1,
+    "endColumn": 7,
+    "message": "`system` is a word Lines uses for itself, so it cannot be an id. Choose another id."
+  },
+  {
+    "id": "E006",
+    "severity": "error",
+    "line": 2,
+    "column": 1,
+    "endLine": 2,
+    "endColumn": 5,
+    "message": "`code` is a word Lines uses for itself, so it cannot be an id. Choose another id."
+  },
+  {
+    "id": "E006",
+    "severity": "error",
+    "line": 4,
+    "column": 3,
+    "endLine": 4,
+    "endColumn": 7,
+    "message": "`repo` is a word Lines uses for itself, so it cannot be an id. Choose another id."
+  },
+  {
+    "id": "E006",
+    "severity": "error",
+    "line": 5,
+    "column": 3,
+    "endLine": 5,
+    "endColumn": 10,
+    "message": "`compose` is a word Lines uses for itself, so it cannot be an id. Choose another id."
+  },
+  {
+    "id": "E006",
+    "severity": "error",
+    "line": 6,
+    "column": 6,
+    "endLine": 6,
+    "endColumn": 12,
+    "message": "`ignore` is a word Lines uses for itself, so it cannot be an id. Choose another id."
+  }
+]

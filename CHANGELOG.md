@@ -3,6 +3,19 @@
 All notable changes to Aerie. Versions follow [Semantic Versioning](https://semver.org/); the
 functional spec for each version is [docs/spec/](docs/spec/overview.md).
 
+## Unreleased
+
+### Checking against the code: the lines (D1)
+
+- Lines that tie a model to its code, read only by drift detection ([docs/spec/drift.md](docs/spec/drift.md)):
+  a `system` block naming the repos and authoritative Compose files, `code` lines under elements
+  listing code units (`compose:`, `maven:`, `npm:`, `class:`), and `ignore drift <subject> - <reason>`
+  lines. They never change what a reader sees.
+- New diagnostics E801 to E814; the canonical model gains `system`, `code` and `ignores` (still
+  `aerie-model/1`).
+- `system`, `repo`, `compose`, `code` and `ignore` are now keywords, so a model that uses one of them
+  as an id (such as `view code`) must rename it; `aerie check` reports E006 there.
+
 ## 1.0.0 - 2026-10-23
 
 The first version: one model, every audience. Built in the slices of

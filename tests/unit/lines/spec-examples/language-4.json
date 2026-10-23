@@ -29,6 +29,7 @@
       }
     ],
     "defaultAudience": "manager",
+    "system": null,
     "elements": [
       {
         "id": "engine",
@@ -50,6 +51,7 @@
           "service"
         ],
         "icon": null,
+        "code": [],
         "about": {
           "base": "The brains of the suite.",
           "set": {
@@ -64,7 +66,8 @@
     "relationships": [],
     "views": [],
     "scenarios": [],
-    "walkthroughs": []
+    "walkthroughs": [],
+    "ignores": []
   },
   "diagnostics": []
 }

@@ -28,9 +28,11 @@
     }
   ],
   "defaultAudience": "manager",
+  "system": null,
   "elements": [],
   "relationships": [],
   "views": [],
   "scenarios": [],
-  "walkthroughs": []
+  "walkthroughs": [],
+  "ignores": []
 }

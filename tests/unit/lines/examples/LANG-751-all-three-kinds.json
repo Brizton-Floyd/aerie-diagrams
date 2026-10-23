@@ -1,0 +1,161 @@
+{
+  "format": "aerie-model/1",
+  "id": "shop",
+  "title": {
+    "base": "Corner shop",
+    "set": {}
+  },
+  "about": {
+    "base": null,
+    "set": {},
+    "add": {}
+  },
+  "audiences": [
+    {
+      "id": "exec",
+      "name": "Executive",
+      "code": false
+    },
+    {
+      "id": "manager",
+      "name": "Manager",
+      "code": false
+    },
+    {
+      "id": "engineer",
+      "name": "Engineer",
+      "code": true
+    }
+  ],
+  "defaultAudience": "manager",
+  "system": {
+    "repos": [
+      "."
+    ],
+    "compose": [
+      "compose.yaml"
+    ]
+  },
+  "elements": [
+    {
+      "id": "web",
+      "parent": null,
+      "name": {
+        "base": "Storefront",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [
+        "service"
+      ],
+      "icon": null,
+      "code": [
+        {
+          "kind": "compose",
+          "name": "web"
+        },
+        {
+          "kind": "npm",
+          "name": "shop-web"
+        }
+      ],
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "api",
+      "parent": null,
+      "name": {
+        "base": "Orders API",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [
+        "service"
+      ],
+      "icon": null,
+      "code": [
+        {
+          "kind": "compose",
+          "name": "api"
+        },
+        {
+          "kind": "maven",
+          "name": "orders-api"
+        }
+      ],
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "subject": "web",
+      "verb": {
+        "base": "sends orders to",
+        "set": {}
+      },
+      "object": "api",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "views": [
+    {
+      "id": "overview",
+      "title": {
+        "base": "Overview",
+        "set": {}
+      },
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      },
+      "show": [
+        {
+          "element": "web",
+          "depth": 0
+        },
+        {
+          "element": "api",
+          "depth": 0
+        }
+      ],
+      "kinds": [
+        "runtime"
+      ]
+    }
+  ],
+  "scenarios": [],
+  "walkthroughs": [],
+  "ignores": [
+    {
+      "subject": {
+        "from": {
+          "element": "web"
+        },
+        "to": {
+          "element": "api"
+        }
+      },
+      "reason": "the storefront calls the API through the gateway"
+    }
+  ]
+}

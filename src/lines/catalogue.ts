@@ -1,4 +1,4 @@
-// The diagnostic catalogue of docs/spec/language.md, section 12, word for word (LANG-903).
+// The diagnostic catalogue of docs/spec/language.md, section 13, word for word (LANG-903).
 // Placeholders are filled by the caller (LANG-905); `suggestion` is " Did you mean `x`?" or "".
 import type { Span } from './model.ts';
 
@@ -6,7 +6,8 @@ import type { Span } from './model.ts';
 export type OutOfPlace =
   | { rule: 'top-level'; keyword: string }
   | { rule: 'in-view'; keyword: string }
-  | { rule: 'in-element' }
+  | { rule: 'in-element'; keyword: string }
+  | { rule: 'in-system'; keyword: string }
   | { rule: 'in-walkthrough' }
   | { rule: 'in-walk-step'; keyword: string }
   | { rule: 'element' }
@@ -33,7 +34,9 @@ export const CATALOGUE = {
       case 'in-view':
         return `\`${why.keyword}\` lines go inside a view.`;
       case 'in-element':
-        return '`icon` lines go inside an element.';
+        return `\`${why.keyword}\` lines go inside an element.`;
+      case 'in-system':
+        return `\`${why.keyword}\` lines go inside the \`system\` block.`;
       case 'in-walkthrough':
         return '`step` lines go inside a walkthrough.';
       case 'in-walk-step':
@@ -134,6 +137,33 @@ export const CATALOGUE = {
   E707: (id: string) => `\`${id}\` has nothing inside it to open or close.`,
   E708: (line: number) =>
     `This step already switches the audience, on line ${n(line)}. Keep one \`for\` line.`,
+  E801: () =>
+    'Nothing goes after `system` on its line. Put each repo and Compose file on its own line under it, such as `repo ../orders-api`.',
+  E802: (line: number) =>
+    `There is already a \`system\` block on line ${n(line)}. Declare the system once, with all its repos and Compose files.`,
+  E803: () =>
+    'The `system` block lists nothing yet. Add a `repo` or `compose` line under it, such as `repo ../orders-api`.',
+  E804: (path: string) =>
+    `\`${path}\` is not a path from this file's folder. Write it relative to the folder that holds this file, with forward slashes, such as \`../orders-api\`.`,
+  E805: (path: string) =>
+    `\`${path}\` is not inside any repo of the system. Add a \`repo\` line for the repo that holds it, or correct the path.`,
+  E806: (text: string) =>
+    `\`${text}\` does not say what kind of code it is. Write the kind and a colon first, as in \`compose:${text}\`.`,
+  E807: (kind: string, suggestion: string, list: string) =>
+    `There is no kind of code called \`${kind}\`.${suggestion} The kinds are ${list}.`,
+  E808: (unit: string, what: string, how: string) => `\`${unit}\` does not name ${what}. ${how}`,
+  E809: (unit: string, id: string, line: number) =>
+    `\`${unit}\` is already the code of \`${id}\`, on line ${n(line)}. A code unit belongs to one element.`,
+  E810: () =>
+    'An `ignore` line says `ignore drift`, what to ignore, a hyphen with a space on each side, and why, as in `ignore drift maven:legacy - retiring with the desktop app`.',
+  E811: (subject: string) =>
+    `Say why this drift is ignored: end the line with a hyphen, a space and the reason, as in \`ignore drift ${subject} - retiring next year\`.`,
+  E812: (subject: string) =>
+    `\`${subject}\` is not something drift can ignore. Write an element id, a code unit such as \`maven:legacy\`, or two of them joined by \`to\`, such as \`web to api\`.`,
+  E813: (subject: string, end: string) =>
+    `\`${subject}\` joins \`${end}\` to itself. Ignore drift between two different things.`,
+  E814: (subject: string, line: number) =>
+    `Drift for \`${subject}\` is already ignored on line ${n(line)}. Keep one \`ignore\` line.`,
   W001: () => 'This file has no elements yet. Start with a line such as `web: Website`.',
 } satisfies Record<string, (...args: never[]) => string>;
 

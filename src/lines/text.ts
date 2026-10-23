@@ -14,6 +14,11 @@ export const KEYWORDS = [
   'open',
   'close',
   'for',
+  'system',
+  'repo',
+  'compose',
+  'code',
+  'ignore',
 ] as const;
 
 export type Keyword = (typeof KEYWORDS)[number];

@@ -2,7 +2,7 @@ web: Website
 api: Screen API
 web calls api
 web uses the shapes in api [code]
-view code: Code
+view build: Build
   kind code
 view both: Both
   kind code, runtime, code

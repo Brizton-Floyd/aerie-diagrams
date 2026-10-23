@@ -1,0 +1,29 @@
+[
+  {
+    "id": "E008",
+    "severity": "error",
+    "line": 3,
+    "column": 14,
+    "endLine": 3,
+    "endColumn": 21,
+    "message": "There is no element called `webiste`. Did you mean `website`?"
+  },
+  {
+    "id": "E008",
+    "severity": "error",
+    "line": 4,
+    "column": 25,
+    "endLine": 4,
+    "endColumn": 35,
+    "message": "There is no element called `screen-apu`. Did you mean `screen-api`?"
+  },
+  {
+    "id": "E008",
+    "severity": "error",
+    "line": 5,
+    "column": 14,
+    "endLine": 5,
+    "endColumn": 21,
+    "message": "There is no element called `Website`. Did you mean `website`?"
+  }
+]

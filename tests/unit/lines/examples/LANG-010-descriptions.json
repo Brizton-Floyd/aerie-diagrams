@@ -28,6 +28,7 @@
     }
   ],
   "defaultAudience": "manager",
+  "system": null,
   "elements": [
     {
       "id": "web",
@@ -42,6 +43,7 @@
       },
       "tags": [],
       "icon": null,
+      "code": [],
       "about": {
         "base": "The **website** is where *users* start, built with `Angular`. See [the docs](https://example.com/docs) for more.\n\nA second paragraph.\n\nNo space after the marker.\n\nExtra spaces after the marker are not text.",
         "set": {},
@@ -52,5 +54,6 @@
   "relationships": [],
   "views": [],
   "scenarios": [],
-  "walkthroughs": []
+  "walkthroughs": [],
+  "ignores": []
 }

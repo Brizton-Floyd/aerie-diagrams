@@ -1,4 +1,4 @@
-// The `aerie` command (docs/spec/language.md, section 14), run against files in memory.
+// The `aerie` command (docs/spec/language.md, section 15), run against files in memory.
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';

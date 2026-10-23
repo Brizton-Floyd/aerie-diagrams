@@ -1,0 +1,208 @@
+{
+  "model": {
+    "format": "aerie-model/1",
+    "id": "lotto",
+    "title": {
+      "base": "Lotto suite",
+      "set": {}
+    },
+    "about": {
+      "base": null,
+      "set": {},
+      "add": {}
+    },
+    "audiences": [
+      {
+        "id": "exec",
+        "name": "Executive",
+        "code": false
+      },
+      {
+        "id": "manager",
+        "name": "Manager",
+        "code": false
+      },
+      {
+        "id": "engineer",
+        "name": "Engineer",
+        "code": true
+      }
+    ],
+    "defaultAudience": "manager",
+    "system": {
+      "repos": [
+        "../lotto-options-core",
+        "../lotto-options-ui",
+        "../lottery-result-persistence-service"
+      ],
+      "compose": [
+        "../lotto-options-core/compose.yaml"
+      ]
+    },
+    "elements": [
+      {
+        "id": "website",
+        "parent": null,
+        "name": {
+          "base": "Website",
+          "set": {}
+        },
+        "tagline": {
+          "base": "Where players pick numbers",
+          "set": {}
+        },
+        "tags": [
+          "service"
+        ],
+        "icon": null,
+        "code": [
+          {
+            "kind": "compose",
+            "name": "web-ui"
+          },
+          {
+            "kind": "npm",
+            "name": "lotto-options-ui"
+          }
+        ],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "id": "screen-api",
+        "parent": null,
+        "name": {
+          "base": "Screen API",
+          "set": {}
+        },
+        "tagline": {
+          "base": "Shapes data for the screens",
+          "set": {}
+        },
+        "tags": [
+          "service"
+        ],
+        "icon": null,
+        "code": [
+          {
+            "kind": "compose",
+            "name": "bff"
+          },
+          {
+            "kind": "maven",
+            "name": "lotto-options-core-bff"
+          }
+        ],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "id": "engine",
+        "parent": null,
+        "name": {
+          "base": "Analysis engine",
+          "set": {}
+        },
+        "tagline": {
+          "base": "Generates and scores picks",
+          "set": {}
+        },
+        "tags": [
+          "service"
+        ],
+        "icon": null,
+        "code": [
+          {
+            "kind": "compose",
+            "name": "core"
+          },
+          {
+            "kind": "maven",
+            "name": "lotto-options-core-server"
+          }
+        ],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "id": "pick-generation",
+        "parent": "engine",
+        "name": {
+          "base": "Pick generation",
+          "set": {}
+        },
+        "tagline": {
+          "base": null,
+          "set": {}
+        },
+        "tags": [],
+        "icon": null,
+        "code": [
+          {
+            "kind": "class",
+            "name": "com.lotto.options.core.picks.*"
+          }
+        ],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      }
+    ],
+    "relationships": [
+      {
+        "subject": "website",
+        "verb": {
+          "base": "gets screen data from",
+          "set": {}
+        },
+        "object": "screen-api",
+        "kind": "runtime",
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "subject": "screen-api",
+        "verb": {
+          "base": "requests analysis from",
+          "set": {}
+        },
+        "object": "pick-generation",
+        "kind": "runtime",
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      }
+    ],
+    "views": [],
+    "scenarios": [],
+    "walkthroughs": [],
+    "ignores": [
+      {
+        "subject": {
+          "unit": {
+            "kind": "maven",
+            "name": "lotto-options-core-legacy-desktop"
+          }
+        },
+        "reason": "retiring with the desktop app"
+      }
+    ]
+  },
+  "diagnostics": []
+}

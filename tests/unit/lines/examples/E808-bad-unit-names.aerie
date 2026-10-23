@@ -1,0 +1,2 @@
+web: Website
+  code compose: compose:web/ui maven:orders$api npm:Shop-Web npm:@shop class:1Pricing class:com..shop class:*

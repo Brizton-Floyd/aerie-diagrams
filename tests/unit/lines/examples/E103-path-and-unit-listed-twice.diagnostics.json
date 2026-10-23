@@ -1,0 +1,38 @@
+[
+  {
+    "id": "E103",
+    "severity": "error",
+    "line": 3,
+    "column": 8,
+    "endLine": 3,
+    "endColumn": 16,
+    "message": "`../shop/` is listed twice."
+  },
+  {
+    "id": "E103",
+    "severity": "error",
+    "line": 5,
+    "column": 11,
+    "endLine": 5,
+    "endColumn": 33,
+    "message": "`../shop/./compose.yaml` is listed twice."
+  },
+  {
+    "id": "E103",
+    "severity": "error",
+    "line": 7,
+    "column": 28,
+    "endLine": 7,
+    "endColumn": 39,
+    "message": "`compose:web` is listed twice."
+  },
+  {
+    "id": "E103",
+    "severity": "error",
+    "line": 8,
+    "column": 8,
+    "endLine": 8,
+    "endColumn": 15,
+    "message": "`npm:web` is listed twice."
+  }
+]

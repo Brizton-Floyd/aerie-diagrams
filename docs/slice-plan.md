@@ -22,3 +22,6 @@ rules in [AGENTS.md](../AGENTS.md). Dependencies are in brackets.
 After v1, not before: an optional importer for Ilograph-style files (separate module, public key list
 only), checking a model against code, change over time, embedding and export, a distribution
 decision, then a lawyer review and public release.
+
+Drift detection (checking a model against the code, [decision 0006](decisions/0006-drift-detection.md))
+is built after v1 in slices D1 to D8, planned in [spec/drift.md](spec/drift.md#11-slices).

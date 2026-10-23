@@ -28,6 +28,7 @@
     }
   ],
   "defaultAudience": "manager",
+  "system": null,
   "elements": [
     {
       "id": "web",
@@ -44,6 +45,7 @@
       },
       "tags": [],
       "icon": null,
+      "code": [],
       "about": {
         "base": "A description.",
         "set": {},
@@ -63,6 +65,7 @@
       },
       "tags": [],
       "icon": null,
+      "code": [],
       "about": {
         "base": null,
         "set": {},
@@ -114,5 +117,6 @@
     }
   ],
   "scenarios": [],
-  "walkthroughs": []
+  "walkthroughs": [],
+  "ignores": []
 }

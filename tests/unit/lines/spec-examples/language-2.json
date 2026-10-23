@@ -34,11 +34,13 @@
       }
     ],
     "defaultAudience": "product",
+    "system": null,
     "elements": [],
     "relationships": [],
     "views": [],
     "scenarios": [],
-    "walkthroughs": []
+    "walkthroughs": [],
+    "ignores": []
   },
   "diagnostics": [
     {

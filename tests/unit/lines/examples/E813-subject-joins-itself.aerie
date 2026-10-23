@@ -1,0 +1,3 @@
+web: Website
+ignore drift web to web - loops back
+ignore drift compose:web to compose:web - loops back

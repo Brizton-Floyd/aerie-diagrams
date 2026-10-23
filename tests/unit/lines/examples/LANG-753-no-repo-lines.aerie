@@ -1,0 +1,6 @@
+// Without repo lines the system is the repository that holds this file.
+system
+  compose deploy/compose.yaml
+  compose ../shared/compose.override.yaml
+
+web: Storefront
