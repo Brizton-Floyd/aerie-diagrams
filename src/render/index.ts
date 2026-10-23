@@ -18,6 +18,8 @@
 //   container's header text is its own group (`g.head`, same `data-id`) above the lines.
 // - Text elements carry their measured width as `data-width`; drawn text keeps kerning and
 //   ligatures off (LAYOUT-102), so the browser draws them exactly that wide.
+// - `interactive: true` draws for the page a reader explores (INT-901 to INT-903): focusable boxes
+//   announced with their name and tagline, the control's tooltip, and a hover box for each label.
 // - The trail on the map comes from `trailShapes` (src/layout/trail.ts); `renderLanes` draws a
 //   scenario's lanes.
 export { emphasis, type EdgeMark, type Emphasis, type Focus, type NodeMark } from './emphasis.ts';
@@ -31,8 +33,10 @@ export {
   drawTrail,
   renderPicture,
   textLine,
+  TOGGLE_TIP,
   type BoxLook,
   type RenderOptions,
+  type Spoken,
 } from './picture.ts';
 export { ROUTE, chevron, roundedRoute } from './route.ts';
 export { HATCH_ID, MOTION, TEXTURE, contourStyle, textureTile, tokenVar } from './style.ts';

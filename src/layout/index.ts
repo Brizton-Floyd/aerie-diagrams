@@ -20,9 +20,24 @@
 //   layouter keeps recent layouts, so switching audience or going back costs nothing.
 // - Text is measured from the bundled fonts (text/measure.ts). Draw it with `DRAWN_TEXT_STYLE`
 //   (kerning and ligatures off, LAYOUT-102) in the face `faceOf(ROLES[role].face)` gives.
+// - A change between two pictures: `transitionPlan` matches their layouts by element id (who
+//   glides, fades in or leaves, LAYOUT-402) and `timings` gives each part's delay and duration.
+//   The camera (`fitCamera`, `magnify`, `pan`, `keepCorner`) places the picture on the stage
+//   (LAYOUT-404, LAYOUT-451, INT-351 to INT-353).
 // - `checkStructure`, `checkLanes` and `scores` are the rule checks and readability scores the
 //   rules suite runs on every sample.
 export { BOX, TEXT_LEFT, control } from './anatomy.ts';
+export {
+  CAMERA,
+  dragged,
+  fitCamera,
+  keepCorner,
+  magnify,
+  onScreen,
+  pan,
+  type Camera,
+  type Size,
+} from './camera.ts';
 export {
   LANES,
   layoutLanes,
@@ -91,6 +106,16 @@ export {
   type TrailLoop,
   type TrailShape,
 } from './trail.ts';
+export {
+  headerMiddle,
+  timings,
+  transitionPlan,
+  type Glide,
+  type Leave,
+  type Timing,
+  type Timings,
+  type Transition,
+} from './transition.ts';
 export {
   DRAWN_TEXT_STYLE,
   ROLES,

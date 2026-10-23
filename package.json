@@ -26,6 +26,7 @@
     "check": "npm run typecheck && npm run lint && npm run test:unit && npm run test:rules && npm run test:golden && npm run test:screenshots && npm run test:journeys"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
     "@eslint/js": "10.0.1",
     "@playwright/test": "1.64.1",
     "@types/node": "24.19.2",

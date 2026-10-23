@@ -45,6 +45,20 @@ export interface RenderOptions {
   theme?: Theme;
   /** Embeds the stylesheet so the SVG stands alone, as a file. */
   standalone?: boolean;
+  /**
+   * Draws for the page a reader explores (INT-901 to INT-903): every box can be focused and is
+   * announced with its name and tagline, containers say whether they are open, the open and close
+   * control has its tooltip (INT-301), and each label has a box to hover (INT-206). Lines, labels
+   * and header text are hidden from screen readers, which hear the relationships as sentences
+   * from the page instead.
+   */
+  interactive?: boolean;
+}
+
+/** What a reader's assistive technology hears for one box (INT-903). */
+export interface Spoken {
+  label: string;
+  selected: boolean;
 }
 
 /** How a box is drawn, from its state and its element's tags. */
@@ -87,8 +101,11 @@ export function textLine(line: PlacedLine, origin: { x: number; y: number }): Sv
   );
 }
 
+/** INT-301: the tooltip of the open and close control. */
+export const TOGGLE_TIP = { open: 'Open in place', close: 'Close in place' } as const;
+
 /** LOOK-302 and LOOK-303: the open and close control, a circle at the top right. */
-function toggle(width: number, open: boolean): SvgNode {
+function toggle(width: number, open: boolean, tip: boolean): SvgNode {
   const radius = BOX.toggle / 2;
   const arm = 4;
   return el(
@@ -98,6 +115,7 @@ function toggle(width: number, open: boolean): SvgNode {
       transform: translate(width - BOX.pad - radius, BOX.pad + radius),
     },
     [
+      tip && el('title', {}, [open ? TOGGLE_TIP.close : TOGGLE_TIP.open]),
       el('circle', { r: radius }),
       el('path', {
         d: open
@@ -120,6 +138,7 @@ export function drawBox(
   iconName: IconName,
   text: PlacedBoxText | undefined,
   mark: NodeMark,
+  spoken: Spoken | null = null,
 ): SvgNode {
   const corner = cornerOf(look, box.height);
   const inset = BOX.inset;
@@ -133,7 +152,23 @@ export function drawBox(
       transform: translate(box.x, box.y),
     },
     [
-      el('rect', { class: 'shape', width: box.width, height: box.height, rx: corner }),
+      // On the page, the outline is the box's button: focusable, named and announced (INT-903).
+      // Its text is drawn beside it rather than inside it, so a screen reader hears it once.
+      el('rect', {
+        class: 'shape',
+        width: box.width,
+        height: box.height,
+        rx: corner,
+        ...(spoken === null
+          ? {}
+          : {
+              tabindex: 0,
+              role: 'button',
+              'aria-label': spoken.label,
+              'aria-pressed': spoken.selected ? 'true' : 'false',
+              'aria-expanded': container ? String(look.state === 'open') : null,
+            }),
+      }),
       container &&
         el('rect', {
           class: 'inner',
@@ -152,20 +187,22 @@ export function drawBox(
         rx: corner + ring,
       }),
       icon(iconName, BOX.pad, BOX.pad, BOX.icon),
-      ...(look.state === 'open' ? [] : boxLines(text, box)),
-      container && toggle(box.width, look.state === 'open'),
+      ...(look.state === 'open' ? [] : boxLines(text, box, spoken !== null)),
+      container && toggle(box.width, look.state === 'open', spoken !== null),
     ],
   );
 }
 
-/** A box's text lines, relative to the box. */
-function boxLines(text: PlacedBoxText | undefined, box: Box): SvgNode[] {
+/** A box's text lines, relative to the box; hidden from screen readers, which hear the button. */
+function boxLines(text: PlacedBoxText | undefined, box: Box, hidden = false): SvgNode[] {
   if (text === undefined) return [];
-  return [
+  const lines = [
     textLine(text.name, box),
     ...text.tagline.map((line) => textLine(line, box)),
     ...(text.chip === null ? [] : [textLine(text.chip, box)]),
   ];
+  if (hidden) for (const line of lines) line.attrs['aria-hidden'] = 'true';
+  return lines;
 }
 
 /**
@@ -290,6 +327,7 @@ export function drawingRoot(
   options: RenderOptions,
   layers: readonly SvgNode[],
 ): SvgNode {
+  const interactive = options.interactive === true;
   return el(
     'svg',
     {
@@ -299,7 +337,8 @@ export function drawingRoot(
       width: size.width,
       height: size.height,
       overflow: 'visible',
-      role: 'img',
+      // A drawing a reader explores is a group of focusable boxes, not one image.
+      role: interactive ? 'group' : 'img',
       'aria-label': label,
       'data-theme': options.theme,
       ...data,
@@ -325,6 +364,8 @@ export function renderPicture(
   const { drawing, result, text, audience } = picture;
   const scene = semantics.scene(drawing, audience);
   const marks = emphasis(semantics.tree, drawing, options.focus ?? { kind: 'none' });
+  const interactive = options.interactive === true;
+  const worded = new Map(scene.nodes.map((node) => [node.id, node]));
   const heads: SvgNode[] = [];
   const boxes = drawing.nodes.flatMap((node) => {
     const box = result.boxes[node.id];
@@ -338,16 +379,15 @@ export function renderPicture(
     };
     const mark = marks.nodes.get(node.id) ?? 'plain';
     if (node.state === 'open') heads.push(drawHead(node.id, box, look, text.boxes[node.id], mark));
-    return [
-      drawBox(
-        node.id,
-        box,
-        look,
-        node.icon,
-        text.boxes[node.id],
-        marks.nodes.get(node.id) ?? 'plain',
-      ),
-    ];
+    const words = worded.get(node.id);
+    const spoken: Spoken | null =
+      interactive && words !== undefined
+        ? {
+            label: words.tagline === null ? words.name : `${words.name}: ${words.tagline}`,
+            selected: mark === 'sel',
+          }
+        : null;
+    return [drawBox(node.id, box, look, node.icon, text.boxes[node.id], mark, spoken)];
   });
   const lines: SvgNode[] = [];
   const labels: SvgNode[] = [];
@@ -371,12 +411,22 @@ export function renderPicture(
       el('g', { class: edgeClass('label', mark), 'data-id': edge.id }, [
         // LOOK-503: hovering a label shows its full sentence, one per carried relationship.
         el('title', {}, [edge.relationships.map((each) => each.sentence).join('\n')]),
+        // INT-206: on the page, the whole space reserved for the label can be hovered.
+        interactive &&
+          el('rect', {
+            class: 'hit',
+            x: route.label.x,
+            y: route.label.y,
+            width: route.label.width,
+            height: route.label.height,
+          }),
         ...placed.map((line) => textLine(line, { x: 0, y: 0 })),
       ]),
     );
   }
   const title = semantics.title(audience);
   const label = title === null ? scene.title : `${title}: ${scene.title}`;
+  const hidden = interactive ? 'true' : null;
   return drawingRoot(
     result,
     label,
@@ -384,9 +434,9 @@ export function renderPicture(
     options,
     [
       el('g', { class: 'boxes' }, boxes),
-      el('g', { class: 'edges' }, lines),
-      el('g', { class: 'heads' }, heads),
-      el('g', { class: 'labels' }, labels),
+      el('g', { class: 'edges', 'aria-hidden': hidden }, lines),
+      el('g', { class: 'heads', 'aria-hidden': hidden }, heads),
+      el('g', { class: 'labels', 'aria-hidden': hidden }, labels),
       ...(options.trail === undefined || options.trail.length === 0
         ? []
         : drawTrail(options.trail)),

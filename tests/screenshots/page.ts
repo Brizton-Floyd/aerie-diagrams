@@ -5,12 +5,15 @@ import { expect, type Page } from '@playwright/test';
 /**
  * ACC-006: screenshot runs hide text glyphs, so pixels compare shapes, colours and positions on
  * every platform while goldens and rule checks cover the text. Native form controls are made
- * transparent too, since each platform draws its own.
+ * transparent too, since each platform draws its own. The side panel's content is hidden as well:
+ * its rules, shading and buttons sit where its paragraphs wrap, and each platform wraps HTML text
+ * by its own font rendering; the journeys check what it says.
  */
 export const HIDE_TEXT = `
   * { color: transparent !important; text-shadow: none !important; caret-color: transparent !important; }
   svg.aerie text { fill: transparent !important; stroke: transparent !important; }
   input, select { opacity: 0 !important; }
+  .panel-content { visibility: hidden !important; }
 `;
 
 /** Opens a bundled model and waits for its first drawing and the fonts. */

@@ -151,13 +151,15 @@
 .aerie .control circle { fill: var(--aerie-paper); stroke: var(--aerie-contour); stroke-width: 1px; }
 .aerie .control path { fill: none; stroke: var(--aerie-ink); stroke-width: 1.5px; stroke-linecap: round; }
 .aerie .ring { fill: none; stroke: var(--aerie-accent); stroke-width: 2px; display: none; }
-.aerie .node:focus { outline: none; }
-.aerie .node:focus-visible > .ring { display: inline; }
+.aerie .shape:focus { outline: none; }
+.aerie .node:has(> .shape:focus-visible) > .ring { display: inline; }
 .aerie .node > * {
   transition: stroke var(--aerie-hover) ease, stroke-width var(--aerie-hover) ease,
     opacity var(--aerie-dimming) ease;
 }
 .aerie .node:hover > .shape { stroke-width: 1.6px; }
+.aerie .node:has(> .shape[role="button"]) { cursor: pointer; }
+.aerie .hit { fill: none; stroke: none; pointer-events: all; }
 
 /* Relationships (LOOK-501, LOOK-502). */
 .aerie .edge .line { fill: none; stroke: var(--aerie-edge); stroke-width: 1.3px; }

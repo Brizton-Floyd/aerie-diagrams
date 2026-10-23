@@ -249,14 +249,86 @@ input {
   color: var(--aerie-muted);
 }
 
-/* The stage: the diagram, fitted (LAYOUT-451), over the texture (LOOK-307). */
+/* The stage: the diagram, placed by the camera (LAYOUT-451, INT-351), over the texture
+   (LOOK-307). The drawing fills the stage, so empty stage can be clicked and dragged. */
 .aerie-stage {
   position: relative;
   overflow: hidden;
   min-width: 0;
 }
+.drawing {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+}
+.drawing.dragging {
+  cursor: grabbing;
+}
 .drawing svg.aerie {
   position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+}
+.loading {
+  margin: 34px;
+  font:
+    italic 400 15px 'Source Serif 4',
+    Georgia,
+    serif;
+  color: var(--aerie-muted);
+}
+
+/* LOOK-806: the camera buttons at the stage's top right, each a fixed width. */
+.camera {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  gap: 4px;
+}
+.camera .cam {
+  width: 34px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--aerie-rule);
+  border-radius: 3px;
+  background: var(--aerie-paper);
+  font:
+    600 14px 'Source Sans 3',
+    system-ui,
+    sans-serif;
+  cursor: pointer;
+  transition: background-color var(--aerie-hover) ease;
+}
+.camera .cam:last-child {
+  width: 44px;
+  font-size: 13px;
+}
+.camera .cam:hover {
+  background: var(--aerie-band-1);
+}
+
+/* Read by screen readers only (INT-105, INT-903). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* LOOK-306: keyboard focus is always visible on the page's own controls. */
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+.panel h1:focus-visible {
+  outline: 2px solid var(--aerie-accent);
+  outline-offset: 2px;
 }
 .problems {
   margin: 34px;
@@ -579,4 +651,137 @@ input {
 }
 .editor-host .cm-editor .cm-completionDetail {
   color: var(--aerie-muted);
+}
+
+.panel section {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--aerie-rule);
+}
+.panel h2,
+.panel h3 {
+  margin: 0 0 8px;
+  font:
+    600 12px 'Source Sans 3',
+    system-ui,
+    sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--aerie-muted);
+}
+.panel h3 {
+  margin-top: 12px;
+}
+.panel h1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.panel h1:focus {
+  outline: none;
+}
+.panel .icon-holder {
+  display: inline-flex;
+  flex: none;
+}
+.panel .icon-holder svg {
+  overflow: visible;
+}
+.panel p,
+.panel li {
+  font:
+    400 15px/1.5 'Source Serif 4',
+    Georgia,
+    serif;
+}
+.panel p {
+  margin: 0 0 10px;
+}
+.panel ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.panel .code,
+.panel em.code {
+  font:
+    400 14px/1.5 'Source Code Pro',
+    ui-monospace,
+    monospace;
+}
+.panel .sentences li {
+  margin-bottom: 8px;
+}
+.panel .sentence {
+  margin: 0;
+}
+.panel .about {
+  margin: 2px 0 0;
+  color: var(--aerie-muted);
+}
+/* LOOK-804: names in sentences are links, underlined in contour-soft, accent on hover. */
+.panel .name {
+  padding: 0;
+  border: 0;
+  background: none;
+  font:
+    600 15px 'Source Sans 3',
+    system-ui,
+    sans-serif;
+  text-decoration: underline;
+  text-decoration-color: var(--aerie-contour-soft);
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: color var(--aerie-hover) ease;
+}
+.panel .name:hover {
+  color: var(--aerie-accent-ink);
+}
+.panel .levels li {
+  display: grid;
+  padding: 6px 8px;
+  border-radius: 3px;
+}
+.panel .levels li.on {
+  background: var(--aerie-band-1);
+}
+.panel .levels .who {
+  font:
+    600 11.5px 'Source Sans 3',
+    system-ui,
+    sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--aerie-muted);
+}
+.panel .levels .what {
+  font-weight: 600;
+}
+.panel .inside li {
+  display: grid;
+  margin-bottom: 6px;
+}
+.panel .inside .name {
+  justify-self: start;
+}
+.panel .line {
+  color: var(--aerie-muted);
+}
+.panel .plays li {
+  margin-bottom: 6px;
+}
+.panel .play-scenario {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.panel .play {
+  width: 0;
+  height: 0;
+  border-left: 7px solid var(--aerie-accent);
+  border-top: 4.5px solid transparent;
+  border-bottom: 4.5px solid transparent;
+}
+.panel .tool:hover .play {
+  border-left-color: var(--aerie-paper);
 }
