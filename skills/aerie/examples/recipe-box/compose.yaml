@@ -1,0 +1,24 @@
+# Recipe box: the stack the README tells people to start.
+services:
+  web:
+    build: ./web
+    ports:
+      - '3000:80'
+  api:
+    build: ./api
+    environment:
+      DATABASE_URL: postgresql://recipes@db:5432/recipes
+      MAIL_API_URL: http://mailpit:8025/api/v1/send
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: recipes
+      POSTGRES_DB: recipes
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  # For development only: catches the email the API sends.
+  mailpit:
+    image: axllent/mailpit:v1.27
+
+volumes:
+  pgdata:

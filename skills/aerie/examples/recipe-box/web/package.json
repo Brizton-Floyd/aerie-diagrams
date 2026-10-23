@@ -1,0 +1,13 @@
+{
+  "name": "recipe-web",
+  "private": true,
+  "scripts": {
+    "build": "vite build"
+  },
+  "dependencies": {
+    "react": "19.2.0"
+  },
+  "devDependencies": {
+    "vite": "8.3.4"
+  }
+}

@@ -1,6 +1,6 @@
 ---
 name: aerie
-description: Describe a software system as an Aerie diagram, written in a `.aerie` file in the Lines language, with wording for executives, managers and engineers. Use when the user asks to describe a system or codebase as an Aerie diagram, to write, update or fix a `.aerie` file, or to explain a project's architecture to readers at different levels.
+description: Describe a software system as an Aerie diagram, written in a `.aerie` file in the Lines language, with wording for executives, managers and engineers, and keep it in step with the code. Use when the user asks to describe a system or codebase as an Aerie diagram, to write, update or fix a `.aerie` file, or to explain a project's architecture to readers at different levels; and when you change the code of a project that has a `.aerie` file with a system root in a way that changes its architecture.
 ---
 
 # Aerie: describe a system as a model
@@ -11,8 +11,9 @@ levels to read it in their own words, and open parts in place to see inside.
 
 With this skill you read a project, decide what its **elements** are and how they nest, write their
 **relationships** as plain sentences, choose a few **views**, tell the main flows as **scenarios**,
-add a **walkthrough**, and word it all for each audience. Then you run Aerie's checker until the
-file is clean.
+add a **walkthrough**, and word it all for each audience. You tie the model to the code it
+describes with a **system root** and **code lines**. Then you run Aerie's checker until the file is
+clean, and **drift**, which compares the model with the code, until the two agree.
 
 **Everything this skill writes is a draft for human review.** You are reading code, not running the
 system, and code does not show everything. Say so when you hand the file over, every time, and mark
@@ -32,8 +33,9 @@ what you could not confirm with `// Unsure:` lines.
     by tag;
   - [scenario-with-replies.aerie](examples/scenario-with-replies.aerie): steps and replies;
   - [walkthrough.aerie](examples/walkthrough.aerie): a narrated tour;
-  - [recipe-box.md](examples/recipe-box.md) with [recipe-box.aerie](examples/recipe-box.aerie):
-    worked example 1, a small web app, every step shown;
+  - [recipe-box.md](examples/recipe-box.md) with
+    [recipe-box/architecture.aerie](examples/recipe-box/architecture.aerie): worked example 1, a
+    small web app, every step shown, drift's rounds included, and then a change to its code;
   - [parcel-tracker.md](examples/parcel-tracker.md) with
     [parcel-tracker.aerie](examples/parcel-tracker.aerie): worked example 2, a monorepo with a queue,
     build dependencies and two scenarios.
@@ -45,8 +47,8 @@ Copy this whole `aerie` folder into a skills folder: `~/.claude/skills/aerie/` f
 
 ## Step 0: find the aerie command
 
-The skill runs `aerie check` and `aerie format`. Find the command before anything else, and write
-nothing until you have it. In this skill, `aerie` means whichever of these works first:
+The skill runs `aerie check`, `aerie format` and `aerie drift`. Find the command before anything
+else, and write nothing until you have it. In this skill, `aerie` means whichever of these works first:
 
 1. **Inside an Aerie checkout** (the folder's `package.json` has `"name": "aerie-diagrams"`): run
    `npx aerie --help`. The command is `npx aerie`.
@@ -55,7 +57,8 @@ nothing until you have it. In this skill, `aerie` means whichever of these works
    command is `node <checkout>/src/cli/aerie.ts`. It needs Node 24 or later.
 
 The help text starts with `Usage:` and lists `aerie check`, `aerie format` and `aerie model`. If it
-does not, that is not Aerie.
+does not, that is not Aerie. If it lists no `aerie drift`, this version of Aerie cannot compare a
+model with its code: skip the drift steps and say so in your report.
 
 **Never run `npx aerie` outside an Aerie checkout.** npm would download and run an unrelated package
 that happens to share the name.
@@ -91,7 +94,9 @@ Read in this order, as far as each exists, and note which file told you what:
    services, and who calls whom (a `BASE_URL` pointing at another service is a relationship).
 6. **Tests that name user flows**, above all end-to-end tests: these are your scenarios.
 
-Read enough to answer "what talks to what, and why"; you do not need every file.
+Read enough to answer "what talks to what, and why"; you do not need every file. Note the names the
+deployment and build files give each part (the compose service, the Maven `artifactId`, the
+`package.json` name): they become its code line.
 
 ### 3. Keep to the evidence
 
@@ -121,8 +126,8 @@ any Lines:
 - **Flows** worth a scenario.
 
 Do not wait for approval of the inventory unless the user asked to review it first; carry on and
-write the file in this order: `model`, `audiences`, elements, relationships, views, scenarios,
-walkthrough. Use these rules:
+write the file in this order: `model`, `audiences`, the system root, elements, relationships,
+views, scenarios, walkthrough, ignore lines. Use these rules:
 
 **Ids and names.** Ids are stable, lowercase, and taken from the project's own names: `screen-api`
 for a service the compose file calls `screen-api`, not `component-3` or `service-a`. Names are what a
@@ -159,6 +164,24 @@ audience's voice: plain English, what a part does and why it matters. Executive 
 names, taglines and a sentence of value on the top levels. Engineer wording is mostly added
 paragraphs (`@engineer >>`) with ports, frameworks, endpoints and class names, and code-like
 taglines. Audience never changes depth: nothing is hidden from one audience and shown to another.
+
+**Tying it to the code.** Drift reads Docker Compose files, Maven poms with Spring Boot and Java,
+and Node packages with Angular. When the project has any of these, tie the model to them, without
+being asked:
+
+- **The system root**, after `audiences`: a `system` block with a `repo` line for each repository
+  that forms the system (`repo .` for the one that holds the file; `repo ../other` for a sibling)
+  and a `compose` line for the Compose file the README tells people to use, when there is one.
+- **A code line** under each element that stands for code, naming what the files call it:
+  `code compose:<service>`, `code maven:<artifactId>`, `code npm:<package.json name>`, several on
+  one line when an element stands for several (a service built from a package lists both). Parts
+  inside a Java module get `class:` hints (`class:com.shop.pricing.*`) only where you can name their
+  package or classes. People, outside systems and parts in a language drift does not read get no
+  code line; drift reports them as not checked.
+
+The forms are in [reference/lines.md](reference/lines.md#tying-the-model-to-the-code). When the
+project has none of these files, write no system root and skip the drift steps; say so in your
+report.
 
 **Views.** Two to four:
 
@@ -208,7 +231,45 @@ Warnings do not stop the model, but each one means something:
   code does not show.
 - Any warning you leave, you report, with the reason.
 
-### 8. Format
+### 8. Check against the code
+
+When the model has a system root, run, from the folder that holds the file:
+
+```text
+aerie drift <file> --format json
+```
+
+Exit code 0 means no drift, 1 drift, 2 that drift could not run (its message says why: a model with
+errors, a repo or Compose file that is not there). The JSON (`aerie-drift/1`) lists `findings`, each
+with its `id`, `level` (`drift` or `likely`), `kind`, `title`, `detail`, `evidence` (where in the
+code, `repo/path:line`), `edits` (the suggested change, as hunks of the model file) and `instead`
+(the ignore line to add if the difference is meant); then `suggestions`, `notChecked`, `ignored`
+and the `summary` counts ([reference/lines.md](reference/lines.md#the-commands)). Run it without
+`--format json` to read the same report as text.
+
+### 9. Fix drift until clean
+
+The file is clean when `findings` is empty: no drift and no likely findings. For each finding, look
+at its evidence in the code, then do one of two things
+([reference/lines.md](reference/lines.md#fixing-drift-findings) gives the usual fix of each kind):
+
+- **The model is wrong**, the usual case: fix it. Use the suggested edit as a guide, never as the
+  final text: a new element it suggests is only a placeholder, so give it a real name, tagline, tag
+  and wording, and draw its relationships at the finest grain the code shows. A finding about a
+  `code` line you wrote is your mistake: correct the line.
+- **The difference is meant** (a development tool, a part being retired): add the ignore line from
+  `instead`, with the true reason in place of `why this difference is meant`.
+
+Never add an element or relationship the code does not show, and never remove a true one, to
+silence a finding. A likely finding that the code does not bear out (a connection the code makes in
+a way drift cannot read) is meant too: ignore it and say why. Then run `aerie check` and drift
+again. `suggestions` (code lines drift would pin) are worth taking; `notChecked` needs no fix, but
+goes in your report.
+
+Stop early and show the user the finding if you have run drift **ten times**, or if **the same
+finding survives two fixes**.
+
+### 10. Format
 
 Run:
 
@@ -223,7 +284,7 @@ line for your report:
 aerie check <file>
 ```
 
-### 9. Report
+### 11. Report
 
 Tell the user:
 
@@ -231,8 +292,11 @@ Tell the user:
 - how many elements (every one, people and the system included), relationships, views and scenarios
   it has (`aerie model <file>` prints the model as JSON if you need to count);
 - the checker's final summary line (such as `No problems found.`) and how many rounds it took;
+- drift's result (`No drift.` and how many elements and lines the code confirms) and how many
+  rounds it took, or why drift was skipped;
 - every `// Unsure:` point, quoted;
 - any warning left, with why;
+- every ignore line you added, with its reason, and in a sentence what drift could not check;
 - how to see the diagram: `aerie watch <file>`, spelled the way you ran `aerie` (for example
   `node <checkout>/src/cli/aerie.ts watch <file>`). If the command answers that there is no `watch`
   command, this version of Aerie has no viewer yet; say so instead.
@@ -241,7 +305,26 @@ Tell the user:
 
 When a `.aerie` file already exists, edit it; do not rewrite it. Change only what the request or the
 project now needs, and keep the author's ids, wording, comments and order. Add new elements beside
-their siblings and new relationships beside related ones. Then check, fix, format and report as above,
-listing what you changed.
+their siblings and new relationships beside related ones. If it has no system root and the project
+has files drift reads, add the system root and code lines as step 4 says. Then check, run drift, fix,
+format and report as above, listing what you changed.
 
 To fix a file the user says is broken, start at step 5.
+
+## Changing code that changes the architecture
+
+When you change the code of a project whose `.aerie` file has a system root, and the change alters
+what the model describes, update the model **in the same change**, so code and diagram never drift
+apart. Changes that do: adding, removing or renaming a service, a module or a package (a compose
+service, a Maven module, a `package.json`); changing which part calls which (a URL, a proxy route, a
+client call to another service, a dependency between modules); adding an outside system. Changes
+inside one part (a new endpoint on an existing connection, a refactor) do not.
+
+1. Make the code change.
+2. Run `aerie drift <file> --format json` (step 8).
+3. Edit the model as [Editing an existing file](#editing-an-existing-file) says, fixing every
+   finding as step 9 says, until drift is clean; then check and format.
+4. In your report of the code change, say what you changed in the model and why.
+
+Run drift even when you think the change does not alter the architecture: a clean run is the proof.
+Worked example 1 ends with such a change.
