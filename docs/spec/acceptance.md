@@ -129,6 +129,7 @@ are in [overview.md](overview.md#reading-this-spec).
 | unit     | Highlighting by line kind, indentation on Enter, completion lists, the error list text               | INT-801 to INT-804 |
 | journeys | Live updates, keeping the last picture on errors with plain-word messages, Format, Download, Discard | INT-805 to INT-808 |
 | unit     | The watch server: localhost only, a change reaches an open page, terminal output, a missing file     | INT-851 to INT-855 |
+| journeys | Watch mode: a save updates the page, errors over the stage, a deleted file, stopping the server      | INT-851 to INT-855 |
 
 ### A12: Aerie skill for Claude
 

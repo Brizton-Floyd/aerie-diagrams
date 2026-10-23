@@ -1,6 +1,7 @@
 // The viewer page (`npm run dev`): opens a bundled sample or a local .aerie file and draws a chosen
 // view for a chosen audience in the Contour look, with the page grid of LOOK-801. It is the minimal
-// page that shows Aerie drawing; the interactions of docs/spec/interaction.md build on it.
+// page that shows Aerie drawing; the interactions of docs/spec/interaction.md build on it. The split
+// editor (editing.ts) and watch mode (watching.ts) give it new versions of the model to draw.
 import {
   check,
   defaultPicture,
@@ -30,6 +31,7 @@ import {
   type Theme,
 } from '../render/index.ts';
 import { h, prose } from './dom.ts';
+import { KEPT_NOTICE, errorText, type Checked } from './live.ts';
 import { LOGO } from './logo.ts';
 import { FIRST_SAMPLE, SAMPLES } from './samples.ts';
 
@@ -75,21 +77,32 @@ interface Opened {
 export class Viewer {
   private readonly root: HTMLElement;
   private readonly engine = workerEngine();
+  /** In watch mode the model is the author's file, so the page offers no other (INT-002). */
+  private readonly watching: boolean;
+  private path = '';
+  private source = '';
   private opened: Opened | null = null;
   private picture: Picture | null = null;
   private zoomPreset: ZoomPreset = 'default';
   private drawCount = 0;
   private readonly stage: HTMLElement;
   private readonly drawingHolder: HTMLElement;
+  private readonly notice: HTMLElement;
+  private readonly overlay: HTMLElement;
+  private readonly body: HTMLElement;
+  private readonly sideWrap: HTMLElement;
   private readonly side: HTMLElement;
   private readonly panel: HTMLElement;
   private readonly crumb: HTMLElement;
   private readonly tabs: HTMLElement;
   private readonly themeButton: HTMLButtonElement;
   private readonly motionBox: HTMLInputElement;
+  /** The split editor's pane while it is open (INT-801), in place of the sidebar. */
+  private editorPane: HTMLElement | null = null;
 
-  constructor(root: HTMLElement) {
+  constructor(root: HTMLElement, options: { watching?: boolean } = {}) {
     this.root = root;
+    this.watching = options.watching ?? false;
     this.crumb = h('div', { class: 'crumb' });
     this.tabs = h('div', { class: 'tabs', role: 'tablist', 'aria-label': 'Written for' });
     this.themeButton = h('button', {
@@ -118,19 +131,20 @@ export class Viewer {
     });
     this.side = h('nav', { class: 'side', 'aria-label': 'Diagram' });
     this.drawingHolder = h('div', { class: 'drawing' });
-    this.stage = h('main', { class: 'aerie-stage' }, [this.drawingHolder]);
+    this.notice = h('p', { class: 'notice', role: 'status', hidden: true });
+    this.overlay = h('div', { class: 'overlay', hidden: true });
+    this.stage = h('main', { class: 'aerie-stage' }, [
+      this.drawingHolder,
+      this.notice,
+      this.overlay,
+    ]);
     this.panel = h('aside', { class: 'panel' });
-    root.replaceChildren(
-      top,
-      h('div', { class: 'body' }, [
-        h('div', { class: 'side-wrap' }, [
-          this.side,
-          h('label', { class: 'motion' }, [this.motionBox, ' Reduce motion']),
-        ]),
-        this.stage,
-        this.panel,
-      ]),
-    );
+    this.sideWrap = h('div', { class: 'side-wrap' }, [
+      this.side,
+      h('label', { class: 'motion' }, [this.motionBox, ' Reduce motion']),
+    ]);
+    this.body = h('div', { class: 'body' }, [this.sideWrap, this.stage, this.panel]);
+    root.replaceChildren(top, this.body);
     new ResizeObserver(() => {
       this.fit();
     }).observe(this.stage);
@@ -176,33 +190,92 @@ export class Viewer {
   // ------------------------------------------------------------ models
 
   /** Opens a model from its source; a file with errors lists them instead of drawing. */
-  open(path: string, source: string): void {
-    const result = check(source);
+  open(path: string, source: string): Checked {
     // INT-501: the `model` query parameter names a bundled diagram, written as it is; a local file
     // has no address of its own.
     const url = new URL(location.href);
-    url.search = SAMPLES.has(path) ? `?model=${encodeURI(path)}` : '';
+    url.search = SAMPLES.has(path) && !this.watching ? `?model=${encodeURI(path)}` : '';
     history.replaceState(null, '', url);
-    if (result.model === null) {
-      this.opened = null;
+    this.path = path;
+    this.source = source;
+    this.opened = null;
+    this.picture = null;
+    this.zoomPreset = 'default';
+    const result = check(source);
+    const checked: Checked = {
+      source,
+      diagnostics: result.diagnostics,
+      model: result.model,
+      shown: result.model === null ? null : { source, model: result.model },
+    };
+    this.revise(checked);
+    return checked;
+  }
+
+  /** The path and source of the model the page opened: the published model (INT-808). */
+  get published(): { path: string; source: string } {
+    return { path: this.path, source: this.source };
+  }
+
+  /**
+   * INT-805, INT-806 and INT-852: a new version of the model's text. Without errors the diagram is
+   * redrawn, keeping the view, audience, zoom state and selection wherever their ids still exist
+   * (MODEL-603). With errors it keeps the last version without errors and says so at the top of the
+   * stage; with nothing earlier to show, the stage lists the errors instead (INT-003).
+   */
+  revise(checked: Checked): void {
+    if (checked.model === null) {
+      if (this.opened !== null) {
+        this.say(KEPT_NOTICE);
+        return;
+      }
+      this.say(null);
       this.picture = null;
       this.drawCount++;
       this.showProblems(
-        `${path} has problems, so Aerie cannot draw it:`,
-        result.diagnostics
-          .filter((each) => each.severity === 'error')
-          .map(
-            (each) => `Line ${String(each.line)}, column ${String(each.column)}: ${each.message}`,
-          ),
+        `${this.path} has problems, so Aerie cannot draw it:`,
+        checked.diagnostics.filter((each) => each.severity === 'error').map(errorText),
       );
-      this.renderControls(path);
+      this.renderControls(this.path);
       this.root.dataset['ready'] = 'true';
       return;
     }
-    const semantics = new Semantics(result.model);
-    this.opened = { path, semantics, layouter: new Layouter(semantics, this.engine) };
-    this.zoomPreset = 'default';
-    this.change(defaultPicture(semantics));
+    this.say(null);
+    const semantics = new Semantics(checked.model);
+    const before = this.picture;
+    this.opened = { path: this.path, semantics, layouter: new Layouter(semantics, this.engine) };
+    this.change(before ?? defaultPicture(semantics));
+  }
+
+  /** Words at the top of the stage, over the diagram, or none. */
+  say(text: string | null): void {
+    this.notice.textContent = text ?? '';
+    this.notice.hidden = text === null;
+  }
+
+  /** Something shown over the stage, such as watch mode's error list (INT-852), or nothing. */
+  cover(content: Node | null): void {
+    this.overlay.replaceChildren(...(content === null ? [] : [content]));
+    this.overlay.hidden = content === null;
+  }
+
+  /** Adds a button to the top bar, before the theme button (LOOK-802). */
+  addTool(tool: HTMLElement): void {
+    this.themeButton.before(tool);
+  }
+
+  /** INT-801: shows the split editor's pane where the sidebar was, or the sidebar again. */
+  showEditor(pane: HTMLElement | null): void {
+    this.editorPane?.remove();
+    this.editorPane = pane;
+    if (pane === null) {
+      this.body.prepend(this.sideWrap);
+      this.body.classList.remove('editing');
+    } else {
+      this.sideWrap.replaceWith(pane);
+      this.body.classList.add('editing');
+    }
+    this.renderControls(this.path);
   }
 
   /** Sets the picture, normalised, and draws it. */
@@ -291,6 +364,67 @@ export class Viewer {
 
   // ------------------------------------------------------------ controls
 
+  /**
+   * INT-801: while editing, the sidebar is hidden and the breadcrumb's view title opens a menu of
+   * the views and scenarios instead (walkthroughs join it when they can be presented, A9).
+   */
+  private viewMenu(title: string, here: boolean): HTMLElement {
+    const opened = this.opened;
+    const picture = this.picture;
+    // A popover, so the menu is not clipped by the breadcrumb and closes on a click elsewhere.
+    const menu = h('div', { class: 'crumb-menu', role: 'menu', id: 'view-menu', popover: 'auto' });
+    const button = h(
+      'button',
+      {
+        type: 'button',
+        class: here ? 'crumb-title here' : 'crumb-title',
+        'aria-haspopup': 'menu',
+        popovertarget: 'view-menu',
+      },
+      [title],
+    );
+    menu.addEventListener('beforetoggle', () => {
+      const at = button.getBoundingClientRect();
+      menu.style.left = `${String(at.left)}px`;
+      menu.style.top = `${String(at.bottom + 6)}px`;
+    });
+    if (opened !== null && picture !== null) {
+      const { semantics } = opened;
+      const item = (text: string, choose: () => Picture): HTMLElement =>
+        h(
+          'button',
+          {
+            type: 'button',
+            role: 'menuitem',
+            onclick: () => {
+              this.change(choose());
+            },
+          },
+          [text],
+        );
+      menu.append(
+        h('p', { class: 'heading' }, ['Views']),
+        ...semantics.views.map((view) =>
+          item(semantics.viewTitle(view.id, picture.audience), () => {
+            this.zoomPreset = 'default';
+            return switchView(semantics, picture, view.id);
+          }),
+        ),
+      );
+      if (semantics.model.scenarios.length > 0) {
+        menu.append(
+          h('p', { class: 'heading' }, ['Scenarios']),
+          ...semantics.model.scenarios.map((scenario) =>
+            item(scenarioTitle(semantics, scenario.id, picture.audience), () =>
+              play(semantics, picture, scenario.id),
+            ),
+          ),
+        );
+      }
+    }
+    return h('span', {}, [button, menu]);
+  }
+
   private renderControls(path: string): void {
     const opened = this.opened;
     const picture = this.picture;
@@ -322,13 +456,15 @@ export class Viewer {
           });
       },
     });
-    const sections: Node[] = [
-      h('section', {}, [
-        h('h2', {}, ['Diagram']),
-        models,
-        h('label', { class: 'file' }, ['Open a file', file]),
-      ]),
-    ];
+    const sections: Node[] = this.watching
+      ? []
+      : [
+          h('section', {}, [
+            h('h2', {}, ['Diagram']),
+            models,
+            h('label', { class: 'file' }, ['Open a file', file]),
+          ]),
+        ];
     if (opened === null || picture === null) {
       this.side.replaceChildren(...sections);
       this.tabs.replaceChildren();
@@ -508,7 +644,9 @@ export class Viewer {
     this.crumb.replaceChildren(
       ...crumbs.flatMap((each, at) => [
         ...(at === 0 ? [] : [h('span', { class: 'slash', 'aria-hidden': 'true' }, ['/'])]),
-        h('span', { class: at === crumbs.length - 1 ? 'here' : '' }, [each]),
+        at === 1 && this.editorPane !== null
+          ? this.viewMenu(each, at === crumbs.length - 1)
+          : h('span', { class: at === crumbs.length - 1 ? 'here' : '' }, [each]),
       ]),
     );
 

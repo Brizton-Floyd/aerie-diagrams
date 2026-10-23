@@ -74,7 +74,7 @@ describe('aerie check', () => {
     expect(summary(0, 1)).toBe('1 warning.');
     expect(summary(1, 3)).toBe('1 error and 3 warnings.');
     const io = fakeIo({ 'ok.aerie': 'web: Website\n' });
-    run(['check', 'ok.aerie'], io);
+    expect(run(['check', 'ok.aerie'], io)).toBe(0);
     expect(io.out).toBe('No problems found.\n');
   });
 

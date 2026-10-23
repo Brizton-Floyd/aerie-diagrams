@@ -79,7 +79,8 @@ same. The individual suites are the `test:*` scripts in [package.json](package.j
 - `npx aerie check|format|model <file>` runs the Lines tools ([src/cli/aerie.ts](src/cli/aerie.ts),
   executed by Node's type stripping, so it imports `.ts` files and uses only erasable syntax).
   `npx aerie` works only inside this checkout: elsewhere npm fetches an unrelated package of the same
-  name, so run `node <checkout>/src/cli/aerie.ts` instead.
+  name, so run `node <checkout>/src/cli/aerie.ts` instead. `npx aerie watch <file>` (INT-851) serves
+  the built `dist/`, so run `npm run build` first; its journeys spawn it on `--port 0`.
 - [skills/aerie/](skills/aerie/SKILL.md) is the Claude skill for writing models (A12).
   `tests/unit/skill/` runs every Lines example in it through the CLI and holds its language summary
   to the parser, so a language change that breaks the skill fails `test:unit`.
@@ -115,6 +116,11 @@ has the steps for opening a model and choosing a view and audience with clicks).
   appear outside `tokens.ts` (a unit test enforces it).
 - Text is measured from `src/layout/text/advances.json`, written from the bundled Fontsource fonts by
   `node scripts/font-metrics.ts`; rerun it when a font package changes (a unit test compares them).
+- The split editor (A10) is CodeMirror 6 in `src/app/editor.ts`, loaded only when "Edit" is pressed
+  (`split.ts`); what it knows about Lines (colours, Enter indent, completion) is pure, in
+  `src/lines/editing.ts`. CodeMirror draws only the lines near its viewport, so journeys scroll to a
+  line before reading or clicking it, and its keymaps never see Option+letter on macOS (match
+  `event.code` instead).
 - Vitest 5 hides the console output of passing tests; a suite that reports (LAYOUT-901) writes to
   `process.stdout`.
 - Playwright builds and serves the app on port 4173 and never reuses a running server. Set
