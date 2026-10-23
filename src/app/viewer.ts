@@ -3,21 +3,25 @@
 // selects an element to read about it in the side panel (INT-201 to INT-206), opens containers in
 // place (INT-301 to INT-304), switches the audience without moving anything (INT-101 to INT-105),
 // moves the camera (INT-351 to INT-353), and does all of it from the keyboard too (INT-901 to
-// INT-905). A reader plays a scenario on the architecture or as lanes, step by step or by itself
-// (INT-601 to INT-606, scenario.ts). The navigation sidebar and shared links (A7) build on it and
-// start scenarios with `playScenario`. The split editor (editing.ts) and watch mode (watching.ts)
-// give it new versions of the model.
+// INT-905). The navigation sidebar lists the views, scenarios and walkthroughs (INT-401 to INT-404),
+// and the address always holds the picture as a shared link, with Back and Forward stepping between
+// views and activities (INT-501 to INT-507, link.ts). A reader plays a scenario on the architecture
+// or as lanes, step by step or by itself (INT-601 to INT-606, scenario.ts), started with
+// `playScenario`; presenting (A9) builds on it. The split editor (editing.ts) and watch mode
+// (watching.ts) give it new versions of the model.
 import {
   check,
   closeContainer,
-  defaultPicture,
   normalisePicture,
   openContainer,
   play,
+  present,
+  presentStep,
   select,
   stop,
   switchAudience,
   switchView,
+  wordsFor,
   Semantics,
   type Activity,
   type Picture,
@@ -37,6 +41,7 @@ import {
   type Theme,
 } from '../render/index.ts';
 import { h } from './dom.ts';
+import { STALE_LINK, readFragment, writeFragment } from './link.ts';
 import { KEPT_NOTICE, errorText, type Checked } from './live.ts';
 import { LOGO } from './logo.ts';
 import { Swap } from './motion.ts';
@@ -60,6 +65,26 @@ const MOTION_KEY = 'aerie.motion';
 
 /** LOOK-802: each audience tab is this wide, so the underline moves by it. */
 const TAB_WIDTH = 104;
+
+/** LOOK-901: how long "Link copied" shows. It is words to read, not motion, so it always lasts. */
+const COPIED_FOR = 1400;
+
+/** INT-505: how long the stage says that part of a link no longer matches the diagram. */
+const STALE_FOR = 6000;
+
+/**
+ * INT-506: the history entry a picture belongs to. Choosing a view, and starting or ending a
+ * scenario or walkthrough, moves to another entry; every other change stays in the same one.
+ */
+function entry(picture: Picture): string {
+  const { activity } = picture;
+  if (activity.kind === 'playing') return `play ${activity.scenario}`;
+  if (activity.kind === 'presenting') return `present ${activity.walkthrough}`;
+  return `view ${picture.view}`;
+}
+
+/** Whether a change of picture adds a history entry or replaces the current one (INT-506). */
+type HistoryMove = 'navigate' | 'replace';
 
 function remembered(key: string): string | null {
   try {
@@ -114,6 +139,8 @@ export class Viewer {
   private source = '';
   private opened: Opened | null = null;
   private picture: Picture | null = null;
+  /** The fragment of the address the model was opened with, read when it is first drawn. */
+  private link = '';
   private drawCount = 0;
   /** What the pending draw must honour, gathered over changes that arrive before it lands. */
   private arrival: Arrival = {};
@@ -131,6 +158,9 @@ export class Viewer {
   private readonly thumb: HTMLElement;
   private readonly spoken: HTMLElement;
   private readonly themeButton: HTMLButtonElement;
+  private readonly copyButton: HTMLButtonElement;
+  private copyTimer = 0;
+  private staleTimer = 0;
   private readonly motionBox: HTMLInputElement;
   /** The split editor's pane while it is open (INT-801), in place of the sidebar. */
   private editorPane: HTMLElement | null = null;
@@ -157,6 +187,17 @@ export class Viewer {
         this.toggleTheme();
       },
     });
+    this.copyButton = h(
+      'button',
+      {
+        type: 'button',
+        class: 'tool copy',
+        onclick: () => {
+          void this.copyLink();
+        },
+      },
+      ['Copy link'],
+    );
     const brand = h('div', { class: 'brand' }, [h('span', { class: 'word' }, ['Aerie'])]);
     brand.insertAdjacentHTML('afterbegin', LOGO);
     const top = h('header', { class: 'top' }, [
@@ -166,7 +207,7 @@ export class Viewer {
         h('span', { class: 'written', 'aria-hidden': 'true' }, ['Written for']),
         this.tabs,
       ]),
-      h('div', { class: 'tools' }, [this.themeButton]),
+      h('div', { class: 'tools' }, [this.copyButton, this.themeButton]),
       this.spoken,
     ]);
     this.motionBox = h('input', {
@@ -197,6 +238,9 @@ export class Viewer {
     root.replaceChildren(top, this.body);
     document.addEventListener('keydown', (event) => {
       this.key(event);
+    });
+    window.addEventListener('popstate', () => {
+      this.follow();
     });
     const theme = remembered(THEME_KEY);
     this.applyTheme(theme === 'light' || theme === 'dark' ? theme : null);
@@ -239,15 +283,20 @@ export class Viewer {
 
   // ------------------------------------------------------------ models
 
-  /** Opens a model from its source; a file with errors lists them instead of drawing. */
-  open(path: string, source: string): Checked {
+  /**
+   * Opens a model from its source; a file with errors lists them instead of drawing. `link` is the
+   * fragment of a shared link (INT-505): the model opens at its picture.
+   */
+  open(path: string, source: string, link = ''): Checked {
     // INT-501: the `model` query parameter names a bundled diagram, written as it is; a local file
     // has no address of its own.
     const url = new URL(location.href);
     url.search = SAMPLES.has(path) && !this.watching ? `?model=${encodeURI(path)}` : '';
+    url.hash = link;
     history.replaceState(null, '', url);
     this.path = path;
     this.source = source;
+    this.link = link;
     this.opened = null;
     this.picture = null;
     const result = check(source);
@@ -294,13 +343,31 @@ export class Viewer {
     const before = this.picture;
     this.opened = { path: this.path, semantics, layouter: new Layouter(semantics, this.engine) };
     this.buildTabs();
-    this.change(before ?? defaultPicture(semantics), before === null ? { fit: true } : {});
+    if (before !== null) {
+      this.change(before, {}, 'replace');
+      return;
+    }
+    // INT-505: a shared link opens at its picture, shown directly; parts that no longer fit the
+    // model are dropped, and the reader is told.
+    const linked = readFragment(semantics, this.link);
+    this.link = '';
+    if (linked.dropped.length > 0) this.warnStale();
+    this.change(linked.picture, { fit: true }, 'replace');
   }
 
   /** Words at the top of the stage, over the diagram, or none. */
   say(text: string | null): void {
     this.notice.textContent = text ?? '';
     this.notice.hidden = text === null;
+  }
+
+  /** INT-505: says for six seconds that part of a link no longer matches the diagram. */
+  private warnStale(): void {
+    this.say(STALE_LINK);
+    window.clearTimeout(this.staleTimer);
+    this.staleTimer = window.setTimeout(() => {
+      if (this.notice.textContent === STALE_LINK) this.say(null);
+    }, STALE_FOR);
   }
 
   /** Something shown over the stage, such as watch mode's error list (INT-852), or nothing. */
@@ -328,11 +395,15 @@ export class Viewer {
     this.renderControls(this.path);
   }
 
-  /** Sets the picture, normalised, and draws it. */
-  private change(picture: Picture, arrival: Arrival = {}): void {
+  /**
+   * Sets the picture, normalised, writes it into the address and draws it. A change the reader
+   * makes navigates: it adds a history entry when it moves to another view or activity (INT-506).
+   */
+  private change(picture: Picture, arrival: Arrival = {}, move: HistoryMove = 'navigate'): void {
     if (this.opened === null) return;
     const before = this.picture;
     this.picture = normalisePicture(this.opened.semantics, picture).picture;
+    this.writeAddress(before, move);
     this.arrival = { ...this.arrival, ...arrival };
     // INT-606: Play stops with the scenario it plays.
     if (playingOf(before)?.scenario !== playingOf(this.picture)?.scenario) this.autoplay.stop();
@@ -348,6 +419,58 @@ export class Viewer {
       ]);
       this.root.dataset['ready'] = 'true';
     });
+  }
+
+  /** INT-501: the address always shows the current picture, in its fragment. */
+  private writeAddress(before: Picture | null, move: HistoryMove): void {
+    const opened = this.opened;
+    const picture = this.picture;
+    if (opened === null || picture === null) return;
+    const url = new URL(location.href);
+    url.hash = writeFragment(opened.semantics, picture);
+    if (url.href === location.href) return;
+    if (move === 'navigate' && before !== null && entry(before) !== entry(picture)) {
+      history.pushState(null, '', url);
+    } else {
+      history.replaceState(null, '', url);
+    }
+  }
+
+  /**
+   * INT-506: Back and Forward, or a fragment typed into the address, show that picture. An entry
+   * from before another bundled model was chosen opens that model again.
+   */
+  private follow(): void {
+    const asked = new URL(location.href).searchParams.get('model');
+    const sample = asked === null || this.watching ? undefined : SAMPLES.get(asked);
+    if (asked !== null && asked !== this.path && sample !== undefined) {
+      this.open(asked, sample, location.hash);
+      return;
+    }
+    const opened = this.opened;
+    const before = this.picture;
+    if (opened === null || before === null) return;
+    const read = readFragment(opened.semantics, location.hash);
+    if (read.dropped.length > 0) this.warnStale();
+    this.change(read.picture, read.picture.view === before.view ? {} : { fit: true }, 'replace');
+  }
+
+  /** INT-507: copies the full address; the button reads "Link copied" for a moment. */
+  private async copyLink(): Promise<void> {
+    let copied = true;
+    try {
+      await navigator.clipboard.writeText(location.href);
+    } catch {
+      // The clipboard may be refused; the address bar still holds the same link.
+      copied = false;
+    }
+    const said = copied ? 'Link copied' : 'Not copied';
+    this.copyButton.textContent = said;
+    this.spoken.textContent = said;
+    window.clearTimeout(this.copyTimer);
+    this.copyTimer = window.setTimeout(() => {
+      this.copyButton.textContent = 'Copy link';
+    }, COPIED_FOR);
   }
 
   private showProblems(heading: string, lines: string[]): void {
@@ -741,6 +864,64 @@ export class Viewer {
     return h('span', {}, [button, menu]);
   }
 
+  /**
+   * INT-403: choosing a walkthrough presents it from its first step. Presenter mode itself is slice
+   * A9's; until then the sidebar offers the bare controls, as it does for scenarios.
+   */
+  private walkthroughSection(semantics: Semantics, picture: Picture): HTMLElement {
+    const presenting = picture.activity.kind === 'presenting' ? picture.activity : null;
+    const items = semantics.model.walkthroughs.map((walkthrough) =>
+      h(
+        'button',
+        {
+          type: 'button',
+          class: presenting?.walkthrough === walkthrough.id ? 'item on' : 'item',
+          'aria-current': presenting?.walkthrough === walkthrough.id ? 'true' : null,
+          'data-walkthrough': walkthrough.id,
+          onclick: () => {
+            const now = this.picture;
+            if (now === null) return;
+            this.change(present(semantics, now, walkthrough.id), { fit: true });
+          },
+        },
+        [wordsFor(walkthrough.title, picture.audience) ?? walkthrough.id],
+      ),
+    );
+    const controls: Node[] = [];
+    if (presenting !== null) {
+      const count = semantics.walkthrough(presenting.walkthrough).steps.length;
+      controls.push(
+        h('label', { class: 'step' }, [
+          'Step ',
+          h('input', {
+            type: 'number',
+            name: 'walk-step',
+            min: 1,
+            max: count,
+            value: presenting.step,
+            onchange: (event) => {
+              const step = Number((event.target as HTMLInputElement).value);
+              this.change(presentStep(semantics, picture, step));
+            },
+          }),
+          ` of ${String(count)}`,
+        ]),
+        h(
+          'button',
+          {
+            type: 'button',
+            class: 'tool',
+            onclick: () => {
+              this.change(stop(semantics, picture));
+            },
+          },
+          ['Done'],
+        ),
+      );
+    }
+    return h('section', {}, [h('h2', {}, ['Walkthroughs']), ...items, ...controls]);
+  }
+
   private renderControls(path: string): void {
     const opened = this.opened;
     const picture = this.picture;
@@ -792,6 +973,9 @@ export class Viewer {
     const audience = picture.audience;
     const activity = picture.activity;
 
+    // INT-401 to INT-404: views, scenarios and walkthroughs, each titled for the audience; the
+    // current view, or what plays or is presented, is marked.
+    const reading = activity.kind === 'reading' || activity.kind === 'selected';
     sections.push(
       h('section', {}, [
         h('h2', {}, ['Views']),
@@ -800,7 +984,8 @@ export class Viewer {
             'button',
             {
               type: 'button',
-              class: view.id === picture.view && activity.kind !== 'playing' ? 'item on' : 'item',
+              class: view.id === picture.view && reading ? 'item on' : 'item',
+              'aria-current': view.id === picture.view && reading ? 'true' : null,
               'data-view': view.id,
               onclick: () => {
                 const now = this.picture;
@@ -822,6 +1007,7 @@ export class Viewer {
           {
             type: 'button',
             class: playing?.scenario === scenario.id ? 'item on' : 'item',
+            'aria-current': playing?.scenario === scenario.id ? 'true' : null,
             'data-scenario': scenario.id,
             onclick: () => {
               this.panelActions.play(scenario.id);
@@ -835,11 +1021,14 @@ export class Viewer {
       );
       sections.push(h('section', {}, [h('h2', {}, ['Scenarios']), ...scenarios]));
     }
+    if (semantics.model.walkthroughs.length > 0) {
+      sections.push(this.walkthroughSection(semantics, picture));
+    }
     // A reader choosing from the sidebar with the keyboard keeps their place in it.
     const active = document.activeElement;
     const kept =
       active instanceof HTMLElement && this.side.contains(active)
-        ? ['data-view', 'data-scenario', 'name']
+        ? ['data-view', 'data-scenario', 'data-walkthrough', 'name']
             .map((name) => [name, active.getAttribute(name)] as const)
             .find(([, value]) => value !== null)
         : undefined;
@@ -907,11 +1096,11 @@ function playingOf(picture: Picture | null): Extract<Activity, { kind: 'playing'
   return picture?.activity.kind === 'playing' ? picture.activity : null;
 }
 
-/** Starts the page: the model named by `?model=`, else the first sample. */
+/** Starts the page: the model named by `?model=`, else the first sample, at the link's picture. */
 export function start(root: HTMLElement): Viewer {
   const viewer = new Viewer(root);
   const asked = new URL(location.href).searchParams.get('model');
   const path = asked !== null && SAMPLES.has(asked) ? asked : FIRST_SAMPLE;
-  viewer.open(path, SAMPLES.get(path) ?? '');
+  viewer.open(path, SAMPLES.get(path) ?? '', location.hash);
   return viewer;
 }

@@ -41,8 +41,10 @@ It opens the Lotto sample; pick another bundled sample or open a local `.aerie` 
 sidebar, then choose a view or an audience. Click a box to select it, open containers in place,
 and zoom with the wheel, the +/-/Fit buttons or the keys. Choose a scenario to play it on the
 diagram: step with Next and Back or the arrow keys, press Play (or Space) to let it run, see it "As
-lanes", and press Done (or Esc) to end it. "Edit" opens the live split editor: the Lines text
-beside the diagram, which updates as you type.
+lanes", and press Done (or Esc) to end it. The address always holds what you see (view, audience,
+opened containers, selection), so Back and Forward step between views and "Copy link" shares the
+exact picture ([docs/spec/interaction.md](docs/spec/interaction.md#shared-links)). "Edit" opens the
+live split editor: the Lines text beside the diagram, which updates as you type.
 
 To write a model in your own editor and see its diagram update on every save, build the page once
 and watch the file ([docs/spec/interaction.md](docs/spec/interaction.md#watch-mode)):

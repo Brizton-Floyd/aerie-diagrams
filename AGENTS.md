@@ -133,15 +133,17 @@ has the steps for opening a model and choosing a view and audience with clicks).
   native binaries). Screenshot runs also hide the side panel's content, which wraps per platform.
 - The page (`src/app/`): `viewer.ts` holds the picture and the keys, `stage.ts` shows drawings (in
   place when the layout is the same, else gliding by `transitionPlan`) and runs the camera,
-  `panel.ts` builds the side panel. Motion timings are read from the stylesheet's `--aerie-*`
-  properties, so reduced motion needs no code path of its own. In an interactive drawing each
-  box's `.shape` rect, not its group, is the focusable, named button (the accessibility audit,
-  SCORE-005, rejects a button whose visible text is not in its name). Journeys wait for
-  `document.getAnimations()` to empty (`settled` in `tests/journeys/reader.ts`), so CSS animations
-  never fill forwards. Scenario playback (A8) is `scenario.ts` (side panel, caption, autoplay);
-  other parts of the page start and end one with `Viewer.playScenario` and `endScenario`.
-  Screenshot runs hide the side panel's content, so they press its controls with
-  `dispatchEvent('click')`.
+  `panel.ts` builds the side panel. Every picture change goes through `Viewer.change()`, which
+  writes the picture into the address's fragment (`link.ts`, INT-501) and adds a history entry
+  only when the view or activity changes (INT-506); new controls just call it. Motion timings are
+  read from the stylesheet's `--aerie-*` properties, so reduced motion needs no code path of its
+  own. In an interactive drawing each box's `.shape` rect, not its group, is the focusable, named
+  button (the accessibility audit, SCORE-005, rejects a button whose visible text is not in its
+  name). Journeys wait for `document.getAnimations()` to empty (`settled` in
+  `tests/journeys/reader.ts`), so CSS animations never fill forwards. Scenario playback (A8) is
+  `scenario.ts` (side panel, caption, autoplay); other parts of the page start and end one with
+  `Viewer.playScenario` and `endScenario`. Screenshot runs hide the side panel's content, so they
+  press its controls with `dispatchEvent('click')`.
 
 ## Plan
 

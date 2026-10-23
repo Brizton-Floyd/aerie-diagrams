@@ -146,6 +146,10 @@ input {
 .tool.theme {
   width: 64px;
 }
+/* INT-507: wide enough for "Link copied", so the bar does not move when it says so. */
+.tool.copy {
+  width: 92px;
+}
 .tool:hover {
   background: var(--aerie-ink);
   color: var(--aerie-paper);

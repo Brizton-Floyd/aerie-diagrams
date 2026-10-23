@@ -92,6 +92,6 @@ export async function boxOf(page: Page, id: string): Promise<Rect> {
 /** The camera's scale: how much the drawing is magnified on screen. */
 export async function scale(page: Page): Promise<number> {
   return page
-    .locator('svg.aerie')
+    .locator('svg.aerie[data-view]')
     .evaluate((svg) => new DOMMatrix(getComputedStyle(svg).transform).a);
 }
