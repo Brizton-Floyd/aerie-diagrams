@@ -228,6 +228,23 @@ No matching or reports yet.
 | unit  | A Spring fixture project with one of each pattern and its traps: every fact found, nothing more                                                  | DRIFT-201 to DRIFT-213            |
 | unit  | Copies of the Lotto Spring repos give their apps, ports, module graph, endpoints, calls, event and the Texas downloads                           | DRIFT-214                         |
 
+### After v1: D5, matching, lifting and levels
+
+Slice D5 of drift detection ([drift.md](drift.md#5-matching-and-lifting-slice-d5), read log
+`d5-match.md`): the class graph, matching each element to its code, lifting the code's links to the
+diagram, the comparison, its levels and ignore lines, the finding model with its suggested edits,
+fixtures with planted drifts and the Lotto benchmark. No reports or CLI yet.
+
+| Suite | What it proves                                                                                                                                         | Requirements           |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------- |
+| unit  | Each type of the Java with its supertypes, and each type it names                                                                                      | DRIFT-401, DRIFT-402   |
+| unit  | Code lines first, renames, `class:` hints, certain and uncertain name matches, pairings, outside hosts, anchors and lifting                            | DRIFT-403 to DRIFT-410 |
+| unit  | Links from the facts, calls matched to endpoints, events to listeners and messages to receivers                                                        | DRIFT-411 to DRIFT-413 |
+| unit  | Lines confirmed and missing, undrawn connections, dependencies and units, missing code, unanswered calls, levels, ignore lines and what is not checked | DRIFT-414 to DRIFT-425 |
+| unit  | The finding model, suggestions, hunks, the shape of each edit, the ignore line instead, and one patch that leaves nothing to report                    | DRIFT-426 to DRIFT-431 |
+| unit  | Fixture projects per stack: the matching model gives no finding, the planted one exactly its planted findings, and its patch none                      | DRIFT-432              |
+| unit  | The Lotto benchmark: every finding labelled by hand, precision, recall, drift precision, lines confirmed and planted drifts no worse                   | DRIFT-433              |
+
 ## Browser journeys
 
 Journeys run against the production build with the Lotto sample, at 1600 x 900, as a reader would use

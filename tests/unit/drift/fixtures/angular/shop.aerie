@@ -1,0 +1,22 @@
+// The control: the storefront, its UI kit and the API it calls, through the dev proxy in
+// development and through nginx in its image. Drift finds nothing to report.
+model shop: Corner shop
+
+system
+  repo web
+  repo deploy
+  compose deploy/compose.yaml
+
+shopper: Shopper [person]
+
+storefront: Storefront [service]
+  code compose:web npm:shop-web
+ui-kit: UI kit [module]
+  code npm:@shop/ui-kit
+api: Orders API [service]
+  code compose:api
+pay: Payment provider [external]
+
+shopper uses storefront
+storefront calls api
+storefront takes payments through pay

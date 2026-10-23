@@ -221,6 +221,25 @@ export interface ScheduleFact extends Found<'schedule'> {
   schedule: string;
 }
 
+/** A type a module's Java declares, with the types of the system it extends or implements. */
+export interface ClassFact extends Found<'class'> {
+  unit: CodeUnit;
+  /** `com.shop.Orders`, or `com.shop.Orders.Line` for a nested type. */
+  className: string;
+  type: 'class' | 'interface' | 'record' | 'enum' | 'annotation';
+  /** Its superclass and interfaces that are types of the system, by their full names. */
+  supertypes: string[];
+}
+
+/** A type's code names another type of the system: a field, a parameter, a `new`, a static call. */
+export interface ReferenceFact extends Found<'reference'> {
+  unit: CodeUnit;
+  className: string;
+  /** The type it names, by its full name, and the module that declares it. */
+  to: string;
+  toUnit: CodeUnit;
+}
+
 /** An application: an Angular project of a package, or a Spring Boot application. */
 export type AppFact = AngularAppFact | SpringAppFact;
 
@@ -247,7 +266,9 @@ export type Fact =
   | EndpointFact
   | ChannelFact
   | EventFact
-  | ScheduleFact;
+  | ScheduleFact
+  | ClassFact
+  | ReferenceFact;
 
 /** `Class.method`, by the class's simple name, as a report prints where code is. */
 function inCode(className: string | null, method: string | null): string {
@@ -368,6 +389,16 @@ export function factDetail(fact: Fact): string {
     case 'schedule': {
       const simple = fact.className.slice(fact.className.lastIndexOf('.') + 1);
       return `${unitText(fact.unit)} runs ${simple}.${fact.method} ${fact.schedule}`;
+    }
+    case 'class': {
+      const supertypes =
+        fact.supertypes.length === 0 ? '' : `, a subtype of ${fact.supertypes.join(', ')}`;
+      return `${unitText(fact.unit)} declares ${fact.type} ${fact.className}${supertypes}`;
+    }
+    case 'reference': {
+      const where =
+        unitText(fact.toUnit) === unitText(fact.unit) ? '' : ` in ${unitText(fact.toUnit)}`;
+      return `${unitText(fact.unit)} ${fact.className} uses ${fact.to}${where}`;
     }
   }
 }

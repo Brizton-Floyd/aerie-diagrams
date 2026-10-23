@@ -69,6 +69,13 @@ its evidence and technique.
 
 **Technique**: The way a fact was found, such as "Compose environment URL". Drift counts how many agree.
 
+**Finding**: One difference drift reports, with its level, its evidence and a suggested Lines edit.
+
+**Level**: How sure a finding is: drift (several techniques agree, or an exact check fails), likely (one technique), or
+not checked (the code cannot show it).
+
+**Suggestion**: A code line drift proposes from a name match or a pairing. It never fails anything.
+
 ## Words to avoid
 
 - "resource", "perspective" and "sequence": another product's terms. Say element, view and scenario.

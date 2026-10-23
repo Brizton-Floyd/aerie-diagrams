@@ -1,0 +1,12 @@
+{
+  "findings": 9,
+  "precision": 0.889,
+  "recall": 0.889,
+  "driftPrecision": 1,
+  "confirmedLines": 17,
+  "planted": {
+    "found": 4,
+    "of": 4,
+    "invented": 0
+  }
+}

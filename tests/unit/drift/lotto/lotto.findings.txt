@@ -1,0 +1,164 @@
+# Findings
+D01 drift missing-dependency missing-dependency:strategies>formats (line 275)
+    The diagram says Strategies library depends on Shared data formats, but in the code Strategies library does not depend on Shared data formats.
+    An exact check: the Maven poms list every dependency between modules, and none runs this way.
+    edit at 275
+      - strategies depends on formats [code]
+    instead at 413
+      + 
+      + ignore drift strategies to formats - why this difference is meant
+D02 drift missing-dependency missing-dependency:screen-api>formats (line 277)
+    The diagram says Screen API uses the shapes in Shared data formats, but in the code Screen API does not depend on Shared data formats.
+    An exact check: the Maven poms list every dependency between modules, and none runs this way.
+    edit at 277
+      - screen-api uses the shapes in formats [code]
+      -   @engineer: depends on
+    instead at 413
+      + 
+      + ignore drift screen-api to formats - why this difference is meant
+D03 drift undrawn-code undrawn-code:maven:lotto-options-core-api-contract
+    Screen API depends on the Maven module `maven:lotto-options-core-api-contract`, but no element stands for it.
+    An exact check: a drawn module depends on it, and the Maven poms list every dependency.
+    lotto-options-core/lotto-options-core-api-contract/pom.xml:12  Maven module: maven:lotto-options-core-api-contract
+    lotto-options-core/lotto-options-core-bff/pom.xml:16  Maven dependency: maven:lotto-options-core-bff depends on maven:lotto-options-core-api-contract (compile)
+    lotto-options-core/lotto-options-core-server/pom.xml:32  Maven dependency: maven:lotto-options-core-server depends on maven:lotto-options-core-api-contract (compile)
+    edit at 235
+      + 
+      +   lotto-options-core-api-contract: lotto-options-core-api-contract [module]
+      +     code maven:lotto-options-core-api-contract
+    edit at 279
+      + screen-api depends on lotto-options-core-api-contract [code]
+      + engine-service depends on lotto-options-core-api-contract [code]
+    instead at 413
+      + 
+      + ignore drift maven:lotto-options-core-api-contract - why this difference is meant
+D04 drift undrawn-code undrawn-code:maven:lotto-options-core-application
+    Engine service depends on the Maven module `maven:lotto-options-core-application`, but no element stands for it.
+    An exact check: a drawn module depends on it, and the Maven poms list every dependency.
+    lotto-options-core/lotto-options-core-application/pom.xml:12  Maven module: maven:lotto-options-core-application
+    lotto-options-core/lotto-options-core-application/pom.xml:16  Maven dependency: maven:lotto-options-core-application depends on maven:lotto-options-core-domain (compile)
+    lotto-options-core/lotto-options-core-server/pom.xml:28  Maven dependency: maven:lotto-options-core-server depends on maven:lotto-options-core-application (compile)
+    edit at 175
+      + 
+      +     lotto-options-core-application: lotto-options-core-application [module]
+      +       code maven:lotto-options-core-application
+    edit at 279
+      + lotto-options-core-application depends on lotto-options-core-domain [code]
+      + engine-service depends on lotto-options-core-application [code]
+    instead at 413
+      + 
+      + ignore drift maven:lotto-options-core-application - why this difference is meant
+D05 drift undrawn-code undrawn-code:maven:lotto-options-core-domain
+    Engine service depends on the Maven module `maven:lotto-options-core-domain`, but no element stands for it.
+    An exact check: a drawn module depends on it, and the Maven poms list every dependency.
+    lotto-options-core/lotto-options-core-domain/pom.xml:12  Maven module: maven:lotto-options-core-domain
+    lotto-options-core/lotto-options-core-application/pom.xml:16  Maven dependency: maven:lotto-options-core-application depends on maven:lotto-options-core-domain (compile)
+    lotto-options-core/lotto-options-core-result-analyzer/pom.xml:17  Maven dependency: maven:lotto-options-core-result-analyzer depends on maven:lotto-options-core-domain (compile)
+    lotto-options-core/lotto-options-core-server/pom.xml:24  Maven dependency: maven:lotto-options-core-server depends on maven:lotto-options-core-domain (compile)
+    edit at 175
+      + 
+      +     lotto-options-core-domain: lotto-options-core-domain [module]
+      +       code maven:lotto-options-core-domain
+    edit at 279
+      + strategies depends on lotto-options-core-domain [code]
+      + engine-service depends on lotto-options-core-domain [code]
+    instead at 413
+      + 
+      + ignore drift maven:lotto-options-core-domain - why this difference is meant
+D06 drift undrawn-dependency undrawn-dependency:engine-service>store
+    Engine service depends on Results store in the code, but no `[code]` line in the diagram joins them.
+    An exact check: the Maven poms list every dependency between modules.
+    lotto-options-core/lotto-options-core-server/pom.xml:44  Maven dependency: maven:lotto-options-core-server depends on maven:lottery-result-persistence-service-models (compile)
+    edit at 279
+      + engine-service depends on store [code]
+    instead at 413
+      + 
+      + ignore drift engine-service to store - why this difference is meant
+D07 drift undrawn-dependency undrawn-dependency:legacy>store
+    Legacy desktop support depends on Results store in the code, but no `[code]` line in the diagram joins them.
+    An exact check: the Maven poms list every dependency between modules.
+    lotto-options-core/lotto-options-core-legacy-desktop/pom.xml:25  Maven dependency: maven:lotto-options-core-legacy-desktop depends on maven:lottery-result-persistence-service-models (compile)
+    edit at 279
+      + legacy depends on store [code]
+    instead at 413
+      + 
+      + ignore drift legacy to store - why this difference is meant
+L01 likely unanswered-calls unanswered-calls:legacy (line 165)
+    Legacy desktop support makes 15 calls that no endpoint of the system answers.
+    WebClient call found the calls, and no endpoint of the system matches their verbs and paths, so this is only likely.
+    lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/grouping/HttpLotteryPersistenceClient.java:61  WebClient call: maven:lotto-options-core-legacy-desktop calls POST {?}/api/v1/lottery-targeting/patterns/{configId} (HttpLotteryPersistenceClient.storePatternGroups)
+    lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/grouping/HttpLotteryPersistenceClient.java:80  WebClient call: maven:lotto-options-core-legacy-desktop calls GET {?}/api/v1/lottery-targeting/patterns/{configId} (HttpLotteryPersistenceClient.getPatternGroups)
+    lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/grouping/HttpLotteryPersistenceClient.java:107  WebClient call: maven:lotto-options-core-legacy-desktop calls POST {?}/api/v1/lottery-targeting/sessions (HttpLotteryPersistenceClient.saveSession)
+    lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/grouping/HttpLotteryPersistenceClient.java:132  WebClient call: maven:lotto-options-core-legacy-desktop calls GET {?}/api/v1/lottery-targeting/configurations/{configId} (HttpLotteryPersistenceClient.getLotteryConfiguration)
+    lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/grouping/HttpLotteryPersistenceClient.java:305  WebClient call: maven:lotto-options-core-legacy-desktop calls GET {?}/api/v1/lottery-targeting/hot-numbers/{configId} (HttpLotteryPersistenceClient.getHotNumbers)
+    lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/grouping/HttpLotteryPersistenceClient.java:341  WebClient call: maven:lotto-options-core-legacy-desktop calls GET {?}/api/v1/lottery-targeting/combinations/{configId} (HttpLotteryPersistenceClient.getProvenCombinations)
+    lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/grouping/HttpLotteryPersistenceClient.java:429  WebClient call: maven:lotto-options-core-legacy-desktop calls POST {?}/api/v1/lottery-targeting/combinations (HttpLotteryPersistenceClient.publishProvenCombination)
+    lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/grouping/HttpLotteryPersistenceClient.java:458  WebClient call: maven:lotto-options-core-legacy-desktop calls POST {?}/api/v1/lottery-targeting/hot-numbers/batch (HttpLotteryPersistenceClient.updateHotNumbers)
+    lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/grouping/HttpLotteryPersistenceClient.java:491  WebClient call: maven:lotto-options-core-legacy-desktop calls POST {?}/api/v1/lottery-targeting/sessions (HttpLotteryPersistenceClient.createUserSession)
+    lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/grouping/HttpLotteryPersistenceClient.java:534  WebClient call: maven:lotto-options-core-legacy-desktop calls POST {?}/api/v1/lottery-targeting/ticket-sets (HttpLotteryPersistenceClient.createTicketSet)
+    lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/grouping/HttpLotteryPersistenceClient.java:594  WebClient call: maven:lotto-options-core-legacy-desktop calls POST {?}/api/v1/lottery-targeting/tickets/batch (HttpLotteryPersistenceClient.saveSuccessfulTicketsBatch)
+    lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/grouping/HttpLotteryPersistenceClient.java:621  WebClient call: maven:lotto-options-core-legacy-desktop calls GET {?}/health (HttpLotteryPersistenceClient.isApiHealthy)
+    lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/grouping/HttpLotteryPersistenceClient.java:641  WebClient call: maven:lotto-options-core-legacy-desktop calls GET {?}/api/v1/lottery-targeting/draws/{configId}?limit={count} (HttpLotteryPersistenceClient.getRecentDraws)
+    lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/grouping/HttpLotteryPersistenceClient.java:681  WebClient call: maven:lotto-options-core-legacy-desktop calls GET {?}/api/v1/lottery-targeting/frequencies/{configId} (HttpLotteryPersistenceClient.getNumberFrequencies)
+    lotto-options-core/lotto-options-core-legacy-desktop/src/main/java/com/floyd/lottoptions/legacy/desktop/shared/service/LotteryStateService.java:77  WebClient call: maven:lotto-options-core-legacy-desktop calls POST {?}/{?} (LotteryStateService.getLottoGameDrawData)
+    instead at 413
+      + 
+      + ignore drift legacy - why this difference is meant
+L02 likely missing-connection missing-connection:history-service>saved-draws:reads (line 264)
+    The diagram says Draw history service reads Saved draws, but the code shows no call from Draw history service to Saved draws.
+    No technique found a call between them, and reading the code cannot rule one out, so this is only likely.
+    edit at 264
+      - history-service reads saved-draws
+    instead at 413
+      + 
+      + ignore drift history-service to saved-draws - why this difference is meant
+
+# Suggestions
+
+# Not checked
+[end] The line “User uses Website” is not checked: User stands for no code drift can read.
+[test-support] The Maven module `maven:lotto-options-core-test-fixtures` is used only by tests, so it is not checked.
+    lotto-options-core/lotto-options-core-bff/pom.xml:66  Maven dependency: maven:lotto-options-core-bff depends on maven:lotto-options-core-test-fixtures (test)
+    lotto-options-core/lotto-options-core-server/pom.xml:86  Maven dependency: maven:lotto-options-core-server depends on maven:lotto-options-core-test-fixtures (test)
+[person] User is a person, which code cannot show.
+[scenario] Scenario `generate-picks` is not checked: scenarios are checked against real call paths in phase 2.
+[scenario] Scenario `results-poll` is not checked: scenarios are checked against real call paths in phase 2.
+[wording] The wording (names, taglines and descriptions) is not checked: wrong details are checked in phase 2.
+
+# Ignored
+
+# Confirmed
+The line “Website gets screen data from Screen API” is in the code. [env-url, nginx-proxy-pass, angular-proxy, http-nginx, http-dev-proxy, endpoint-match, compose-depends-on]
+The line “Screen API requests analysis from Request handling” is in the code. [env-url, webclient-call, spring-config-url, endpoint-match, compose-depends-on]
+The line “Request handling hands requests to Pick generation” is in the code. [java-reference]
+The line “Request handling hands dashboard requests to Game analysis” is in the code. [java-reference]
+The line “Pick generation gets past draws from Draw history lookup” is in the code. [java-reference]
+The line “Pick generation picks and scores tickets with Strategies library” is in the code. [java-reference]
+The line “Game analysis gets past draws from Draw history lookup” is in the code. [java-reference]
+The line “Draw history lookup fetches draw history from Draw history service” is in the code. [env-url, java-reference, webclient-call, endpoint-match, spring-config-url, compose-depends-on]
+The line “Legacy desktop support reads draw history from Draw history service” is in the code. [env-url, java-reference, endpoint-match, compose-depends-on]
+The line “Results updater has each game refreshed by Results reader” is in the code. [java-reference]
+The line “Results reader downloads results from Texas Lottery website” is in the code. [spring-config-url]
+The line “Results reader saves draws into Saved draws” is in the code. [java-reference]
+The line “Results updater announces each finished refresh to Draw history service” is in the code. [event-match]
+The line “Engine service depends on Strategies library” is in the code. [maven-dependency]
+The line “Engine service depends on Shared data formats” is in the code. [maven-dependency]
+The line “Engine service ships with Legacy desktop support” is in the code. [maven-dependency]
+The line “Legacy desktop support depends on Shared data formats” is in the code. [maven-dependency]
+Website stands for `compose:web-ui` and `npm:lotto-options-ui`, which the code has. [compose-service, npm-package]
+Screen API stands for `compose:bff` and `maven:lotto-options-core-bff`, which the code has. [compose-service, maven-module]
+Analysis engine stands for `compose:core`, which the code has. [compose-service]
+Engine service stands for `maven:lotto-options-core-server`, which the code has. [maven-module]
+Request handling stands for `class:com.floyd.lottoptions.core.server.adapter.web.*` and `class:com.floyd.lottoptions.controller.GameOutController`, which the code has. [java-class]
+Game analysis stands for `class:com.floyd.lottoptions.core.application.dashboard.*`, `class:com.floyd.lottoptions.core.application.range.*`, `class:com.floyd.lottoptions.core.application.betslip.*`, `class:com.floyd.lottoptions.core.application.gameout.*`, `class:com.floyd.lottoptions.core.server.adapter.pdf.*`, `class:com.floyd.lottoptions.service.impl.GameOutBacktestService` and `class:com.floyd.lottoptions.service.impl.BalanceCalculatorService`, which the code has. [java-class]
+Pick generation stands for `class:com.floyd.lottoptions.core.application.generate.*`, which the code has. [java-class]
+Draw history lookup stands for `class:com.floyd.lottoptions.core.server.adapter.resultsservice.*`, `class:com.floyd.lottoptions.service.impl.WebClientLotteryStateService` and `class:com.floyd.lottoptions.service.LotteryStateService`, which the code has. [java-class]
+Strategies library stands for `maven:lotto-options-core-result-analyzer`, which the code has. [maven-module]
+Shared data formats stands for `maven:lotto-options-core-model`, which the code has. [maven-module]
+Legacy desktop support stands for `maven:lotto-options-core-legacy-desktop`, which the code has. [maven-module]
+Results store stands for `compose:results-service`, `maven:lottery-result-persistence-server`, `maven:lottery-result-aggregator` and `maven:lottery-result-persistence-service-models`, which the code has. [compose-service, maven-module]
+Draw history service stands for `class:com.floyd.lottoptions.controller.PersistenceServiceController`, `class:com.floyd.lottoptions.service.impl.LotteryDataService` and `class:com.floyd.lottoptions.cache.CatalogCacheEvictor`, which the code has. [java-class]
+Results updater stands for `class:com.floyd.lottoptions.agr.jobs.DrawResultJob` and `class:com.floyd.lottoptions.agr.polling.*`, which the code has. [java-class]
+Results reader stands for `class:com.floyd.lottoptions.agr.processor.*` and `class:com.floyd.lottoptions.agr.documentreaders.*`, which the code has. [java-class]
+Saved draws stands for `class:com.floyd.lottoptions.agr.persistence.LotteryGameSerializer`, which the code has. [java-class]
+Texas Lottery website stands for the host `www.texaslottery.com`, which the code has. [spring-config-url]

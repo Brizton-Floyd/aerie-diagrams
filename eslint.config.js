@@ -20,6 +20,8 @@ const LAYOUT_UP_TWO = { regex: String.raw`^\.\./\.\./(?!(?:lines|model)/index\.t
 // The extractor builds only on the entry point of the language.
 const EXTRACT_UP = { regex: String.raw`^\.\./(?!lines/index\.ts$)` };
 const EXTRACT_UP_TWO = { regex: String.raw`^\.\./\.\./(?!lines/index\.ts$)` };
+// Drift builds only on the entry points of the language, the model and the extractor.
+const DRIFT_UP = { regex: String.raw`^\.\./(?!(?:lines|model|extract)/index\.ts$)` };
 
 export default defineConfig(
   {
@@ -29,8 +31,9 @@ export default defineConfig(
       'test-results/',
       'playwright-report/',
       'blob-report/',
-      // The extractor's fixture projects hold other projects' code as written (src/extract/).
+      // The extractor's and drift's fixture projects hold other projects' code as written.
       'tests/unit/extract/fixtures/',
+      'tests/unit/drift/fixtures/',
     ],
   },
   js.configs.recommended,
@@ -143,6 +146,18 @@ export default defineConfig(
       'no-restricted-imports': [
         'error',
         { paths: [ELK_PATH], patterns: [NODE, EXTRACT_UP_TWO, ELK_PATTERN] },
+      ],
+      'no-restricted-globals': PURE_GLOBALS,
+    },
+  },
+  {
+    // Drift is pure too: it compares a model with the extractor's facts and reads nothing itself
+    // (docs/spec/drift.md, section 5).
+    files: ['src/drift/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        { paths: [ELK_PATH], patterns: [NODE, DRIFT_UP, ELK_PATTERN] },
       ],
       'no-restricted-globals': PURE_GLOBALS,
     },

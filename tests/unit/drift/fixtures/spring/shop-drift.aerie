@@ -1,0 +1,46 @@
+// The same shop with planted differences, each of which drift must find, and nothing else:
+// - the common types module is not drawn, though drawn modules depend on it: drift;
+// - `billing depends on catalog [code]` is a dependency no pom has: drift;
+// - `orders depends on catalog [code]` is gone: drift;
+// - the ledger's hint names `com.shop.billing.Ledger`, which moved to `com.shop.billing.ledger`:
+//   drift, a rename;
+// - `billing-client posts invoices to invoices` is gone: drift, since two techniques show it;
+// - `web takes orders to service` is gone: likely, since only the class graph shows it.
+// The old reports module is left out on purpose, and its ignore line excuses that. The audit
+// trail has no class hints, so it is not checked.
+model shop: Shop
+
+system
+  repo shop
+
+orders: Orders [service module]
+  code maven:shop-orders
+  web: Order API
+    code class:com.shop.orders.web.*
+  service: Ordering
+    code class:com.shop.orders.service.*
+  billing-client: Billing client
+    code class:com.shop.orders.billing.BillingClient
+
+billing: Billing [service module]
+  code maven:shop-billing
+  invoices: Invoices
+    code class:com.shop.billing.web.*
+  listener: Order listener
+    code class:com.shop.billing.events.OrderListener
+  ledger: Ledger
+    code class:com.shop.billing.Ledger
+  audit: Audit trail
+
+catalog: Catalog [module]
+  code maven:shop-catalog
+
+service prices items with catalog
+service asks for invoices through billing-client
+service announces orders to listener
+invoices records charges in ledger
+listener writes orders to audit
+
+billing depends on catalog [code]
+
+ignore drift maven:shop-legacy - retiring with the old reports

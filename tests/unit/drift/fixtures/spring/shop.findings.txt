@@ -1,0 +1,33 @@
+# Findings
+
+# Suggestions
+
+# Not checked
+[test-support] The Maven module `maven:shop-testkit` is used only by tests, so it is not checked.
+    shop/orders/pom.xml:20  Maven dependency: maven:shop-orders depends on maven:shop-testkit (test)
+[wording] The wording (names, taglines and descriptions) is not checked: wrong details are checked in phase 2.
+
+# Ignored
+
+# Confirmed
+The line “Order API takes orders to Ordering” is in the code. [java-reference]
+The line “Ordering prices items with Catalog” is in the code. [java-reference]
+The line “Ordering asks for invoices through Billing client” is in the code. [java-reference]
+The line “Billing client posts invoices to Invoices” is in the code. [webclient-call, endpoint-match, spring-config-url]
+The line “Ordering announces orders to Order listener” is in the code. [spring-config-url, channel-match]
+The line “Invoices records charges in Ledger” is in the code. [java-reference]
+The line “Orders depends on Catalog” is in the code. [maven-dependency]
+The line “Orders depends on Common types” is in the code. [maven-dependency]
+The line “Billing depends on Common types” is in the code. [maven-dependency]
+The line “Catalog depends on Common types” is in the code. [maven-dependency]
+Orders stands for `maven:shop-orders`, which the code has. [maven-module]
+Order API stands for `class:com.shop.orders.web.*`, which the code has. [java-class]
+Ordering stands for `class:com.shop.orders.service.*`, which the code has. [java-class]
+Billing client stands for `class:com.shop.orders.billing.BillingClient`, which the code has. [java-class]
+Billing stands for `maven:shop-billing`, which the code has. [maven-module]
+Invoices stands for `class:com.shop.billing.web.*`, which the code has. [java-class]
+Order listener stands for `class:com.shop.billing.events.OrderListener`, which the code has. [java-class]
+Ledger stands for `class:com.shop.billing.ledger.Ledger`, which the code has. [java-class]
+Catalog stands for `maven:shop-catalog`, which the code has. [maven-module]
+Common types stands for `maven:shop-common`, which the code has. [maven-module]
+Old reports stands for `maven:shop-legacy`, which the code has. [maven-module]

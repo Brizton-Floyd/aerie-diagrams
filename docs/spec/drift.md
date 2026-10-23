@@ -154,8 +154,9 @@ API notes are in `src/extract/index.ts`.
   (DRIFT-201). A fact is one of: a Compose project, a code unit (a service, a package or a module),
   an image, a port, a build, a source an image is built from, a connection (one unit naming another,
   or a host outside the system), a volume, a profile, a healthcheck, a framework, an Angular project
-  or an HTTP call; and from D3, a module's packaging, a dependency, a Spring Boot application, a
-  property, an endpoint, a call, a message channel, an event or a schedule.
+  or an HTTP call; from D3, a module's packaging, a dependency, a Spring Boot application, a
+  property, an endpoint, a call, a message channel, an event or a schedule; and from D5, a Java type
+  or a type reference (DRIFT-401, DRIFT-402).
 - **DRIFT-002** Evidence is a line of a file, printed `repo/path:line`, with lines counting from 1. A
   fact prints as one line, `repo/path:line  technique: detail`, with code units as `kind:name`; this
   is the evidence line of a report (section 7).
@@ -519,6 +520,120 @@ Decided in #52.
 - Parts are checked only where they carry `class:` hints; services and modules are checked
   everywhere.
 
+The comparison is `src/drift/`, pure TypeScript like the extractor, built only on the entry points
+of the language, the model and the extractor; its entry point and API notes are in
+`src/drift/index.ts`. It takes the model file's text, its canonical model and source map, and the
+extraction, and returns the finding model of section 6; it reads nothing itself.
+
+### The class graph (slice D5)
+
+Part-level lines need to know which class uses which (#51), so D5 adds two facts to the Java the
+Spring extractor reads (DRIFT-208).
+
+- **DRIFT-401** Each class, interface, record, enum and annotation type the Maven modules declare,
+  nested ones too, is a fact ("Java type") at its declaration, by its full name, with the superclass
+  and interfaces it names that are types of the system.
+- **DRIFT-402** Each type of the system that a type's own code names is a fact ("Java type
+  reference", `A uses B`), once per pair at the first line that names it: in fields, record
+  components, method signatures, local variables, `new`, class literals, annotations and type
+  arguments, and a bare name that is no variable where it runs (the type of a static call or a
+  constant). A type's own supertypes are in its type fact instead, and types declared in the same
+  outermost type are its own code.
+
+### Matching (slice D5)
+
+- **DRIFT-403** A code line's `compose`, `maven` and `npm` units are the element's when the code has
+  them. A unit the code does not have is **missing** (DRIFT-418).
+- **DRIFT-404** A missing unit was most likely **renamed** to a unit of the same kind that no element
+  names and that shares a word with it (words split at `-`, `_` and `.`, common words such as `api`,
+  `web` and `service` not counting) or is within two edits of it, when one such unit is closest. A
+  qualified `class:` hint was most likely moved to the one type of the system with its simple name.
+  Drift compares the element as standing for the new unit.
+- **DRIFT-405** A `class:` hint names a type as closely as it is written: the type itself, a type
+  nested in it, a simple name (the type, or a type nested in it), or a package written with `.*`
+  (its types and their nested types, not its subpackages). A simple name or a package names only
+  types of the modules that the nearest element around the part (or the part itself) stands for,
+  with what they package, when there is one, since a package may be split across modules. A hint
+  that names no type is missing. The hints of an element inside one that stands for an npm package
+  are TypeScript, and when the Java was not read (DRIFT-208) none can be read: both are not checked.
+- **DRIFT-406** An element without a code line is matched by name: its id and its name for every
+  audience, normalised to lower case letters and digits, against each unit's name and the names of
+  the apps it holds (a Spring Boot application's class without `Application`, an Angular project).
+  A unit that matches exactly one element is a certain match: drift compares the element as
+  standing for it, and suggests the code line that pins it (DRIFT-427). A parent or aggregator pom
+  (packaging `pom`) holds no code, so nothing stands for it.
+- **DRIFT-407** Anything less certain is only a suggestion: a unit whose name matches two elements,
+  an element whose name matches part of a unit's (a run of words, not only common ones, at its start
+  or end), a unit an element's tagline names, the Spring Boot app a Compose service runs (its image
+  is built from the module's folder and listens on the `server.port` the module sets) and the npm
+  package a service's image copies. A unit with such a suggestion is neither drawn nor undrawn: it is
+  not checked until a code line says what it is.
+- **DRIFT-408** Code lines cannot name hosts outside the system, so an element that stands for no
+  code, and holds nothing that does, matches an outside host when one of its names is one of the
+  host's labels (not `www`, the last label or a common word), or its wording (names, taglines and
+  descriptions, every audience) names the host; only a host one element matches is used. A host no
+  element stands for is not checked.
+
+### Links and lifting (slice D5)
+
+- **DRIFT-409** An element is **checked** when it stands for code: units, `class:` hints that name
+  types, or a host. Each end of a diagram line is compared at its **anchor**: the element itself when
+  it, or something inside it, is checked; else its nearest checked ancestor, so a part without
+  `class:` hints is checked as its module; else nothing, and the line is not checked. Code between
+  two elements one of which holds the other is internal to the outer one.
+- **DRIFT-410** Code is lifted to the element that stands for it: a Java type to the element whose
+  `class:` hint names it most closely (the deepest on a tie), or else to the element of its module;
+  a unit to its element; and the code of a Maven library no element names to the elements of the
+  apps that package it. A link that stays in its program (a type reference, an in-process event) is
+  lifted once in each app that runs its source, with both ends in that app, since a library two apps
+  package is copied into each.
+- **DRIFT-411** The facts give **links** between two ends (a unit, a type of a unit, or a host), each
+  with its technique: every connection fact (a `depends_on` or `links` one only corroborates), every
+  call whose target the extractor knows, every type reference and through it each type of the system
+  that extends or implements the type named (the code that names an interface calls what implements
+  it), and every Maven dependency other than `test`, as a build link.
+- **DRIFT-412** A call is matched to the endpoints that answer it ("HTTP call matched to an
+  endpoint", a technique drift adds): a Spring call to a module, by the endpoints of the module and
+  the modules it packages; one whose base is not known (`{?}`), by those of any module, when one
+  module answers; and a browser call that reaches a Compose service, by those of the modules its
+  element stands for. The verb must agree (`ANY` agrees with every verb) and the path template must
+  fit, part by part (`{...}`, `{}` and `{?}` stand for one part), with each endpoint also under its
+  module's (or its app's) `server.servlet.context-path` or `spring.webflux.base-path`; the most
+  literal templates win. A call with a readable path that reaches a module that has endpoints, or
+  whose base is not known, and that no endpoint answers is **unanswered** (DRIFT-420).
+- **DRIFT-413** An in-process event is matched to the listeners of its type in an app that runs both
+  ("Spring event matched to its listener"), and a message to the receivers of its channel on the same
+  broker ("Message matched to its receiver"): the channel as written, `{?}` standing for any text,
+  and a RabbitMQ routing key against the binding's pattern (`*` one word, `#` any number).
+
+### The comparison (slice D5)
+
+- **DRIFT-414** A runtime line (any kind but `code`) is **confirmed** by any lifted link between two
+  elements each the same as, inside or around its anchors; a `[code]` line by a build link. Verbs are
+  never checked. A line whose end is not checked, whose anchors are one inside the other, or (a
+  `[code]` line) whose ends stand for no Maven module, is not checked; so is a runtime line that only
+  a corroborating technique shows.
+- **DRIFT-415** A runtime line that nothing confirms is a **missing connection**: likely, since
+  reading the code cannot rule out a call. A `[code]` line that no Maven dependency confirms is a
+  **missing dependency**: drift, an exact check, since the poms list every dependency.
+- **DRIFT-416** A pair of elements the code joins that no runtime line explains is an **undrawn
+  connection**, at the level its techniques give. A `[code]` line explains type references too, and a
+  type reference between two Maven modules is a build dependency, left to the `[code]` comparison.
+  Each is reported once, at the finest grain the code shows: the links of a coarser pair that no line
+  explains count for the finer pairs inside it.
+- **DRIFT-417** A build link between two elements that no `[code]` line explains is an **undrawn
+  dependency**: drift, an exact check. Build dependencies are compared only in a model with `[code]`
+  lines; in one without, they are not checked.
+- **DRIFT-418** A missing unit (DRIFT-403, DRIFT-405) is drift, an exact check: the code line names
+  code that does not exist, or that was renamed (DRIFT-404).
+- **DRIFT-419** For each kind of unit (`compose`, `maven`, `npm`) the diagram names at all, every
+  unit of that kind that no element stands for is **undrawn**: drift when a drawn module depends on
+  it, directly or through modules no element names (an exact check); otherwise at the level of its
+  techniques (the one that shows it exists, its applications, and its links). A parent pom, a module
+  only test dependencies reach (not checked) and a unit with a suggestion (DRIFT-407) are not
+  reported. The units of a kind the diagram names nowhere are not checked: it is drawn above them.
+- **DRIFT-420** The unanswered calls of an element are one finding, likely.
+
 ## 6. Levels and suppression (slice D5)
 
 Decided in #53, with the captain's decision on #54.
@@ -536,6 +651,98 @@ Decided in #53, with the captain's decision on #54.
   with its reason and how many differences it excused. An ignore line that matches nothing any more
   is itself a likely finding, with an edit that removes it. An ignore line without a reason is an
   `aerie check` error (E811), so it never reaches drift.
+
+### Levels and ignore lines (slice D5)
+
+- **DRIFT-421** An exact check that fails is drift (DRIFT-415, DRIFT-417 to DRIFT-419). Any other
+  finding is drift when two or more techniques found it, and likely when one did; one that only
+  corroborating techniques found is not reported. A missing connection, unanswered calls and an
+  unused ignore line are likely. Each finding says why it has its level: the exact check, or the
+  techniques that found it and those that only corroborate.
+- **DRIFT-422** An ignore line whose subject is an element or a unit excuses the findings about its
+  presence and its code line: a missing or renamed unit of that element or that unit, the unit
+  undrawn, and the element's unanswered calls. One whose subject is `a to b` excuses the findings
+  about a connection or a dependency from `a` to `b`: an end matches the element it names or an
+  element inside it, or the element that stands for the unit it names. The first ignore line that
+  matches a finding excuses it, and each lists its reason and the findings it excused.
+- **DRIFT-423** An ignore line that excuses nothing is an **unused ignore**, likely, whose edit
+  removes it.
+
+### The finding model (slice D5)
+
+The reports of D6 print the finding model; D5 builds it (`compare` in `src/drift/`).
+
+- **DRIFT-424** What is **not checked** is listed with why, the elements it concerns and the line of
+  the model: a person; an element with no code line whose name matches nothing; a part without
+  `class:` hints (its lines are checked as its anchor's); an element or unit with a suggestion only;
+  a line with an end that is not checked, with anchors one inside the other, or (`[code]`) between
+  elements that stand for no Maven module, or shown only by a corroborating technique; each scenario
+  and the wording (phase 2); a host outside the system no element stands for; the units of a kind
+  the diagram names nowhere; a module only tests use; build dependencies in a model with no `[code]`
+  lines; and `class:` hints that name TypeScript or that Java not read could resolve.
+- **DRIFT-425** What is **confirmed** is listed with its techniques and evidence: each checked
+  element (the units, hints or host it stands for), and each confirmed line, with the anchors it was
+  checked as when they are not its own ends.
+- **DRIFT-426** A **finding** has an `id` in report order (`D01` on for drift, `L01` on for likely),
+  a `key` that stays the same for the same difference from run to run, its `level`, its `kind` (the
+  nine of DRIFT-415 to DRIFT-423), a `title` (one sentence in the diagram's own names, code units in
+  backticks), a `detail` (why it has its level, DRIFT-421), the `elements` it concerns, the line of
+  the model it concerns (`diagram`, or none), its `techniques` (those that only corroborate last),
+  its `evidence` (each line `repo/path:line  technique: detail`, DRIFT-002; a technique drift adds
+  prints the matched fact's place in its detail), its `edits` and the ignore line to add `instead`.
+  Findings come drift first, then likely, each by its line of the model and then by key.
+- **DRIFT-427** A **suggestion** (`S01` on) names the element, the unit, why (a certain name match,
+  which drift already compares, or an uncertain one, DRIFT-407), the evidence that the unit exists,
+  and the edit that adds the code line.
+
+### Suggested edits (slice D5)
+
+- **DRIFT-428** Every edit is a list of **hunks** against the model file: `at` a line (counting from
+  1), the lines `remove`d as written, and the lines to `add` in their place. Aerie never writes the
+  file.
+- **DRIFT-429** The edits: a missing relationship is added as `a calls b` (or `a depends on b [code]`)
+  after the last relationship of its kind, at the finest grain the code shows; a new element is a
+  placeholder (its id and name from the unit's, tagged `[service]` or `[module]`) with its code line
+  only, at the end of the parent block of the drawn module that depends on it or of the elements of
+  its kind, with the lines to the elements its links reach (new ones too); a removed element takes
+  its whole block, the comments written right above it, and every line that names it or an element
+  inside it (relationships, scenario steps, view `show` items, walkthrough focus, `open` and `close`
+  items, ignore lines); a rename replaces one word of the code line; a missing unit leaves the code
+  line (the element goes with it when it was its only code and nothing inside it is checked; a part
+  keeps its place); a removed relationship takes its object from the line, or the whole statement.
+- **DRIFT-430** The edit `instead` adds `ignore drift <subject> - why this difference is meant`
+  after the last ignore line (or at the end, as a group of its own): the unit, or `a to b`, or the
+  element.
+- **DRIFT-431** `patch()` combines the edits of any findings and suggestions into one set of hunks:
+  removals join, a code line's units change together, a list loses every item any edit drops, and an
+  insertion two findings make is made once. `applyHunks` applies hunks to the text. On every fixture
+  and on the Lotto benchmark, the patched model parses, and comparing it again finds no drift.
+
+### Fixtures and the Lotto benchmark (slice D5)
+
+- **DRIFT-432** Fixture projects per stack, in `tests/unit/drift/fixtures/` (Docker Compose, Spring
+  Boot with Maven, Node and Angular with nginx), each with a model that matches its code and a model
+  with planted differences (each listed in the model's opening comment): the first gives no finding,
+  the second exactly the planted ones, at the planted levels, and its patched model none.
+- **DRIFT-433** The Lotto benchmark: `tests/unit/drift/lotto/lotto.aerie` is `samples/lotto.aerie`
+  with a system root naming the copies of the Lotto repos and code lines pinning each element to
+  today's code. Every finding and every known miss is labelled by hand in `truth.txt` (real, false,
+  missed); precision (real findings over findings), recall (real findings over real ones and misses),
+  the precision of drift-level findings, the lines confirmed and four planted drifts (a removed
+  relationship, an undrawn service, an undrawn module and a renamed service, found one at a time and
+  all together, with nothing else changing) are kept in `benchmark.json`, and may never get worse
+  (like ACC-004).
+
+Choices D5 made, where this document left them open: parts are checked through a class graph drift
+reads from the Java (DRIFT-401, DRIFT-402), and through calls, events and messages matched by class;
+completeness is checked only for the kinds of unit a diagram names (DRIFT-419), so a diagram drawn
+above modules is never asked for them; a line with an unchecked part is checked as the part's anchor
+(DRIFT-409); a missing runtime line is likely, while a missing or undrawn `[code]` dependency is an
+exact check like an undrawn module (DRIFT-415, DRIFT-417); a type reference across modules is left to
+the `[code]` comparison (DRIFT-416); outside hosts are matched by name or wording, since code lines
+cannot name them, and an unmatched one is not checked (DRIFT-408); calls no endpoint answers are
+reported, likely, as the #54 prototype did (DRIFT-420); and the verbs drift suggests are `calls` and
+`depends on`.
 
 ## 7. The report (slice D6)
 

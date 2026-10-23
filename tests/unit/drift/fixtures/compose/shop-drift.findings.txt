@@ -1,0 +1,96 @@
+# Findings
+D01 drift renamed-code renamed-code:payments:compose:payment>compose:payments (line 24)
+    The code line of Payments names `compose:payment`, which the code no longer has; it has `compose:payments` instead, which no element names.
+    An exact check: the code has no Compose service of that name, and `compose:payments` is the closest one no element names.
+    stack/compose.yaml:19  Compose service: compose:payments
+    edit at 24
+      -     code compose:payment
+      +     code compose:payments
+    instead at 42
+      + ignore drift compose:payment - why this difference is meant
+D02 drift missing-code missing-code:search:compose:search (line 30)
+    The code line of Search names `compose:search`, which the code does not have.
+    An exact check: the code has no Compose service of that name.
+    edit at 29
+      -   search: Search [service]
+      -     code compose:search
+    instead at 42
+      + ignore drift compose:search - why this difference is meant
+D03 drift undrawn-code undrawn-code:compose:cache
+    The code has the Compose service `compose:cache`, but no element stands for it.
+    2 techniques found it: Compose service and Compose environment host name. Compose depends_on agrees too, but only corroborates.
+    stack/compose.yaml:34  Compose service: compose:cache
+    stack/compose.yaml:17  Compose environment host name: compose:api to compose:cache (CACHE_HOST=cache:6379)
+    stack/compose.yaml:18  Compose depends_on: compose:api to compose:cache
+    edit at 31
+      +   cache: cache [service]
+      +     code compose:cache
+    edit at 39
+      + api calls cache
+    instead at 42
+      + ignore drift compose:cache - why this difference is meant
+D04 drift undrawn-connection undrawn-connection:worker>api
+    Worker calls Orders API in the code, but no line in the diagram joins them.
+    2 techniques found it: Compose environment URL and Compose environment host name. Compose depends_on agrees too, but only corroborates.
+    stack/compose.yaml:26  Compose environment URL: compose:worker to compose:api (API_URL=http://api:3000)
+    stack/compose.yaml:27  Compose environment host name: compose:worker to compose:api (API_HOST=api)
+    stack/compose.yaml:29  Compose depends_on: compose:worker to compose:api
+    edit at 39
+      + worker calls api
+    instead at 42
+      + ignore drift worker to api - why this difference is meant
+L01 likely missing-connection missing-connection:web>payments:calls (line 36)
+    The diagram says Storefront calls Payments, but the code shows no call from Storefront to Payments.
+    No technique found a call between them, and reading the code cannot rule one out, so this is only likely.
+    edit at 36
+      - web calls payments
+    instead at 42
+      + ignore drift web to payments - why this difference is meant
+L02 likely unused-ignore unused-ignore:web to db (line 41)
+    The ignore line for `web to db` excuses nothing: the diagram and the code agree there.
+    Nothing it names differs any more, so it can go.
+    edit at 41
+      - ignore drift web to db - the storefront read the database before the API existed
+L03 likely undrawn-connection undrawn-connection:api>db
+    Orders API calls Database in the code, but no line in the diagram joins them.
+    One technique found it: Compose environment JDBC URL. Compose depends_on agrees too, but only corroborates.
+    stack/compose.yaml:15  Compose environment JDBC URL: compose:api to compose:db (DATABASE_URL=jdbc:postgresql://db:5432/shop)
+    stack/compose.yaml:18  Compose depends_on: compose:api to compose:db
+    edit at 39
+      + api calls db
+    instead at 42
+      + ignore drift api to db - why this difference is meant
+
+# Suggestions
+
+# Not checked
+[end] The line “Customer uses Storefront” is not checked: Customer stands for no code drift can read.
+[person] Customer is a person, which code cannot show.
+[wording] The wording (names, taglines and descriptions) is not checked: wrong details are checked in phase 2.
+
+# Ignored
+compose:queue - run by the platform team, outside this diagram
+  - drift undrawn-code undrawn-code:compose:queue
+      The code has the Compose service `compose:queue`, but no element stands for it.
+      2 techniques found it: Compose service and Compose environment host name. Compose depends_on agrees too, but only corroborates.
+      stack/compose.yaml:30  Compose service: compose:queue
+      stack/compose.yaml:28  Compose environment host name: compose:worker to compose:queue (QUEUE_HOST=queue)
+      stack/compose.yaml:29  Compose depends_on: compose:worker to compose:queue
+      edit at 31
+        +   queue: queue [service]
+        +     code compose:queue
+      edit at 39
+        + worker calls queue
+      instead at 42
+        + ignore drift compose:queue - why this difference is meant
+
+# Confirmed
+The line “Storefront calls Orders API” is in the code. [env-url, compose-depends-on]
+The line “Orders API charges cards through Payments” is in the code. [env-url]
+The line “Payments charges cards at Bank” is in the code. [env-url]
+Storefront stands for `compose:web`, which the code has. [compose-service]
+Orders API stands for `compose:api`, which the code has. [compose-service]
+Payments stands for `compose:payments`, which the code has. [compose-service]
+Worker stands for `compose:worker`, which the code has. [compose-service]
+Database stands for `compose:db`, which the code has. [compose-service]
+Bank stands for the host `api.bank.example`, which the code has. [env-url]

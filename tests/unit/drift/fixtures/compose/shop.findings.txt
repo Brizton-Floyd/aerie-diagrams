@@ -1,0 +1,33 @@
+# Findings
+
+# Suggestions
+S01 (used) suggestion:payments:compose:payments
+    Payments may stand for `compose:payments`: add `code compose:payments`?
+    Its name matches, so drift compares it as standing for that unit already; a code line makes it certain.
+    stack/compose.yaml:19  Compose service: compose:payments
+    edit at 17
+      +     code compose:payments
+
+# Not checked
+[end] The line “Customer uses Storefront” is not checked: Customer stands for no code drift can read.
+[person] Customer is a person, which code cannot show.
+[wording] The wording (names, taglines and descriptions) is not checked: wrong details are checked in phase 2.
+
+# Ignored
+
+# Confirmed
+The line “Storefront calls Orders API” is in the code. [env-url, compose-depends-on]
+The line “Orders API reads orders from Database” is in the code. [env-jdbc, compose-depends-on]
+The line “Orders API charges cards through Payments” is in the code. [env-url]
+The line “Orders API keeps sessions in Cache” is in the code. [env-host, compose-depends-on]
+The line “Worker calls Orders API” is in the code. [env-url, env-host, compose-depends-on]
+The line “Worker takes jobs from Job queue” is in the code. [env-host, compose-depends-on]
+The line “Payments charges cards at Bank” is in the code. [env-url]
+Storefront stands for `compose:web`, which the code has. [compose-service]
+Orders API stands for `compose:api`, which the code has. [compose-service]
+Payments stands for `compose:payments`, which the code has. [compose-service]
+Worker stands for `compose:worker`, which the code has. [compose-service]
+Job queue stands for `compose:queue`, which the code has. [compose-service]
+Database stands for `compose:db`, which the code has. [compose-service]
+Cache stands for `compose:cache`, which the code has. [compose-service]
+Bank stands for the host `api.bank.example`, which the code has. [env-url]

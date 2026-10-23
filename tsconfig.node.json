@@ -7,5 +7,5 @@
     "checkJs": true
   },
   "include": ["scripts", "tests", "src/cli", "*.config.ts", "*.config.js"],
-  "exclude": ["tests/unit/extract/fixtures"]
+  "exclude": ["tests/unit/extract/fixtures", "tests/unit/drift/fixtures"]
 }

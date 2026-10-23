@@ -1,0 +1,25 @@
+// The same shop with planted differences, each of which drift must find, and nothing else:
+// - `storefront calls api` is gone: drift, since the dev proxy, the calls through it, the calls
+//   through nginx and nginx's own proxy_pass all show it;
+// - `npm:shop-site` is written for the package the code calls `shop-web`: drift, a rename;
+// - `storefront takes payments through pay` is gone: likely, since one technique shows it;
+// - `api notifies storefront` is a line no code shows: likely.
+model shop: Corner shop
+
+system
+  repo web
+  repo deploy
+  compose deploy/compose.yaml
+
+shopper: Shopper [person]
+
+storefront: Storefront [service]
+  code compose:web npm:shop-site
+ui-kit: UI kit [module]
+  code npm:@shop/ui-kit
+api: Orders API [service]
+  code compose:api
+pay: Payment provider [external]
+
+shopper uses storefront
+api notifies storefront

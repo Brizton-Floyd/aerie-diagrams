@@ -9,5 +9,6 @@ tests/unit/lines/examples/*.json
 tests/unit/lines/spec-examples/*.json
 # Glyph advance widths written from the bundled fonts by scripts/font-metrics.ts (LAYOUT-101).
 src/layout/text/advances.json
-# The extractor's fixture projects, and the copies of Lotto's Compose files, stay as written.
+# The extractor's and drift's fixture projects, and the copies of Lotto's repos, stay as written.
 tests/unit/extract/fixtures/
+tests/unit/drift/fixtures/
