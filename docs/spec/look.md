@@ -237,6 +237,7 @@ Requirement ids: `LOOK-nnn`. Conventions are in [overview.md](overview.md#readin
 
 - **LOOK-902** Persisting things glide; new things fade in; nothing bounces or overshoots.
 - **LOOK-903** **Reduced motion** sets every duration and delay above to zero: changes appear at once,
-  the trail is drawn whole, wording swaps in place, and the camera jumps. It is on when the system asks
-  for reduced motion, until the reader changes the "Reduce motion" checkbox; the choice is remembered
-  on that device.
+  the trail is drawn whole, wording swaps in place, and the camera jumps. The autoplay pace is not
+  motion: Play still advances one step every 2400 ms. It is on when the system asks for reduced
+  motion, until the reader changes the "Reduce motion" checkbox; the choice is remembered on that
+  device.

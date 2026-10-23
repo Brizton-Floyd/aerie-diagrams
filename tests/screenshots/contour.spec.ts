@@ -40,11 +40,11 @@ for (const theme of THEMES) {
       }
       await show(page, 'shapes', 'manager');
       await page.locator('button[data-scenario="visit"]').click();
-      await page.locator('input[name="step"]').fill('5');
-      await page.locator('input[name="step"]').press('Enter');
+      // The side panel's content is hidden (HIDE_TEXT), so its controls are pressed without a pointer.
+      await page.locator('aside.panel button.step-choice[data-step="5"]').dispatchEvent('click');
       await expect(page.locator('svg.aerie .badge.now')).toHaveAttribute('data-step', '5');
       await expect(page).toHaveScreenshot(`shapes-visit-trail-${theme}.png`);
-      await page.locator('input[name="lanes"]').check();
+      await page.locator('aside.panel button[data-control="lanes"]').dispatchEvent('click');
       await expect(page.locator('svg.aerie[data-scenario="visit"]')).toBeVisible();
       await expect(page).toHaveScreenshot(`shapes-visit-lanes-${theme}.png`);
     });

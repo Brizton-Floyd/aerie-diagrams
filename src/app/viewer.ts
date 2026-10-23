@@ -3,8 +3,10 @@
 // selects an element to read about it in the side panel (INT-201 to INT-206), opens containers in
 // place (INT-301 to INT-304), switches the audience without moving anything (INT-101 to INT-105),
 // moves the camera (INT-351 to INT-353), and does all of it from the keyboard too (INT-901 to
-// INT-905). The navigation sidebar and shared links (A7) and scenario playback (A8) build on it.
-// The split editor (editing.ts) and watch mode (watching.ts) give it new versions of the model.
+// INT-905). A reader plays a scenario on the architecture or as lanes, step by step or by itself
+// (INT-601 to INT-606, scenario.ts). The navigation sidebar and shared links (A7) build on it and
+// start scenarios with `playScenario`. The split editor (editing.ts) and watch mode (watching.ts)
+// give it new versions of the model.
 import {
   check,
   closeContainer,
@@ -17,6 +19,7 @@ import {
   switchAudience,
   switchView,
   Semantics,
+  type Activity,
   type Picture,
 } from '../model/index.ts';
 import type { Id } from '../lines/index.ts';
@@ -39,6 +42,7 @@ import { LOGO } from './logo.ts';
 import { Swap } from './motion.ts';
 import { elementPanel, viewPanel, type PanelActions } from './panel.ts';
 import { FIRST_SAMPLE, SAMPLES } from './samples.ts';
+import { Autoplay, ScenarioPanel, captionOf, type ScenarioActions } from './scenario.ts';
 import { Stage, type Arrival, type Showing } from './stage.ts';
 
 /**
@@ -71,6 +75,16 @@ function remember(key: string, value: string): void {
   } catch {
     // Storage may be off; the choice then lasts for this page only.
   }
+}
+
+/** A control whose own Space and Enter keys press it, so the page's shortcuts leave them alone. */
+function pressable(target: EventTarget | null): boolean {
+  return (
+    target instanceof HTMLButtonElement ||
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLSelectElement ||
+    target instanceof HTMLAnchorElement
+  );
 }
 
 /** INT-004: keyboard shortcuts never act while the focus is in a text field. */
@@ -120,6 +134,12 @@ export class Viewer {
   private readonly motionBox: HTMLInputElement;
   /** The split editor's pane while it is open (INT-801), in place of the sidebar. */
   private editorPane: HTMLElement | null = null;
+  /** INT-605: Play's clock, which moves the playing scenario on one step at each tick. */
+  private readonly autoplay = new Autoplay(() => {
+    this.autoplayTick();
+  });
+  /** INT-602: the playing scenario's side panel, changed in place as it moves. */
+  private scenarioPanel: ScenarioPanel | null = null;
 
   constructor(root: HTMLElement, options: { watching?: boolean } = {}) {
     this.root = root;
@@ -314,6 +334,8 @@ export class Viewer {
     const before = this.picture;
     this.picture = normalisePicture(this.opened.semantics, picture).picture;
     this.arrival = { ...this.arrival, ...arrival };
+    // INT-606: Play stops with the scenario it plays.
+    if (playingOf(before)?.scenario !== playingOf(this.picture)?.scenario) this.autoplay.stop();
     if (before !== null && before.audience !== this.picture.audience) {
       this.spoken.textContent = `Now written for ${this.opened.semantics.audience(this.picture.audience).name}`;
     }
@@ -398,6 +420,7 @@ export class Viewer {
     const nodeId = node?.getAttribute('data-id') ?? null;
     const tab = target?.closest('[role=tab]') ?? null;
     let handled = true;
+    const playing = picture.activity.kind === 'playing';
     if (/^[1-6]$/.test(event.key)) {
       const audience = opened.semantics.model.audiences[Number(event.key) - 1];
       if (audience === undefined) return;
@@ -411,8 +434,16 @@ export class Viewer {
       this.switchTo(next.id);
       this.tabs.querySelector<HTMLElement>(`[data-audience="${CSS.escape(next.id)}"]`)?.focus();
     } else if (event.key === 'Escape') {
-      if (picture.activity.kind !== 'selected') return;
-      this.change(select(opened.semantics, picture, null));
+      if (playing) this.scenarioActions.done();
+      else if (picture.activity.kind === 'selected')
+        this.change(select(opened.semantics, picture, null));
+      else return;
+    } else if (playing && event.key === 'ArrowRight') {
+      this.scenarioActions.forward();
+    } else if (playing && event.key === 'ArrowLeft') {
+      this.scenarioActions.back();
+    } else if (playing && event.key === ' ' && !pressable(event.target)) {
+      this.scenarioActions.playOrPause();
     } else if (nodeId !== null && (event.key === 'Enter' || event.key === ' ')) {
       if (picture.activity.kind === 'selected' && picture.activity.element === nodeId) return;
       this.choose(nodeId);
@@ -439,12 +470,18 @@ export class Viewer {
     const { semantics, layouter } = opened;
     const { view, zoom, audience, activity } = picture;
     let showing: Showing;
+    const caption =
+      activity.kind === 'playing'
+        ? captionOf(semantics, activity.scenario, activity.step, audience)
+        : null;
     if (activity.kind === 'playing' && activity.lanes) {
       const lanes = await layouter.lanes(activity.scenario, view, zoom);
       showing = {
         markup: toMarkup(renderLanes(semantics, lanes, audience, activity.step)),
         layout: null,
+        lanes,
         sentences: [],
+        caption,
       };
     } else {
       const laid = await layouter.picture(view, zoom, audience);
@@ -468,7 +505,9 @@ export class Viewer {
           ),
         ),
         layout: laid,
+        lanes: null,
         sentences: scene.edges.flatMap((edge) => edge.relationships.map((each) => each.sentence)),
+        caption,
       };
     }
     if (count !== this.drawCount) return;
@@ -527,12 +566,120 @@ export class Viewer {
       this.toggle(id);
     },
     play: (scenario) => {
-      const opened = this.opened;
-      const picture = this.picture;
-      if (opened === null || picture === null) return;
-      this.change(play(opened.semantics, picture, scenario));
+      this.playScenario(scenario);
     },
   };
+
+  // ------------------------------------------------------------ scenario playback
+
+  /**
+   * INT-601: plays a scenario from step 1 on its stage view (MODEL-404), clearing the selection,
+   * with the camera fitted around the caption bar. Starting another scenario stops the one playing
+   * (INT-606). The side panel's scenario buttons call it, and so does the navigation sidebar
+   * (INT-403).
+   */
+  playScenario(scenario: Id): void {
+    const opened = this.opened;
+    const picture = this.picture;
+    if (opened === null || picture === null || !opened.semantics.hasScenario(scenario)) return;
+    this.autoplay.stop();
+    this.change(play(opened.semantics, picture, scenario), { fit: true });
+  }
+
+  /** INT-605: ends the playing scenario and returns to its view, fitted. */
+  endScenario(): void {
+    const opened = this.opened;
+    const picture = this.picture;
+    if (opened === null || picture?.activity.kind !== 'playing') return;
+    this.autoplay.stop();
+    this.change(stop(opened.semantics, picture), { fit: true });
+  }
+
+  /** Moves the playing scenario to a step, clamped to its steps (MODEL-603), as lanes or not. */
+  private playAt(step: number, lanes?: boolean): void {
+    const opened = this.opened;
+    const picture = this.picture;
+    const playing = playingOf(picture);
+    if (opened === null || picture === null || playing === null) return;
+    const count = opened.semantics.scenario(playing.scenario).steps.length;
+    const next = {
+      ...playing,
+      step: Math.min(Math.max(step, 1), count),
+      lanes: lanes ?? playing.lanes,
+    };
+    if (next.step === playing.step && next.lanes === playing.lanes) return;
+    // INT-604: the map and the lanes are each fitted when the reader switches between them.
+    this.change({ ...picture, activity: next }, next.lanes === playing.lanes ? {} : { fit: true });
+  }
+
+  /** INT-605: Play's clock moves one step on, and stops on the last step. */
+  private autoplayTick(): void {
+    const opened = this.opened;
+    const playing = playingOf(this.picture);
+    if (opened === null || playing === null) {
+      this.autoplay.stop();
+      return;
+    }
+    const count = opened.semantics.scenario(playing.scenario).steps.length;
+    if (playing.step >= count - 1) this.autoplay.stop();
+    if (playing.step < count) this.playAt(playing.step + 1);
+    else this.refreshPlayer();
+  }
+
+  /** The scenario panel's controls and the keys of INT-605. */
+  private readonly scenarioActions: ScenarioActions = {
+    back: () => {
+      const playing = playingOf(this.picture);
+      if (playing === null) return;
+      this.autoplay.stop();
+      this.playAt(playing.step - 1);
+      this.refreshPlayer();
+    },
+    forward: () => {
+      const playing = playingOf(this.picture);
+      if (playing === null) return;
+      this.autoplay.stop();
+      this.playAt(playing.step + 1);
+      this.refreshPlayer();
+    },
+    playOrPause: () => {
+      const opened = this.opened;
+      const playing = playingOf(this.picture);
+      if (opened === null || playing === null) return;
+      if (this.autoplay.running) {
+        this.autoplay.stop();
+      } else {
+        // Play on the last step starts again from step 1.
+        const count = opened.semantics.scenario(playing.scenario).steps.length;
+        if (playing.step >= count) this.playAt(1);
+        if (count > 1) this.autoplay.start();
+      }
+      this.refreshPlayer();
+    },
+    done: () => {
+      this.endScenario();
+    },
+    lanes: (on) => {
+      const playing = playingOf(this.picture);
+      if (playing !== null) this.playAt(playing.step, on);
+    },
+    step: (step) => {
+      this.autoplay.stop();
+      this.playAt(step);
+      this.refreshPlayer();
+    },
+  };
+
+  /** Brings the scenario panel's controls up to date with the picture and Play's clock. */
+  private refreshPlayer(): void {
+    const playing = playingOf(this.picture);
+    if (playing === null || this.scenarioPanel === null) return;
+    this.scenarioPanel.update({
+      step: playing.step,
+      lanes: playing.lanes,
+      running: this.autoplay.running,
+    });
+  }
 
   /**
    * INT-801: while editing, the sidebar is hidden and the breadcrumb's view title opens a menu of
@@ -667,7 +814,6 @@ export class Viewer {
       ]),
     );
 
-    // Scenario playback is slice A8's; until then the sidebar offers the bare controls.
     if (semantics.model.scenarios.length > 0) {
       const playing = activity.kind === 'playing' ? activity : null;
       const scenarios = semantics.model.scenarios.map((scenario) =>
@@ -687,51 +833,7 @@ export class Viewer {
           ],
         ),
       );
-      const controls: Node[] = [];
-      if (playing !== null) {
-        const count = semantics.scenario(playing.scenario).steps.length;
-        controls.push(
-          h('label', { class: 'step' }, [
-            'Step ',
-            h('input', {
-              type: 'number',
-              name: 'step',
-              min: 1,
-              max: count,
-              value: playing.step,
-              onchange: (event) => {
-                const step = Number((event.target as HTMLInputElement).value);
-                this.change({ ...picture, activity: { ...playing, step } });
-              },
-            }),
-            ` of ${String(count)}`,
-          ]),
-          h('label', { class: 'check' }, [
-            h('input', {
-              type: 'checkbox',
-              name: 'lanes',
-              checked: playing.lanes,
-              onchange: (event) => {
-                const lanes = (event.target as HTMLInputElement).checked;
-                this.change({ ...picture, activity: { ...playing, lanes } });
-              },
-            }),
-            ' As lanes',
-          ]),
-          h(
-            'button',
-            {
-              type: 'button',
-              class: 'tool',
-              onclick: () => {
-                this.change(stop(semantics, picture));
-              },
-            },
-            ['Done'],
-          ),
-        );
-      }
-      sections.push(h('section', {}, [h('h2', {}, ['Scenarios']), ...scenarios, ...controls]));
+      sections.push(h('section', {}, [h('h2', {}, ['Scenarios']), ...scenarios]));
     }
     // A reader choosing from the sidebar with the keyboard keeps their place in it.
     const active = document.activeElement;
@@ -768,16 +870,41 @@ export class Viewer {
       ),
     );
 
-    // INT-204 and INT-205: the side panel; when the reader was in it, the focus stays in it.
+    // INT-204, INT-205 and INT-602: the side panel; when the reader was in it, the focus stays in
+    // it, on the same control of a scenario's panel.
+    const hadFocus = this.panel.contains(document.activeElement);
+    if (activity.kind === 'playing') {
+      const was = this.scenarioPanel;
+      const kept = was?.focusKey() ?? null;
+      const panel = was?.shows(semantics, activity.scenario, audience)
+        ? was
+        : new ScenarioPanel(semantics, activity.scenario, audience, this.scenarioActions);
+      this.scenarioPanel = panel;
+      this.panelSwap.set(panel.element, (replaced) => {
+        // A new model's panel that reads the same as the one shown leaves that one in place.
+        if (!replaced && !panel.element.isConnected && was !== null) this.scenarioPanel = was;
+        this.refreshPlayer();
+        if (!replaced || !hadFocus) return;
+        if (kept === null) this.panel.querySelector<HTMLElement>('h1')?.focus();
+        else panel.focus(kept);
+      });
+      this.refreshPlayer();
+      return;
+    }
+    this.scenarioPanel = null;
     const content =
       activity.kind === 'selected'
         ? elementPanel(semantics, picture, activity.element, this.panelActions)
         : viewPanel(semantics, picture, this.panelActions);
-    const hadFocus = this.panel.contains(document.activeElement);
     this.panelSwap.set(h('div', { class: 'panel-content' }, content), (replaced) => {
       if (replaced && hadFocus) this.panel.querySelector<HTMLElement>('h1')?.focus();
     });
   }
+}
+
+/** The playing scenario of a picture, or null. */
+function playingOf(picture: Picture | null): Extract<Activity, { kind: 'playing' }> | null {
+  return picture?.activity.kind === 'playing' ? picture.activity : null;
 }
 
 /** Starts the page: the model named by `?model=`, else the first sample. */

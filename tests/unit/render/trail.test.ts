@@ -48,7 +48,7 @@ describe('the scenario trail', () => {
       'fill: none; stroke: var(--aerie-accent); stroke-width: 2.4px; stroke-linecap: round;',
     );
     expect(rule('.aerie .step.now.call .curve')).toBe(
-      'stroke-dasharray: 1 1; animation: aerie-draw var(--aerie-step-draw) var(--aerie-ease) both;',
+      'stroke-dasharray: 1 1; animation: aerie-draw var(--aerie-step-draw) var(--aerie-ease) backwards;',
     );
     expect(MOTION.stepDraw).toBe(900);
   });
@@ -155,8 +155,11 @@ describe('motion', () => {
       dimming: 280,
       hover: 250,
       stepDraw: 900,
+      autoplay: 2400,
     });
     expect(css).toContain('--aerie-glide: 560ms;');
+    // The autoplay pace is not motion, so it is no custom property for reduced motion to zero.
+    expect(css).not.toContain('2400');
     expect(rule('.aerie .node > *')).toBe(
       'transition: stroke var(--aerie-hover) ease, stroke-width var(--aerie-hover) ease, opacity var(--aerie-dimming) ease;',
     );

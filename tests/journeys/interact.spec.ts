@@ -440,9 +440,7 @@ test.describe('the keyboard and screen readers', () => {
 
   test('INT-004 shortcuts do nothing while the focus is in a text field', async ({ page }) => {
     await openLotto(page, 'services');
-    await page.locator('button[data-scenario="generate-picks"]').click();
-    const step = page.locator('input[name="step"]');
-    await step.focus();
+    await page.locator('select[name="model"]').focus();
     await page.keyboard.press('3');
     await expect(tab(page, 'Manager')).toHaveAttribute('aria-selected', 'true');
     await page.locator('aside.panel h1').click();
