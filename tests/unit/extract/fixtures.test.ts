@@ -17,6 +17,7 @@ import {
   type Extraction,
 } from '../../../src/extract/index.ts';
 import { parse } from '../../../src/lines/index.ts';
+import { java } from './memory.ts';
 
 const DIR = join(import.meta.dirname, 'fixtures');
 
@@ -28,6 +29,7 @@ export function extractFixture(fixture: string, model: string): Extraction {
   return extract({
     ...modelInput(file, parsed.model.system),
     homeRepo: slashes(join(DIR, fixture)),
+    java,
   });
 }
 
@@ -75,6 +77,14 @@ describe('fixture projects', () => {
     await expectFixture('details', 'details');
   });
 
+  it('DRIFT-201 to DRIFT-213 a Spring Boot and Maven system with one of each pattern, the traps included', async () => {
+    const found = await expectFixture('spring', 'spring');
+    // A Map named like a template is not a RestTemplate, and CORS origins call this module, not out.
+    const lines = found.facts.map((fact) => factText(fact));
+    expect(lines.filter((line) => line.includes('ticketsPerTemplate'))).toEqual([]);
+    expect(lines.filter((line) => line.includes('4200'))).toEqual([]);
+  });
+
   it('DRIFT-114 the Lotto Compose files: only the file the system root names', async () => {
     const found = await expectFixture('lotto', 'lotto');
     expect(units(found, 'compose')).toEqual(['results-service', 'core', 'bff', 'web-ui']);
@@ -111,7 +121,7 @@ describe('fixture projects', () => {
     const found = await expectFixture('lotto', 'lotto');
     expect(units(found, 'npm')).toEqual(['lotto-options-ui']);
     const calls = found.facts.flatMap((fact) =>
-      fact.kind === 'call' ? [`${fact.method} ${fact.url}`] : [],
+      fact.kind === 'call' && !('className' in fact) ? [`${fact.method} ${fact.url}`] : [],
     );
     expect(calls).toEqual([
       'GET /ui/dashboard/{}/{}',
@@ -138,6 +148,107 @@ describe('fixture projects', () => {
       'compose:web-ui > compose:bff': ['nginx-proxy-pass'],
       'npm:lotto-options-ui > compose:bff': ['angular-proxy', 'http-dev-proxy', 'http-nginx'],
     });
+  });
+
+  it('DRIFT-214 the Lotto Spring repos: three apps, their ports, the module graph, endpoints and the calls between them', () => {
+    const found = extractFixture('lotto', 'lotto');
+    const unitsOf = (kind: string): string[] =>
+      found.facts.flatMap((fact) =>
+        fact.kind === kind && 'unit' in fact && 'className' in fact ? [fact.unit.name] : [],
+      );
+    expect(unitsOf('app')).toEqual([
+      'lottery-result-persistence-server',
+      'lotto-options-core-bff',
+      'lotto-options-core-server',
+    ]);
+    const ports = found.facts.flatMap((fact) =>
+      fact.kind === 'property' && fact.key === 'server.port'
+        ? [`${fact.unit.name}:${fact.value}`]
+        : [],
+    );
+    expect(ports).toEqual([
+      'lottery-result-persistence-server:8001',
+      'lotto-options-core-bff:8080',
+      'lotto-options-core-server:8002',
+    ]);
+    // The module graph, from the raw poms: the runtime-only dependency on the legacy module too.
+    const modules = found.facts.flatMap((fact) =>
+      fact.kind === 'dependency' && !('artifact' in fact.to) && fact.scope !== 'test'
+        ? [`${fact.from.name} > ${fact.to.name} (${fact.scope})`]
+        : [],
+    );
+    expect(modules).toContain(
+      'lotto-options-core-server > lotto-options-core-legacy-desktop (runtime)',
+    );
+    expect(modules).toContain(
+      'lottery-result-persistence-server > lottery-result-aggregator (compile)',
+    );
+    // 35 endpoints: 9 in the BFF, 20 in the engine (8 of them legacy) and 6 in the store; the
+    // research (#51) counted 34 before the engine's betslip endpoint was added.
+    const endpoints = unitsOf('endpoint');
+    expect(endpoints.length).toBe(35);
+    expect(endpoints.filter((each) => each === 'lotto-options-core-bff').length).toBe(9);
+    expect(endpoints.filter((each) => each === 'lottery-result-persistence-server').length).toBe(6);
+    // The service connections Spring shows: two through configuration URLs that Compose
+    // overrides by relaxed binding, the calls behind them, and the fourth connection, which
+    // Compose cannot show: the store's downloads from the Texas lottery.
+    const to = (fact: { to: unknown }): string => {
+      const target = fact.to as { name?: string; host?: string } | null;
+      return target === null ? '?' : (target.name ?? `host ${target.host ?? ''}`);
+    };
+    const configured = new Set(
+      found.facts.flatMap((fact) =>
+        fact.kind === 'connection' && fact.technique === 'spring-config-url'
+          ? [`${fact.from.name} > ${to(fact)} (${fact.key ?? ''})`]
+          : [],
+      ),
+    );
+    expect(configured).toContain(
+      'lotto-options-core-bff > lotto-options-core-server (core-api.base-url)',
+    );
+    expect(configured).toContain(
+      'lotto-options-core-server > lottery-result-persistence-server (persistence-service.host)',
+    );
+    expect(
+      [...configured].some((each) =>
+        each.startsWith('lottery-result-persistence-server > host www.texaslottery.com'),
+      ),
+    ).toBe(true);
+    const env = found.facts.flatMap((fact) =>
+      fact.kind === 'property' && fact.key.endsWith('url') ? [fact.env] : [],
+    );
+    expect(env).toContain('COREAPI_BASEURL');
+    const calls = new Set(
+      found.facts.flatMap((fact) =>
+        fact.kind === 'call' && 'className' in fact && fact.to !== null
+          ? [`${fact.unit.name} > ${to(fact)}`]
+          : [],
+      ),
+    );
+    expect([...calls].sort()).toEqual([
+      'lotto-options-core-bff > lotto-options-core-server',
+      'lotto-options-core-server > lottery-result-persistence-server',
+    ]);
+    // The draw-history call builds its URL in `PersistenceServiceProperties.drawHistoryUrl()`.
+    expect(
+      found.facts.some(
+        (fact) =>
+          fact.kind === 'call' &&
+          'className' in fact &&
+          fact.className.endsWith('ResultsServiceDrawHistoryAdapter') &&
+          fact.url === 'http://localhost:8001/api/v1/state/games',
+      ),
+    ).toBe(true);
+    // The in-process event the store's poller announces and its catalog cache listens for.
+    const events = found.facts.flatMap((fact) =>
+      fact.kind === 'event' ? [`${fact.direction} ${fact.event}`] : [],
+    );
+    expect(new Set(events)).toEqual(
+      new Set([
+        'publishes com.floyd.lottoptions.agr.polling.PollCompletedEvent',
+        'listens com.floyd.lottoptions.agr.polling.PollCompletedEvent',
+      ]),
+    );
     expect(found.problems).toEqual([]);
   });
 });

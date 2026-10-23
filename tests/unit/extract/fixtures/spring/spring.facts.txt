@@ -1,0 +1,96 @@
+shop/billing/pom.xml:9  Maven module: maven:shop-billing
+shop/billing/pom.xml:9  Maven module: maven:shop-billing is packaged as jar in shop/billing (parent maven:shop)
+shop/billing/pom.xml:12  Maven dependency: maven:shop-billing depends on maven:shop-common (compile)
+shop/billing/pom.xml:17  Maven dependency: maven:shop-billing depends on org.springframework.boot:spring-boot-starter-web (compile)
+shop/billing/pom.xml:21  Maven dependency: maven:shop-billing depends on org.springframework.boot:spring-boot-starter-amqp (compile)
+shop/billing/pom.xml:25  Maven dependency: maven:shop-billing depends on org.junit.jupiter:junit-jupiter (test)
+shop/billing/src/main/java/com/shop/billing/BillingApplication.java:5  Spring Boot application: maven:shop-billing runs the Spring Boot app com.shop.billing.BillingApplication
+shop/billing/src/main/java/com/shop/billing/ChargeApi.java:7  Spring request mapping: maven:shop-billing answers DELETE /api/charges/{charge} (ChargeController.refund)
+shop/billing/src/main/java/com/shop/billing/ChargeController.java:9  Spring request mapping: maven:shop-billing answers POST /api/charges (ChargeController.charge)
+shop/billing/src/main/java/com/shop/billing/ChargeController.java:9  Spring request mapping: maven:shop-billing answers POST /api/v2/charges (ChargeController.charge)
+shop/billing/src/main/java/com/shop/billing/LedgerApi.java:8  HTTP interface: maven:shop-billing calls GET http://ledger.example.com/api/entries/{id} on host ledger.example.com (LedgerApi.entry)
+shop/billing/src/main/java/com/shop/billing/PaymentsListener.java:22  Kafka listener: maven:shop-billing receives from kafka payments.settled (PaymentsListener.settled)
+shop/billing/src/main/java/com/shop/billing/PaymentsListener.java:24  RabbitMQ template: maven:shop-billing sends to rabbit billing, routing key charge.done (PaymentsListener.settled)
+shop/billing/src/main/java/com/shop/billing/PaymentsListener.java:27  Kafka listener: maven:shop-billing receives from kafka orders.cancelled (PaymentsListener.orders)
+shop/billing/src/main/java/com/shop/billing/PaymentsListener.java:27  Kafka listener: maven:shop-billing receives from kafka orders.created (PaymentsListener.orders)
+shop/billing/src/main/java/com/shop/billing/PaymentsListener.java:29  RabbitMQ template: maven:shop-billing sends to rabbit refunds (PaymentsListener.orders)
+shop/billing/src/main/java/com/shop/billing/PaymentsListener.java:32  RabbitMQ listener: maven:shop-billing receives from rabbit refunds (PaymentsListener.refund)
+shop/billing/src/main/java/com/shop/billing/PaymentsListener.java:36  RabbitMQ listener: maven:shop-billing receives from rabbit billing, routing key charge.* (PaymentsListener.audit)
+shop/billing/src/main/java/com/shop/billing/PaymentsListener.java:40  JMS listener: maven:shop-billing receives from jms ledger.entries (PaymentsListener.ledger)
+shop/billing/src/main/java/com/shop/billing/RefundJob.java:9  Spring schedule: maven:shop-billing runs RefundJob.sweep PT30S after each run
+shop/billing/src/main/java/com/shop/billing/RefundJob.java:13  Spring event listener: maven:shop-billing listens for com.shop.billing.RefundRequested (RefundJob.onApplicationEvent)
+shop/billing/src/main/resources/application.properties:1  Spring property: maven:shop-billing sets server.port=8082 (env SERVER_PORT)
+shop/billing/src/main/resources/application.properties:2  Spring property: maven:shop-billing sets spring.application.name=billing (env SPRING_APPLICATION_NAME)
+shop/billing/src/main/resources/application.properties:3  Spring configuration host name: maven:shop-billing to host rabbit (spring.rabbitmq.host=rabbit)
+shop/billing/src/main/resources/application.properties:3  Spring property: maven:shop-billing sets spring.rabbitmq.host=rabbit (env SPRING_RABBITMQ_HOST)
+shop/billing/src/main/resources/application.properties:4  Spring configuration JDBC URL: maven:shop-billing to host db (spring.datasource.url=jdbc:postgresql://db:5432/billing?user=billing&password=***)
+shop/billing/src/main/resources/application.properties:4  Spring property: maven:shop-billing sets spring.datasource.url=jdbc:postgresql://db:5432/billing?user=billing&password=*** (env SPRING_DATASOURCE_URL)
+shop/billing/src/main/resources/application.properties:6  Spring property: maven:shop-billing sets ledger.url=${LEDGER_URL} (env LEDGER_URL)
+shop/billing/src/main/resources/application.properties:10  Spring property: maven:shop-billing sets server.port=0 in profile test (env SERVER_PORT)
+shop/billing/src/main/resources/config/application.yml:3  Spring property: maven:shop-billing sets management.server.port=9082 (env MANAGEMENT_SERVER_PORT)
+shop/common/pom.xml:9  Maven module: maven:shop-common
+shop/common/pom.xml:9  Maven module: maven:shop-common is packaged as jar in shop/common (parent maven:shop)
+shop/compose.yaml:1  Compose project: shop
+shop/compose.yaml:4  Compose service: compose:orders
+shop/compose.yaml:5  Compose image: compose:orders runs shop/orders:1.0
+shop/compose.yaml:7  Compose environment URL: compose:orders to compose:billing (BILLING_URL=http://billing:8082)
+shop/compose.yaml:8  Compose environment host name: compose:orders to compose:kafka (SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092)
+shop/compose.yaml:10  Compose port: compose:orders publishes 8081/tcp on 8081
+shop/compose.yaml:11  Compose service: compose:billing
+shop/compose.yaml:12  Compose image: compose:billing runs shop/billing:1.0
+shop/compose.yaml:14  Compose environment JDBC URL: compose:billing to compose:db (SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/billing)
+shop/compose.yaml:15  Compose environment host name: compose:billing to compose:rabbit (SPRING_RABBITMQ_HOST=rabbit)
+shop/compose.yaml:16  Compose service: compose:kafka
+shop/compose.yaml:17  Compose image: compose:kafka runs apache/kafka:4.1.0
+shop/compose.yaml:18  Compose service: compose:rabbit
+shop/compose.yaml:19  Compose image: compose:rabbit runs rabbitmq:4
+shop/compose.yaml:20  Compose service: compose:db
+shop/compose.yaml:21  Compose image: compose:db runs postgres:18
+shop/legacy/pom.xml:9  Maven module: maven:shop-legacy
+shop/legacy/pom.xml:10  Maven module: maven:shop-legacy is packaged as war in shop/legacy (parent maven:shop)
+shop/orders/pom.xml:9  Maven module: maven:shop-orders
+shop/orders/pom.xml:9  Maven module: maven:shop-orders is packaged as jar in shop/orders (parent maven:shop)
+shop/orders/pom.xml:12  Maven dependency: maven:shop-orders depends on maven:shop-common (compile)
+shop/orders/pom.xml:16  Maven dependency: maven:shop-orders depends on maven:shop-billing (runtime, optional)
+shop/orders/pom.xml:23  Maven dependency: maven:shop-orders depends on org.springframework.boot:spring-boot-starter-webflux (compile)
+shop/orders/pom.xml:27  Maven dependency: maven:shop-orders depends on org.springframework.kafka:spring-kafka (compile)
+shop/orders/pom.xml:31  Maven dependency: maven:shop-orders depends on org.springframework.cloud:spring-cloud-starter-openfeign (compile)
+shop/orders/src/main/java/com/shop/orders/BillingClient.java:9  Feign client: maven:shop-orders calls POST http://localhost:8082/api/charges on maven:shop-billing (BillingClient.charge)
+shop/orders/src/main/java/com/shop/orders/InventoryClient.java:18  WebClient call: maven:shop-orders calls GET http://inventory.example.com/v1/stock/{sku} on host inventory.example.com (InventoryClient.stock)
+shop/orders/src/main/java/com/shop/orders/InventoryClient.java:22  WebClient call: maven:shop-orders calls POST http://inventory.example.com/v1/reservations on host inventory.example.com (InventoryClient.reserve)
+shop/orders/src/main/java/com/shop/orders/OrderController.java:16  Spring request mapping: maven:shop-orders answers GET /api/orders/{id} (OrderController.get)
+shop/orders/src/main/java/com/shop/orders/OrderController.java:21  Spring request mapping: maven:shop-orders answers POST /api/orders (OrderController.create)
+shop/orders/src/main/java/com/shop/orders/OrderController.java:27  Spring request mapping: maven:shop-orders answers PATCH /api/orders/{id} (OrderController.update)
+shop/orders/src/main/java/com/shop/orders/OrderController.java:27  Spring request mapping: maven:shop-orders answers PUT /api/orders/{id} (OrderController.update)
+shop/orders/src/main/java/com/shop/orders/OrderEvents.java:22  Kafka template: maven:shop-orders sends to kafka orders.created (OrderEvents.created)
+shop/orders/src/main/java/com/shop/orders/OrderEvents.java:23  Spring event publisher: maven:shop-orders publishes com.shop.orders.OrderPlaced (OrderEvents.created)
+shop/orders/src/main/java/com/shop/orders/OrderEvents.java:24  Spring Cloud Stream bridge: maven:shop-orders sends to stream audit-trail (OrderEvents.created)
+shop/orders/src/main/java/com/shop/orders/OrdersApplication.java:8  Spring Boot application: maven:shop-orders runs the Spring Boot app com.shop.orders.OrdersApplication
+shop/orders/src/main/java/com/shop/orders/Reminders.java:10  Spring schedule: maven:shop-orders runs Reminders.remind every 5 min
+shop/orders/src/main/java/com/shop/orders/Reminders.java:14  Spring schedule: maven:shop-orders runs Reminders.weekly on cron 0 0 9 * * MON-FRI
+shop/orders/src/main/java/com/shop/orders/Reminders.java:18  Spring event listener: maven:shop-orders listens for com.shop.orders.OrderPlaced (Reminders.onPlaced)
+shop/orders/src/main/java/com/shop/orders/ShippingClient.java:20  RestTemplate call: maven:shop-orders calls POST http://shipping:8090/api/shipments on host shipping (ShippingClient.ship)
+shop/orders/src/main/java/com/shop/orders/ShippingClient.java:21  RestTemplate call: maven:shop-orders calls DELETE http://shipping:8090/api/shipments/{?} on host shipping (ShippingClient.ship)
+shop/orders/src/main/java/com/shop/orders/StripeClient.java:15  RestClient call: maven:shop-orders calls POST https://api.stripe.example.com/v1/charges on host api.stripe.example.com (StripeClient.charge)
+shop/orders/src/main/resources/application-dev.properties:2  Spring configuration URL: maven:shop-orders to host sandbox.shipping.example.com (shipping.base-url=http://sandbox.shipping.example.com)
+shop/orders/src/main/resources/application-dev.properties:2  Spring property: maven:shop-orders sets shipping.base-url=http://sandbox.shipping.example.com in profile dev (env SHIPPING_BASEURL)
+shop/orders/src/main/resources/application-dev.properties:3  Spring configuration URL: maven:shop-orders to host vault.example.com (shipping.password-url=https://ops:***@vault.example.com/shipping)
+shop/orders/src/main/resources/application-dev.properties:3  Spring property: maven:shop-orders sets shipping.password-url=https://ops:***@vault.example.com/shipping in profile dev (env SHIPPING_PASSWORDURL)
+shop/orders/src/main/resources/application.yml:2  Spring property: maven:shop-orders sets server.port=8081 (env SERVER_PORT)
+shop/orders/src/main/resources/application.yml:4  Spring property: maven:shop-orders sets server.servlet.context-path=/shop (env SERVER_SERVLET_CONTEXTPATH)
+shop/orders/src/main/resources/application.yml:8  Spring property: maven:shop-orders sets spring.application.name=orders (env SPRING_APPLICATION_NAME)
+shop/orders/src/main/resources/application.yml:10  Spring configuration host name: maven:shop-orders to host localhost:9092 (spring.kafka.bootstrap-servers=localhost:9092)
+shop/orders/src/main/resources/application.yml:10  Spring property: maven:shop-orders sets spring.kafka.bootstrap-servers=localhost:9092 (env SPRING_KAFKA_BOOTSTRAPSERVERS)
+shop/orders/src/main/resources/application.yml:15  Spring Cloud Stream binding: maven:shop-orders sends to stream audit-trail
+shop/orders/src/main/resources/application.yml:18  Spring configuration URL: maven:shop-orders to maven:shop-billing (billing.url=http://localhost:8082)
+shop/orders/src/main/resources/application.yml:18  Spring property: maven:shop-orders sets billing.url=http://localhost:8082 (env BILLING_URL)
+shop/orders/src/main/resources/application.yml:21  Spring configuration URL: maven:shop-orders to host inventory.example.com (inventory.base-url=http://inventory.example.com)
+shop/orders/src/main/resources/application.yml:21  Spring property: maven:shop-orders sets inventory.base-url=http://inventory.example.com (env INVENTORY_BASEURL)
+shop/orders/src/main/resources/application.yml:35  Spring configuration URL: maven:shop-orders to maven:shop-billing (billing.url=http://billing:8082)
+shop/orders/src/main/resources/application.yml:35  Spring property: maven:shop-orders sets billing.url=http://billing:8082 in profile prod (env BILLING_URL)
+shop/pom.xml:11  Maven module: maven:shop
+shop/pom.xml:13  Maven module: maven:shop is packaged as pom in shop
+shop/pom.xml:26  Maven dependency: maven:shop depends on org.junit.jupiter:junit-jupiter (test)
+shop/pom.xml:26  Maven dependency: maven:shop-common depends on org.junit.jupiter:junit-jupiter (test)
+shop/pom.xml:26  Maven dependency: maven:shop-legacy depends on org.junit.jupiter:junit-jupiter (test)
+shop/pom.xml:26  Maven dependency: maven:shop-orders depends on org.junit.jupiter:junit-jupiter (test)

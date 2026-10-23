@@ -148,11 +148,14 @@ API notes are in `src/extract/index.ts`.
   runs a command, opens the network or writes, and reads only what the system root leads it to (the
   Compose files, the `.env` and env files, included and extended files, and the Dockerfiles they
   build with; from D4, each repo's package.json and what section "Node and Angular" follows from
-  it). It lists a folder only where a file it reads names a pattern of folders (npm workspaces) or
-  copies a whole folder into an image (nginx configuration). A fact is one of: a Compose project, a
-  code unit (a service or a package), an image, a port, a build, a source an image is built from, a
-  connection (one unit naming another, or a host outside the system), a volume, a profile, a
-  healthcheck, a framework, an Angular project or an HTTP call.
+  it; from D3, the poms, Spring configuration and Java of the Maven modules). It lists a folder only
+  where a file it reads names a pattern of folders (npm workspaces) or copies a whole folder into an
+  image (nginx configuration), and the source and classpath folders of the Maven modules
+  (DRIFT-201). A fact is one of: a Compose project, a code unit (a service, a package or a module),
+  an image, a port, a build, a source an image is built from, a connection (one unit naming another,
+  or a host outside the system), a volume, a profile, a healthcheck, a framework, an Angular project
+  or an HTTP call; and from D3, a module's packaging, a dependency, a Spring Boot application, a
+  property, an endpoint, a call, a message channel, an event or a schedule.
 - **DRIFT-002** Evidence is a line of a file, printed `repo/path:line`, with lines counting from 1. A
   fact prints as one line, `repo/path:line  technique: detail`, with code units as `kind:name`; this
   is the evidence line of a report (section 7).
@@ -378,6 +381,126 @@ clients, server-side rendering entry points, URLs in package.json scripts (build
 research found), Nx `project.json` and `pnpm-workspace.yaml` are not read; nginx is read only in
 the images Compose builds; a proxy's `pathRewrite` and nginx's rewriting of the path change where on
 the target a call lands, not which target, so they are left to endpoint matching (D5).
+
+### Spring Boot and Maven (slice D3)
+
+The Maven extractor is `src/extract/maven/` and the Spring one `src/extract/spring/`, with the Java
+parser in `src/extract/java/`; they return facts like the Compose extractor, and only from what the
+files say: nothing is built, run or fetched.
+
+- **DRIFT-201** The Maven modules are each repo's root `pom.xml` and the modules it lists,
+  recursively: `<modules>`, Maven 4's `<subprojects>` and the modules of every `<profile>` (a module is
+  code whichever profile builds it). A module is a folder holding a `pom.xml`, or the pom file named.
+  Each module is a code unit `maven:<artifactId>` ("Maven module") at its `<artifactId>`, with a module
+  fact giving its packaging (`jar` by default), its folder and its parent when that is in the system.
+  A repo without a root pom has no Maven facts; a listed module without a pom is a warning. To read a
+  module's code, the extractor lists its source and classpath folders (and nothing else), through
+  `ProjectFiles.list`.
+- **DRIFT-202** Poms are read raw with `@xmldom/xmldom`, which keeps every element's line. A module
+  inherits group, version, properties and dependencies from its parent when the parent is in the
+  system, found by `relativePath` (the folder above by default) or else by group and artifact; a parent
+  read that way is a module too. `${...}` is filled in from the properties and `project.*`. A parent or
+  BOM from outside the system adds nothing, since it is never fetched. A pom that is not well-formed XML
+  or not a `project` is a warning, and two poms declaring one module keep the first, with a warning.
+- **DRIFT-203** Each `<dependency>` of a module, its own or inherited, is a dependency fact ("Maven
+  dependency") with its scope (`compile` by default) and whether it is optional: to the module of the
+  system with that group and artifact, or else to the artifact outside the system (`group:artifact`).
+  Test dependencies are kept, with their scope; `dependencyManagement` and profile dependencies add
+  none.
+- **DRIFT-204** A Spring Boot application is a class annotated `@SpringBootApplication`, by its
+  resolved name, never its simple name alone ("Spring Boot application").
+- **DRIFT-205** A module's configuration is the `application.properties`, `application.yml` and
+  `application.yaml` files, and their `application-<profile>` variants, in each classpath folder
+  (`src/main/resources` unless the pom names others) and its `config/` folder. YAML is read as Spring
+  reads it, YAML 1.1 with merge keys, every document; `.properties` with `properties-file`, split into
+  documents at Spring's `#---` and `!---` lines. Each document applies in the profile of its file or of
+  its `spring.config.activate.on-profile` (or `spring.profiles`), kept as written and never merged into
+  one value. Where the code needs one value, Spring's order picks it: a profile `spring.profiles.active`
+  names over the default, `config/` over the folder, `.properties` over YAML, a later document over an
+  earlier one. A YAML file that is not valid is a warning.
+- **DRIFT-206** Placeholders are filled in as Spring fills them: `${key}`, `${key:default}`, nested,
+  from the same configuration; one with no value and no default stays as written. Relaxed binding
+  makes `core-api.baseUrl`, `core-api.base-url` and `core_api.base_url` one property, and names the
+  environment variable that overrides it: dots to `_`, no `-`, upper case (`COREAPI_BASEURL`), which is
+  how a Compose `environment` value reaches a Spring property.
+- **DRIFT-207** A property fact ("Spring property", with its profile and environment variable) is kept
+  for the server's `server.port`, `server.address`, `server.servlet.context-path`,
+  `spring.webflux.base-path`, `spring.mvc.servlet.path`, `management.server.port` and
+  `spring.application.name`, and for every property that holds an address: a URL or JDBC URL in its
+  value, or a host name (with or without a port) under an address's name (`host`, `url`, `uri`,
+  `address`, `bootstrap-servers`, `brokers`, `servers`, `nodes`, `endpoint` and their plurals, or a
+  name ending in `url` or `uri`). Each host such a value names is a connection ("Spring configuration
+  URL", "... JDBC URL" or "... host name"), with secrets hidden as in DRIFT-111. A loopback host with a
+  port names the one module whose own `server.port` is that port; another host names the one module of
+  that `spring.application.name`; anything else is a host outside the system. A module never connects
+  to itself, and CORS origins (`cors`, `allowed-origins`) are addresses that call the module, so they
+  give no connection. An address property whose placeholder has no value or default is a warning.
+- **DRIFT-208** Java is read with `web-tree-sitter` and the `tree-sitter-java-orchard` grammar, both
+  WebAssembly; a caller loads the parser once with `loadJava()` and passes it as `java`, and without it
+  the Java is not read, with a warning. The `.java` files of each module's source folder
+  (`src/main/java` unless the pom names another; never tests, `package-info` or `module-info`) are read
+  into Aerie's own model of types, annotations, fields, methods and expressions. A syntax error is
+  recovered from, with a warning at its line. Type names resolve as the compiler resolves them: nested
+  types, single imports, the package, then wildcard imports; a type from outside the system is known by
+  its full name, through its import or a wildcard import of its package.
+- **DRIFT-209** Each method of a `@RestController` or `@Controller` with a mapping (`@GetMapping`,
+  `@PostMapping`, `@PutMapping`, `@DeleteMapping`, `@PatchMapping`, `@RequestMapping`) is an endpoint
+  fact ("Spring request mapping") per verb and path: the type's `@RequestMapping` prefix joined to the
+  method's path, `ANY` for a `@RequestMapping` without a method, paths and verbs from arrays, constants
+  and placeholders. A mapping the class inherits from an interface or superclass it implements counts,
+  evidenced where it is written. The context path is a property fact of its own and is not joined in.
+- **DRIFT-210** Outbound HTTP calls are call facts with their verb, address and, when the address names
+  one, the module or host it reaches (as DRIFT-207 resolves hosts): `client.get().uri(...)` and
+  `client.method(HttpMethod.X).uri(...)` on a receiver declared as a `WebClient` ("WebClient call") or
+  `RestClient` ("RestClient call"); the `RestTemplate` and `RestOperations` methods ("RestTemplate
+  call", the verb of `exchange` from its `HttpMethod`); each mapped method of a `@FeignClient`
+  interface ("Feign client", from its `url`, or else `http://<name>`, and its `path`); and each method of
+  an HTTP interface (`@GetExchange` and the rest; "HTTP interface"). A receiver counts only by its
+  declared type (a variable, field, method or static factory), never by its name. A client's base URL
+  comes from the `baseUrl` (or `rootUri`) of the builder that made it, wherever the code shows it: the
+  field's value, what a constructor sets it to, what a method returns, or the one `@Bean` of its type
+  in the modules it runs with. A path that is absolute replaces the base; `uri(builder -> ...)` gives
+  the path the builder builds.
+- **DRIFT-211** The text of an address, a channel or a schedule is read from the code: literals,
+  constants of any class of the system (through imports, static imports and nested types), `+`, a
+  local with one value, a helper method's return with its parameters bound to the arguments (a few
+  calls deep), `String.format` with `%s` and `%d`, `URI.create`, `UriComponentsBuilder` chains, the
+  start two choices of `?:` share, `@Value` fields and parameters, and `@ConfigurationProperties`
+  records and classes, nested properties and getters, read from the module's configuration (or the
+  configuration of the modules that run it, when they agree). A part known only at run time prints as
+  `{?}`.
+- **DRIFT-212** Message channels are channel facts with the module, the broker and the direction:
+  `@KafkaListener` topics and topic patterns, and `KafkaTemplate.send` (a `ProducerRecord`'s topic
+  too; `sendDefault` is `{?}`); `@RabbitListener` queues, declared queues and bindings (exchange and
+  routing key), and `RabbitTemplate` sends (exchange and routing key, or a queue through the default
+  exchange); `@JmsListener` and `JmsTemplate` destinations; `StreamBridge.send` to its binding's
+  destination, and the `spring.cloud.stream.bindings.<name>.destination` of a function binding
+  (`-in-0` receives, `-out-0` sends). A template counts only on a receiver declared with its type.
+- **DRIFT-213** In-process events are event facts by type: a `publishEvent` on an
+  `ApplicationEventPublisher` or `ApplicationContext` with the type of its argument, and each
+  `@EventListener` or `@TransactionalEventListener` method (its `classes`, or its parameter's type) and
+  `ApplicationListener<X>`. Each `@Scheduled` method is a schedule fact: `on cron ...`, `every N ms`
+  or `N ms after each run`, with its time unit and placeholders.
+- **DRIFT-214** On copies of the Lotto Spring repos (poms, Java and configuration of
+  `lotto-options-core` and `lottery-result-persistence-service`), the extractor finds the three apps
+  and their ports, the module graph (the engine's runtime-only dependency on the legacy module
+  included), 35 endpoints, the BFF's calls to the engine and the engine's calls to the store (the
+  draw-history call through `PersistenceServiceProperties.drawHistoryUrl()`), the store's poll event and
+  its listener, and the connection Compose cannot show: the store's downloads from the Texas lottery.
+  Those calls that take their base from a constructor parameter (the legacy client) print it as `{?}`.
+- **DRIFT-215** The parsers D3 adds, `@xmldom/xmldom`, `properties-file` and `web-tree-sitter`, are
+  pinned to exact versions, unpatched and recorded with their licences and sources in
+  `THIRD_PARTY_NOTICES.md`, none with dependencies of its own. The grammar's compiled
+  `tree-sitter-java_orchard.wasm` (release 0.5.22) is kept unchanged in `src/extract/java/`, with its
+  hash checked by a unit test, because installing its package compiles a native add-on, which needs a
+  compiler that CI's screenshot container and a user's machine may not have.
+
+Choices D3 made, where this document left them open: `ProjectFiles` gains `list` for the source and
+classpath folders (DRIFT-201); the modules of every Maven profile are read; Spring Boot's default port
+8080 is never assumed, so only an explicit `server.port` names a module; the context path is not
+joined into endpoint paths; external dependencies are kept as facts (for phase 2 technologies);
+the grammar's WebAssembly file is kept in the repo rather than installed (DRIFT-215); and
+`java.net.URL` connections, `RouterFunction` routes, Kotlin, Gradle and the effective POM are not read.
 
 ## 5. Matching and lifting (slice D5)
 

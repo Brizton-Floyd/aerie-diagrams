@@ -1,0 +1,24 @@
+server:
+  port: 8080
+  address: 127.0.0.1
+  # NOTE: Do NOT add server.compression.mime-types: text/event-stream here.
+  # SSE (text/event-stream) must never be gzip-compressed - if compression is
+  # enabled in a future story, that content-type must be excluded explicitly.
+  # See FR-003-E for the lesson learned.
+
+core-api:
+  base-url: http://localhost:8002
+
+spring:
+  jackson:
+    # Boot 4 runs Jackson 3; keep the Jackson 2 defaults Boot 3 used, so the JSON the BFF
+    # serves and sends does not change. JacksonConfiguration restores the rest.
+    use-jackson2-defaults: true
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    # springdoc 2.8+ defaults to OpenAPI 3.1; keep publishing the 3.0 document.
+    version: openapi_3_0
+  swagger-ui:
+    path: /swagger-ui.html

@@ -121,14 +121,19 @@ has the steps for opening a model and choosing a view and audience with clicks).
   `contourStyle()` writes from the tokens, so a theme switch redraws nothing and colours never
   appear outside `tokens.ts` (a unit test enforces it).
 - `src/extract/` (drift's extractor, D2 on) is pure TypeScript too, built only on
-  `src/lines/index.ts` and its parsers (`yaml`, `dockerfile-ast`, `jsonc-parser`, and `typescript`
-  for `createSourceFile` only); it reads a project only through `ProjectFiles` (the Node one is
-  `src/cli/project.ts`). Each stack is a folder (`compose/`, `node/`); API notes in
-  [src/extract/index.ts](src/extract/index.ts). Its fixture projects in `tests/unit/extract/fixtures/`
-  (Prettier, ESLint and `tsc` skip them, since they hold other projects' code, such as the Lotto UI
-  copies) hold every expected fact in `<model>.facts.txt`, updated with
+  `src/lines/index.ts` and its parsers (`yaml`, `dockerfile-ast`, `jsonc-parser`, `typescript`
+  for `createSourceFile` only, `@xmldom/xmldom`, `properties-file`, `web-tree-sitter`); it reads a
+  project only through `ProjectFiles` (the Node one is `src/cli/project.ts`). Each stack is a folder
+  (`compose/`, `node/`, `maven/`, `spring/`); API notes in
+  [src/extract/index.ts](src/extract/index.ts). Java (D3) needs `java: await loadJava()` in the
+  input, since WebAssembly loads asynchronously; the Java grammar is the release's `.wasm` kept in
+  `src/extract/java/` (its package compiles a native add-on on install), hash-checked by a test. Its
+  fixture projects in `tests/unit/extract/fixtures/` (Prettier, ESLint and `tsc` skip them, since
+  they hold other projects' code, such as the Lotto copies) hold every expected fact in
+  `<model>.facts.txt`, updated with
   `npx vitest run --project unit -u`; check a new one against `docker compose config`, run with
-  `env -i PATH=$PATH HOME=$HOME` so no shell variable leaks in.
+  `env -i PATH=$PATH HOME=$HOME` so no shell variable leaks in. Copies of real repos there (Lotto's)
+  have their em dashes written as hyphens, for `check-text`.
 - Text is measured from `src/layout/text/advances.json`, written from the bundled Fontsource fonts by
   `node scripts/font-metrics.ts`; rerun it when a font package changes (a unit test compares them).
 - The split editor (A10) is CodeMirror 6 in `src/app/editor.ts`, loaded only when "Edit" is pressed

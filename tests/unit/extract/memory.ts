@@ -2,6 +2,7 @@
 import {
   extract,
   factText,
+  loadJava,
   type Extraction,
   type ProjectFiles,
 } from '../../../src/extract/index.ts';
@@ -12,7 +13,10 @@ export interface MemoryFiles extends ProjectFiles {
   reads: string[];
 }
 
-/** Files by absolute path; a folder exists when some file is inside it, and lists what is in it. */
+/** The Java parser, loaded once for every test. */
+export const java = await loadJava();
+
+/** Files by absolute path; a folder exists when some file is inside it. */
 export function memoryFiles(files: Record<string, string>): MemoryFiles {
   const reads: string[] = [];
   return {
@@ -51,6 +55,7 @@ export function extractFrom(files: Record<string, string>, ...system: string[]):
     modelFolder: '/w',
     homeRepo: '/w',
     files: memoryFiles(files),
+    java,
   });
 }
 

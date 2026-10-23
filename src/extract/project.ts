@@ -1,13 +1,16 @@
-// The project as the extractor reads it: the system root resolved to repos and Compose files
-// (docs/spec/drift.md, section 3; DRIFT-006 and DRIFT-007), and where a file sits in it.
+// The project as the extractor reads it: the system root resolved to repos, Compose files and Maven
+// builds (docs/spec/drift.md, section 3; DRIFT-006, DRIFT-007 and DRIFT-201), and where a file sits
+// in it.
 import type { System } from '../lines/index.ts';
 import type { Evidence, Place } from './facts.ts';
+import type { JavaParser } from './java/syntax.ts';
 import { basename, inside, isInside, normalize, resolve } from './paths.ts';
 import { PROBLEMS, type Problem } from './problems.ts';
 
 /**
  * Read access to the project's files. Paths are absolute, with forward slashes. The extractor only
- * reads what the system root leads it to; it never runs anything or writes.
+ * reads what the system root leads it to, and lists only the source and classpath folders of the
+ * Maven modules it reads (DRIFT-201); it never runs anything or writes.
  */
 export interface ProjectFiles {
   /** A file's text, or undefined when there is no such file. */
@@ -30,6 +33,11 @@ export interface ExtractInput {
   /** The repository that holds the model file, which is the system when no `repo` line names one. */
   homeRepo: string;
   files: ProjectFiles;
+  /**
+   * The Java parser, from `loadJava()`, which loads its grammar asynchronously. Without it the Java
+   * source of the Maven modules is not read, and a warning says so (DRIFT-208).
+   */
+  java?: JavaParser;
 }
 
 export interface Repo {
@@ -83,10 +91,12 @@ export interface ResolvedSystem {
   repos: Repo[];
   /** Each Compose project to read: its files, merged in order, the first giving its folder. */
   compose: string[][];
+  /** DRIFT-201: the `pom.xml` at the root of each repo that has one, each the top of a Maven build. */
+  maven: string[];
   problems: Problem[];
 }
 
-/** DRIFT-006, DRIFT-007: the repos and Compose projects a system root names. */
+/** DRIFT-006, DRIFT-007, DRIFT-201: the repos, Compose projects and Maven builds a system root names. */
 export function resolveSystem(input: ExtractInput): ResolvedSystem {
   const { system, modelFolder, files } = input;
   const problems: Problem[] = [];
@@ -133,7 +143,10 @@ export function resolveSystem(input: ExtractInput): ResolvedSystem {
       if (found.length > 0) compose.push(found);
     }
   }
-  return { repos, compose, problems };
+  const maven = repos
+    .map((repo) => resolve(repo.path, 'pom.xml'))
+    .filter((path) => files.read(path) !== undefined);
+  return { repos, compose, maven, problems };
 }
 
 /** The Compose files `docker compose` reads by default in a folder: none, one, or one and its override. */
