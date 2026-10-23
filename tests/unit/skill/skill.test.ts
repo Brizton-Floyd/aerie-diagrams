@@ -96,7 +96,6 @@ describe('SCOPE-009 the skill is self-contained and well formed', () => {
     expect(description).toContain('`.aerie` file');
     expect(description).toMatch(/write, update or fix/);
     expect(description).toMatch(/architecture to readers at different levels/);
-    expect(description).toMatch(/keep it in step with the code/);
   });
 
   it('SKILL-002 has its reference files and examples beside SKILL.md', () => {

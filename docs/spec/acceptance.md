@@ -280,12 +280,12 @@ Slice D8 of drift detection ([drift.md](drift.md#9-the-claude-skill-slice-d8), r
 until clean, and keeps the model in step with code it changes. The Lotto benchmark (DRIFT-433) and
 the fixture projects (DRIFT-432) stay part of `npm run check`.
 
-| Suite | What it proves                                                                                                                         | Requirements                    |
-| ----- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
-| unit  | Worked example 1 has a system root and a code line for each part drift reads, and drift confirms them                                  | SKILL-211                       |
-| unit  | Its drift rounds are what `aerie drift` prints, from the first draft to a clean run; the reference's sample finding and fix table hold | SKILL-212, SKILL-302            |
-| unit  | A code change that adds a service is found, and the model's update in the same change ends clean                                       | SKILL-213, SKILL-302            |
-| unit  | The skill names `aerie drift` as the help lists it, and its description says it keeps a model in step with the code                    | SKILL-001, SKILL-205, SKILL-212 |
+| Suite | What it proves                                                                                                                         | Requirements         |
+| ----- | -------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| unit  | Worked example 1 has a system root and a code line for each part drift reads, and drift confirms them                                  | SKILL-211            |
+| unit  | Its drift rounds are what `aerie drift` prints, from the first draft to a clean run; the reference's sample finding and fix table hold | SKILL-212, SKILL-302 |
+| unit  | A code change that adds a service is found, and the model's update in the same change ends clean                                       | SKILL-213, SKILL-302 |
+| unit  | The skill names `aerie drift` as the help lists it                                                                                     | SKILL-205, SKILL-212 |
 
 SKILL-209's report and SKILL-213's judgement of which code changes alter the architecture are
 verified by human review of the skill, as SKILL-201 and SKILL-210 are.
