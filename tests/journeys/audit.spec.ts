@@ -29,6 +29,8 @@ for (const theme of ['light', 'dark'] as const) {
     test(`SCORE-005 an accessibility audit finds no problems in any Lotto picture, ${theme}`, async ({
       page,
     }) => {
+      // Eighteen pictures, each audited twice: longer than one journey's default time.
+      test.slow();
       await openLotto(page);
       for (const view of Object.keys(SELECTED)) {
         await page.locator(`button[data-view="${view}"]`).click();

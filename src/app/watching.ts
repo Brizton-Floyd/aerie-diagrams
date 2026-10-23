@@ -48,6 +48,7 @@ export function follow(viewer: Viewer, address: string): void {
       return;
     }
     opened = true;
-    live.seed(viewer.open(event.file, event.source));
+    // A reload keeps the reader's picture: the address holds it (INT-501).
+    live.seed(viewer.open(event.file, event.source, location.hash));
   });
 }
