@@ -53,11 +53,12 @@ export function prComment(run: Run): string {
   const { drift, file, source } = run;
   const dot = summary.drift > 0 ? DOTS.drift : summary.likely > 0 ? DOTS.likely : DOTS.clean;
   const repos = run.extraction.repos.map((repo) => `\`${repo.name}\``).join(', ');
-  // The level that fails the check, when one does: drift, or likely with `--fail-on likely`.
-  const failing = summary.exitCode === 0 ? null : summary.drift > 0 ? 'drift' : 'likely';
+  // The levels that fail the check: drift, and likely too with `--fail-on likely`.
+  const fails = (level: 'drift' | 'likely'): boolean =>
+    level === 'drift' || run.failOn === 'likely';
   const counts = (['drift', 'likely'] as const).flatMap((level) =>
     summary[level] > 0
-      ? [`**${String(summary[level])} ${level}**${failing === level ? ' (fails this check)' : ''}`]
+      ? [`**${String(summary[level])} ${level}**${fails(level) ? ' (fails this check)' : ''}`]
       : [],
   );
   const unchecked = uncheckedLines(run);

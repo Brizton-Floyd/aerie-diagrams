@@ -18,7 +18,7 @@ import {
 import { evidenceText, extract, loadJava, type ExtractInput } from '../extract/index.ts';
 import { format, parse, serializeModel, type Diagnostic, type System } from '../lines/index.ts';
 import { check as checkSource } from '../model/index.ts';
-import { modelInput } from './project.ts';
+import { modelInput, patchPath } from './project.ts';
 import { CannotWatch, WATCH_PORT, openInBrowser, watch, type Watching } from './watch.ts';
 
 /** Everything the command touches, so tests can run it without a disk or a terminal. */
@@ -290,7 +290,7 @@ async function driftFile(args: string[], io: Io): Promise<number> {
     };
     switch (style) {
       case 'diff':
-        io.stdout(unifiedDiff(path, source, allEdits(drift)));
+        io.stdout(unifiedDiff(patchPath(path), source, allEdits(drift)));
         break;
       case 'json':
         io.stdout(jsonReport(report));

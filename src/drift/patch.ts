@@ -22,6 +22,7 @@ export function unifiedDiff(file: string, source: string, hunks: readonly Hunk[]
 /** The `@@` hunks of a unified diff, without its file names, or '' when there are none. */
 export function diffHunks(source: string, hunks: readonly Hunk[]): string {
   const lines = source.split(/\r?\n/);
+  const crlf = source.includes('\r\n');
   const newline = lines.at(-1) === '';
   if (newline) lines.pop();
   const count = lines.length;
@@ -64,7 +65,7 @@ export function diffHunks(source: string, hunks: readonly Hunk[]): string {
       const header = `@@ -${range(from, old)} +${range(from + offset, added)} @@`;
       offset += added - old;
       if (!newline && to === count) markLast(out);
-      return [header, ...out.flatMap(print)].join('\n') + '\n';
+      return [header, ...out.flatMap((each) => print(each, crlf))].join('\n') + '\n';
     })
     .join('');
 }
@@ -99,9 +100,10 @@ function mark(line: Line | undefined): void {
   if (line !== undefined) line.last = true;
 }
 
-function print(line: Line): string[] {
+/** A line as written, ending in `\r` when the file's lines end in CRLF and this one has an end. */
+function print(line: Line, crlf: boolean): string[] {
   return [
-    `${line.sign}${line.text}`,
+    `${line.sign}${line.text}${crlf && line.last !== true ? '\r' : ''}`,
     ...(line.last === true ? ['\\ No newline at end of file'] : []),
   ];
 }

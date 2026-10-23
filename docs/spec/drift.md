@@ -821,7 +821,8 @@ the extraction, the finding model of D5 and `--fail-on`) and reads nothing. The 
   `--format diff` when there are edits. On a terminal (standard output a TTY, `NO_COLOR` unset) the
   ids, headings, places and Lines are coloured; anywhere else the text is plain.
 - **DRIFT-506** `--format diff` prints one unified diff of the model file (`--- a/<file>` and
-  `+++ b/<file>` as named on the command line, three lines of context, `\ No newline at end of file`
+  `+++ b/<file>`, the path relative to the folder drift ran in when the file is inside it, else to
+  the top of its repository, with forward slashes; the file's CRLF line endings kept; three lines of context, `\ No newline at end of file`
   where it applies) with the edits of every finding and of every certain suggestion (DRIFT-427,
   `used`), combined as DRIFT-431 combines them; nothing when there are none. It applies with
   `git apply` or `patch -p1` from the folder drift ran in; on every fixture and on the Lotto

@@ -5,7 +5,7 @@
 import { execFileSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, relative } from 'node:path';
+import { join, relative, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { run, type Io } from '../../../src/cli/aerie.ts';
 import { modelInput } from '../../../src/cli/project.ts';
@@ -40,7 +40,7 @@ async function drift(...args: string[]): Promise<Ran> {
   const io: Io = {
     read: (path) => {
       try {
-        return readFileSync(join(ROOT, path), 'utf8');
+        return readFileSync(resolve(ROOT, path), 'utf8');
       } catch (error) {
         return error as Error;
       }
@@ -54,7 +54,7 @@ async function drift(...args: string[]): Promise<Ran> {
     stderr: (text) => {
       ran.err += text;
     },
-    project: (file, system) => modelInput(join(ROOT, file), system),
+    project: (file, system) => modelInput(resolve(ROOT, file), system),
     now: () => (clock += 900) - 900,
   };
   const code = await run(['drift', ...args], io);
@@ -261,11 +261,11 @@ describe('DRIFT-505 the text report', () => {
     expect(plain.out).not.toContain('\u001b[');
     let out = '';
     const io: Io = {
-      read: (path) => readFileSync(join(ROOT, path), 'utf8'),
+      read: (path) => readFileSync(resolve(ROOT, path), 'utf8'),
       write: () => undefined,
       stdout: (text) => (out += text),
       stderr: () => undefined,
-      project: (file, system) => modelInput(join(ROOT, file), system),
+      project: (file, system) => modelInput(resolve(ROOT, file), system),
       color: true,
     };
     expect(await run(['drift', model], io)).toBe(1);
@@ -316,7 +316,10 @@ describe('DRIFT-506 the unified diff', () => {
       writeFileSync(join(folder, 'm.aerie'), text);
       writeFileSync(join(folder, 'm.diff'), unifiedDiff('m.aerie', text, hunks));
       execFileSync('git', ['apply', 'm.diff'], { cwd: folder });
-      expect(readFileSync(join(folder, 'm.aerie'), 'utf8')).toBe(applyHunks(text, hunks));
+      const expected = applyHunks(text, hunks);
+      expect(readFileSync(join(folder, 'm.aerie'), 'utf8')).toBe(
+        text.includes('\r\n') ? expected.replace(/\n/g, '\r\n') : expected,
+      );
     } finally {
       rmSync(folder, { recursive: true, force: true });
     }
@@ -353,6 +356,24 @@ describe('DRIFT-506 the unified diff', () => {
     expectApplies(bare, [{ at: 11, remove: [], add: ['k'] }]);
     expectApplies(bare, [{ at: 9, remove: ['i', 'j'], add: [] }]);
     expectApplies(bare, [{ at: 2, remove: ['b'], add: ['B'] }]);
+  });
+
+  it('DRIFT-506 keeps the CRLF line endings of a file, so git apply takes the patch', () => {
+    const crlf = source.replace(/\n/g, '\r\n');
+    expect(unifiedDiff('m.aerie', crlf, [{ at: 5, remove: ['e'], add: ['E'] }])).toContain(
+      ' d\r\n-e\r\n+E\r\n f\r\n',
+    );
+    expectApplies(crlf, [{ at: 5, remove: ['e'], add: ['E'] }]);
+    expectApplies(crlf, [{ at: 11, remove: [], add: ['k'] }]);
+    expectApplies(crlf.slice(0, -2), [{ at: 10, remove: ['j'], add: ['J'] }]);
+  });
+
+  it('DRIFT-506 names a model given by its absolute path relative to the folder drift ran in', async () => {
+    const model = fixture('compose', 'shop-drift');
+    const relative = await drift(model, '--format', 'diff');
+    const absolute = await drift(join(ROOT, model), '--format', 'diff');
+    expect(absolute.out).toBe(relative.out);
+    expect(absolute.out.split('\n')[0]).toBe(`--- a/${model}`);
   });
 
   it('DRIFT-506 refuses an edit that does not match the file', () => {
@@ -400,5 +421,9 @@ describe('DRIFT-507 DRIFT-508 the JSON and the PR comment', () => {
     expect(pr[0]).toBe(`<!-- aerie-drift: ${model} -->`);
     expect(pr[1]).toBe(`### 🔴 Aerie drift: \`${model}\``);
     expect(pr[3]).toMatch(/^\*\*4 drift\*\* \(fails this check\), \*\*3 likely\*\*, /);
+    const strict = (await drift(model, '--format', 'pr', '--fail-on', 'likely')).out.split('\n');
+    expect(strict[3]).toMatch(
+      /^\*\*4 drift\*\* \(fails this check\), \*\*3 likely\*\* \(fails this check\), /,
+    );
   });
 });
