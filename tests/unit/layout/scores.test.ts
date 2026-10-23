@@ -2,6 +2,7 @@
 // by hand. The rules suite compares them with the committed baseline on every sample.
 import { describe, expect, it } from 'vitest';
 import {
+  PAGE,
   REFERENCE_STAGE,
   bends,
   better,
@@ -57,7 +58,7 @@ describe('readability scores', () => {
     expect(fitScale({ width: 2588, height: 100 }, REFERENCE_STAGE)).toBe(0.5);
     expect(fitScale({ width: 100, height: 1908 }, REFERENCE_STAGE)).toBe(0.5);
     // While a caption bar shows, it takes 92 px at the bottom.
-    expect(fitScale({ width: 100, height: 1724 }, REFERENCE_STAGE, true)).toBe(0.5);
+    expect(fitScale({ width: 100, height: 1724 }, REFERENCE_STAGE, PAGE.captionBar)).toBe(0.5);
     expect(scores({ ...routes(), width: 2588, height: 100 })).toEqual({
       crossings: 0,
       bends: 0,

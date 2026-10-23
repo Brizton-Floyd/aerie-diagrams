@@ -9,6 +9,7 @@ import {
   dragged,
   fitCamera,
   fitScale,
+  focusCamera,
   headerMiddle,
   keepCorner,
   magnify,
@@ -134,9 +135,44 @@ describe('the camera', () => {
   it('LAYOUT-451 a tall picture keeps its top 34 px down, and clear of a caption bar', () => {
     const tall = { width: 400, height: 3000 };
     expect(fitCamera(tall, stage).y).toBeCloseTo(PAGE.margin);
-    const captioned = fitCamera({ width: 400, height: 300 }, stage, true);
+    const captioned = fitCamera({ width: 400, height: 300 }, stage, PAGE.captionBar);
     expect(captioned.y).toBeCloseTo((stage.height - PAGE.captionBar - 300 * 1.15) / 2);
     expect(captioned.y + 300 * captioned.scale).toBeLessThanOrEqual(stage.height - PAGE.captionBar);
+  });
+
+  it('INT-702 a focus step fits its focus elements with an 80 px margin, clear of the narration bar', () => {
+    const picture = { width: 1800, height: 1200 };
+    const one = { x: 600, y: 300, width: 400, height: 250 };
+    const two = { x: 1100, y: 500, width: 300, height: 200 };
+    const camera = focusCamera([one, two], picture, stage, PAGE.narrationBar);
+    expect(camera.mode).toBe('fit');
+    // The box around both is 800 x 400; across is the tighter fit.
+    const room = stage.height - PAGE.narrationBar;
+    expect(camera.scale).toBeCloseTo(
+      Math.min((stage.width - 2 * PAGE.focusMargin) / 800, (room - 2 * PAGE.focusMargin) / 400),
+    );
+    // The box around them is centred in the stage above the bar.
+    const middle = onScreen(camera, { x: 600 + 400, y: 300 + 200 });
+    expect(middle.x).toBeCloseTo(stage.width / 2);
+    expect(middle.y).toBeCloseTo(room / 2);
+    const corner = onScreen(camera, { x: 600, y: 300 });
+    expect(corner.x).toBeGreaterThanOrEqual(PAGE.focusMargin - 0.001);
+    expect(corner.y).toBeGreaterThanOrEqual(PAGE.focusMargin - 0.001);
+    const end = onScreen(camera, { x: 1400, y: 700 });
+    expect(end.y).toBeLessThanOrEqual(room - PAGE.focusMargin + 0.001);
+  });
+
+  it('INT-702 focus never magnifies above 1.15, and no focus fits the whole picture', () => {
+    const picture = { width: 1800, height: 1200 };
+    const small = { x: 100, y: 100, width: 120, height: 60 };
+    const camera = focusCamera([small], picture, stage, PAGE.narrationBar);
+    expect(camera.scale).toBe(PAGE.maxScale);
+    const middle = onScreen(camera, { x: 160, y: 130 });
+    expect(middle.x).toBeCloseTo(stage.width / 2);
+    expect(middle.y).toBeCloseTo((stage.height - PAGE.narrationBar) / 2);
+    expect(focusCamera([], picture, stage, PAGE.narrationBar)).toEqual(
+      fitCamera(picture, stage, PAGE.narrationBar),
+    );
   });
 
   it('INT-351 the wheel magnifies around the pointer, which stays where it is', () => {

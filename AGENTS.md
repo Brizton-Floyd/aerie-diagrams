@@ -142,8 +142,12 @@ has the steps for opening a model and choosing a view and audience with clicks).
   name). Journeys wait for `document.getAnimations()` to empty (`settled` in
   `tests/journeys/reader.ts`), so CSS animations never fill forwards. Scenario playback (A8) is
   `scenario.ts` (side panel, caption, autoplay); other parts of the page start and end one with
-  `Viewer.playScenario` and `endScenario`. Screenshot runs hide the side panel's content, so they
-  press its controls with `dispatchEvent('click')`.
+  `Viewer.playScenario` and `endScenario`. Presenter mode (A9) is `presenter.ts` (narration bar
+  words, Back/Next/Exit), started and ended with `Viewer.presentWalkthrough` and `endPresentation`;
+  the `presenting` class on the page hides the chrome, and a presented scenario step draws its trail
+  from the picture, not by playing the scenario. Screenshot runs hide the side panel's content, so
+  they press its controls with `dispatchEvent('click')`; Playwright refuses to click a control
+  marked `aria-disabled` without `force`.
 
 ## Plan
 
