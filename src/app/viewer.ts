@@ -7,8 +7,9 @@
 // and the address always holds the picture as a shared link, with Back and Forward stepping between
 // views and activities (INT-501 to INT-507, link.ts). A reader plays a scenario on the architecture
 // or as lanes, step by step or by itself (INT-601 to INT-606, scenario.ts), started with
-// `playScenario`; presenting (A9) builds on it. The split editor (editing.ts) and watch mode
-// (watching.ts) give it new versions of the model.
+// `playScenario`, and presents a walkthrough full screen, step by step, with its narration
+// (INT-701 to INT-707, presenter.ts), started with `presentWalkthrough`. The split editor
+// (editing.ts) and watch mode (watching.ts) give it new versions of the model.
 import {
   check,
   closeContainer,
@@ -16,12 +17,13 @@ import {
   openContainer,
   play,
   present,
+  presentBack,
+  presentForward,
   presentStep,
   select,
   stop,
   switchAudience,
   switchView,
-  wordsFor,
   Semantics,
   type Activity,
   type Picture,
@@ -46,6 +48,12 @@ import { KEPT_NOTICE, errorText, type Checked } from './live.ts';
 import { LOGO } from './logo.ts';
 import { Swap } from './motion.ts';
 import { elementPanel, viewPanel, type PanelActions } from './panel.ts';
+import {
+  PresenterControls,
+  narrationOf,
+  walkthroughTitle,
+  type PresenterActions,
+} from './presenter.ts';
 import { FIRST_SAMPLE, SAMPLES } from './samples.ts';
 import { Autoplay, ScenarioPanel, captionOf, type ScenarioActions } from './scenario.ts';
 import { Stage, type Arrival, type Showing } from './stage.ts';
@@ -170,6 +178,10 @@ export class Viewer {
   });
   /** INT-602: the playing scenario's side panel, changed in place as it moves. */
   private scenarioPanel: ScenarioPanel | null = null;
+  /** INT-701: the presenter's Back, Next and Exit. */
+  private readonly presenterControls: PresenterControls;
+  /** True while the page is in full screen because a presentation asked for it (INT-701). */
+  private ownsFullScreen = false;
 
   constructor(root: HTMLElement, options: { watching?: boolean } = {}) {
     this.root = root;
@@ -227,7 +239,8 @@ export class Viewer {
     });
     this.notice = h('p', { class: 'notice', role: 'status', hidden: true });
     this.overlay = h('div', { class: 'overlay', hidden: true });
-    this.stage.element.append(this.notice, this.overlay);
+    this.presenterControls = new PresenterControls(this.presenterActions);
+    this.stage.element.append(this.notice, this.overlay, this.presenterControls.element);
     this.panel = h('aside', { class: 'panel', 'aria-label': 'About' });
     this.panelSwap = new Swap(this.panel);
     this.sideWrap = h('nav', { class: 'side-wrap', 'aria-label': 'Diagram' }, [
@@ -241,6 +254,12 @@ export class Viewer {
     });
     window.addEventListener('popstate', () => {
       this.follow();
+    });
+    // INT-703: leaving full screen, as the browser's own Esc does, ends the presentation.
+    document.addEventListener('fullscreenchange', () => {
+      if (document.fullscreenElement !== null || !this.ownsFullScreen) return;
+      this.ownsFullScreen = false;
+      this.endPresentation();
     });
     const theme = remembered(THEME_KEY);
     this.applyTheme(theme === 'light' || theme === 'dark' ? theme : null);
@@ -407,6 +426,8 @@ export class Viewer {
     this.arrival = { ...this.arrival, ...arrival };
     // INT-606: Play stops with the scenario it plays.
     if (playingOf(before)?.scenario !== playingOf(this.picture)?.scenario) this.autoplay.stop();
+    // INT-707: however a presentation ends (Exit, Esc, Back in the history), full screen ends too.
+    if (this.picture.activity.kind !== 'presenting') this.leaveFullScreen();
     if (before !== null && before.audience !== this.picture.audience) {
       this.spoken.textContent = `Now written for ${this.opened.semantics.audience(this.picture.audience).name}`;
     }
@@ -493,6 +514,8 @@ export class Viewer {
     const opened = this.opened;
     const picture = this.picture;
     if (opened === null || picture === null) return;
+    // INT-704: while presenting, clicks do not select.
+    if (picture.activity.kind === 'presenting') return;
     const current = picture.activity.kind === 'selected' ? picture.activity.element : null;
     const next = id === null || id === current ? null : id;
     if (next === current) return;
@@ -531,7 +554,7 @@ export class Viewer {
     this.change(switchAudience(opened.semantics, picture, audience));
   }
 
-  /** The keyboard (INT-004, INT-102, INT-201, INT-352, INT-902). */
+  /** The keyboard (INT-004, INT-102, INT-201, INT-352, INT-605, INT-703, INT-902). */
   private key(event: KeyboardEvent): void {
     if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey) return;
     if (inTextField(event.target)) return;
@@ -544,6 +567,7 @@ export class Viewer {
     const tab = target?.closest('[role=tab]') ?? null;
     let handled = true;
     const playing = picture.activity.kind === 'playing';
+    const presenting = picture.activity.kind === 'presenting';
     if (/^[1-6]$/.test(event.key)) {
       const audience = opened.semantics.model.audiences[Number(event.key) - 1];
       if (audience === undefined) return;
@@ -557,10 +581,22 @@ export class Viewer {
       this.switchTo(next.id);
       this.tabs.querySelector<HTMLElement>(`[data-audience="${CSS.escape(next.id)}"]`)?.focus();
     } else if (event.key === 'Escape') {
-      if (playing) this.scenarioActions.done();
+      if (presenting) this.endPresentation();
+      else if (playing) this.scenarioActions.done();
       else if (picture.activity.kind === 'selected')
         this.change(select(opened.semantics, picture, null));
       else return;
+    } else if (
+      presenting &&
+      (event.key === 'ArrowRight' ||
+        event.key === 'PageDown' ||
+        (event.key === ' ' && !pressable(event.target)))
+    ) {
+      this.presenterActions.forward();
+    } else if (presenting && (event.key === 'ArrowLeft' || event.key === 'PageUp')) {
+      this.presenterActions.back();
+    } else if (presenting && (event.key === 'Home' || event.key === 'End')) {
+      this.presentAt(event.key === 'Home' ? 1 : Number.MAX_SAFE_INTEGER);
     } else if (playing && event.key === 'ArrowRight') {
       this.scenarioActions.forward();
     } else if (playing && event.key === 'ArrowLeft') {
@@ -597,6 +633,21 @@ export class Viewer {
       activity.kind === 'playing'
         ? captionOf(semantics, activity.scenario, activity.step, audience)
         : null;
+    // INT-701 and MODEL-501 to MODEL-503: a presented step focuses its elements, or plays its part
+    // of a scenario on the map, as a playing scenario does.
+    const step =
+      activity.kind === 'presenting'
+        ? semantics.walkPictures(activity.walkthrough)[activity.step - 1]
+        : undefined;
+    const inside = step?.scenario ?? null;
+    const played =
+      activity.kind === 'playing'
+        ? { scenario: activity.scenario, step: activity.step }
+        : activity.kind === 'presenting' && inside !== null && activity.scenarioStep !== null
+          ? { scenario: inside.id, step: activity.scenarioStep }
+          : null;
+    const narration = narrationOf(semantics, picture);
+    const frame = step?.focus ?? [];
     if (activity.kind === 'playing' && activity.lanes) {
       const lanes = await layouter.lanes(activity.scenario, view, zoom);
       showing = {
@@ -605,14 +656,18 @@ export class Viewer {
         lanes,
         sentences: [],
         caption,
+        narration,
+        frame,
       };
     } else {
       const laid = await layouter.picture(view, zoom, audience);
       let focus: Focus = { kind: 'none' };
       let trail;
       if (activity.kind === 'selected') focus = { kind: 'select', ids: [activity.element] };
-      if (activity.kind === 'playing') {
-        const steps = semantics.trail(activity.scenario, view, zoom, activity.step);
+      // LOOK-603: walkthrough focus looks like selection, on every focused element at once.
+      if (frame.length > 0) focus = { kind: 'select', ids: frame };
+      if (played !== null) {
+        const steps = semantics.trail(played.scenario, view, zoom, played.step);
         trail = trailShapes(laid.result, steps);
         focus = { kind: 'trail', visited: steps.visited, current: steps.current };
       }
@@ -631,6 +686,8 @@ export class Viewer {
         lanes: null,
         sentences: scene.edges.flatMap((edge) => edge.relationships.map((each) => each.sentence)),
         caption,
+        narration,
+        frame,
       };
     }
     if (count !== this.drawCount) return;
@@ -804,9 +861,104 @@ export class Viewer {
     });
   }
 
+  // ------------------------------------------------------------ presenting
+
+  /**
+   * INT-701 and INT-403: presents a walkthrough from its first step, clearing the selection and
+   * stopping any scenario (MODEL-604). Aerie asks for full screen, and otherwise fills the window.
+   * The navigation sidebar and the editor's view menu call it.
+   */
+  presentWalkthrough(walkthrough: Id): void {
+    const opened = this.opened;
+    const picture = this.picture;
+    if (opened === null || picture === null || !opened.semantics.hasWalkthrough(walkthrough))
+      return;
+    this.enterFullScreen();
+    this.change(present(opened.semantics, picture, walkthrough), { fit: true });
+  }
+
+  /**
+   * INT-707: ends the presentation: reading at the same view, zoom and audience, with nothing
+   * focused and no scenario playing, fitted. The keyboard focus goes back to the walkthrough in
+   * the sidebar.
+   */
+  endPresentation(): void {
+    const opened = this.opened;
+    const picture = this.picture;
+    if (opened === null || picture?.activity.kind !== 'presenting') return;
+    const { walkthrough } = picture.activity;
+    this.change(stop(opened.semantics, picture), { fit: true });
+    this.side
+      .querySelector<HTMLElement>(`[data-walkthrough="${CSS.escape(walkthrough)}"]`)
+      ?.focus({ preventScroll: true });
+  }
+
+  /** INT-701: asks for full screen; when it is refused, presenting fills the window instead. */
+  private enterFullScreen(): void {
+    if (!document.fullscreenEnabled || document.fullscreenElement !== null) return;
+    document.documentElement.requestFullscreen().then(
+      () => {
+        this.ownsFullScreen = true;
+        // The presentation may have ended while full screen was on its way.
+        if (this.picture?.activity.kind !== 'presenting') this.leaveFullScreen();
+      },
+      () => undefined,
+    );
+  }
+
+  /** Leaves the full screen a presentation asked for, if the page is still in it. */
+  private leaveFullScreen(): void {
+    if (!this.ownsFullScreen) return;
+    this.ownsFullScreen = false;
+    if (document.fullscreenElement !== null) void document.exitFullscreen().catch(() => undefined);
+  }
+
+  /** INT-703: Home and End go to the first and last step, entering it at its start. */
+  private presentAt(step: number): void {
+    const opened = this.opened;
+    const picture = this.picture;
+    if (opened === null || picture?.activity.kind !== 'presenting') return;
+    const count = opened.semantics.walkPictures(picture.activity.walkthrough).length;
+    this.presentMove(presentStep(opened.semantics, picture, Math.min(Math.max(step, 1), count)));
+  }
+
+  /**
+   * Shows a presentation's next picture, fitting the camera again (INT-704). Moving to where it
+   * already is, as Next does on the last step (INT-706), changes nothing.
+   */
+  private presentMove(next: Picture): void {
+    const now = this.picture?.activity;
+    const then = next.activity;
+    if (
+      now?.kind === 'presenting' &&
+      then.kind === 'presenting' &&
+      now.step === then.step &&
+      now.scenarioStep === then.scenarioStep
+    )
+      return;
+    this.change(next, { fit: true });
+  }
+
+  /** The presenter's controls and the keys of INT-703 (MODEL-504 inside scenario steps). */
+  private readonly presenterActions: PresenterActions = {
+    back: () => {
+      const opened = this.opened;
+      if (opened === null || this.picture === null) return;
+      this.presentMove(presentBack(opened.semantics, this.picture));
+    },
+    forward: () => {
+      const opened = this.opened;
+      if (opened === null || this.picture === null) return;
+      this.presentMove(presentForward(opened.semantics, this.picture));
+    },
+    exit: () => {
+      this.endPresentation();
+    },
+  };
+
   /**
    * INT-801: while editing, the sidebar is hidden and the breadcrumb's view title opens a menu of
-   * the views and scenarios instead (walkthroughs join it when they can be presented, A9).
+   * the views, scenarios and walkthroughs instead.
    */
   private viewMenu(title: string, here: boolean): HTMLElement {
     const opened = this.opened;
@@ -830,23 +982,13 @@ export class Viewer {
     });
     if (opened !== null && picture !== null) {
       const { semantics } = opened;
-      const item = (text: string, choose: () => Picture): HTMLElement =>
-        h(
-          'button',
-          {
-            type: 'button',
-            role: 'menuitem',
-            onclick: () => {
-              this.change(choose());
-            },
-          },
-          [text],
-        );
+      const item = (text: string, choose: () => void): HTMLElement =>
+        h('button', { type: 'button', role: 'menuitem', onclick: choose }, [text]);
       menu.append(
         h('p', { class: 'heading' }, ['Views']),
         ...semantics.views.map((view) =>
           item(semantics.viewTitle(view.id, picture.audience), () => {
-            return switchView(semantics, picture, view.id);
+            this.change(switchView(semantics, picture, view.id));
           }),
         ),
       );
@@ -854,9 +996,19 @@ export class Viewer {
         menu.append(
           h('p', { class: 'heading' }, ['Scenarios']),
           ...semantics.model.scenarios.map((scenario) =>
-            item(scenarioTitle(semantics, scenario.id, picture.audience), () =>
-              play(semantics, picture, scenario.id),
-            ),
+            item(scenarioTitle(semantics, scenario.id, picture.audience), () => {
+              this.change(play(semantics, picture, scenario.id));
+            }),
+          ),
+        );
+      }
+      if (semantics.model.walkthroughs.length > 0) {
+        menu.append(
+          h('p', { class: 'heading' }, ['Walkthroughs']),
+          ...semantics.model.walkthroughs.map((walkthrough) =>
+            item(walkthroughTitle(semantics, walkthrough.id, picture.audience), () => {
+              this.presentWalkthrough(walkthrough.id);
+            }),
           ),
         );
       }
@@ -864,10 +1016,7 @@ export class Viewer {
     return h('span', {}, [button, menu]);
   }
 
-  /**
-   * INT-403: choosing a walkthrough presents it from its first step. Presenter mode itself is slice
-   * A9's; until then the sidebar offers the bare controls, as it does for scenarios.
-   */
+  /** INT-403: choosing a walkthrough presents it from its first step. */
   private walkthroughSection(semantics: Semantics, picture: Picture): HTMLElement {
     const presenting = picture.activity.kind === 'presenting' ? picture.activity : null;
     const items = semantics.model.walkthroughs.map((walkthrough) =>
@@ -879,47 +1028,13 @@ export class Viewer {
           'aria-current': presenting?.walkthrough === walkthrough.id ? 'true' : null,
           'data-walkthrough': walkthrough.id,
           onclick: () => {
-            const now = this.picture;
-            if (now === null) return;
-            this.change(present(semantics, now, walkthrough.id), { fit: true });
+            this.presentWalkthrough(walkthrough.id);
           },
         },
-        [wordsFor(walkthrough.title, picture.audience) ?? walkthrough.id],
+        [walkthroughTitle(semantics, walkthrough.id, picture.audience)],
       ),
     );
-    const controls: Node[] = [];
-    if (presenting !== null) {
-      const count = semantics.walkthrough(presenting.walkthrough).steps.length;
-      controls.push(
-        h('label', { class: 'step' }, [
-          'Step ',
-          h('input', {
-            type: 'number',
-            name: 'walk-step',
-            min: 1,
-            max: count,
-            value: presenting.step,
-            onchange: (event) => {
-              const step = Number((event.target as HTMLInputElement).value);
-              this.change(presentStep(semantics, picture, step));
-            },
-          }),
-          ` of ${String(count)}`,
-        ]),
-        h(
-          'button',
-          {
-            type: 'button',
-            class: 'tool',
-            onclick: () => {
-              this.change(stop(semantics, picture));
-            },
-          },
-          ['Done'],
-        ),
-      );
-    }
-    return h('section', {}, [h('h2', {}, ['Walkthroughs']), ...items, ...controls]);
+    return h('section', {}, [h('h2', {}, ['Walkthroughs']), ...items]);
   }
 
   private renderControls(path: string): void {
@@ -963,6 +1078,8 @@ export class Viewer {
           ]),
         ];
     if (opened === null || picture === null) {
+      this.root.classList.remove('presenting');
+      this.presenterControls.update(null);
       this.side.replaceChildren(...sections);
       this.tabs.replaceChildren();
       this.crumbSwap.set(h('span', {}, [path]));
@@ -972,6 +1089,17 @@ export class Viewer {
     const { semantics } = opened;
     const audience = picture.audience;
     const activity = picture.activity;
+
+    // INT-701: presenting fills the screen with the stage; the sidebar and side panel hide.
+    this.root.classList.toggle('presenting', activity.kind === 'presenting');
+    this.presenterControls.update(
+      activity.kind === 'presenting'
+        ? {
+            first: presentBack(semantics, picture) === picture,
+            last: presentForward(semantics, picture) === picture,
+          }
+        : null,
+    );
 
     // INT-401 to INT-404: views, scenarios and walkthroughs, each titled for the audience; the
     // current view, or what plays or is presented, is marked.

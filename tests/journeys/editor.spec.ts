@@ -88,7 +88,7 @@ test('INT-801 the divider can be dragged, and the editor keeps at least 360 px',
   expect((await pane.boundingBox())?.width).toBe(360);
 });
 
-test('INT-801 while editing, the breadcrumb view title opens a menu of views and scenarios', async ({
+test('INT-801 while editing, the breadcrumb view title opens a menu of views, scenarios and walkthroughs', async ({
   page,
 }) => {
   await openEditor(page);
@@ -100,6 +100,7 @@ test('INT-801 while editing, the breadcrumb view title opens a menu of views and
     'Engineering: code modules',
     'Generate picks',
     'Results poll',
+    'A tour of the Lotto suite',
   ]);
   await menu.getByRole('menuitem', { name: 'Services' }).click();
   await expect(page.locator('svg.aerie')).toHaveAttribute('data-view', 'services');

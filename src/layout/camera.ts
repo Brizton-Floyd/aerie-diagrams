@@ -35,24 +35,51 @@ export interface Size {
   height: number;
 }
 
+const clampScale = (scale: number): number =>
+  Math.min(CAMERA.maxScale, Math.max(CAMERA.minScale, scale));
+
 /**
  * LAYOUT-451: the camera that fits the whole picture on the stage, at no more than 1.15, centred
- * across, and centred down with its top at least 34 px from the top. While a caption bar shows, the
- * picture keeps clear of its room at the bottom.
+ * across, and centred down with its top at least 34 px from the top. While a caption or narration
+ * bar shows, the picture keeps clear of its `room` at the bottom.
  */
-export function fitCamera(picture: Size, stage: Size, caption = false): Camera {
-  const scale = fitScale(picture, stage, caption);
-  const room = stage.height - (caption ? PAGE.captionBar : 0);
+export function fitCamera(picture: Size, stage: Size, room = 0): Camera {
+  const scale = fitScale(picture, stage, room);
+  const height = stage.height - room;
   return {
     scale,
     x: (stage.width - picture.width * scale) / 2,
-    y: Math.max(PAGE.margin, (room - picture.height * scale) / 2),
+    y: Math.max(PAGE.margin, (height - picture.height * scale) / 2),
     mode: 'fit',
   };
 }
 
-const clampScale = (scale: number): number =>
-  Math.min(CAMERA.maxScale, Math.max(CAMERA.minScale, scale));
+/**
+ * INT-702: the camera that fits a walkthrough step's focus elements, given as their boxes in the
+ * picture: the smallest box around them fills the stage less an 80 px margin on every side and the
+ * `room` of the narration bar at the bottom, at no more than 1.15, centred in what is left. With no
+ * boxes it fits the whole picture instead.
+ */
+export function focusCamera(focus: readonly Box[], picture: Size, stage: Size, room = 0): Camera {
+  if (focus.length === 0) return fitCamera(picture, stage, room);
+  const left = Math.min(...focus.map((box) => box.x));
+  const top = Math.min(...focus.map((box) => box.y));
+  const width = Math.max(...focus.map((box) => box.x + box.width)) - left;
+  const height = Math.max(...focus.map((box) => box.y + box.height)) - top;
+  const across = stage.width - 2 * PAGE.focusMargin;
+  const down = stage.height - room - 2 * PAGE.focusMargin;
+  const scale = clampScale(
+    width <= 0 || height <= 0
+      ? PAGE.maxScale
+      : Math.min(PAGE.maxScale, across / width, down / height),
+  );
+  return {
+    scale,
+    x: stage.width / 2 - (left + width / 2) * scale,
+    y: (stage.height - room) / 2 - (top + height / 2) * scale,
+    mode: 'fit',
+  };
+}
 
 /**
  * INT-351 and INT-352: magnifies by `factor` around a point on screen, which stays where it is. The

@@ -982,3 +982,131 @@ input:focus-visible,
 .panel .steps .reply .ends {
   font-style: italic;
 }
+
+/* INT-701: presenting fills the screen (or the window) with the stage. The sidebar, side panel and
+   editor hide; of the top bar only the audience tabs stay, at the top right (INT-001, INT-104), and
+   the camera buttons sit below them. */
+.page.presenting {
+  grid-template-rows: minmax(0, 1fr);
+}
+.page.presenting .body,
+.page.presenting .body.editing {
+  grid-template-columns: minmax(0, 1fr);
+}
+.page.presenting .body > :not(.aerie-stage) {
+  display: none;
+}
+/* A fixed width, so the box never takes its size from the text of "Written for". */
+.page.presenting .top {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  justify-content: flex-end;
+  width: 432px;
+  height: 44px;
+  padding: 0 4px 0 14px;
+  border: 1px solid var(--aerie-rule);
+  border-radius: 3px;
+}
+.page.presenting .top > :not(.audience, .sr-only) {
+  display: none;
+}
+.page.presenting .camera {
+  top: 72px;
+}
+/* INT-303 and INT-704: containers are not opened or closed while presenting. */
+.page.presenting svg.aerie .control {
+  display: none;
+}
+
+/* INT-701 and LOOK-805: the narration bar at the bottom of the stage, like the caption bar but in
+   the presenter's type scale. Its height is fixed inside the room a fitted picture leaves for it
+   (INT-702), so its size never comes from wrapped text; the right end is kept for the controls. */
+.narration-bar {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 18px;
+  z-index: 1;
+  height: 152px;
+  overflow-y: auto;
+  padding: 14px 268px 14px 20px;
+  background: var(--aerie-paper);
+  border: 1px solid var(--aerie-rule);
+  border-left: 4px solid var(--aerie-accent);
+}
+.narration-meta {
+  display: flex;
+  gap: 14px;
+  margin: 0;
+  font:
+    600 13px 'Source Sans 3',
+    system-ui,
+    sans-serif;
+  letter-spacing: 0.04em;
+  color: var(--aerie-muted);
+}
+.narration-meta .count,
+.narration-meta .scenario-count {
+  font-variant-numeric: tabular-nums;
+  color: var(--aerie-accent-ink);
+}
+.narration-text {
+  overflow-wrap: anywhere;
+  margin: 6px 0 0;
+  font:
+    400 28px/1.35 'Source Serif 4',
+    Georgia,
+    serif;
+}
+/* LOOK-102: an audience that reads code reads the narration in monospace. */
+.narration-text.code {
+  font:
+    400 24px/1.4 'Source Code Pro',
+    ui-monospace,
+    monospace;
+}
+.narration-text code {
+  font:
+    400 24px 'Source Code Pro',
+    ui-monospace,
+    monospace;
+}
+.narration-end {
+  margin: 6px 0 0;
+  font:
+    italic 400 15px 'Source Serif 4',
+    Georgia,
+    serif;
+  color: var(--aerie-muted);
+}
+
+/* INT-701: Back, Next and Exit at the bottom right, inside the narration bar's right end, each a
+   fixed width. They fade out when the pointer has been still (LOOK-901), and stay while the
+   pointer rests on them or one has the keyboard focus. */
+.presenter-controls {
+  position: absolute;
+  right: 44px;
+  bottom: 78px;
+  z-index: 2;
+  display: flex;
+  gap: 6px;
+  transition: opacity var(--aerie-presenter-fade) ease;
+}
+.presenter-controls.idle:not(:hover, :focus-within) {
+  opacity: 0;
+}
+.presenter-controls .tool {
+  width: 72px;
+  height: 32px;
+  padding: 0;
+}
+.presenter-controls .tool[aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: default;
+}
+.presenter-controls .tool[aria-disabled='true']:hover {
+  background: var(--aerie-paper);
+  color: inherit;
+}

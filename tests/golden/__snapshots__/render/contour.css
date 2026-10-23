@@ -83,6 +83,7 @@
   --aerie-dimming: 280ms;
   --aerie-hover: 250ms;
   --aerie-step-draw: 900ms;
+  --aerie-presenter-fade: 300ms;
 }
 @media (prefers-reduced-motion: reduce) {
   :root:not([data-motion="full"]) {
@@ -91,6 +92,7 @@
   --aerie-dimming: 0ms;
   --aerie-hover: 0ms;
   --aerie-step-draw: 0ms;
+  --aerie-presenter-fade: 0ms;
   }
 }
 [data-motion="reduce"] {
@@ -99,6 +101,7 @@
   --aerie-dimming: 0ms;
   --aerie-hover: 0ms;
   --aerie-step-draw: 0ms;
+  --aerie-presenter-fade: 0ms;
 }
 [data-motion="reduce"] .aerie *,
 [data-motion="reduce"] .aerie *::before,

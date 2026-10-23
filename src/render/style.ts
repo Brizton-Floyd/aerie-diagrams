@@ -25,6 +25,13 @@ export const MOTION = {
    * custom property and reduced motion keeps it (LOOK-903).
    */
   autoplay: 2400,
+  /** The presenter's controls fade out, once the pointer has been still for `presenterIdle`. */
+  presenterFade: 300,
+  /**
+   * How long the pointer stays still before the presenter's controls hide. Like the autoplay pace
+   * it is a wait, not motion, so reduced motion keeps it and only the fade goes (LOOK-903).
+   */
+  presenterIdle: 2500,
 } as const;
 
 /** The custom property of a colour token. */
@@ -74,6 +81,7 @@ const MOTION_ON = [
   `  --aerie-dimming: ${ms(MOTION.dimming)};`,
   `  --aerie-hover: ${ms(MOTION.hover)};`,
   `  --aerie-step-draw: ${ms(MOTION.stepDraw)};`,
+  `  --aerie-presenter-fade: ${ms(MOTION.presenterFade)};`,
 ].join('\n');
 
 const MOTION_OFF = MOTION_ON.replace(/\d+ms/g, '0ms');

@@ -146,8 +146,13 @@ test.describe('the navigation sidebar', () => {
     await scenario(page, 'results-poll').click();
     await expect(current).toHaveText(['Results poll']);
     await walkthrough(page, 'tour').click();
-    await expect(current).toHaveText(['A tour of the Lotto suite']);
-    await sidebar(page).getByRole('button', { name: 'Done' }).click();
+    // Presenting hides the sidebar (INT-701), with the walkthrough marked in it; Esc ends it and
+    // shows it again.
+    await expect(sidebar(page)).toBeHidden();
+    await expect(walkthrough(page, 'tour')).toHaveAttribute('aria-current', 'true');
+    await expect(walkthrough(page, 'tour')).toHaveClass(/\bon\b/);
+    await page.keyboard.press('Escape');
+    await expect(sidebar(page)).toBeVisible();
     // Ending the walkthrough returns to reading at the view of its step (INT-707).
     await expect(current).toHaveText(['Big picture']);
     // The sidebar ends with the Reduce motion checkbox.
@@ -204,7 +209,7 @@ test.describe('the address', () => {
     await expect.poll(() => fragment(page)).toBe(playing);
     await walkthrough(page, 'tour').click();
     await expect.poll(() => fragment(page)).toBe('aud=engineer&present=tour.1');
-    await sidebar(page).getByRole('button', { name: 'Done' }).click();
+    await page.keyboard.press('Escape');
     await expect.poll(() => fragment(page)).toBe('aud=engineer');
     expect(await page.evaluate(() => history.length)).toBe(start + 4);
 

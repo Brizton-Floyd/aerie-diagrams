@@ -82,21 +82,26 @@ export const PAGE = {
   margin: 34,
   /** LAYOUT-451: the room a showing caption bar takes at the bottom. */
   captionBar: 92,
+  /** INT-701: the room the presenter's narration bar takes at the bottom. */
+  narrationBar: 174,
+  /** INT-702: the margin kept around a walkthrough step's focus elements. */
+  focusMargin: 80,
   /** LAYOUT-451: the largest scale fitting ever uses. */
   maxScale: 1.15,
 } as const;
 
 /**
  * LAYOUT-451: the scale that fits a picture on a stage of the given size, never more than 1.15,
- * leaving the margin on every side and, while a caption bar shows, its room at the bottom.
+ * leaving the margin on every side and, while a caption or narration bar shows, its `room` at the
+ * bottom (`PAGE.captionBar` or `PAGE.narrationBar`).
  */
 export function fitScale(
   picture: { width: number; height: number },
   stage: { width: number; height: number },
-  caption = false,
+  room = 0,
 ): number {
   const width = stage.width - 2 * PAGE.margin;
-  const height = stage.height - 2 * PAGE.margin - (caption ? PAGE.captionBar : 0);
+  const height = stage.height - 2 * PAGE.margin - room;
   if (picture.width <= 0 || picture.height <= 0) return PAGE.maxScale;
   return Math.min(PAGE.maxScale, width / picture.width, height / picture.height);
 }

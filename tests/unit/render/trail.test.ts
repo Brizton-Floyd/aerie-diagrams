@@ -156,10 +156,15 @@ describe('motion', () => {
       hover: 250,
       stepDraw: 900,
       autoplay: 2400,
+      presenterFade: 300,
+      presenterIdle: 2500,
     });
     expect(css).toContain('--aerie-glide: 560ms;');
-    // The autoplay pace is not motion, so it is no custom property for reduced motion to zero.
+    expect(css).toContain('--aerie-presenter-fade: 300ms;');
+    // The autoplay pace and the presenter's wait before its controls hide are not motion, so they
+    // are no custom properties for reduced motion to zero.
     expect(css).not.toContain('2400');
+    expect(css).not.toContain('2500');
     expect(rule('.aerie .node > *')).toBe(
       'transition: stroke var(--aerie-hover) ease, stroke-width var(--aerie-hover) ease, opacity var(--aerie-dimming) ease;',
     );
@@ -181,7 +186,7 @@ describe('motion', () => {
       /@media \(prefers-reduced-motion: reduce\) \{\n {2}:root:not\(\[data-motion="full"\]\) \{\n(\s+--aerie-[a-z-]+: 0ms;\n)+/,
     );
     const reduced = rule('[data-motion="reduce"]');
-    for (const name of ['glide', 'swap', 'dimming', 'hover', 'step-draw']) {
+    for (const name of ['glide', 'swap', 'dimming', 'hover', 'step-draw', 'presenter-fade']) {
       expect(reduced).toContain(`--aerie-${name}: 0ms;`);
     }
     expect(css).toContain('animation-duration: 0ms !important;');
@@ -191,7 +196,8 @@ describe('motion', () => {
     const durations = rules.join('\n').match(/\b\d+(?:\.\d+)?m?s\b/g) ?? [];
     expect(
       durations.filter(
-        (each) => !['0ms', '1ms', '560ms', '170ms', '280ms', '250ms', '900ms'].includes(each),
+        (each) =>
+          !['0ms', '1ms', '560ms', '170ms', '280ms', '250ms', '900ms', '300ms'].includes(each),
       ),
     ).toEqual([]);
   });

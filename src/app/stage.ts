@@ -1,15 +1,17 @@
 // The stage (docs/spec/interaction.md): the drawing in the middle of the page, the camera that
 // places it (INT-351 to INT-353, LAYOUT-404), the change from one picture to the next (LAYOUT-402,
 // LAYOUT-403, LOOK-901), the clicks a reader makes on it (INT-201, INT-302), the sentences a
-// screen reader hears after it (INT-903), and a playing scenario's caption bar (INT-603, LOOK-805)
-// and cross-fade between the map and lanes (INT-604).
+// screen reader hears after it (INT-903), a playing scenario's caption bar (INT-603, LOOK-805)
+// and cross-fade between the map and lanes (INT-604), and a presented walkthrough's narration bar
+// and camera framing its focus (INT-701, INT-702).
 import type { Id } from '../lines/index.ts';
 import type { Tree } from '../model/index.ts';
 import {
   BOX,
   CAMERA,
   dragged,
-  fitCamera,
+  PAGE,
+  focusCamera,
   keepCorner,
   magnify,
   pan,
@@ -25,6 +27,7 @@ import {
 import { SHAPE } from '../render/index.ts';
 import { h } from './dom.ts';
 import { Choreography, Swap, glideEase, timing } from './motion.ts';
+import { narrationContent, type Narration } from './presenter.ts';
 import { captionText, type Caption } from './scenario.ts';
 
 /** What the stage is asked to show. */
@@ -39,6 +42,10 @@ export interface Showing {
   sentences: readonly string[];
   /** A playing scenario's caption bar (INT-603); null when no scenario plays. */
   caption: Caption | null;
+  /** A presented walkthrough's narration bar (INT-701); null when nothing is presented. */
+  narration: Narration | null;
+  /** INT-702: the elements a fitted camera frames, or none to fit the whole picture. */
+  frame: readonly Id[];
 }
 
 /** How a new picture arrives. */
@@ -118,6 +125,12 @@ export class Stage {
   /** INT-603 and LOOK-805: the caption bar, shown while a scenario plays. */
   private readonly captionBar: HTMLElement;
   private readonly captionSwap: Swap;
+  /** INT-701: the narration bar, shown while a walkthrough is presented. */
+  private readonly narrationBar: HTMLElement;
+  private readonly narrationSwap: Swap;
+  /** INT-702: the elements fitting frames, until the reader presses Fit. */
+  private frame: readonly Id[] = [];
+  private framing = false;
   private camera: Camera = { scale: 1, x: 0, y: 0, mode: 'fit' };
   private drag: { pointer: number; start: Point; camera: Camera; moved: boolean } | null = null;
   private swallowClick = false;
@@ -155,15 +168,25 @@ export class Stage {
       hidden: true,
     });
     this.captionSwap = new Swap(this.captionBar);
+    // INT-904: so is a walkthrough's narration.
+    this.narrationBar = h('div', {
+      class: 'narration-bar',
+      role: 'status',
+      'aria-live': 'polite',
+      'aria-label': 'Narration',
+      hidden: true,
+    });
+    this.narrationSwap = new Swap(this.narrationBar);
     this.element = h('main', { class: 'aerie-stage', 'aria-label': 'Diagram' }, [
       this.holder,
       this.sentences,
       this.captionBar,
+      this.narrationBar,
       camera,
     ]);
     this.listen();
     new ResizeObserver(() => {
-      if (this.camera.mode === 'fit') this.fit(false);
+      if (this.camera.mode === 'fit') this.refit(false);
     }).observe(this.element);
   }
 
@@ -175,20 +198,27 @@ export class Stage {
     this.lanes = null;
     this.holder.replaceChildren(content);
     this.sentences.replaceChildren();
-    this.setCaption(null);
+    this.frame = [];
+    this.setBars(null, null);
   }
 
-  /** True while the caption bar shows, so fitting keeps clear of it (LAYOUT-451). */
-  private get captioned(): boolean {
-    return !this.captionBar.hidden;
+  /**
+   * The room the caption bar or the narration bar takes at the bottom, which fitting keeps clear
+   * of (LAYOUT-451, INT-702).
+   */
+  private get room(): number {
+    if (!this.narrationBar.hidden) return PAGE.narrationBar;
+    return this.captionBar.hidden ? 0 : PAGE.captionBar;
   }
 
-  /** Shows the caption bar's words, or hides it; true when it appeared or went. */
-  private setCaption(caption: Caption | null): boolean {
-    const was = this.captioned;
+  /** Shows the caption and narration bars' words, or hides them; true when their room changed. */
+  private setBars(caption: Caption | null, narration: Narration | null): boolean {
+    const was = this.room;
     this.captionBar.hidden = caption === null;
     if (caption !== null) this.captionSwap.set(h('div', {}, [captionText(caption)]));
-    return was !== this.captioned;
+    this.narrationBar.hidden = narration === null;
+    if (narration !== null) this.narrationSwap.set(narrationContent(narration));
+    return was !== this.room;
   }
 
   /**
@@ -209,19 +239,21 @@ export class Stage {
     const after = showing.layout;
     const wasLanes = this.lanes;
     this.sentences.replaceChildren(...showing.sentences.map((each) => h('li', {}, [each])));
-    const captionMoved = this.setCaption(showing.caption);
+    const roomMoved = this.setBars(showing.caption, showing.narration);
+    this.frame = showing.frame;
+    // INT-704: a new walkthrough step fits the camera to its focus again.
+    if (arrival.fit === true) this.framing = true;
     const samePlaces =
       (before !== null && after !== null && before.result === after.result) ||
       (wasLanes !== null && wasLanes === showing.lanes);
     if (old !== null && samePlaces && this.morph(old, next, after === null ? 'lanes' : 'map')) {
-      // The caption bar's room changes the fitted picture (LAYOUT-451).
-      if (arrival.fit === true || (captionMoved && this.camera.mode === 'fit')) this.fit(true);
+      // The caption or narration bar's room changes the fitted picture (LAYOUT-451).
+      if (arrival.fit === true || (roomMoved && this.camera.mode === 'fit')) this.refit(true);
       return;
     }
-    const size = this.sizeOf(next);
     const was = this.camera;
     if (arrival.fit === true || this.camera.mode === 'fit' || old === null) {
-      this.camera = fitCamera(size, this.stageSize(), this.captioned);
+      this.camera = this.fitted(next, after);
     } else if (arrival.anchor !== undefined && before !== null && after !== null) {
       const from = before.result.boxes[arrival.anchor];
       const to = after.result.boxes[arrival.anchor];
@@ -465,10 +497,28 @@ export class Stage {
     }
   }
 
-  /** LAYOUT-451 and INT-352: fits the whole picture and returns the camera to fit mode. */
-  fit(glide: boolean): void {
+  /**
+   * LAYOUT-451: the fitted camera for a drawing: the whole picture, or a presented step's focus
+   * elements (INT-702) until the reader presses Fit.
+   */
+  private fitted(svg: SVGSVGElement, layout: StructureLayout | null): Camera {
+    const boxes =
+      this.framing && layout !== null
+        ? this.frame.flatMap((id) => layout.result.boxes[id] ?? [])
+        : [];
+    return focusCamera(boxes, this.sizeOf(svg), this.stageSize(), this.room);
+  }
+
+  /** Fits the camera again, framing a presented step's focus if it still does (INT-704). */
+  private refit(glide: boolean): void {
     if (this.svg === null) return;
-    this.place(fitCamera(this.sizeOf(this.svg), this.stageSize(), this.captioned), glide);
+    this.place(this.fitted(this.svg, this.layout), glide);
+  }
+
+  /** LAYOUT-451 and INT-352: Fit fits the whole picture and returns the camera to fit mode. */
+  fit(glide: boolean): void {
+    this.framing = false;
+    this.refit(glide);
   }
 
   /** INT-352: the camera buttons and keys magnify around the middle of the stage. */
