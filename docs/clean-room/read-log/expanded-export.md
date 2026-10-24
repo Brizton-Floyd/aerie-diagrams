@@ -39,6 +39,9 @@ prototype stay on a separate branch, with no production implementation or Conflu
 - `/tmp/aerie-export-map-current.md` - refreshed canonical map body, updated with the selected prototype decision.
 - `/tmp/aerie-export-content-pointer.md` - content ticket points to the canonical prototype resolution.
 
+- `/tmp/aerie-export-map-audit.md` - repaired map formatting and reconciled confirmed versus open decisions.
+- `/tmp/aerie-export-open-questions-audit.md` - corrected stale branding status and listed unresolved content questions.
+
 ## URLs
 
 - https://github.com/Brizton-Floyd/aerie-diagrams/issues/42 - existing broader export backlog.
@@ -104,6 +107,13 @@ export heading/footer no longer add the application name. The user clarified tha
 excluded from the artifact. Chromium smoke checks confirmed the headings/footer and wording switch
 while retaining all four stage explanations.
 The accepted decision is indexed in the map; no production exporter was implemented or merged.
+
+## Readiness audit
+
+Two human decision tickets remain open: content and first-release acceptance. The readiness audit
+did not resolve either. Replaced an accidentally serialized wrapper in the map body with normal
+Markdown, corrected stale branding status and reconciled the research summary with the user
+choices. No production implementation was started.
 
 ## Forbidden sources opened
 

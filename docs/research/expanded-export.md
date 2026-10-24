@@ -95,8 +95,9 @@ Chromium smoke checks exercised all variants, selected stage 3, and switched its
 "Build the picture" to "Lay out and render SVG". Screenshots were visually reviewed. No unit tests
 were added for throwaway UI, and no complete production release gate is claimed.
 
-User decisions remain open: single versus multiple views, static versus interactive delivery,
-explanation placement, detailed-step coverage and acceptable large-diagram behavior. Work summary:
+The later user feedback below settles single-view static output and the starting composition.
+Precise flow/explanation coverage, release format, controls, large-diagram behavior and real import
+acceptance remain open on the content and release decision tickets. Work summary:
 GPT-6.1 Sol with inherited runtime effort, inline research and prototype; no delegated workers or
 model change. The branch and these assets are disposable planning evidence, not for merging.
 
