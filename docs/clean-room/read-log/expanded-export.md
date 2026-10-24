@@ -53,6 +53,9 @@ prototype stay on a separate branch, with no production implementation or Conflu
 - `/tmp/aerie-export-content-resolution.md` - authored canonical resolution of the confirmed content choices.
 - `/tmp/aerie-export-map-delivery.md` - raw Markdown map body refreshed using structured GitHub CLI output before indexing the closed content decision.
 
+- `/tmp/aerie-export-release-resolution.md` - authored release resolution including the user’s explicit choice to omit live Cloud import testing.
+- `/tmp/aerie-export-map-final.md` - refreshed raw Markdown map and completed handoff index.
+
 ## URLs
 
 - https://github.com/Brizton-Floyd/aerie-diagrams/issues/42 - existing broader export backlog.
@@ -141,6 +144,15 @@ content decision is closed by producing it.
 The user confirmed the remaining source, invalid-edit and audience decisions. Closed only the
 content ticket in this session, indexed its resolution, and claimed the first-release acceptance
 ticket. Format selection is the next live human question. No production implementation occurred.
+
+## Release resolution
+
+The user selected PNG/PDF, preview-first downloads, readable-size behavior and Confluence Cloud,
+then explicitly declined a live import test. Closed the first-release decision only in this
+session and completed the map after all child decisions closed. The handoff distinguishes local
+file acceptance from unverified Cloud instance behavior. No Confluence access or write occurred.
+No production implementation was started. Routine defaults and measured engineering limits are
+identified separately from the user's confirmed choices.
 
 ## Forbidden sources opened
 

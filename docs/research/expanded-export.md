@@ -152,3 +152,17 @@ with authored names preserved. The canonical resolution is on
 [the closed content decision](https://github.com/Brizton-Floyd/aerie-diagrams/issues/104).
 The release decision remains open for formats, controls, limits and actual import acceptance.
 No production implementation was started.
+
+## First-release handoff complete
+
+All four Wayfinder decisions are closed. The release supports PNG and PDF with a preview-first
+workflow, a complete PNG or paginated PDF, readable-size limits and clear failures without clipping
+or silently losing content. The target is Confluence Cloud. The user explicitly declined a live
+Cloud upload test; acceptance uses local PNG/PDF checks and documented platform support. Actual
+import behavior in the user's instance remains unverified and is not a release gate.
+
+The canonical behavior, routine defaults, local acceptance cases and implementation seams are in
+[the release decision](https://github.com/Brizton-Floyd/aerie-diagrams/issues/106). Numeric limits
+require measured engineering validation under that policy, not another product-choice interview.
+The [planning map](https://github.com/Brizton-Floyd/aerie-diagrams/issues/102) is complete. No
+production exporter has been implemented or merged; this branch remains disposable evidence.
