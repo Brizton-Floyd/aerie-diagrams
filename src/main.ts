@@ -22,7 +22,10 @@ style.textContent = signalStyle();
 document.head.append(style);
 
 const app = document.querySelector<HTMLElement>('#app');
-if (app) {
+if (app && import.meta.env.DEV && new URLSearchParams(location.search).has('export-prototype')) {
+  const { showExportPrototype } = await import('./app/export-prototype.ts');
+  showExportPrototype(app);
+} else if (app) {
   const address = watchAddress();
   if (address === null) addEditor(start(app));
   else follow(new Viewer(app, { watching: true }), address);

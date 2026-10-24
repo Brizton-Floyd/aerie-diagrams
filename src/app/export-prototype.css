@@ -1,0 +1,450 @@
+.xp-root {
+  min-height: 100vh;
+  background: #101b29;
+  color: #e5edf7;
+  font:
+    15px/1.5 Inter,
+    system-ui,
+    sans-serif;
+  padding-bottom: 100px;
+}
+.xp-root * {
+  box-sizing: border-box;
+}
+.xp-root button {
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid #526477;
+  border-radius: 8px;
+  background: #1b2c40;
+  color: #e8f1fb;
+  padding: 9px 14px;
+}
+.xp-root button:hover {
+  border-color: #92c9e4;
+}
+.xp-root button:focus-visible {
+  outline: 3px solid #67cbe9;
+  outline-offset: 3px;
+}
+.xp-app-header {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 17px 36px;
+  border-bottom: 1px solid #344255;
+}
+.xp-app-header b {
+  font-size: 22px;
+}
+.xp-app-header > span {
+  color: #b1c0d2;
+}
+.xp-prototype {
+  margin-left: auto;
+  background: #25364a;
+  border-radius: 5px;
+  padding: 4px 10px;
+  font-size: 12px;
+}
+.xp-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1420px;
+  margin: 26px auto 14px;
+  padding: 0 36px;
+}
+.xp-toolbar h1 {
+  margin: 4px 0;
+  font-size: 29px;
+  letter-spacing: -0.7px;
+}
+.xp-eyebrow {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  color: #71859b;
+}
+.xp-toolbar .xp-eyebrow {
+  color: #94b7d0;
+}
+.xp-wording {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.xp-wording > span {
+  margin-right: 8px;
+  color: #afbdd0;
+}
+.xp-root button[aria-pressed='true'],
+.xp-root button[aria-current='page'] {
+  background: #c1ecfa;
+  color: #102938;
+  border-color: #c1ecfa;
+}
+.xp-root main {
+  max-width: 1420px;
+  margin: auto;
+  padding: 0 36px;
+}
+.xp-intro {
+  max-width: 1050px;
+  color: #b9cadd;
+  margin: 0 0 24px;
+  font-size: 16px;
+}
+.xp-intro b {
+  color: #f0f6fe;
+}
+.xp-scope-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.xp-option {
+  padding: 24px;
+  background: #1b2b3e;
+  border: 1px solid #3b5066;
+  border-radius: 13px;
+}
+.xp-option-heading {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+.xp-option-heading h2 {
+  font-size: 21px;
+  margin: 0 0 3px;
+  letter-spacing: -0.4px;
+}
+.xp-option-heading p {
+  color: #b5c4d5;
+  margin: 0;
+}
+.xp-letter {
+  display: grid;
+  place-items: center;
+  background: #344e67;
+  color: #c9efff;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.xp-paper {
+  background: #fff;
+  color: #1b2c40;
+  box-shadow: 0 12px 24px #0003;
+  border-radius: 3px;
+}
+.xp-single {
+  max-width: 310px;
+  margin: auto;
+  padding: 18px 16px 13px;
+}
+.xp-mini-title {
+  font-weight: 700;
+  font-size: 13px;
+  border-bottom: 1px solid #dbe4ef;
+  padding-bottom: 9px;
+  margin-bottom: 6px;
+}
+.xp-mini-title span {
+  display: block;
+  font-size: 10px;
+  color: #70849b;
+  font-weight: 400;
+}
+.xp-thumbnail svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.xp-single .xp-thumbnail {
+  height: 326px;
+  overflow: hidden;
+}
+.xp-single .xp-thumbnail svg {
+  height: 326px;
+  max-width: 100%;
+}
+.xp-mini-legend {
+  border-top: 1px solid #dce6ef;
+  padding-top: 9px;
+  font-size: 10px;
+  line-height: 1.9;
+}
+.xp-book {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 431px;
+}
+.xp-book-page {
+  width: 50%;
+  padding: 13px 11px;
+}
+.xp-book-page:first-child {
+  transform: translateY(-14px);
+}
+.xp-book-page:last-child {
+  transform: translateY(14px);
+}
+.xp-book-page .xp-thumbnail {
+  height: 272px;
+}
+.xp-book-page .xp-thumbnail svg {
+  height: 272px;
+}
+.xp-book-page .xp-mini-title {
+  font-size: 11px;
+}
+.xp-option-note {
+  min-height: 71px;
+  margin: 19px 0 16px;
+  color: #b6c8db;
+  font-size: 14px;
+}
+.xp-root .xp-primary {
+  background: #c1ecfa;
+  color: #132d3d;
+  border: 0;
+}
+.xp-neutral-note {
+  padding: 10px 0;
+  color: #b3cee0;
+  font-size: 14px;
+}
+.xp-bottom-note {
+  margin: 21px 0 0;
+  padding: 17px 20px;
+  border: 1px solid #3a526a;
+  border-radius: 9px;
+  color: #b5c7d9;
+  font-size: 14px;
+}
+.xp-bottom-note b {
+  color: #e9f4ff;
+}
+.xp-wiki {
+  background: #e8edf2;
+  border: 1px solid #55687e;
+  border-radius: 12px;
+  padding: 0 26px 25px;
+  color: #1c3145;
+}
+.xp-wiki-bar {
+  height: 51px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: #61758b;
+}
+.xp-wiki-bar > b {
+  margin-left: auto;
+  color: #426776;
+  background: #d5e4eb;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+.xp-document {
+  background: #fff;
+  border: 1px solid #d4dfe7;
+  border-radius: 4px;
+  padding: 32px 30px 19px;
+  box-shadow: 0 8px 17px #182c3b0c;
+}
+.xp-doc-heading {
+  margin: 0 0 19px;
+}
+.xp-doc-heading h2 {
+  font-size: 25px;
+  letter-spacing: -0.5px;
+  margin: 5px 0;
+}
+.xp-doc-heading p {
+  font-size: 13px;
+  color: #6b7e91;
+  margin: 0;
+}
+.xp-export-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(260px, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+.xp-full-diagram {
+  min-width: 0;
+}
+.xp-full-diagram svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.xp-all-explanations,
+.xp-live-panel {
+  padding-top: 15px;
+}
+.xp-explanation {
+  display: flex;
+  gap: 12px;
+  border-bottom: 1px solid #dbe5ed;
+  padding: 21px 0;
+}
+.xp-number {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #18687c;
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+}
+.xp-explanation h3 {
+  font-size: 15px;
+  margin: 2px 0 8px;
+  line-height: 1.4;
+}
+.xp-explanation p,
+.xp-current-step p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #536d82;
+  margin: 0;
+}
+.xp-caption-note {
+  font-size: 12px;
+  color: #5e768b;
+  padding: 15px;
+  background: #f0f5f8;
+  border-radius: 6px;
+  margin-top: 22px;
+}
+.xp-export-footer {
+  border-top: 1px solid #dce4eb;
+  margin-top: 20px;
+  padding-top: 12px;
+  font-size: 11px;
+  color: #73869b;
+}
+.xp-stage-buttons {
+  display: flex;
+  gap: 9px;
+  margin: 15px 0 23px;
+}
+.xp-root .xp-stage-buttons button {
+  background: #fff;
+  color: #214154;
+  border-color: #b6cad8;
+  border-radius: 50%;
+  width: 39px;
+  height: 39px;
+  padding: 0;
+}
+.xp-root .xp-stage-buttons button[aria-pressed='true'] {
+  background: #18687c;
+  color: #fff;
+}
+.xp-current-step {
+  border-left: 3px solid #23798d;
+  padding-left: 18px;
+  min-height: 200px;
+}
+.xp-current-step h3 {
+  font-size: 21px;
+  line-height: 1.3;
+  letter-spacing: -0.3px;
+}
+.xp-live-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+.xp-root .xp-live-actions button {
+  background: white;
+  color: #22586b;
+  border-color: #bed0db;
+  font-size: 13px;
+}
+.xp-root .xp-live-actions button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.xp-live-diagram .overview-step {
+  cursor: pointer;
+}
+.xp-switcher {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  background: #07111e;
+  border: 1px solid #526a80;
+  padding: 8px;
+  border-radius: 14px;
+  box-shadow: 0 7px 28px #0006;
+  z-index: 10;
+  white-space: nowrap;
+}
+.xp-root .xp-switcher button {
+  font-size: 12px;
+  padding: 9px 12px;
+  border: 0;
+  background: transparent;
+}
+.xp-root .xp-switcher button[aria-current='page'] {
+  background: #c1ecfa;
+  color: #162e3b;
+}
+.xp-root svg * {
+  animation: none !important;
+  transition: none !important;
+}
+@media (max-width: 900px) {
+  .xp-scope-grid {
+    grid-template-columns: 1fr;
+  }
+  .xp-export-content {
+    grid-template-columns: 1fr;
+  }
+  .xp-toolbar {
+    align-items: flex-start;
+    gap: 15px;
+  }
+  .xp-wording {
+    flex-wrap: wrap;
+  }
+  .xp-switcher {
+    max-width: 97vw;
+    overflow: auto;
+  }
+  .xp-app-header {
+    gap: 12px;
+    padding: 14px;
+  }
+  .xp-prototype {
+    display: none;
+  }
+  .xp-root main,
+  .xp-toolbar {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .xp-wiki {
+    padding: 0 12px 12px;
+  }
+  .xp-document {
+    padding: 20px 15px;
+  }
+}
