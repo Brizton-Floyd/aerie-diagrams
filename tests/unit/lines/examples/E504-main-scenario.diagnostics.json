@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E504",
+    "severity": "error",
+    "line": 6,
+    "column": 12,
+    "endLine": 6,
+    "endColumn": 19,
+    "message": "The main scenario `missing` must name one declared scenario and appear once in a view, as `scenario render-model`."
+  }
+]

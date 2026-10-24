@@ -1,4 +1,51 @@
 {
+  "samples/aerie.aerie": {
+    "big-picture, default": {
+      "crossings": 0,
+      "bends": 2,
+      "fitScale": 1.15
+    },
+    "big-picture, everything open": {
+      "crossings": 0,
+      "bends": 6,
+      "fitScale": 0.834
+    },
+    "big-picture, all closed": {
+      "crossings": 0,
+      "bends": 2,
+      "fitScale": 1.15
+    },
+    "big-picture, meaning opened": {
+      "crossings": 0,
+      "bends": 6,
+      "fitScale": 1.132
+    },
+    "big-picture, picture opened": {
+      "crossings": 0,
+      "bends": 2,
+      "fitScale": 1.027
+    },
+    "inside, default": {
+      "crossings": 0,
+      "bends": 6,
+      "fitScale": 0.834
+    },
+    "inside, all closed": {
+      "crossings": 0,
+      "bends": 2,
+      "fitScale": 1.15
+    },
+    "inside, meaning closed": {
+      "crossings": 0,
+      "bends": 2,
+      "fitScale": 1.027
+    },
+    "inside, picture closed": {
+      "crossings": 0,
+      "bends": 6,
+      "fitScale": 1.132
+    }
+  },
   "samples/lotto.aerie": {
     "big-picture, default": {
       "crossings": 0,

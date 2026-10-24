@@ -113,6 +113,11 @@ export interface ResolvedStep {
   caption: string;
 }
 
+export interface OverviewStep extends ResolvedStep {
+  from: number;
+  to: number;
+}
+
 /** The picture of one walkthrough step (MODEL-501 to MODEL-503). */
 export interface WalkPicture {
   view: Id;
@@ -361,6 +366,51 @@ export class Semantics {
         caption: about ?? said,
       };
     });
+  }
+
+  /** MODEL-405 and MODEL-406: steps 1 to `step` drawn on a view at a zoom state. */
+  overviewSteps(scenario: Id, audience: Id): OverviewStep[] {
+    const steps = this.steps(scenario, audience);
+    const stages = this.scenario(scenario).stages;
+    if (stages === undefined)
+      return steps.map((step) => ({ ...step, from: step.number, to: step.number }));
+    return stages.flatMap((stage, index) => {
+      const anchor = steps[stage.from - 1];
+      if (anchor === undefined) return [];
+      const title = wordsFor(stage.title, audience) ?? '';
+      const about = proseFor(stage.about, audience);
+      return [
+        {
+          ...anchor,
+          number: index + 1,
+          from: stage.from,
+          to: stage.to,
+          sentence: title,
+          about,
+          caption: about ?? title,
+        },
+      ];
+    });
+  }
+
+  overviewTrail(scenario: Id, view: Id, zoom: Zoom): Trail {
+    const declared = this.scenario(scenario);
+    const all = this.trail(scenario, view, zoom, declared.steps.length);
+    if (declared.stages === undefined) return all;
+    const numbers = new Map(declared.stages.map((stage, index) => [stage.from, index + 1]));
+    return {
+      ...all,
+      current: this.trail(
+        scenario,
+        view,
+        zoom,
+        declared.stages.at(-1)?.from ?? declared.steps.length,
+      ).current,
+      steps: all.steps.flatMap((step) => {
+        const number = numbers.get(step.number);
+        return number === undefined ? [] : [{ ...step, number }];
+      }),
+    };
   }
 
   /** MODEL-405 and MODEL-406: steps 1 to `step` drawn on a view at a zoom state. */

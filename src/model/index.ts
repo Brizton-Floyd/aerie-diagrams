@@ -51,6 +51,7 @@ export {
   type DrawnNode,
   type Drawing,
   type ResolvedStep,
+  type OverviewStep,
   type Scene,
   type SceneEdge,
   type SceneNode,

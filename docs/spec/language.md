@@ -65,9 +65,10 @@ canonical JSON model is [examples/shop.json](examples/shop.json). The large work
   | `system`                                                                                                    | `repo`, `compose`                                                                                    |
   | an element                                                                                                  | elements (its children), `icon`, `code`, descriptions, rewordings                                    |
   | a relationship                                                                                              | descriptions, rewordings                                                                             |
-  | `view`                                                                                                      | `show`, `kind`, descriptions, rewordings                                                             |
-  | `scenario`                                                                                                  | steps (sentences), descriptions, rewordings                                                          |
+  | `view`                                                                                                      | `show`, `kind`, main `scenario`, descriptions, rewordings                                            |
+  | `scenario`                                                                                                  | sentence steps, stage `step` declarations, descriptions, rewordings                                  |
   | a scenario step                                                                                             | descriptions, rewordings                                                                             |
+  | a stage `step`                                                                                              | descriptions, rewordings                                                                             |
   | `walkthrough`                                                                                               | `step`, descriptions, rewordings                                                                     |
   | a walkthrough `step`                                                                                        | `open`, `close`, `for`, descriptions, rewordings                                                     |
   | `audiences`, `show`, `kind`, `icon`, `code`, `repo`, `compose`, `open`, `close`, `for`, `ignore`, `@level:` | nothing                                                                                              |
@@ -566,6 +567,7 @@ interface View {
   about: Prose;
   show: ShowItem[];
   kinds: Id[];
+  mainScenario?: Id;
 }
 
 type ShowItem = { element: Id; depth: number } | { tag: Id };
@@ -575,6 +577,14 @@ interface Scenario {
   title: Words;
   about: Prose;
   steps: Step[];
+  stages?: Stage[];
+}
+
+interface Stage {
+  from: number;
+  to: number;
+  title: Words;
+  about: Prose;
 }
 
 interface Step {
@@ -699,10 +709,14 @@ type End = { element: Id } | { unit: CodeUnit };
 | E501 | error    | `{item}` is not something a view can show. Use an element id, an id with a depth such as `{id} +1`, or a tag in brackets such as `[service]`.                                               | the item                |
 | E502 | error    | No element has the tag `[{tag}]`.{suggestion}                                                                                                                                               | the tag                 |
 | E503 | error    | No relationship has the kind `{kind}`.{suggestion}                                                                                                                                          | the kind                |
+| E504 | error    | The main scenario `{id}` must name one declared scenario and appear once in a view, as `scenario render-model`.                                                                             | the scenario reference  |
+| E505 | error    | The main scenario `{scenario}` cannot be shown in `{view}`. Include every participant or a container around it in this view.                                                                | the scenario reference  |
 | E601 | error    | The scenario `{id}` has no steps yet. Add sentences under it, such as `{example}`.                                                                                                          | the keyword             |
 | E602 | error    | A scenario step goes to one element, and this one lists {count}. Write one step for each.                                                                                                   | the second object       |
 | E603 | error    | A scenario step has no kind. Remove `[{kind}]`.                                                                                                                                             | the bracket group       |
 | E604 | error    | No view can show every step of `{id}`, because none shows `{element}` or anything around it. Add `{top}` to a view's `show` line.                                                           | the id                  |
+| E605 | error    | The stage range `{range}` must be a whole step number or an increasing range within steps 1 to {count}.                                                                                     | the range               |
+| E606 | error    | The stages of `{id}` must cover steps 1 to {count} once, in order, with no gaps.                                                                                                            | the last stage range    |
 | W601 | warning  | No relationship joins `{subject}` and `{object}` in the model. Add one, such as `{subject} {verb} {object}`, or check this step.                                                            | the line                |
 | E701 | error    | The walkthrough `{id}` has no steps yet. Add a line such as `step {view}`.                                                                                                                  | the keyword             |
 | E702 | error    | There is no view or scenario called `{id}`.{suggestion}                                                                                                                                     | the id                  |
@@ -736,7 +750,7 @@ E003 messages, chosen by the line and its owner:
 | `show` or `kind` outside a view                                                              | `{keyword}` lines go inside a view.                                                                                     |
 | `icon` or `code` outside an element                                                          | `{keyword}` lines go inside an element.                                                                                 |
 | `repo` or `compose` outside a `system` block                                                 | `{keyword}` lines go inside the `system` block.                                                                         |
-| `step` outside a walkthrough                                                                 | `step` lines go inside a walkthrough.                                                                                   |
+| `step` outside a walkthrough or scenario                                                     | `step` lines go inside a walkthrough or scenario.                                                                       |
 | `open`, `close` or `for` outside a walkthrough step                                          | `{keyword}` lines go inside a walkthrough step.                                                                         |
 | an element under anything but the top level or an element                                    | An element goes at the top level or inside another element.                                                             |
 | a sentence under anything but the top level or a scenario                                    | A sentence goes at the top level, as a relationship, or inside a scenario, as a step.                                   |
@@ -911,3 +925,24 @@ Highlights:
 The canonical model of this file is produced by slice A2 and kept as a golden; it is not repeated
 here. The small example in section 1 has its full canonical model in
 [examples/shop.json](examples/shop.json).
+
+## Authored main flows and stages
+
+- **LANG-509** A view may name its main flow with one `scenario <id>` line, without a colon or children. The id refers to a declared scenario, including one declared later. Missing, unknown, malformed or repeated bindings are E504. The view must hold every participant of that scenario (E505).
+- **LANG-608** Inside a scenario, `step <from>[-<to>]: <title>` declares a high-level stage over detailed sentence steps. The range is inclusive. A stage may have descriptions and audience wording, including added technical paragraphs. Its number is its declaration position, starting at 1. Its diagram anchor is the first detailed step in its range.
+- **LANG-609** Authored stages cover every detailed step exactly once, in declaration order, with no gaps. Invalid, reversed, non-integral or out-of-bounds ranges are E605; gaps, overlaps, reordered ranges and incomplete coverage are E606. Stages never add runtime steps or relationships.
+- **LANG-610** `mainScenario` and `stages` are optional canonical fields, appended to the view and scenario objects only when authored. Existing files keep their canonical JSON unchanged. The formatter preserves stage titles and punctuation; the printer preserves stage ranges, wording and the main-flow binding.
+
+```aerie
+left: Left
+right: Right
+left calls right
+view big-picture: Big picture
+  show left, right
+  scenario request
+scenario request: Handle a request
+  left calls right
+  right answers left
+  step 1: Ask
+  step 2: Answer
+```

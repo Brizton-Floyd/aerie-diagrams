@@ -35,7 +35,13 @@ export function format(source: string): FormatResult {
         break;
       case 'statement': {
         const { statement } = entry;
-        const text = formatRead(statement.raw, statement.read).replace(/ +$/, '');
+        const read = statement.read;
+        const stage = read.kind === 'walk-step' && statement.parent?.read.kind === 'scenario';
+        const text = (
+          stage
+            ? `step ${words(read.target).replace(/ *- */g, '-')}${read.colon === null ? '' : `: ${words(read.after)}`}`
+            : formatRead(statement.raw, read)
+        ).replace(/ +$/, '');
         out.push({ kind: 'line', indent: statement.depth, text });
         break;
       }

@@ -159,7 +159,7 @@ walkthrough step.
   | `open`    | ids of containers opened by the reader (zoom state `open`), comma-separated, in model order         |
   | `closed`  | ids of containers closed by the reader (zoom state `closed`), comma-separated, in model order       |
   | `sel`     | the selected element's id                                                                           |
-  | `flow`    | the overview scenario's id and selected step: `render-model.3`                                      |
+  | `flow`    | the overview scenario and selected stage/step: `render-model.3`, or `none` when explicitly cleared  |
   | `play`    | the playing scenario's id and current step: `generate-picks.9`                                      |
   | `lanes`   | `1` when the scenario is shown as lanes                                                             |
   | `present` | the walkthrough's id and step: `tour.3`; inside a scenario step, also the scenario step: `tour.7.9` |
@@ -346,3 +346,8 @@ For authors who write in their own editor.
   relationship as a sentence for the current audience.
 - **INT-904** Scenario captions and walkthrough narration are announced as they change.
 - **INT-905** Reduced motion (LOOK-903) applies everywhere motion is described in this document.
+
+## Authored main-flow defaults
+
+- **INT-624** Opening a model or switching to a view with an authored main scenario immediately shows its numbered overview, without starting playback. A bare link restores that view's main flow; `flow=none` preserves an explicitly cleared picture. A link's `flow` step number refers to the selected stage when that scenario has stages. Back and Forward restore the selected stage or the cleared picture.
+- **INT-625** A staged overview says "Stage N of M", shows the authored title and description in the current wording, and offers "Follow the full flow". That action starts detailed playback at the selected stage's first detailed step. Stage buttons are named "Stage N: title". Ending playback in a view with a configured main flow returns to its overview, selecting the stage that contains the detailed step (or stage 1 for a different main scenario). No permanent Wording or audience list is added.

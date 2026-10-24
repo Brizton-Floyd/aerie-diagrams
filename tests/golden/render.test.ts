@@ -11,7 +11,7 @@
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_ZOOM } from '../../src/model/index.ts';
-import { trailShapes } from '../../src/layout/index.ts';
+import { overviewShapes, trailShapes } from '../../src/layout/index.ts';
 import {
   signalStyle,
   renderLanes,
@@ -30,6 +30,35 @@ function file(root: SvgNode, depth: number): string {
 }
 
 describe('render goldens', () => {
+  it.each(
+    SOURCES.filter((source) =>
+      source.semantics.views.some((view) => view.mainScenario !== undefined),
+    ),
+  )(
+    'INT-624 LAYOUT-506 the authored main flow of $path in every audience',
+    async ({ semantics, layouter, path }) => {
+      for (const view of semantics.views) {
+        if (view.mainScenario === undefined) continue;
+        for (const audience of semantics.model.audiences) {
+          const picture = await layouter.picture(view.id, DEFAULT_ZOOM, audience.id);
+          const steps = semantics.overviewSteps(view.mainScenario, audience.id);
+          const trail = semantics.overviewTrail(view.mainScenario, view.id, DEFAULT_ZOOM);
+          const staged = semantics.scenario(view.mainScenario).stages !== undefined;
+          const root = renderPicture(semantics, picture, {
+            trail: staged ? overviewShapes(picture, trail) : trailShapes(picture.result, trail),
+            overview: {
+              step: 1,
+              unit: staged ? 'Stage' : 'Step',
+              sentences: steps.map((step) => step.sentence),
+            },
+          });
+          await expect(file(root, 1)).toMatchFileSnapshot(
+            join(DIR, path.replace(/\//g, '-'), `${view.id}.main.${audience.id}.svg`),
+          );
+        }
+      }
+    },
+  );
   it('LOOK-001 the Signal stylesheet, with the tokens of both themes', async () => {
     await expect(signalStyle()).toMatchFileSnapshot(join(DIR, 'signal.css'));
   });

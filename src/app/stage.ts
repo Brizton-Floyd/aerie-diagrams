@@ -434,6 +434,9 @@ export class Stage {
       }
     }
     copyAttributes(old, next, [
+      'viewBox',
+      'width',
+      'height',
       'aria-label',
       'data-view',
       'data-audience',

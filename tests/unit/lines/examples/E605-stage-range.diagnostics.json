@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E605",
+    "severity": "error",
+    "line": 6,
+    "column": 8,
+    "endLine": 6,
+    "endColumn": 11,
+    "message": "The stage range `1-2` must be a whole step number or an increasing range within steps 1 to 1."
+  }
+]

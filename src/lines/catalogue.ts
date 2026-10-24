@@ -38,7 +38,7 @@ export const CATALOGUE = {
       case 'in-system':
         return `\`${why.keyword}\` lines go inside the \`system\` block.`;
       case 'in-walkthrough':
-        return '`step` lines go inside a walkthrough.';
+        return '`step` lines go inside a walkthrough or scenario.';
       case 'in-walk-step':
         return `\`${why.keyword}\` lines go inside a walkthrough step.`;
       case 'element':
@@ -113,6 +113,10 @@ export const CATALOGUE = {
   E502: (tag: string, suggestion: string) => `No element has the tag \`[${tag}]\`.${suggestion}`,
   E503: (kind: string, suggestion: string) =>
     `No relationship has the kind \`${kind}\`.${suggestion}`,
+  E504: (id: string) =>
+    `The main scenario \`${id}\` must name one declared scenario and appear once in a view, as \`scenario render-model\`.`,
+  E505: (scenario: string, view: string) =>
+    `The main scenario \`${scenario}\` cannot be shown in \`${view}\`. Include every participant or a container around it in this view.`,
   E601: (id: string, example: string) =>
     `The scenario \`${id}\` has no steps yet. Add sentences under it, such as \`${example}\`.`,
   E602: (count: number) =>
@@ -120,6 +124,10 @@ export const CATALOGUE = {
   E603: (kind: string) => `A scenario step has no kind. Remove \`[${kind}]\`.`,
   E604: (id: string, element: string, top: string) =>
     `No view can show every step of \`${id}\`, because none shows \`${element}\` or anything around it. Add \`${top}\` to a view's \`show\` line.`,
+  E605: (range: string, count: number) =>
+    `The stage range \`${range}\` must be a whole step number or an increasing range within steps 1 to ${n(count)}.`,
+  E606: (id: string, count: number) =>
+    `The stages of \`${id}\` must cover steps 1 to ${n(count)} once, in order, with no gaps.`,
   W601: (subject: string, object: string, verb: string) =>
     `No relationship joins \`${subject}\` and \`${object}\` in the model. Add one, such as \`${subject} ${verb} ${object}\`, or check this step.`,
   E701: (id: string, view: string) =>

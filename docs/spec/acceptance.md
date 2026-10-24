@@ -390,3 +390,12 @@ below is from the final sample, `samples/lotto.aerie`.
   The browser's Back and Forward, and Alt+Left and Alt+Right, do the same. The recent visits read
   "Analysis engine", "Engine service", "Pick generation", "Draw history lookup" and "Draw history
   service", the last one marked; choosing "Analysis engine" goes back three visits at once.
+
+## Authored main-flow completion (issue 83)
+
+| Suite       | What it proves                                                                                                                                              | Requirements                                           |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| unit        | Main-scenario references, complete stage ranges, diagnostics with source positions, canonical compatibility, formatter/printer and editor completion        | LANG-509, LANG-608 to LANG-610, E504, E505, E605, E606 |
+| unit        | Authored stage semantics, opt-in view defaults, cleared/selected/default link round trips, routed badge placement and audience invariance                   | MODEL-606, MODEL-607, INT-624, LAYOUT-506              |
+| journeys    | Aerie opens on four stages, shares a selected stage, hands off to the detailed range, clears persistently, restores history and re-enters a configured view | INT-624, INT-625                                       |
+| screenshots | The authored Aerie default overview in both themes                                                                                                          | INT-624, LAYOUT-506                                    |

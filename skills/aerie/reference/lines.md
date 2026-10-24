@@ -41,9 +41,10 @@ separate, so the model and its system may share an id. Tags and kinds are spelle
 | `system`                                                                                                    | `repo`, `compose`                                                                                    |
 | an element                                                                                                  | elements (its children), `icon`, `code`, descriptions, rewordings                                    |
 | a relationship                                                                                              | descriptions, rewordings                                                                             |
-| `view`                                                                                                      | `show`, `kind`, descriptions, rewordings                                                             |
-| `scenario`                                                                                                  | steps (sentences), descriptions, rewordings                                                          |
+| `view`                                                                                                      | `show`, `kind`, main `scenario`, descriptions, rewordings                                            |
+| `scenario`                                                                                                  | sentence steps, stage `step` declarations, descriptions, rewordings                                  |
 | a scenario step                                                                                             | descriptions, rewordings                                                                             |
+| a stage `step`                                                                                              | descriptions, rewordings                                                                             |
 | `walkthrough`                                                                                               | `step`, descriptions, rewordings                                                                     |
 | a walkthrough `step`                                                                                        | `open`, `close`, `for`, descriptions, rewordings                                                     |
 | `audiences`, `show`, `kind`, `icon`, `code`, `repo`, `compose`, `open`, `close`, `for`, `ignore`, `@level:` | nothing                                                                                              |
@@ -441,10 +442,14 @@ when it is right. This table adds the usual cause.
 | E501 | a `show` item that is not `id`, `id +N` or `[tag]`                    | write it in one of those forms                                                                                                              |
 | E502 | `show [tag]` with a tag no element has                                | fix the tag, or tag the elements                                                                                                            |
 | E503 | `kind` naming a kind no relationship has                              | fix the kind, or mark the relationships                                                                                                     |
+| E504 | a main scenario is unknown, malformed or repeated                     | use one `scenario <id>` line under the view, naming a declared scenario                                                                     |
+| E505 | the main scenario does not fit this view                              | include its participants or their containers in this view                                                                                   |
 | E601 | a scenario with no steps                                              | add steps                                                                                                                                   |
 | E602 | a step with several objects                                           | write one step per object                                                                                                                   |
 | E603 | a step with a `[kind]`                                                | remove it                                                                                                                                   |
 | E604 | no view shows everything a scenario names                             | add the named top-level element to a view's `show` line                                                                                     |
+| E605 | a stage range is invalid                                              | use a whole step number or increasing range within the scenario                                                                             |
+| E606 | stage ranges overlap, leave gaps or are out of order                  | cover every detailed step exactly once, in order                                                                                            |
 | W601 | a step with no relationship behind it                                 | see "Warnings" in SKILL.md: fix the model or the step, never delete the step                                                                |
 | E701 | a walkthrough with no steps                                           | add `step <view>` lines                                                                                                                     |
 | E702 | `step` naming no view or scenario                                     | take the suggestion                                                                                                                         |
@@ -487,3 +492,12 @@ usual fix of each `kind`.
 | `missing-dependency` | a `[code]` relationship that no build dependency shows               | remove it, or point it at the module the build depends on now                                                                   |
 | `unanswered-calls`   | calls that no endpoint of the system answers                         | tell the user: nothing in the system answers them, so the code may need fixing; if they are meant, ignore the element, with why |
 | `unused-ignore`      | an ignore line that excuses nothing any more                         | remove it, as its edit does                                                                                                     |
+
+## Main flows and high-level stages
+
+Under a view, `scenario <id>` (no colon) chooses the main flow shown immediately when the view opens.
+Under that scenario, `step 1: Write the model` or `step 2-4: Check its meaning` groups detailed sentence steps into named stages.
+Ranges must cover all detailed steps once, in order, without gaps. Each stage anchors to the first detailed step in its range.
+Descriptions and `@audience:` / `@audience >` / `@audience >>` wording work on stages.
+Readers initially see stage numbers and titles; **Follow the full flow** starts playback at the selected stage's first detailed step.
+A view without a main scenario keeps the ordinary architecture picture. Do not invent chronology from relationship declaration order.

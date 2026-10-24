@@ -37,6 +37,8 @@ export interface TrailCurve {
   end: Point;
   /** LAYOUT-503: the curve's middle point. */
   badge: Point;
+  /** An overview can follow the structure's routed connection instead of bowing across boxes. */
+  route?: readonly Point[];
 }
 
 /** A folded step: a small cubic loop on the right edge of its box. */

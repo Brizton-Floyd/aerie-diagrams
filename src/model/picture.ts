@@ -39,13 +39,20 @@ export interface Dropped {
 
 const READING: Activity = { kind: 'reading' };
 
+function initialActivity(semantics: Semantics, view: Id): Activity {
+  const id = semantics.scope(view).view.mainScenario;
+  return id !== undefined && semantics.hasScenario(id)
+    ? { kind: 'overview', scenario: id, step: 1 }
+    : READING;
+}
+
 /** MODEL-602 and MODEL-106: the first view, the default audience, nothing open, selected or playing. */
 export function defaultPicture(semantics: Semantics): Picture {
   return {
     view: semantics.firstView,
     audience: semantics.model.defaultAudience,
     zoom: DEFAULT_ZOOM,
-    activity: READING,
+    activity: initialActivity(semantics, semantics.firstView),
   };
 }
 
@@ -125,7 +132,11 @@ export function normalisePicture(
           activity: {
             kind: 'overview',
             scenario: activity.scenario,
-            step: clamp(activity.step, 1, count),
+            step: clamp(
+              activity.step,
+              1,
+              semantics.overviewSteps(activity.scenario, audience).length,
+            ),
           },
         });
       return out({
@@ -163,7 +174,12 @@ const normal = (semantics: Semantics, picture: Picture): Picture =>
 
 /** MODEL-209: another view starts from its default zoom, with nothing selected or playing. */
 export function switchView(semantics: Semantics, picture: Picture, view: Id): Picture {
-  return normal(semantics, { ...picture, view, zoom: DEFAULT_ZOOM, activity: READING });
+  return normal(semantics, {
+    ...picture,
+    view,
+    zoom: DEFAULT_ZOOM,
+    activity: initialActivity(semantics, semantics.hasView(view) ? view : semantics.firstView),
+  });
 }
 
 /** Audience changes wording only, so nothing else in the picture changes. */

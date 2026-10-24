@@ -32,7 +32,7 @@ import {
   type Picture,
 } from '../model/index.ts';
 import type { Id, Model } from '../lines/index.ts';
-import { CAMERA, Layouter, trailShapes } from '../layout/index.ts';
+import { CAMERA, Layouter, overviewShapes, trailShapes } from '../layout/index.ts';
 import { workerEngine } from '../layout/elk/worker.ts';
 import {
   BADGE_TEXT,
@@ -863,12 +863,24 @@ export class Viewer {
         focus = { kind: 'trail', visited: steps.visited, current: steps.current };
       }
       if (activity.kind === 'overview') {
-        const steps = semantics.steps(activity.scenario, audience);
-        const all = semantics.trail(activity.scenario, view, zoom, steps.length);
-        const at = semantics.trail(activity.scenario, view, zoom, activity.step);
-        trail = trailShapes(laid.result, all);
-        focus = { kind: 'trail', visited: all.visited, current: at.current };
-        flow = { step: activity.step, sentences: steps.map((step) => step.sentence) };
+        const staged = semantics.scenario(activity.scenario).stages !== undefined;
+        const steps = semantics.overviewSteps(activity.scenario, audience);
+        const all = semantics.overviewTrail(activity.scenario, view, zoom);
+        const at = semantics.trail(
+          activity.scenario,
+          view,
+          zoom,
+          steps[activity.step - 1]?.from ?? 1,
+        );
+        trail = staged ? overviewShapes(laid, all) : trailShapes(laid.result, all);
+        focus = staged
+          ? { kind: 'none' }
+          : { kind: 'trail', visited: all.visited, current: at.current };
+        flow = {
+          step: activity.step,
+          sentences: steps.map((step) => step.sentence),
+          unit: staged ? ('Stage' as const) : ('Step' as const),
+        };
       }
       const scene = semantics.scene(laid.drawing, audience);
       showing = {
@@ -947,9 +959,11 @@ export class Viewer {
       this.change(overview(this.opened.semantics, this.picture, scenario, step), { fit });
     },
     play: (scenario, step) => {
-      if (this.picture === null) return;
+      if (this.picture === null || this.opened === null) return;
+      const from =
+        this.opened.semantics.overviewSteps(scenario, this.picture.audience)[step - 1]?.from ?? 1;
       this.playScenario(scenario);
-      this.playAt(step);
+      this.playAt(from);
     },
     clear: () => {
       if (this.opened === null || this.picture === null) return;
@@ -977,7 +991,23 @@ export class Viewer {
     const picture = this.picture;
     if (opened === null || picture?.activity.kind !== 'playing') return;
     this.autoplay.stop();
-    this.change(stop(opened.semantics, picture), { fit: true });
+    const main = opened.semantics.scope(picture.view).view.mainScenario;
+    const playing = picture.activity;
+    const index =
+      main === undefined
+        ? -1
+        : opened.semantics
+            .overviewSteps(main, picture.audience)
+            .findIndex(
+              (stage) =>
+                main === playing.scenario && playing.step >= stage.from && playing.step <= stage.to,
+            );
+    this.change(
+      main === undefined
+        ? stop(opened.semantics, picture)
+        : overview(opened.semantics, picture, main, Math.max(1, index + 1)),
+      { fit: true },
+    );
   }
 
   /** Moves the playing scenario to a step, clamped to its steps (MODEL-603), as lanes or not. */

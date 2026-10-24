@@ -1,0 +1,10 @@
+a: A
+b: B
+a calls b
+view narrow: Narrow
+  show a
+  scenario request
+view full: Full
+  show a, b
+scenario request: Request
+  a calls b

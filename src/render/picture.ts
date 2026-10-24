@@ -50,7 +50,7 @@ export interface RenderOptions {
   /** A playing scenario's trail up to its current step, the last one (LOOK-701 to LOOK-704). */
   trail?: readonly TrailShape[];
   /** INT-620: shows every trail step as an accessible control without playback animation. */
-  overview?: { step: number; sentences: readonly string[] };
+  overview?: { step: number; sentences: readonly string[]; unit?: 'Stage' | 'Step' };
   /** Sets the drawing's own theme; by default it follows the page's. */
   theme?: Theme;
   /** Embeds the stylesheet so the SVG stands alone, as a file. */
@@ -299,30 +299,33 @@ export function drawTrail(
     const current = shape.number === last;
     const call = shape.role === 'call';
     const d =
-      shape.kind === 'curve'
-        ? path(
-            'M',
-            shape.start.x,
-            shape.start.y,
-            'Q',
-            shape.control.x,
-            shape.control.y,
-            shape.end.x,
-            shape.end.y,
-          )
-        : path(
-            'M',
-            shape.start.x,
-            shape.start.y,
-            'C',
-            shape.controls[0].x,
-            shape.controls[0].y,
-            shape.controls[1].x,
-            shape.controls[1].y,
-            shape.end.x,
-            shape.end.y,
-          );
-    const from = shape.kind === 'curve' ? shape.control : shape.controls[1];
+      shape.kind === 'curve' && shape.route !== undefined
+        ? roundedRoute(shape.route)
+        : shape.kind === 'curve'
+          ? path(
+              'M',
+              shape.start.x,
+              shape.start.y,
+              'Q',
+              shape.control.x,
+              shape.control.y,
+              shape.end.x,
+              shape.end.y,
+            )
+          : path(
+              'M',
+              shape.start.x,
+              shape.start.y,
+              'C',
+              shape.controls[0].x,
+              shape.controls[0].y,
+              shape.controls[1].x,
+              shape.controls[1].y,
+              shape.end.x,
+              shape.end.y,
+            );
+    const from =
+      shape.kind === 'curve' ? (shape.route?.at(-2) ?? shape.control) : shape.controls[1];
     return el(
       'g',
       {
@@ -353,7 +356,7 @@ export function drawTrail(
           : {
               role: 'button',
               tabindex: 0,
-              'aria-label': `Step ${String(shape.number)}: ${overview.sentences[shape.number - 1] ?? ''}`,
+              'aria-label': `${overview.unit ?? 'Step'} ${String(shape.number)}: ${overview.sentences[shape.number - 1] ?? ''}`,
               'aria-current': current ? 'step' : null,
             }),
         transform: translate(shape.badge.x, shape.badge.y),
@@ -490,7 +493,18 @@ export function renderPicture(
   const label = title === null ? scene.title : `${title}: ${scene.title}`;
   const hidden = interactive ? 'true' : null;
   return drawingRoot(
-    result,
+    options.overview?.unit === 'Stage'
+      ? {
+          width: Math.max(
+            result.width,
+            ...(options.trail ?? []).map((shape) => shape.badge.x + 20),
+          ),
+          height: Math.max(
+            result.height,
+            ...(options.trail ?? []).map((shape) => shape.badge.y + 20),
+          ),
+        }
+      : result,
     label,
     { 'data-view': drawing.view, 'data-audience': audience },
     options,

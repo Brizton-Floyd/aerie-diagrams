@@ -1,0 +1,8 @@
+a: A
+b: B
+a calls b
+view big-picture: Big picture
+  show a, b
+  scenario missing
+scenario request: Request
+  a calls b

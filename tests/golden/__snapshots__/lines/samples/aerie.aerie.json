@@ -1,0 +1,643 @@
+{
+  "format": "aerie-model/1",
+  "id": "aerie-flow",
+  "title": {
+    "base": "How Aerie works",
+    "set": {}
+  },
+  "about": {
+    "base": "One architecture model becomes an interactive picture for every audience.",
+    "set": {},
+    "add": {}
+  },
+  "audiences": [
+    {
+      "id": "exec",
+      "name": "Plain",
+      "code": false
+    },
+    {
+      "id": "manager",
+      "name": "More detail",
+      "code": false
+    },
+    {
+      "id": "engineer",
+      "name": "Technical",
+      "code": true
+    }
+  ],
+  "defaultAudience": "manager",
+  "system": null,
+  "elements": [
+    {
+      "id": "author",
+      "parent": null,
+      "name": {
+        "base": "Model author",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Describes the system",
+        "set": {}
+      },
+      "tags": [
+        "person"
+      ],
+      "icon": null,
+      "code": [],
+      "about": {
+        "base": "Writes the architecture once in a Lines file.",
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "aerie",
+      "parent": null,
+      "name": {
+        "base": "Aerie",
+        "set": {}
+      },
+      "tagline": {
+        "base": "One model, every audience",
+        "set": {}
+      },
+      "tags": [
+        "system"
+      ],
+      "icon": null,
+      "code": [],
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "editor",
+      "parent": "aerie",
+      "name": {
+        "base": "Model editor",
+        "set": {
+          "engineer": "Live editor"
+        }
+      },
+      "tagline": {
+        "base": "Write architecture as text",
+        "set": {
+          "engineer": "src/app/live.ts"
+        }
+      },
+      "tags": [
+        "part"
+      ],
+      "icon": "document",
+      "code": [],
+      "about": {
+        "base": "Loads a model or checks edits beside the diagram.",
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "meaning",
+      "parent": "aerie",
+      "name": {
+        "base": "Model tools",
+        "set": {
+          "engineer": "Language and semantics"
+        }
+      },
+      "tagline": {
+        "base": "Check the model and its meaning",
+        "set": {
+          "engineer": "src/lines and src/model"
+        }
+      },
+      "tags": [
+        "part"
+      ],
+      "icon": "gear",
+      "code": [],
+      "about": {
+        "base": "Checks the text and resolves the parts, views and wording.",
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "lines",
+      "parent": "meaning",
+      "name": {
+        "base": "Lines language",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Parse the text and report errors",
+        "set": {}
+      },
+      "tags": [
+        "module"
+      ],
+      "icon": null,
+      "code": [],
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "semantics",
+      "parent": "meaning",
+      "name": {
+        "base": "Model semantics",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Resolve views, wording and steps",
+        "set": {}
+      },
+      "tags": [
+        "module"
+      ],
+      "icon": null,
+      "code": [],
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "picture",
+      "parent": "aerie",
+      "name": {
+        "base": "Diagram builder",
+        "set": {
+          "engineer": "Layout, rendering and viewer"
+        }
+      },
+      "tagline": {
+        "base": "Build an interactive picture",
+        "set": {
+          "engineer": "src/layout, src/render and src/app"
+        }
+      },
+      "tags": [
+        "part"
+      ],
+      "icon": "web",
+      "code": [],
+      "about": {
+        "base": "Places the diagram, draws it and responds to reader actions.",
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "layout",
+      "parent": "picture",
+      "name": {
+        "base": "Layout engine",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Place boxes and connections",
+        "set": {}
+      },
+      "tags": [
+        "module"
+      ],
+      "icon": null,
+      "code": [],
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "renderer",
+      "parent": "picture",
+      "name": {
+        "base": "Signal renderer",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Draw the diagram as SVG",
+        "set": {}
+      },
+      "tags": [
+        "module"
+      ],
+      "icon": null,
+      "code": [],
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "viewer",
+      "parent": "picture",
+      "name": {
+        "base": "Browser viewer",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Open parts and follow flows",
+        "set": {}
+      },
+      "tags": [
+        "module"
+      ],
+      "icon": null,
+      "code": [],
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "reader",
+      "parent": null,
+      "name": {
+        "base": "Diagram reader",
+        "set": {}
+      },
+      "tagline": {
+        "base": "Explore and understand",
+        "set": {}
+      },
+      "tags": [
+        "person"
+      ],
+      "icon": null,
+      "code": [],
+      "about": {
+        "base": "Reads the diagram, changes wording, opens parts and follows scenarios.",
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "subject": "author",
+      "verb": {
+        "base": "writes the model in",
+        "set": {}
+      },
+      "object": "editor",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "editor",
+      "verb": {
+        "base": "sends model text to",
+        "set": {}
+      },
+      "object": "semantics",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "semantics",
+      "verb": {
+        "base": "checks the text with",
+        "set": {}
+      },
+      "object": "lines",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "lines",
+      "verb": {
+        "base": "returns the parsed model to",
+        "set": {}
+      },
+      "object": "semantics",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "semantics",
+      "verb": {
+        "base": "supplies the resolved picture to",
+        "set": {}
+      },
+      "object": "layout",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "layout",
+      "verb": {
+        "base": "supplies positioned boxes to",
+        "set": {}
+      },
+      "object": "renderer",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "renderer",
+      "verb": {
+        "base": "supplies the drawing to",
+        "set": {}
+      },
+      "object": "viewer",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "subject": "viewer",
+      "verb": {
+        "base": "shows the diagram to",
+        "set": {}
+      },
+      "object": "reader",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "views": [
+    {
+      "id": "big-picture",
+      "title": {
+        "base": "Big picture",
+        "set": {}
+      },
+      "about": {
+        "base": "Four stages explain how Aerie turns architecture text into a picture.",
+        "set": {},
+        "add": {}
+      },
+      "show": [
+        {
+          "element": "author",
+          "depth": 0
+        },
+        {
+          "element": "aerie",
+          "depth": 1
+        },
+        {
+          "element": "reader",
+          "depth": 0
+        }
+      ],
+      "kinds": [
+        "runtime"
+      ],
+      "mainScenario": "full-flow"
+    },
+    {
+      "id": "inside",
+      "title": {
+        "base": "Inside Aerie",
+        "set": {}
+      },
+      "about": {
+        "base": "The actual participants behind each high-level stage.",
+        "set": {},
+        "add": {}
+      },
+      "show": [
+        {
+          "element": "author",
+          "depth": 0
+        },
+        {
+          "element": "aerie",
+          "depth": 2
+        },
+        {
+          "element": "reader",
+          "depth": 0
+        }
+      ],
+      "kinds": [
+        "runtime"
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "full-flow",
+      "title": {
+        "base": "Create a diagram",
+        "set": {}
+      },
+      "about": {
+        "base": "How one model becomes an interactive picture, at a glance and step by step.",
+        "set": {},
+        "add": {}
+      },
+      "steps": [
+        {
+          "subject": "author",
+          "verb": {
+            "base": "writes the model in",
+            "set": {}
+          },
+          "object": "editor",
+          "about": {
+            "base": "The author writes or edits a Lines file.",
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "subject": "editor",
+          "verb": {
+            "base": "sends model text to",
+            "set": {}
+          },
+          "object": "semantics",
+          "about": {
+            "base": "The live editor checks each change. If it finds errors, the last good diagram stays visible.",
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "subject": "semantics",
+          "verb": {
+            "base": "checks the text with",
+            "set": {}
+          },
+          "object": "lines",
+          "about": {
+            "base": "The language parses text into a canonical model and reports errors with their line and column.",
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "subject": "lines",
+          "verb": {
+            "base": "returns the parsed model to",
+            "set": {}
+          },
+          "object": "semantics",
+          "about": {
+            "base": "Model semantics resolves nesting, views, audience wording and scenarios.",
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "subject": "semantics",
+          "verb": {
+            "base": "supplies the resolved picture to",
+            "set": {}
+          },
+          "object": "layout",
+          "about": {
+            "base": "The viewer asks layout to place the resolved picture. Space is reserved for every audience.",
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "subject": "layout",
+          "verb": {
+            "base": "supplies positioned boxes to",
+            "set": {}
+          },
+          "object": "renderer",
+          "about": {
+            "base": "Signal uses the positions to draw SVG boxes, connections and labels.",
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "subject": "renderer",
+          "verb": {
+            "base": "supplies the drawing to",
+            "set": {}
+          },
+          "object": "viewer",
+          "about": {
+            "base": "The browser viewer displays the drawing and manages reader actions.",
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "subject": "viewer",
+          "verb": {
+            "base": "shows the diagram to",
+            "set": {}
+          },
+          "object": "reader",
+          "about": {
+            "base": "The reader explores the picture and can share a link to the same view and state.",
+            "set": {},
+            "add": {}
+          }
+        }
+      ],
+      "stages": [
+        {
+          "from": 1,
+          "to": 1,
+          "title": {
+            "base": "Write the model",
+            "set": {}
+          },
+          "about": {
+            "base": "Describe the system's parts and connections once in a Lines file.",
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "from": 2,
+          "to": 4,
+          "title": {
+            "base": "Check its meaning",
+            "set": {
+              "engineer": "Parse and resolve the model"
+            }
+          },
+          "about": {
+            "base": "The language checks the text; model semantics resolves the views and wording.",
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "from": 5,
+          "to": 7,
+          "title": {
+            "base": "Build the picture",
+            "set": {
+              "engineer": "Lay out and render SVG"
+            }
+          },
+          "about": {
+            "base": "Layout places the boxes and connections, then Signal draws the diagram.",
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "from": 8,
+          "to": 8,
+          "title": {
+            "base": "Explore the diagram",
+            "set": {}
+          },
+          "about": {
+            "base": "Readers open parts, change wording and follow flows on the same model.",
+            "set": {},
+            "add": {}
+          }
+        }
+      ]
+    }
+  ],
+  "walkthroughs": [],
+  "ignores": []
+}

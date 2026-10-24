@@ -13,12 +13,17 @@ export interface FlowActions {
 export function flowPanel(semantics: Semantics, picture: Picture, actions: FlowActions): Node[] {
   const { activity, audience } = picture;
   if (activity.kind !== 'overview') return [];
-  const steps = semantics.steps(activity.scenario, audience);
+  const steps = semantics.overviewSteps(activity.scenario, audience);
+  const staged = semantics.scenario(activity.scenario).stages !== undefined;
   const current = steps[activity.step - 1];
   return [
     h('p', { class: 'kicker' }, ['Flow overview']),
     h('h1', { tabindex: -1 }, [scenarioTitle(semantics, activity.scenario, audience)]),
-    h('p', {}, ['Every numbered step is visible. Choose a number to see what happens there.']),
+    h('p', {}, [
+      staged
+        ? 'The main flow at a glance. Choose a number to learn about that stage.'
+        : 'Every numbered step is visible. Choose a number to see what happens there.',
+    ]),
     h('label', { class: 'flow-choice' }, [
       'Follow a flow',
       h(
@@ -43,7 +48,9 @@ export function flowPanel(semantics: Semantics, picture: Picture, actions: FlowA
       ),
     ]),
     h('section', { class: 'flow-caption', 'aria-live': 'polite', 'aria-atomic': 'true' }, [
-      h('p', { class: 'kicker' }, [`Step ${String(activity.step)} of ${String(steps.length)}`]),
+      h('p', { class: 'kicker' }, [
+        `${staged ? 'Stage' : 'Step'} ${String(activity.step)} of ${String(steps.length)}`,
+      ]),
       h('h2', {}, [current?.sentence]),
       ...(current?.about?.split('\n\n').map((text) => h('p', {}, prose(text))) ?? []),
     ]),
@@ -58,7 +65,7 @@ export function flowPanel(semantics: Semantics, picture: Picture, actions: FlowA
             actions.play(activity.scenario, activity.step);
           },
         },
-        ['Follow the steps'],
+        [staged ? 'Follow the full flow' : 'Follow the steps'],
       ),
       h(
         'button',

@@ -78,6 +78,15 @@ input {
 }
 .flow-choice select {
   width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--hair-2);
+  border-radius: 6px;
+  background: var(--aerie-surface);
+  color: var(--aerie-ink);
+}
+.flow-choice select:focus-visible {
+  outline: 2px solid var(--aerie-accent-ink);
+  outline-offset: 2px;
 }
 .flow-caption {
   margin: 20px 0;

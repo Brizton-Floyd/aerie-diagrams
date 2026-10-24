@@ -24,7 +24,7 @@
     "column": 3,
     "endLine": 4,
     "endColumn": 7,
-    "message": "`step` lines go inside a walkthrough."
+    "message": "`step` lines go inside a walkthrough or scenario."
   },
   {
     "id": "E003",

@@ -53,6 +53,10 @@ and the list of recent visits names the latest ones.
 
 **Trail**: A scenario drawn on the architecture as a lit line with numbered steps.
 
+**Stage**: An author-named group of consecutive detailed scenario steps. Its overview number is separate from detailed step numbers.
+
+**Main flow**: The scenario a view explicitly declares to show as its opening overview.
+
 **Flow overview**: A complete, static scenario trail. Selecting a number explains that step without
 starting playback.
 

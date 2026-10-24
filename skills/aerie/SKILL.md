@@ -190,10 +190,18 @@ report.
 - when build dependencies are known, an engineering view by tag with `kind code`.
 
 **Scenarios.** One to three, for the flows that matter most (the ones the tests and README stress).
-Each step is a sentence; replies are their own steps. Every step must be backed by a relationship in
+Each detailed step is a sentence; replies are their own steps. Every step must be backed by a relationship in
 the model between the same two elements, in either direction. The step's verb phrase is its own: it
 says what happens in this flow ("adds the vote to"), and need not repeat the relationship's ("adds
 votes to").
+
+**Main flow and stages.** When a view should open with a numbered explanation, explicitly choose its
+main scenario with `scenario <id>` under the view. Group that scenario's detailed steps with stage
+declarations such as `step 1: Write the model` and `step 2-4: Check its meaning`. The ranges must
+cover every detailed step exactly once, in order; their titles and descriptions support audience
+wording. Each stage anchors to its first detailed step. Choose a meaningful summary from the code
+and the system's purpose; never infer chronology from relationship declaration order. Existing
+views without this declaration keep their ordinary architecture picture.
 
 **Walkthrough.** One tour of five to nine steps: start on the big picture, move into the parts that
 matter, play one or two scenarios (whole or in ranges), and reword the narration where an audience

@@ -4,6 +4,8 @@
 import type { Id } from '../lines/index.ts';
 import {
   normalisePicture,
+  defaultPicture,
+  switchView,
   type Activity,
   type Dropped,
   type Picture,
@@ -56,7 +58,12 @@ export function writeFragment(semantics: Semantics, picture: Picture): string {
     if (marked('open').length > 0) parts.set('open', marked('open').join(','));
     if (marked('closed').length > 0) parts.set('closed', marked('closed').join(','));
     if (activity.kind === 'selected') parts.set('sel', activity.element);
-    if (activity.kind === 'overview')
+    if (activity.kind === 'reading' && semantics.scope(shown.view).view.mainScenario !== undefined)
+      parts.set('flow', 'none');
+    if (
+      activity.kind === 'overview' &&
+      (activity.step !== 1 || activity.scenario !== semantics.scope(shown.view).view.mainScenario)
+    )
       parts.set('flow', `${activity.scenario}.${String(activity.step)}`);
     if (activity.kind === 'playing') {
       parts.set('play', `${activity.scenario}.${String(activity.step)}`);
@@ -109,7 +116,11 @@ export function readFragment(
   const zoom = new Map<Id, ZoomMark>();
   for (const id of ids(given.get('open'))) zoom.set(id, 'open');
   for (const id of ids(given.get('closed'))) zoom.set(id, 'closed');
-  let activity: Activity = { kind: 'reading' };
+  let activity: Activity = switchView(
+    semantics,
+    defaultPicture(semantics),
+    given.get('view') ?? semantics.firstView,
+  ).activity;
   const present = given.get('present');
   const play = given.get('play');
   const flow = given.get('flow');
@@ -130,11 +141,13 @@ export function readFragment(
       step: steps[0] ?? 1,
       lanes: given.get('lanes') === '1',
     };
-  } else if (flow !== undefined) {
+  } else if (flow !== undefined && flow !== 'none') {
     const { id, steps } = stepped(flow);
     activity = { kind: 'overview', scenario: id, step: steps[0] ?? 1 };
   } else if (sel !== undefined) {
     activity = { kind: 'selected', element: sel };
+  } else if (flow === 'none') {
+    activity = { kind: 'reading' };
   }
   const aud = given.get('aud');
   const read = normalisePicture(semantics, {
