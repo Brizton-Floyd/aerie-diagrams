@@ -637,6 +637,13 @@ input:focus-visible,
   font: 500 13.5px var(--sans);
   white-space: nowrap;
 }
+.notice.model-missing {
+  width: 520px;
+  max-width: calc(100% - 32px);
+  border-radius: 8px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
 .overlay {
   position: absolute;
   top: 96px;

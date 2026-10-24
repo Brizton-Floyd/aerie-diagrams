@@ -17,7 +17,11 @@ Requirement ids: `INT-nnn`. Conventions are in [overview.md](overview.md#reading
   step away (INT-101, INT-207).
 - **INT-002** The page shows one model. A production build carries one or more models; the query
   parameter `model` chooses one by name (`/?model=lotto`), and without it the first is shown. In watch
-  mode the model is the author's file (INT-851).
+  mode the model is the author's file (INT-851). An unknown model name opens the first bundled
+  model with a persistent notice naming both the requested model and the displayed fallback, and
+  directing the reader to choose a model or open a local file. The unavailable model's fragment is
+  not applied to the fallback; the address names the model actually displayed. The notice remains
+  through view and wording changes and clears when a model is chosen or opened.
 - **INT-003** While the model loads, the stage shows "Loading the diagram". When the model has errors
   and there is no earlier version to show, the stage shows "Aerie can't draw lotto.aerie yet. Fix these
   first:" (with the file's name) and the errors in plain words (INT-806) instead of a diagram.

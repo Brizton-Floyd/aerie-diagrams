@@ -422,6 +422,15 @@ export class Viewer {
     return checked;
   }
 
+  /** INT-002: an unavailable model is explained, and the displayed fallback is named. */
+  missingModel(requested: string): void {
+    this.open(FIRST_SAMPLE, SAMPLES.get(FIRST_SAMPLE) ?? '');
+    this.say(
+      `Aerie couldn't find "${requested}". Showing "${FIRST_SAMPLE}" instead. Choose another model or open your own .aerie file.`,
+    );
+    this.notice.classList.add('model-missing');
+  }
+
   /** The path and source of the model the page opened: the published model (INT-808). */
   get published(): { path: string; source: string } {
     return { path: this.path, source: this.source };
@@ -475,6 +484,7 @@ export class Viewer {
 
   /** Words at the top of the stage, over the diagram, or none. */
   say(text: string | null): void {
+    this.notice.classList.remove('model-missing');
     this.notice.textContent = text ?? '';
     this.notice.hidden = text === null;
   }
@@ -583,6 +593,10 @@ export class Viewer {
    */
   private follow(): void {
     const asked = new URL(location.href).searchParams.get('model');
+    if (!this.watching && asked !== null && !SAMPLES.has(asked)) {
+      this.missingModel(asked);
+      return;
+    }
     const sample = asked === null || this.watching ? undefined : SAMPLES.get(asked);
     if (asked !== null && asked !== this.path && sample !== undefined) {
       this.open(asked, sample, location.hash);
@@ -1564,11 +1578,14 @@ function playingOf(picture: Picture | null): Extract<Activity, { kind: 'playing'
   return picture?.activity.kind === 'playing' ? picture.activity : null;
 }
 
-/** Starts the page: the model named by `?model=`, else the first sample, at the link's picture. */
+/** Starts the requested model at its picture, or explains an unavailable model before showing a fallback. */
 export function start(root: HTMLElement): Viewer {
   const viewer = new Viewer(root);
   const asked = new URL(location.href).searchParams.get('model');
-  const path = asked !== null && SAMPLES.has(asked) ? asked : FIRST_SAMPLE;
-  viewer.open(path, SAMPLES.get(path) ?? '', location.hash);
+  if (asked !== null && !SAMPLES.has(asked)) viewer.missingModel(asked);
+  else {
+    const path = asked ?? FIRST_SAMPLE;
+    viewer.open(path, SAMPLES.get(path) ?? '', location.hash);
+  }
   return viewer;
 }
