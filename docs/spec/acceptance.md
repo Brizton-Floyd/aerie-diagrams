@@ -415,3 +415,13 @@ The overview details journey clicks an element from the authored main flow, chec
 and technical wording, reopens its selected-element link, and uses Back to restore the selected
 stage. It also opens a container while the flow remains active and selects a child with the keyboard
 in both themes (INT-627).
+
+## Model history (issue 88)
+
+Browser journeys verify that deliberate model switches add one history entry, Back and Forward
+restore each model's picture and camera, reload does not add an entry, and repeated model choices
+keep separate visit runs (INT-506, INT-554, INT-556). Local-file journeys distinguish same-named
+uploads. Edited-model journeys restore the last good picture with its invalid draft notice and
+preserve the original source for discard. Further journeys check same-name editor drafts and
+closing the old editor without losing pending text on a model change. Source retention is transient; reload recovery remains
+separate.

@@ -182,7 +182,9 @@ walkthrough step.
   seconds, "This link is older than the diagram. Showing the closest picture."
 - **INT-506** Every visit (INT-551) adds an entry to the browser's history, so Back and Forward step
   between visits. Moving the camera, and moving within a playing scenario or a presented walkthrough,
-  replace the current entry.
+  replace the current entry. Choosing another model starts a new run of visits in a new
+  browser entry; initial loading and link normalization replace the current entry. Browser Back and
+  Forward restore the model, picture and saved camera across these runs.
 - **INT-507** The "Copy link" button copies the full address and reads "Link copied" for a moment.
   When the browser refuses the clipboard it reads "Couldn't copy" instead, and a screen reader hears
   "Couldn't copy. Use the address bar." This action is available for unchanged bundled models and
@@ -210,8 +212,8 @@ where they were, as they left it, so they never have to find their place again.
   each.
 - **INT-552** Each visit is one entry in the browser's history (INT-506), so the page's Back and
   Forward, the list of recent visits (INT-555) and the browser's own Back and Forward all move between
-  the same visits. A new visit after going back forgets the visits that were ahead, as the browser
-  does.
+  the same visits within a model. The browser controls also move between model runs. A new visit
+  after going back forgets the visits that were ahead, as the browser does.
 - **INT-553** At the stage's top left are a Back button ("‹") and a Forward button ("›"), with the
   tooltips "Back (Alt+Left)" and "Forward (Alt+Right)". Alt+Left and Alt+Right do the same (INT-004).
   Back on the first visit and Forward on the last are marked unavailable and do nothing.
@@ -228,7 +230,10 @@ where they were, as they left it, so they never have to find their place again.
   hides while it would name only one.
 - **INT-556** The visits last as long as the browser tab: a reload keeps them, and going back to an
   earlier diagram's entries finds its visits again. Choosing another diagram, or opening a file,
-  starts its visits afresh.
+  starts its visits afresh. While the page stays open, previous local-file and edited model sources
+  remain in memory for browser Back and Forward, identified by their visit run even when filenames
+  match. Model navigation closes the old editor, retains pending edits, and reopening Edit uses the
+  restored source instead of a different run's same-name draft. Reload recovery of local source is separate: reloading does not retain this source cache.
 - **INT-557** Moving within a playing scenario (its steps, Play, the lanes and a change of wording) or
   a presented walkthrough stays in the same visit; they keep their own controls (INT-605, INT-703).
   While presenting, Back, Forward and the list hide with the rest of the chrome (INT-701).
