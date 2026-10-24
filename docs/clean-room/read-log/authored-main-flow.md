@@ -13,6 +13,8 @@ Date: 2026-10-24
 - `/tmp/aerie-stages-unit.log` - this repository's focused unit validation output.
 - `/tmp/aerie-stages-all-unit.log` - this repository's full unit validation output.
 - `/tmp/aerie-stages-lint.log` - this repository's lint validation output.
+- `/tmp/aerie-stages-final-lint.log` - lint output after concurrent documentation work landed.
+- `/tmp/aerie-numbered-overview-issue.md` - this repository's previously drafted issue body.
 - `/tmp/aerie-stages-rules.log` - this repository's layout-rule validation output.
 - `/tmp/aerie-stages-baselines.log` - this repository's new-sample baseline validation output.
 - `/tmp/aerie-stages-browser.log` - this repository's focused browser validation output.
