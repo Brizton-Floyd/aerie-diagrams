@@ -19,3 +19,12 @@ The full evidence is in [the audit report](report.md). Issues are ordered by the
 | 13      | P2       | [#98: Expose contextual technical wording in stage explanations](https://github.com/Brizton-Floyd/aerie-diagrams/issues/98)            |
 
 The element-details issue links the already prepared PR 85. Narrow-window support remains a deferred-scope enhancement, not a regression against the v1 size contract.
+
+## Implementation queue
+
+1. [#86](https://github.com/Brizton-Floyd/aerie-diagrams/issues/86): implemented in [PR #99](https://github.com/Brizton-Floyd/aerie-diagrams/pull/99). The full local Linux gate passed.
+2. [#87](https://github.com/Brizton-Floyd/aerie-diagrams/issues/87): implemented in [PR #100](https://github.com/Brizton-Floyd/aerie-diagrams/pull/100). The full local Linux gate passed, including all 122 browser journeys.
+3. [#93](https://github.com/Brizton-Floyd/aerie-diagrams/issues/93): the existing element-details fix is prepared in [PR #85](https://github.com/Brizton-Floyd/aerie-diagrams/pull/85).
+4. Remaining P2 defects and usability gaps follow in audit order, then the P3 findings. Narrow-window support remains deferred scope.
+
+All three fixes remain in draft pull requests for review. Both new fixes could not start CI because of an account-level GitHub Actions restriction. Issues remain open until their fixes merge.

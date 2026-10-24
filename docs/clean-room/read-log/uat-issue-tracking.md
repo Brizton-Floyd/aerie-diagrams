@@ -41,6 +41,13 @@ Date: 2026-10-24
 - https://github.com/Brizton-Floyd/aerie-diagrams/issues/97 - tracked audit finding 12.
 - https://github.com/Brizton-Floyd/aerie-diagrams/issues/98 - tracked audit finding 13.
 
+- https://github.com/Brizton-Floyd/aerie-diagrams/pull/99 - structural edit implementation linked in the tracker.
+- https://github.com/Brizton-Floyd/aerie-diagrams/pull/100 - safe sharing implementation linked in the tracker.
+
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/commits/cc3474f/check-runs - sharing fix CI metadata.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/check-runs/120997860423/annotations - confirmed an account-level restriction prevented CI from starting.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/check-runs/120997852504/annotations - confirmed the second workflow also did not start.
+
 ## Forbidden sources opened
 
 None.

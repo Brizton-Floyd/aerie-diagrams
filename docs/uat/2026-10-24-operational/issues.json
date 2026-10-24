@@ -4,14 +4,18 @@
     "priority": "P1",
     "issue": 86,
     "url": "https://github.com/Brizton-Floyd/aerie-diagrams/issues/86",
-    "title": "P1: Keep the diagram visible after valid structural edits"
+    "title": "P1: Keep the diagram visible after valid structural edits",
+    "pull_request": "https://github.com/Brizton-Floyd/aerie-diagrams/pull/99",
+    "status": "draft fix"
   },
   {
     "finding": 2,
     "priority": "P1",
     "issue": 87,
     "url": "https://github.com/Brizton-Floyd/aerie-diagrams/issues/87",
-    "title": "P1: Make sharing local and edited models explicit and safe"
+    "title": "P1: Make sharing local and edited models explicit and safe",
+    "pull_request": "https://github.com/Brizton-Floyd/aerie-diagrams/pull/100",
+    "status": "draft fix"
   },
   {
     "finding": 3,
@@ -53,7 +57,9 @@
     "priority": "P1",
     "issue": 93,
     "url": "https://github.com/Brizton-Floyd/aerie-diagrams/issues/93",
-    "title": "P1: Open element details from the default flow overview"
+    "title": "P1: Open element details from the default flow overview",
+    "pull_request": "https://github.com/Brizton-Floyd/aerie-diagrams/pull/85",
+    "status": "draft fix"
   },
   {
     "finding": 9,
