@@ -193,6 +193,13 @@ export class Viewer {
   private source = '';
   /** The latest text, including a local draft that has not checked cleanly yet. */
   private currentSource = '';
+  private restoredModel = false;
+  private beforeModelOpening: (() => void) | null = null;
+  /** Sources stay in memory for cross-model Back/Forward, keyed by run rather than filename. */
+  private readonly rememberedModels = new Map<
+    string,
+    { path: string; source: string; checked: Checked }
+  >();
   private opened: Opened | null = null;
   private picture: Picture | null = null;
   /** The fragment of the address the model was opened with, read when it is first drawn. */
@@ -392,39 +399,103 @@ export class Viewer {
    * Opens a model from its source; a file with errors lists them instead of drawing. `link` is the
    * fragment of a shared link (INT-505): the model opens at its picture.
    */
-  open(path: string, source: string, link = ''): Checked {
+  open(
+    path: string,
+    source: string,
+    link = '',
+    move: HistoryMove | 'history' = 'replace',
+    restored?: Checked,
+  ): Checked {
+    this.beforeModelOpening?.();
+    this.rememberPendingSource();
     // INT-501: the `model` query parameter names a bundled diagram, written as it is; a local file
     // has no address of its own.
     const url = new URL(location.href);
     url.search = SAMPLES.has(path) && !this.watching ? `?model=${encodeURI(path)}` : '';
     url.hash = link;
+    // Finish the old drawing while its visit still owns camera updates. Different models never
+    // glide between drawings: their ids do not identify the same elements.
+    this.stage.showMessage(h('p', { class: 'loading', role: 'status' }, ['Loading the diagram']));
     // INT-556: a reload, or an entry of another diagram gone back to, finds its visits again; any
-    // other diagram starts afresh in the current entry.
+    // deliberate model switch starts a new run in a new browser entry.
     this.save();
     this.visits =
-      Visits.resume(SESSION, path, history.state) ?? Visits.start(visitsId(), path, link);
-    history.replaceState(this.visits.entry(), '', url);
+      (move === 'navigate' ? null : Visits.resume(SESSION, path, history.state)) ??
+      Visits.start(visitsId(), path, link);
+    if (move === 'navigate') history.pushState(this.visits.entry(), '', url);
+    else history.replaceState(this.visits.entry(), '', url);
+    const camera = move === 'history' ? this.visits.current.camera : null;
+    this.arrival = camera === null ? {} : { camera };
     this.path = path;
     this.source = source;
+    this.restoredModel = move === 'history';
     this.link = link;
     this.opened = null;
     this.picture = null;
-    // Another diagram never glides from the last one's drawing: its ids are not this one's.
-    this.stage.showMessage(h('p', { class: 'loading', role: 'status' }, ['Loading the diagram']));
-    const result = check(source);
-    const checked: Checked = {
+    const result = restored ?? check(source);
+    const checked: Checked = restored ?? {
       source,
       diagnostics: result.diagnostics,
       model: result.model,
       shown: result.model === null ? null : { source, model: result.model },
     };
+    if (checked.model === null && checked.shown !== null) {
+      this.revise({ ...checked, source: checked.shown.source, model: checked.shown.model });
+    }
     this.revise(checked);
     return checked;
   }
 
-  /** The path and source of the model the page opened: the published model (INT-808). */
-  get published(): { path: string; source: string } {
-    return { path: this.path, source: this.source };
+  /** INT-002: an unavailable model is explained, and the displayed fallback is named. */
+  missingModel(requested: string): void {
+    this.open(FIRST_SAMPLE, SAMPLES.get(FIRST_SAMPLE) ?? '');
+    this.say(
+      `Aerie couldn't find "${requested}". Showing "${FIRST_SAMPLE}" instead. Choose another model or open your own .aerie file.`,
+    );
+    this.notice.classList.add('model-missing');
+  }
+
+  /** Original source (INT-808), plus the exact restored text when returning through history. */
+  get published(): {
+    path: string;
+    source: string;
+    restored: string | null;
+    shown: Checked['shown'];
+  } {
+    return {
+      path: this.path,
+      source: this.source,
+      restored: this.restoredModel ? this.currentSource : null,
+      shown:
+        this.visits === null
+          ? null
+          : (this.rememberedModels.get(this.visits.id)?.checked.shown ?? null),
+    };
+  }
+
+  /** Close an old editor before its model is replaced, including a browser Back/Forward. */
+  onModelOpening(close: () => void): void {
+    this.beforeModelOpening = close;
+  }
+
+  /** Retain an edit that has not reached the debounced checker without changing history. */
+  private rememberPendingSource(): void {
+    const id = this.visits?.id;
+    const kept = id === undefined ? undefined : this.rememberedModels.get(id);
+    if (id === undefined || kept === undefined || kept.checked.source === this.currentSource)
+      return;
+    const result = check(this.currentSource);
+    this.rememberedModels.set(id, {
+      ...kept,
+      checked: {
+        ...result,
+        source: this.currentSource,
+        shown:
+          result.model === null
+            ? kept.checked.shown
+            : { source: this.currentSource, model: result.model },
+      },
+    });
   }
 
   /** INT-508: sharing follows the current editor text, even before its debounced validation. */
@@ -441,6 +512,8 @@ export class Viewer {
    */
   revise(checked: Checked): void {
     this.changedSource(checked.source);
+    if (this.visits !== null)
+      this.rememberedModels.set(this.visits.id, { path: this.path, source: this.source, checked });
     if (checked.model === null) {
       if (this.opened !== null) {
         this.say(KEPT_NOTICE);
@@ -475,6 +548,7 @@ export class Viewer {
 
   /** Words at the top of the stage, over the diagram, or none. */
   say(text: string | null): void {
+    this.notice.classList.remove('model-missing');
     this.notice.textContent = text ?? '';
     this.notice.hidden = text === null;
   }
@@ -582,10 +656,20 @@ export class Viewer {
    * chosen opens that model again.
    */
   private follow(): void {
+    const entry = entryOf(history.state);
+    const remembered = entry === null ? undefined : this.rememberedModels.get(entry.visits);
+    if (remembered !== undefined && entry?.visits !== this.visits?.id) {
+      this.open(remembered.path, remembered.source, location.hash, 'history', remembered.checked);
+      return;
+    }
     const asked = new URL(location.href).searchParams.get('model');
+    if (!this.watching && asked !== null && !SAMPLES.has(asked)) {
+      this.missingModel(asked);
+      return;
+    }
     const sample = asked === null || this.watching ? undefined : SAMPLES.get(asked);
     if (asked !== null && asked !== this.path && sample !== undefined) {
-      this.open(asked, sample, location.hash);
+      this.open(asked, sample, location.hash, 'history');
       return;
     }
     const opened = this.opened;
@@ -1365,7 +1449,7 @@ export class Viewer {
         onchange: (event) => {
           const chosen = (event.target as HTMLSelectElement).value;
           const source = SAMPLES.get(chosen);
-          if (source !== undefined) this.open(chosen, source);
+          if (source !== undefined) this.open(chosen, source, '', 'navigate');
         },
       },
       [...SAMPLES.keys()].map((each) =>
@@ -1381,7 +1465,7 @@ export class Viewer {
         const chosen = (event.target as HTMLInputElement).files?.[0];
         if (chosen !== undefined)
           void chosen.text().then((source) => {
-            this.open(chosen.name, source);
+            this.open(chosen.name, source, '', 'navigate');
           });
       },
     });
@@ -1564,11 +1648,14 @@ function playingOf(picture: Picture | null): Extract<Activity, { kind: 'playing'
   return picture?.activity.kind === 'playing' ? picture.activity : null;
 }
 
-/** Starts the page: the model named by `?model=`, else the first sample, at the link's picture. */
+/** Starts the requested model at its picture, or explains an unavailable model before showing a fallback. */
 export function start(root: HTMLElement): Viewer {
   const viewer = new Viewer(root);
   const asked = new URL(location.href).searchParams.get('model');
-  const path = asked !== null && SAMPLES.has(asked) ? asked : FIRST_SAMPLE;
-  viewer.open(path, SAMPLES.get(path) ?? '', location.hash);
+  if (asked !== null && !SAMPLES.has(asked)) viewer.missingModel(asked);
+  else {
+    const path = asked ?? FIRST_SAMPLE;
+    viewer.open(path, SAMPLES.get(path) ?? '', location.hash);
+  }
   return viewer;
 }

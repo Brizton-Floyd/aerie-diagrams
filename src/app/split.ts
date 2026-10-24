@@ -49,13 +49,16 @@ export class Session {
 
   constructor(viewer: Viewer) {
     this.viewer = viewer;
-    const { path, source } = viewer.published;
+    const { path, source, restored, shown } = viewer.published;
     this.path = path;
     this.published = source;
-    const text = stored(draftKey(path)) ?? source;
-    this.live = new Live((checked) => {
-      this.checked(checked);
-    });
+    const text = restored ?? stored(draftKey(path)) ?? source;
+    this.live = new Live(
+      (checked) => {
+        this.checked(checked);
+      },
+      { shown },
+    );
     this.errors = h('ol', { class: 'errors', 'aria-label': 'Problems' });
     this.discard = h(
       'button',
@@ -193,8 +196,9 @@ export class Session {
   }
 
   /** "Done": the diagram catches up with the text, and the sidebar comes back. */
-  close(): void {
-    this.live.flush();
+  close(applyPending = true): void {
+    if (applyPending) this.live.flush();
+    else this.live.cancel();
     this.editor.destroy();
     this.pane.parentElement?.style.removeProperty('--editor-width');
     this.viewer.showEditor(null);

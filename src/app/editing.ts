@@ -36,6 +36,12 @@ export function addEditor(viewer: Viewer): void {
     button.textContent = session === null ? 'Edit' : 'Done';
     button.setAttribute('aria-pressed', String(session !== null));
   };
+  viewer.onModelOpening(() => {
+    // The browser has already moved to its target entry. Do not flush the old editor into it.
+    session?.close(false);
+    session = null;
+    show();
+  });
   button.textContent = 'Edit';
   viewer.addTool(button);
 }
