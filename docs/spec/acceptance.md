@@ -403,3 +403,8 @@ below is from the final sample, `samples/lotto.aerie`.
 The overview camera journey jumps between distant stages at a manual zoom, checks that their
 origins return into view without changing scale, and keeps the camera still when the stage is
 already visible or its wording changes (INT-626).
+
+The overview details journey clicks an element from the authored main flow, checks its description
+and technical wording, reopens its selected-element link, and uses Back to restore the selected
+stage. It also opens a container while the flow remains active and selects a child with the keyboard
+in both themes (INT-627).

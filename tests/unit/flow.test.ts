@@ -33,12 +33,19 @@ describe('static flow overviews', () => {
     expect(missing.picture.activity).toEqual({ kind: 'reading' });
   });
 
-  it('MODEL-605 preserves the overview through opening and wording, and excludes element selection', () => {
+  it('MODEL-605 INT-627 preserves the overview through opening and wording, and replaces it when an element is selected', () => {
     const shown = overview(semantics, start, 'full-flow', 5);
     const opened = openContainer(semantics, shown, 'picture');
     expect(opened.activity).toEqual(shown.activity);
     expect(switchAudience(semantics, opened, 'engineer').activity).toEqual(shown.activity);
-    expect(select(semantics, opened, 'author')).toBe(opened);
+    const selected = select(semantics, opened, 'author');
+    expect(selected.activity).toEqual({ kind: 'selected', element: 'author' });
+    expect(selected.zoom).toEqual(opened.zoom);
+    const fragment = writeFragment(semantics, selected);
+    expect(readFragment(semantics, fragment).picture).toEqual(selected);
+    expect(visitKey(selected, fragment)).not.toBe(
+      visitKey(opened, writeFragment(semantics, opened)),
+    );
     expect(switchView(semantics, opened, 'inside').activity).toEqual({ kind: 'reading' });
     const narrow = semanticsOf(
       'a: A\nb: B\na calls b\nview narrow: Narrow\n  show a\nview full: Full\n  show a, b\nscenario request: Request\n  a calls b\n',
