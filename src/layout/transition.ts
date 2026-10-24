@@ -103,10 +103,17 @@ export function transitionPlan(
     else glide.push({ id: node.id, from, to });
   }
   const leave: Leave[] = [];
+  const oldParents = new Map(before.drawing.nodes.map((node) => [node.id, node.parent]));
   for (const node of before.drawing.nodes) {
     const from = before.result.boxes[node.id];
     if (from === undefined || after.result.boxes[node.id] !== undefined) continue;
-    const ancestor = tree.ancestors(node.id).find((id) => after.result.boxes[id] !== undefined);
+    const ancestors = tree.has(node.id) ? tree.ancestors(node.id) : [];
+    // A valid edit may remove the id from the new tree; its old drawing still knows its parents.
+    if (!tree.has(node.id)) {
+      for (let parent = node.parent; parent !== null; parent = oldParents.get(parent) ?? null)
+        ancestors.push(parent);
+    }
+    const ancestor = ancestors.find((id) => after.result.boxes[id] !== undefined);
     const toward = ancestor === undefined ? null : headerMiddle(after, ancestor);
     leave.push({ id: node.id, from, toward: toward ?? centre(from) });
   }
