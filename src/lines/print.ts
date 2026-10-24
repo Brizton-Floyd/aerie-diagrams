@@ -112,6 +112,7 @@ export function print(model: Model): string {
   for (const view of model.views) {
     const lines = [`view ${view.id}: ${encodeWords(view.title.base ?? '')}`];
     if (view.show.length > 0) lines.push(`${INDENT}show ${view.show.map(showItem).join(', ')}`);
+    if (view.mainScenario !== undefined) lines.push(`${INDENT}scenario ${view.mainScenario}`);
     if (view.kinds.length !== 1 || view.kinds[0] !== 'runtime') {
       lines.push(`${INDENT}kind ${view.kinds.join(', ')}`);
     }
@@ -127,6 +128,12 @@ export function print(model: Model): string {
     for (const step of scenario.steps) {
       lines.push(`${INDENT}${step.subject} ${encodeWords(step.verb.base ?? '')} ${step.object}`);
       lines.push(...wording(2, step.about, rewordOf(step.verb)));
+    }
+    for (const stage of scenario.stages ?? []) {
+      const range =
+        stage.from === stage.to ? String(stage.from) : `${String(stage.from)}-${String(stage.to)}`;
+      lines.push(`${INDENT}step ${range}: ${encodeWords(stage.title.base ?? '')}`);
+      lines.push(...wording(2, stage.about, rewordOf(stage.title)));
     }
     blocks.push(lines);
   }

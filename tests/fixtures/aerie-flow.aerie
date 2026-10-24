@@ -1,0 +1,69 @@
+// A simplified Aerie model for exercising flow-overview interactions in the real viewer.
+// Derived from this repository; nesting groups in-process modules for explanation.
+model aerie-flow: How Aerie works
+  > One architecture model becomes an interactive picture for every audience.
+
+audiences exec "Plain", manager "More detail" (default), engineer "Technical" (code)
+
+author: Model author | Describes the system [person]
+  > Writes the architecture once in a Lines file.
+
+aerie: Aerie | One model, every audience [system]
+  editor: Model editor | Write architecture as text [service]
+    icon document
+    > Loads a model or checks edits beside the diagram.
+    @engineer: Live editor | src/app/live.ts
+
+  meaning: Model tools | Check the model and its meaning [service]
+    icon gear
+    > Checks the text and resolves the parts, views and wording.
+    @engineer: Language and semantics | src/lines and src/model
+    lines: Lines language | Parse the text and report errors [module]
+    semantics: Model semantics | Resolve views, wording and steps [module]
+
+  picture: Diagram builder | Build an interactive picture [service]
+    icon web
+    > Places the diagram, draws it and responds to reader actions.
+    @engineer: Layout, rendering and viewer | src/layout, src/render and src/app
+    layout: Layout engine | Place boxes and connections [module]
+    renderer: Signal renderer | Draw the diagram as SVG [module]
+    viewer: Browser viewer | Open parts and follow flows [module]
+
+reader: Diagram reader | Explore and understand [person]
+  > Reads the diagram, changes wording, opens parts and follows scenarios.
+
+author writes the model in editor
+editor sends model text to semantics
+semantics checks the text with lines
+lines returns the parsed model to semantics
+semantics requests picture placement from layout
+layout supplies positioned boxes to renderer
+renderer supplies the drawing to viewer
+viewer shows the diagram to reader
+
+view big-picture: Big picture
+  show author, aerie +1, reader
+  > Four stages explain how Aerie turns architecture text into a picture.
+
+view inside: Inside Aerie
+  show author, aerie +2, reader
+  > The actual participants behind each high-level stage.
+
+scenario full-flow: Create a diagram, step by step
+  > The detailed path behind the four stages in Big picture.
+  author writes the model in editor
+    > The author writes or edits a Lines file.
+  editor sends model text to semantics
+    > The live editor checks each change. If it finds errors, the last good diagram stays visible.
+  semantics checks the text with lines
+    > The language parses text into a canonical model and reports errors with their line and column.
+  lines returns the parsed model to semantics
+    > Model semantics resolves nesting, views, audience wording and scenarios.
+  semantics requests picture placement from layout
+    > The viewer asks layout to place the resolved picture. Space is reserved for every audience.
+  layout supplies positioned boxes to renderer
+    > Signal uses the positions to draw SVG boxes, connections and labels.
+  renderer supplies the drawing to viewer
+    > The browser viewer displays the drawing and manages reader actions.
+  viewer shows the diagram to reader
+    > The reader explores the picture and can share a link to the same view and state.

@@ -322,3 +322,7 @@ be updated in the same change, so improvements are kept.
 - **LAYOUT-901** Targets, measured and reported by the rules suite but not used to fail it: laying out
   any Lotto picture takes under 50 ms, and a picture of 100 boxes under 150 ms, on the CI machine; a
   transition keeps 60 frames a second on the Lotto sample.
+
+## Main-flow overview placement
+
+- **LAYOUT-506** For a stage anchored to a drawn relationship, the summary follows that relationship's routed path, reversing it for a reply when necessary. Its badge avoids leaf boxes, open-container headers, relationship labels and other stage badges. Folded stages use the existing loop placement. The drawing bounds contain the badges, and switching audience changes no geometry.

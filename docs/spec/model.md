@@ -156,11 +156,11 @@ The **picture** is everything that decides what a reader sees. Shared links carr
 ([interaction.md](interaction.md#shared-links)).
 
 - **MODEL-601** A picture has: a view; an audience; a zoom state; and at most one of a selected
-  element, a playing scenario (with its current step and whether it is shown as lanes), or a presented
+  element, a static scenario overview (with its selected step), a playing scenario (with its current step and whether it is shown as lanes), or a presented
   walkthrough (with its current step and, inside a scenario step, the scenario step). The theme, the
   reduced-motion setting and the camera are reader preferences, not part of the picture.
 - **MODEL-602** The **default picture** is the first view (or the implicit view when there is none),
-  the default audience, an empty zoom state, and nothing selected, playing or presented.
+  the default audience and an empty zoom state. A view with an authored main scenario opens its static overview at stage 1; other views have nothing selected, playing or presented.
 - **MODEL-603** A picture is normalised before it is shown or written to a link: the zoom state as in
   MODEL-208; a selected element that is not drawn is replaced by its lift; a step number outside its
   scenario or walkthrough is clamped to the nearest valid one; anything that names an id the model no
@@ -168,6 +168,10 @@ The **picture** is everything that decides what a reader sees. Shared links carr
   ([interaction.md](interaction.md#shared-links)).
 - **MODEL-604** Selection and playback exclude each other: starting a scenario or a walkthrough clears
   the selection.
+- **MODEL-605** A static scenario overview shows every step and keeps one selected for explanation.
+  It is a separate activity, excluding element selection, playback and presentation. It uses the
+  scenario's stage view, clamps its selected step and drops unknown scenarios as playback does.
+  Opening containers and changing audience preserve the overview. Default pictures without an authored main scenario are unchanged.
 
 ## Worked example: Lotto
 
@@ -251,3 +255,8 @@ the others.
 | 6    | Services, default zoom (the view changed, so Engine service is closed again), focus Results store      |
 | 7    | Services, default zoom, Generate picks playing steps 1 to 14 (Services gives every participant a lift) |
 | 8    | Big picture, default zoom, nothing focused                                                             |
+
+## Authored high-level flow semantics
+
+- **MODEL-606** An overview uses authored stages when present, numbered in declaration order. A stage retains its inclusive detailed-step range and anchors to that range's first step, lifted to the current picture. Changing audience or opening containers preserves stage identity and numbering. Without stages, an overview continues to use detailed step numbers. The model never infers stages or chronology from relationships.
+- **MODEL-607** The default picture and switching to a view start its declared main scenario's overview at stage 1. A missing main-scenario declaration preserves the ordinary view default. Explicitly cleared and selected pictures remain distinct from a view's default and survive shared links and visits.

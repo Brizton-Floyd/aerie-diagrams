@@ -1,0 +1,14 @@
+a: A
+b: B
+a calls b
+view big-picture: Big picture
+  show a, b
+  scenario request
+scenario request: Handle a request
+  a calls b
+  b answers a
+  step 1: Ask,then wait
+    > Send the request.
+    @engineer: Send a request
+    @engineer >> The caller waits for a reply.
+  step 2: Answer

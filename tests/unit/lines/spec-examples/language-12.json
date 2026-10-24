@@ -1,0 +1,193 @@
+{
+  "model": {
+    "format": "aerie-model/1",
+    "id": null,
+    "title": {
+      "base": null,
+      "set": {}
+    },
+    "about": {
+      "base": null,
+      "set": {},
+      "add": {}
+    },
+    "audiences": [
+      {
+        "id": "exec",
+        "name": "Executive",
+        "code": false
+      },
+      {
+        "id": "manager",
+        "name": "Manager",
+        "code": false
+      },
+      {
+        "id": "engineer",
+        "name": "Engineer",
+        "code": true
+      }
+    ],
+    "defaultAudience": "manager",
+    "system": null,
+    "elements": [
+      {
+        "id": "left",
+        "parent": null,
+        "name": {
+          "base": "Left",
+          "set": {}
+        },
+        "tagline": {
+          "base": null,
+          "set": {}
+        },
+        "tags": [],
+        "icon": null,
+        "code": [],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "id": "right",
+        "parent": null,
+        "name": {
+          "base": "Right",
+          "set": {}
+        },
+        "tagline": {
+          "base": null,
+          "set": {}
+        },
+        "tags": [],
+        "icon": null,
+        "code": [],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      }
+    ],
+    "relationships": [
+      {
+        "subject": "left",
+        "verb": {
+          "base": "calls",
+          "set": {}
+        },
+        "object": "right",
+        "kind": "runtime",
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      }
+    ],
+    "views": [
+      {
+        "id": "big-picture",
+        "title": {
+          "base": "Big picture",
+          "set": {}
+        },
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        },
+        "show": [
+          {
+            "element": "left",
+            "depth": 0
+          },
+          {
+            "element": "right",
+            "depth": 0
+          }
+        ],
+        "kinds": [
+          "runtime"
+        ],
+        "mainScenario": "request"
+      }
+    ],
+    "scenarios": [
+      {
+        "id": "request",
+        "title": {
+          "base": "Handle a request",
+          "set": {}
+        },
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        },
+        "steps": [
+          {
+            "subject": "left",
+            "verb": {
+              "base": "calls",
+              "set": {}
+            },
+            "object": "right",
+            "about": {
+              "base": null,
+              "set": {},
+              "add": {}
+            }
+          },
+          {
+            "subject": "right",
+            "verb": {
+              "base": "answers",
+              "set": {}
+            },
+            "object": "left",
+            "about": {
+              "base": null,
+              "set": {},
+              "add": {}
+            }
+          }
+        ],
+        "stages": [
+          {
+            "from": 1,
+            "to": 1,
+            "title": {
+              "base": "Ask",
+              "set": {}
+            },
+            "about": {
+              "base": null,
+              "set": {},
+              "add": {}
+            }
+          },
+          {
+            "from": 2,
+            "to": 2,
+            "title": {
+              "base": "Answer",
+              "set": {}
+            },
+            "about": {
+              "base": null,
+              "set": {},
+              "add": {}
+            }
+          }
+        ]
+      }
+    ],
+    "walkthroughs": [],
+    "ignores": []
+  },
+  "diagnostics": []
+}

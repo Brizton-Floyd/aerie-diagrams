@@ -1,0 +1,194 @@
+{
+  "format": "aerie-model/1",
+  "id": null,
+  "title": {
+    "base": null,
+    "set": {}
+  },
+  "about": {
+    "base": null,
+    "set": {},
+    "add": {}
+  },
+  "audiences": [
+    {
+      "id": "exec",
+      "name": "Executive",
+      "code": false
+    },
+    {
+      "id": "manager",
+      "name": "Manager",
+      "code": false
+    },
+    {
+      "id": "engineer",
+      "name": "Engineer",
+      "code": true
+    }
+  ],
+  "defaultAudience": "manager",
+  "system": null,
+  "elements": [
+    {
+      "id": "a",
+      "parent": null,
+      "name": {
+        "base": "A",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "code": [],
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    },
+    {
+      "id": "b",
+      "parent": null,
+      "name": {
+        "base": "B",
+        "set": {}
+      },
+      "tagline": {
+        "base": null,
+        "set": {}
+      },
+      "tags": [],
+      "icon": null,
+      "code": [],
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "subject": "a",
+      "verb": {
+        "base": "calls",
+        "set": {}
+      },
+      "object": "b",
+      "kind": "runtime",
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      }
+    }
+  ],
+  "views": [
+    {
+      "id": "big-picture",
+      "title": {
+        "base": "Big picture",
+        "set": {}
+      },
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      },
+      "show": [
+        {
+          "element": "a",
+          "depth": 0
+        },
+        {
+          "element": "b",
+          "depth": 0
+        }
+      ],
+      "kinds": [
+        "runtime"
+      ],
+      "mainScenario": "request"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "request",
+      "title": {
+        "base": "Handle a request",
+        "set": {}
+      },
+      "about": {
+        "base": null,
+        "set": {},
+        "add": {}
+      },
+      "steps": [
+        {
+          "subject": "a",
+          "verb": {
+            "base": "calls",
+            "set": {}
+          },
+          "object": "b",
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {}
+          }
+        },
+        {
+          "subject": "b",
+          "verb": {
+            "base": "answers",
+            "set": {}
+          },
+          "object": "a",
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {}
+          }
+        }
+      ],
+      "stages": [
+        {
+          "from": 1,
+          "to": 1,
+          "title": {
+            "base": "Ask,then wait",
+            "set": {
+              "engineer": "Send a request"
+            }
+          },
+          "about": {
+            "base": "Send the request.",
+            "set": {},
+            "add": {
+              "engineer": "The caller waits for a reply."
+            }
+          }
+        },
+        {
+          "from": 2,
+          "to": 2,
+          "title": {
+            "base": "Answer",
+            "set": {}
+          },
+          "about": {
+            "base": null,
+            "set": {},
+            "add": {}
+          }
+        }
+      ]
+    }
+  ],
+  "walkthroughs": [],
+  "ignores": []
+}

@@ -96,6 +96,8 @@ export interface View {
   about: Prose;
   show: ShowItem[];
   kinds: Id[];
+  /** The authored main scenario; omitted in models that do not declare one. */
+  mainScenario?: Id;
 }
 
 export type ShowItem = { element: Id; depth: number } | { tag: Id };
@@ -105,6 +107,15 @@ export interface Scenario {
   title: Words;
   about: Prose;
   steps: Step[];
+  stages?: Stage[];
+}
+
+/** An authored high-level stage, anchored to the first detailed step in its range. */
+export interface Stage {
+  from: number;
+  to: number;
+  title: Words;
+  about: Prose;
 }
 
 export interface Step {

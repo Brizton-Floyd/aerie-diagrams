@@ -1,0 +1,184 @@
+<?xml-stylesheet href="../signal.css" type="text/css"?>
+<svg xmlns="http://www.w3.org/2000/svg" class="aerie" viewBox="0 0 1337.5 465" width="1337.5" height="465" overflow="visible" role="img" aria-label="How Aerie works: Create a diagram, as lanes" data-view="big-picture" data-audience="manager" data-scenario="full-flow">
+  <defs>
+    <pattern id="aerie-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect class="hatch-bg" width="7" height="7"/>
+      <path class="hatch-line" d="M0 0V7"/>
+    </pattern>
+    <radialGradient id="aerie-dawn" cx="0.18" cy="0" r="1.05" fx="0.12" fy="0">
+      <stop class="dawn-0" offset="0"/>
+      <stop class="dawn-1" offset="0.55"/>
+      <stop class="dawn-2" offset="1"/>
+    </radialGradient>
+  </defs>
+  <g class="rows">
+    <rect class="row now" data-step="8" x="0" y="412" width="1337.5" height="37"/>
+  </g>
+  <g class="bands">
+    <g class="band open depth-0" data-id="aerie">
+      <rect class="shape" x="0" y="0" width="818" height="28" rx="9"/>
+      <text class="t-band" x="10" y="19" data-width="35">Aerie</text>
+    </g>
+  </g>
+  <g class="lanes">
+    <path class="lane-line" data-id="editor" d="M109 103V465"/>
+    <path class="lane-line" data-id="meaning" d="M384.5 103V465"/>
+    <path class="lane-line" data-id="picture" d="M684.5 120V465"/>
+    <path class="lane-line" data-id="author" d="M961.5 103V465"/>
+    <path class="lane-line" data-id="reader" d="M1220 103V465"/>
+  </g>
+  <g class="boxes">
+    <g class="node leaf" data-id="editor" transform="translate(0 44)">
+      <rect class="shape" width="218" height="59" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="224" height="65" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
+      <g class="icon" data-icon="document" transform="translate(12 12) scale(0.34375)">
+        <path d="M17 8h21l10 10v38H17Z"/>
+        <path d="M38 8v10h10"/>
+        <path d="M24 31h17M24 40h17M24 49h10"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="86">Model editor</text>
+      <text class="t-tagline" x="44" y="44" data-width="162">Write architecture as text</text>
+    </g>
+    <g class="node leaf" data-id="meaning" transform="translate(250 44)">
+      <rect class="shape" width="269" height="59" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="275" height="65" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
+      <g class="icon" data-icon="gear" transform="translate(12 12) scale(0.34375)">
+        <path d="M28.1 16.5 29 10.7h6l.9 5.8 4.3 1.8 4.7-3.5 4.3 4.3-3.5 4.7 1.8 4.3 5.8.9v6l-5.8.9-1.8 4.3 3.5 4.7-4.3 4.3-4.7-3.5-4.3 1.8-.9 5.8h-6l-.9-5.8-4.3-1.8-4.7 3.5-4.3-4.3 3.5-4.7-1.8-4.3-5.8-.9v-6l5.8-.9 1.8-4.3-3.5-4.7 4.3-4.3 4.7 3.5Z"/>
+        <circle cx="32" cy="32" r="6"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="79">Model tools</text>
+      <text class="t-tagline" x="44" y="44" data-width="213">Check the model and its meaning</text>
+    </g>
+    <g class="node leaf now" data-id="picture" transform="translate(551 44)">
+      <rect class="shape" width="267" height="76" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="273" height="82" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
+      <g class="icon" data-icon="web" transform="translate(12 12) scale(0.34375)">
+        <rect x="8" y="11" width="48" height="42" rx="5"/>
+        <path d="M8 21h48"/>
+        <path d="M27 29l-7 7 7 7"/>
+        <path d="M37 29l7 7-7 7"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="108">Diagram builder</text>
+      <text class="t-tagline" x="44" y="44" data-width="171">Build an interactive picture</text>
+    </g>
+    <g class="node leaf person" data-id="author" transform="translate(852.5 44)">
+      <rect class="shape" width="218" height="59" rx="29.5"/>
+      <rect class="ring" x="-3" y="-3" width="224" height="65" rx="32.5"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
+      <g class="icon" data-icon="person" transform="translate(12 12) scale(0.34375)">
+        <circle cx="32" cy="21" r="10"/>
+        <path d="M12 56c0-12 9-20 20-20s20 8 20 20"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="90">Model author</text>
+      <text class="t-tagline" x="44" y="44" data-width="138">Describes the system</text>
+    </g>
+    <g class="node leaf person now" data-id="reader" transform="translate(1102.5 44)">
+      <rect class="shape" width="235" height="59" rx="29.5"/>
+      <rect class="ring" x="-3" y="-3" width="241" height="65" rx="32.5"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
+      <g class="icon" data-icon="person" transform="translate(12 12) scale(0.34375)">
+        <circle cx="32" cy="21" r="10"/>
+        <path d="M12 56c0-12 9-20 20-20s20 8 20 20"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="105">Diagram reader</text>
+      <text class="t-tagline" x="44" y="44" data-width="153">Explore and understand</text>
+    </g>
+  </g>
+  <g class="trail">
+    <g class="step call past" data-step="1">
+      <path class="curve" d="M961.5 169L109 169"/>
+      <path class="arrow" d="M121 164L109 169L121 174"/>
+    </g>
+    <g class="step call past" data-step="2">
+      <path class="curve" d="M109 206L384.5 206"/>
+      <path class="arrow" d="M372.5 211L384.5 206L372.5 201"/>
+    </g>
+    <g class="step call past" data-step="3">
+      <path class="curve" d="M384.5 214L402.5 214Q408.5 214 408.5 220L408.5 237Q408.5 243 402.5 243L384.5 243"/>
+      <path class="arrow" d="M396.5 238L384.5 243L396.5 248"/>
+    </g>
+    <g class="step call past" data-step="4">
+      <path class="curve" d="M384.5 251L402.5 251Q408.5 251 408.5 257L408.5 274Q408.5 280 402.5 280L384.5 280"/>
+      <path class="arrow" d="M396.5 275L384.5 280L396.5 285"/>
+    </g>
+    <g class="step call past" data-step="5">
+      <path class="curve" d="M384.5 334L684.5 334"/>
+      <path class="arrow" d="M672.5 339L684.5 334L672.5 329"/>
+    </g>
+    <g class="step call past" data-step="6">
+      <path class="curve" d="M684.5 342L702.5 342Q708.5 342 708.5 348L708.5 365Q708.5 371 702.5 371L684.5 371"/>
+      <path class="arrow" d="M696.5 366L684.5 371L696.5 376"/>
+    </g>
+    <g class="step call past" data-step="7">
+      <path class="curve" d="M684.5 379L702.5 379Q708.5 379 708.5 385L708.5 402Q708.5 408 702.5 408L684.5 408"/>
+      <path class="arrow" d="M696.5 403L684.5 408L696.5 413"/>
+    </g>
+    <g class="step call now" data-step="8">
+      <path class="curve" d="M684.5 445L1220 445" pathLength="1"/>
+      <path class="arrow" d="M1208 450L1220 445L1208 440"/>
+    </g>
+  </g>
+  <g class="labels">
+    <g class="label" data-step="1">
+      <text class="t-label" x="473.75" y="156" data-width="123">writes the model in</text>
+    </g>
+    <g class="label" data-step="2">
+      <text class="t-label" x="183.25" y="193" data-width="127">sends model text to</text>
+    </g>
+    <g class="label" data-step="3">
+      <text class="t-label" x="433.5" y="234" data-width="130">checks the text with</text>
+    </g>
+    <g class="label" data-step="4">
+      <text class="t-label" x="437.5" y="271" data-width="179">returns the parsed model to</text>
+    </g>
+    <g class="label" data-step="5">
+      <text class="t-label" x="432.5" y="312.5" data-width="204">supplies the resolved picture to</text>
+    </g>
+    <g class="label" data-step="6">
+      <text class="t-label" x="738.5" y="362" data-width="185">supplies positioned boxes to</text>
+    </g>
+    <g class="label" data-step="7">
+      <text class="t-label" x="735.5" y="399" data-width="151">supplies the drawing to</text>
+    </g>
+    <g class="label" data-step="8">
+      <text class="t-label" x="882.75" y="432" data-width="139">shows the diagram to</text>
+    </g>
+  </g>
+  <g class="badges">
+    <g class="badge" data-step="1" transform="translate(961.5 169)">
+      <circle r="9"/>
+      <text class="t-badge" y="4">1</text>
+    </g>
+    <g class="badge" data-step="2" transform="translate(109 206)">
+      <circle r="9"/>
+      <text class="t-badge" y="4">2</text>
+    </g>
+    <g class="badge" data-step="3" transform="translate(384.5 214)">
+      <circle r="9"/>
+      <text class="t-badge" y="4">3</text>
+    </g>
+    <g class="badge" data-step="4" transform="translate(384.5 251)">
+      <circle r="9"/>
+      <text class="t-badge" y="4">4</text>
+    </g>
+    <g class="badge" data-step="5" transform="translate(384.5 334)">
+      <circle r="9"/>
+      <text class="t-badge" y="4">5</text>
+    </g>
+    <g class="badge" data-step="6" transform="translate(684.5 342)">
+      <circle r="9"/>
+      <text class="t-badge" y="4">6</text>
+    </g>
+    <g class="badge" data-step="7" transform="translate(684.5 379)">
+      <circle r="9"/>
+      <text class="t-badge" y="4">7</text>
+    </g>
+    <g class="badge now" data-step="8" transform="translate(684.5 445)">
+      <circle r="12"/>
+      <text class="t-badge" y="4.5">8</text>
+    </g>
+  </g>
+</svg>

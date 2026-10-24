@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E505",
+    "severity": "error",
+    "line": 6,
+    "column": 12,
+    "endLine": 6,
+    "endColumn": 19,
+    "message": "The main scenario `request` cannot be shown in `narrow`. Include every participant or a container around it in this view."
+  }
+]

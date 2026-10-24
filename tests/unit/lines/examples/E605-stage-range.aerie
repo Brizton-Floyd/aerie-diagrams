@@ -1,0 +1,6 @@
+a: A
+b: B
+a calls b
+scenario request: Request
+  a calls b
+  step 1-2: Too many steps

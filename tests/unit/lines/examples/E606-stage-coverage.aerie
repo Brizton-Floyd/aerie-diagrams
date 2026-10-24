@@ -1,0 +1,7 @@
+a: A
+b: B
+a calls b
+scenario request: Request
+  a calls b
+  b answers a
+  step 1: Ask

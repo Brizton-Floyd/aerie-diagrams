@@ -316,6 +316,17 @@ The owner chose the Signal look and plain wording first after reviewing Contour 
 | journeys    | An accessibility audit finds no problems in either theme, in every wording, with every layer open                        | LOOK-014, SCORE-005                        |
 | screenshots | Every Lotto view in every wording in both themes, a selection, a scenario, a tour step                                   | LOOK-301 to LOOK-706, LOOK-801 to LOOK-813 |
 
+## Numbered flow overview foundation (issue 83)
+
+| Suite    | What it proves                                                                                                                 | Requirements       |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------ |
+| unit     | Overview activity normalisation, stage-view selection, opening, wording, shared-link round trips and visit identity            | MODEL-605, INT-621 |
+| unit     | Complete static trails with named, focusable step controls and unchanged box geometry                                          | INT-620, INT-622   |
+| journeys | An Aerie model: selecting numbers with Enter and Space, accessibility audit, shared state, playback handoff, Back and clearing | INT-620 to INT-623 |
+
+This foundation is entered explicitly. Authored high-level stages and view-specific default flows
+remain tracked in [issue 83](https://github.com/Brizton-Floyd/aerie-diagrams/issues/83).
+
 ## Browser journeys
 
 Journeys run against the production build with the Lotto sample, at 1600 x 900, as a reader would use
@@ -379,3 +390,16 @@ below is from the final sample, `samples/lotto.aerie`.
   The browser's Back and Forward, and Alt+Left and Alt+Right, do the same. The recent visits read
   "Analysis engine", "Engine service", "Pick generation", "Draw history lookup" and "Draw history
   service", the last one marked; choosing "Analysis engine" goes back three visits at once.
+
+## Authored main-flow completion (issue 83)
+
+| Suite       | What it proves                                                                                                                                              | Requirements                                           |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| unit        | Main-scenario references, complete stage ranges, diagnostics with source positions, canonical compatibility, formatter/printer and editor completion        | LANG-509, LANG-608 to LANG-610, E504, E505, E605, E606 |
+| unit        | Authored stage semantics, opt-in view defaults, cleared/selected/default link round trips, routed badge placement and audience invariance                   | MODEL-606, MODEL-607, INT-624, LAYOUT-506              |
+| journeys    | Aerie opens on four stages, shares a selected stage, hands off to the detailed range, clears persistently, restores history and re-enters a configured view | INT-624, INT-625                                       |
+| screenshots | The authored Aerie default overview in both themes                                                                                                          | INT-624, LAYOUT-506                                    |
+
+The overview camera journey jumps between distant stages at a manual zoom, checks that their
+origins return into view without changing scale, and keeps the camera still when the stage is
+already visible or its wording changes (INT-626).

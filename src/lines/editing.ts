@@ -207,7 +207,9 @@ export function newLineIndent(source: string, line: number, column: number): str
   if (scanned.kind !== 'statement') return indent;
   const from = scanned.start + spaces;
   const end = before.replace(/[ \t]+$/, '').length;
-  const opens = end > from && OPENERS.has(readStatement(before, from, end).kind);
+  const read = readStatement(before, from, end);
+  const binding = read.kind === 'scenario' && !read.hasColon && spaces > 0;
+  const opens = end > from && !binding && OPENERS.has(read.kind);
   return opens ? `${indent}  ` : indent;
 }
 
@@ -256,7 +258,7 @@ function vocabulary(lines: Scanned[]): Vocabulary {
     if (read.kind === 'element' && isId(read.id.text)) {
       if (!found.elements.has(read.id.text)) found.elements.set(read.id.text, read.name.text);
       for (const tag of read.tags?.items ?? []) if (isId(tag.text)) found.tags.add(tag.text);
-    } else if (read.kind === 'view' || read.kind === 'scenario') {
+    } else if ((read.kind === 'view' || read.kind === 'scenario') && each.indent === 0) {
       if (read.id !== null && isId(read.id.text)) found[`${read.kind}s`].add(read.id.text);
     } else if (read.kind === 'audiences' && read.entries !== null) {
       declaredAudiences = true;
@@ -300,6 +302,10 @@ export function completionsAt(source: string, line: number, column: number): Com
   const from = column - word.length;
   const lead = before.slice(scanned.start, from).replace(/^ +/, '');
   const words = vocabulary(lines);
+  const parent = lines
+    .slice(0, line - 1)
+    .reverse()
+    .find((each) => each.kind === 'statement' && each.indent < scanned.indent);
   const offer = (options: CompletionOption[]): Completions | null =>
     options.length === 0 ? null : { from, options };
 
@@ -313,8 +319,11 @@ export function completionsAt(source: string, line: number, column: number): Com
     return offer(words.elements);
   }
   if (/^step +$/.test(lead)) {
+    if (parent?.kind === 'statement' && parent.read.kind === 'scenario') return null;
     return offer([...named(words.views, 'view'), ...named(words.scenarios, 'scenario')]);
   }
+  if (/^scenario +$/.test(lead) && parent?.kind === 'statement' && parent.read.kind === 'view')
+    return offer(named(words.scenarios, 'scenario'));
   const focus = /^step +([^ :]+) *: *(?:[^,]*, *)*$/.exec(lead);
   if (focus !== null) return words.views.includes(focus[1] ?? '') ? offer(words.elements) : null;
   // A sentence: an id-like first word, a space, and no bracket group begun.

@@ -159,6 +159,7 @@ walkthrough step.
   | `open`    | ids of containers opened by the reader (zoom state `open`), comma-separated, in model order         |
   | `closed`  | ids of containers closed by the reader (zoom state `closed`), comma-separated, in model order       |
   | `sel`     | the selected element's id                                                                           |
+  | `flow`    | the overview scenario and selected stage/step: `render-model.3`, or `none` when explicitly cleared  |
   | `play`    | the playing scenario's id and current step: `generate-picks.9`                                      |
   | `lanes`   | `1` when the scenario is shown as lanes                                                             |
   | `present` | the walkthrough's id and step: `tour.3`; inside a scenario step, also the scenario step: `tour.7.9` |
@@ -239,6 +240,24 @@ where they were, as they left it, so they never have to find their place again.
   and Space advance one step every 2.4 s until the last step, then stop; pressing Play on the last step
   starts again from step 1. End and Esc end the scenario and return to the view, fitted.
 - **INT-606** Ending a scenario, switching view, or starting another scenario stops the current one.
+
+## Static flow overview
+
+- **INT-620** "Show flow overview" beside a scenario opens a static, complete numbered trail on
+  its stage view. Selecting a number or a step in the side panel explains that step without
+  starting playback. Numbers retain the scenario's authored order; ordinary relationships are
+  never assigned an inferred chronological order.
+- **INT-621** The shared-link key `flow` holds the overview scenario id and selected step, such as
+  `flow=render-model.3`. Playback and presentation take precedence over an overview in a link.
+  Moving between its steps is one visit; starting or clearing an overview adds a visit. Back,
+  Forward and shared links restore its selected step.
+- **INT-622** Each overview badge is a keyboard-focusable button, named with its visible step number
+  and sentence. Enter and Space select it, and focus is visible. Changing audience or selected step
+  moves no boxes. The overview is static and does not animate a trail being drawn.
+- **INT-623** The overview panel offers a named flow chooser, the selected step's sentence and
+  description, the complete step list, "Follow the steps" (playback from the selected step), and
+  "Clear flow" (return to the view). Esc also clears it. The page keeps plain wording first and
+  contextual "More technical"; it adds no persistent list of audience levels.
 
 ## Presenter-mode walkthroughs
 
@@ -327,3 +346,9 @@ For authors who write in their own editor.
   relationship as a sentence for the current audience.
 - **INT-904** Scenario captions and walkthrough narration are announced as they change.
 - **INT-905** Reduced motion (LOOK-903) applies everywhere motion is described in this document.
+
+## Authored main-flow defaults
+
+- **INT-624** Opening a model or switching to a view with an authored main scenario immediately shows its numbered overview, without starting playback. A bare link restores that view's main flow; `flow=none` preserves an explicitly cleared picture. A link's `flow` step number refers to the selected stage when that scenario has stages. Back and Forward restore the selected stage or the cleared picture.
+- **INT-625** A staged overview says "Stage N of M", shows the authored title and description in the current wording, and offers "Follow the full flow". That action starts detailed playback at the selected stage's first detailed step. Stage buttons are named "Stage N: title". Ending playback in a view with a configured main flow returns to its overview, selecting the stage that contains the detailed step (or stage 1 for a different main scenario). No permanent Wording or audience list is added.
+- **INT-626** Selecting an overview stage or step brings its visible origin and as many connected parts as fit into view at the current zoom, using the same camera reveal as selecting an element. Folded internal work reveals its containing box. Selecting an already visible origin and its connections moves nothing; changing wording does not move the camera.

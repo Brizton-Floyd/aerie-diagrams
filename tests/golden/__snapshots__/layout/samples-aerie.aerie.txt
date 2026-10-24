@@ -1,0 +1,322 @@
+view big-picture, default (no changes)
+  size 719 x 628
+  author (218 x 59, rim): 168, 12, 218 x 59
+  aerie (open, at least 287 wide, header 53): 12, 157, 431.5 x 444
+    editor (218 x 59): 168, 210, 218 x 59
+    meaning (297 x 79): 128.5, 330, 297 x 79
+    picture (295 x 96): 129.5, 487, 295 x 96
+  reader (235 x 59, rim): 412, 12, 235 x 59
+  author->editor: 277,71 277,210
+    label 109, 101, 164 x 21
+  editor->meaning: 277,269 277,330
+    label 111, 289, 164 x 21
+  meaning->picture: 277,409 277,487
+    label 30, 429, 245 x 38
+  picture->reader: 277,583 277,616 530,616 530,71
+    label 535, 101, 172 x 21
+
+view big-picture, everything open (meaning open, picture open)
+  size 909 x 1144
+  author (218 x 59, rim): 239, 12, 218 x 59
+  aerie (open, at least 287 wide, header 53): 12, 157, 694 x 960
+    editor (218 x 59): 238.5, 210, 218 x 59
+    meaning (open, at least 297 wide, header 53): 30, 335, 521.5 x 284
+      lines (259 x 76): 192.67, 525, 259 x 76
+      semantics (274 x 76): 210.5, 388, 274 x 76
+    picture (open, at least 295 wide, header 70): 275.5, 707, 412.5 x 387
+      layout (275 x 59): 395, 777, 275 x 59
+      renderer (243 x 59): 411, 897, 243 x 59
+      viewer (275 x 59): 395, 1017, 275 x 59
+  reader (235 x 59, rim): 602, 12, 235 x 59
+  author->editor: 348,71 348,210
+    label 180, 101, 164 x 21
+  editor->semantics: 347.5,269 347.5,388
+    label 181.5, 289, 164 x 21
+  semantics->lines: 347.5,464 347.5,515 365.33,515 365.33,525
+    label 350.5, 484, 172 x 21
+  lines->semantics: 279,525 279,464
+    label 48, 484, 229 x 21
+  semantics->layout: 416,464 416,474 532.5,474 532.5,777
+    label 285.5, 644, 245 x 38
+  layout->renderer: 532.5,836 532.5,897
+    label 293.5, 856, 237 x 21
+  renderer->viewer: 532.5,956 532.5,1017
+    label 333.5, 976, 197 x 21
+  viewer->reader: 532.5,1076 532.5,1132 720,1132 720,71
+    label 725, 101, 172 x 21
+
+view big-picture, all closed (aerie closed)
+  size 562 x 243
+  author (218 x 59, rim): 71, 12, 218 x 59
+  aerie (287 x 79): 84, 152, 287 x 79
+  reader (235 x 59, rim): 315, 12, 235 x 59
+  author->aerie: 180,71 180,152
+    label 12, 101, 164 x 21
+  aerie->reader: 275,152 275,81 433,81 433,71
+    label 280, 101, 172 x 21
+
+view big-picture, meaning opened (meaning open)
+  size 901 x 843
+  author (218 x 59, rim): 239, 12, 218 x 59
+  aerie (open, at least 287 wide, header 53): 12, 157, 686 x 659
+    editor (218 x 59): 238.5, 210, 218 x 59
+    meaning (open, at least 297 wide, header 53): 30, 335, 521.5 x 284
+      lines (259 x 76): 192.67, 525, 259 x 76
+      semantics (274 x 76): 210.5, 388, 274 x 76
+    picture (295 x 96): 385, 702, 295 x 96
+  reader (235 x 59, rim): 594, 12, 235 x 59
+  author->editor: 348,71 348,210
+    label 180, 101, 164 x 21
+  editor->semantics: 347.5,269 347.5,388
+    label 181.5, 289, 164 x 21
+  semantics->lines: 347.5,464 347.5,515 365.33,515 365.33,525
+    label 350.5, 484, 172 x 21
+  lines->semantics: 279,525 279,464
+    label 48, 484, 229 x 21
+  semantics->picture: 416,464 416,474 532.5,474 532.5,702
+    label 285.5, 644, 245 x 38
+  picture->reader: 532.5,798 532.5,831 712,831 712,71
+    label 717, 101, 172 x 21
+
+view big-picture, picture opened (picture open)
+  size 729 x 929
+  author (218 x 59, rim): 178, 12, 218 x 59
+  aerie (open, at least 287 wide, header 53): 12, 157, 448.5 x 745
+    editor (218 x 59): 178, 210, 218 x 59
+    meaning (297 x 79): 138.5, 330, 297 x 79
+    picture (open, at least 295 wide, header 70): 30, 492, 412.5 x 387
+      layout (275 x 59): 149.5, 562, 275 x 59
+      renderer (243 x 59): 165.5, 682, 243 x 59
+      viewer (275 x 59): 149.5, 802, 275 x 59
+  reader (235 x 59, rim): 422, 12, 235 x 59
+  author->editor: 287,71 287,210
+    label 119, 101, 164 x 21
+  editor->meaning: 287,269 287,330
+    label 121, 289, 164 x 21
+  meaning->layout: 287,409 287,562
+    label 40, 429, 245 x 38
+  layout->renderer: 287,621 287,682
+    label 48, 641, 237 x 21
+  renderer->viewer: 287,741 287,802
+    label 88, 761, 197 x 21
+  viewer->reader: 287,861 287,917 540,917 540,71
+    label 545, 101, 172 x 21
+
+view inside, default (no changes)
+  size 909 x 1144
+  author (218 x 59, rim): 239, 12, 218 x 59
+  aerie (open, at least 287 wide, header 53): 12, 157, 694 x 960
+    editor (218 x 59): 238.5, 210, 218 x 59
+    meaning (open, at least 297 wide, header 53): 30, 335, 521.5 x 284
+      lines (259 x 76): 192.67, 525, 259 x 76
+      semantics (274 x 76): 210.5, 388, 274 x 76
+    picture (open, at least 295 wide, header 70): 275.5, 707, 412.5 x 387
+      layout (275 x 59): 395, 777, 275 x 59
+      renderer (243 x 59): 411, 897, 243 x 59
+      viewer (275 x 59): 395, 1017, 275 x 59
+  reader (235 x 59, rim): 602, 12, 235 x 59
+  author->editor: 348,71 348,210
+    label 180, 101, 164 x 21
+  editor->semantics: 347.5,269 347.5,388
+    label 181.5, 289, 164 x 21
+  semantics->lines: 347.5,464 347.5,515 365.33,515 365.33,525
+    label 350.5, 484, 172 x 21
+  lines->semantics: 279,525 279,464
+    label 48, 484, 229 x 21
+  semantics->layout: 416,464 416,474 532.5,474 532.5,777
+    label 285.5, 644, 245 x 38
+  layout->renderer: 532.5,836 532.5,897
+    label 293.5, 856, 237 x 21
+  renderer->viewer: 532.5,956 532.5,1017
+    label 333.5, 976, 197 x 21
+  viewer->reader: 532.5,1076 532.5,1132 720,1132 720,71
+    label 725, 101, 172 x 21
+
+view inside, all closed (aerie closed)
+  size 562 x 243
+  author (218 x 59, rim): 71, 12, 218 x 59
+  aerie (287 x 79): 84, 152, 287 x 79
+  reader (235 x 59, rim): 315, 12, 235 x 59
+  author->aerie: 180,71 180,152
+    label 12, 101, 164 x 21
+  aerie->reader: 275,152 275,81 433,81 433,71
+    label 280, 101, 172 x 21
+
+view inside, meaning closed (meaning closed)
+  size 729 x 929
+  author (218 x 59, rim): 178, 12, 218 x 59
+  aerie (open, at least 287 wide, header 53): 12, 157, 448.5 x 745
+    editor (218 x 59): 178, 210, 218 x 59
+    meaning (297 x 79): 138.5, 330, 297 x 79
+    picture (open, at least 295 wide, header 70): 30, 492, 412.5 x 387
+      layout (275 x 59): 149.5, 562, 275 x 59
+      renderer (243 x 59): 165.5, 682, 243 x 59
+      viewer (275 x 59): 149.5, 802, 275 x 59
+  reader (235 x 59, rim): 422, 12, 235 x 59
+  author->editor: 287,71 287,210
+    label 119, 101, 164 x 21
+  editor->meaning: 287,269 287,330
+    label 121, 289, 164 x 21
+  meaning->layout: 287,409 287,562
+    label 40, 429, 245 x 38
+  layout->renderer: 287,621 287,682
+    label 48, 641, 237 x 21
+  renderer->viewer: 287,741 287,802
+    label 88, 761, 197 x 21
+  viewer->reader: 287,861 287,917 540,917 540,71
+    label 545, 101, 172 x 21
+
+view inside, picture closed (picture closed)
+  size 901 x 843
+  author (218 x 59, rim): 239, 12, 218 x 59
+  aerie (open, at least 287 wide, header 53): 12, 157, 686 x 659
+    editor (218 x 59): 238.5, 210, 218 x 59
+    meaning (open, at least 297 wide, header 53): 30, 335, 521.5 x 284
+      lines (259 x 76): 192.67, 525, 259 x 76
+      semantics (274 x 76): 210.5, 388, 274 x 76
+    picture (295 x 96): 385, 702, 295 x 96
+  reader (235 x 59, rim): 594, 12, 235 x 59
+  author->editor: 348,71 348,210
+    label 180, 101, 164 x 21
+  editor->semantics: 347.5,269 347.5,388
+    label 181.5, 289, 164 x 21
+  semantics->lines: 347.5,464 347.5,515 365.33,515 365.33,525
+    label 350.5, 484, 172 x 21
+  lines->semantics: 279,525 279,464
+    label 48, 484, 229 x 21
+  semantics->picture: 416,464 416,474 532.5,474 532.5,702
+    label 285.5, 644, 245 x 38
+  picture->reader: 532.5,798 532.5,831 712,831 712,71
+    label 717, 101, 172 x 21
+
+scenario full-flow as lanes on big-picture, default
+  size 1337.5 x 465
+  band aerie, depth 0: 0, 0, 818 x 28
+  lane editor at 109: header 0, 44, 218 x 59, line 103 to 465
+  lane meaning at 384.5: header 250, 44, 269 x 59, line 103 to 465
+  lane picture at 684.5: header 551, 44, 267 x 76, line 120 to 465
+  lane author at 961.5: header 852.5, 44, 218 x 59, line 103 to 465
+  lane reader at 1220: header 1102.5, 44, 235 x 59, line 103 to 465
+  step 1 call arrow author->editor, row 136 + 37: 961.5,169 109,169
+    label 453.25, 140, 164 x 21, badge 961.5,169
+  step 2 call arrow editor->meaning, row 173 + 37: 109,206 384.5,206
+    label 164.75, 177, 164 x 21, badge 109,206
+  step 3 call self meaning->meaning, row 210 + 37: 384.5,214 408.5,214 408.5,243 384.5,243
+    label 412.5, 218, 172 x 21, badge 384.5,214
+  step 4 call self meaning->meaning, row 247 + 37: 384.5,251 408.5,251 408.5,280 384.5,280
+    label 412.5, 255, 229 x 21, badge 384.5,251
+  step 5 call arrow meaning->picture, row 284 + 54: 384.5,334 684.5,334
+    label 412, 288, 245 x 38, badge 384.5,334
+  step 6 call self picture->picture, row 338 + 37: 684.5,342 708.5,342 708.5,371 684.5,371
+    label 712.5, 346, 237 x 21, badge 684.5,342
+  step 7 call self picture->picture, row 375 + 37: 684.5,379 708.5,379 708.5,408 684.5,408
+    label 712.5, 383, 197 x 21, badge 684.5,379
+  step 8 call arrow picture->reader, row 412 + 37: 684.5,445 1220,445
+    label 866.25, 416, 172 x 21, badge 684.5,445
+
+scenario full-flow as lanes on big-picture, everything open
+  size 2221 x 493
+  band aerie, depth 0: 250, 0, 1704 x 28
+  band meaning, depth 1: 250, 28, 565 x 28
+  band picture, depth 1: 1097, 28, 857 x 28
+  lane author at 109: header 0, 72, 218 x 59, line 131 to 493
+  lane lines at 379.5: header 250, 72, 259 x 76, line 148 to 493
+  lane semantics at 678: header 541, 72, 274 x 76, line 148 to 493
+  lane editor at 956: header 847, 72, 218 x 59, line 131 to 493
+  lane layout at 1234.5: header 1097, 72, 275 x 59, line 131 to 493
+  lane renderer at 1525.5: header 1404, 72, 243 x 59, line 131 to 493
+  lane viewer at 1816.5: header 1679, 72, 275 x 59, line 131 to 493
+  lane reader at 2103.5: header 1986, 72, 235 x 59, line 131 to 493
+  step 1 call arrow author->editor, row 164 + 37: 109,197 956,197
+    label 450.5, 168, 164 x 21, badge 109,197
+  step 2 call arrow editor->semantics, row 201 + 37: 956,234 678,234
+    label 735, 205, 164 x 21, badge 956,234
+  step 3 call arrow semantics->lines, row 238 + 37: 678,271 379.5,271
+    label 442.75, 242, 172 x 21, badge 678,271
+  step 4 call arrow lines->semantics, row 275 + 37: 379.5,308 678,308
+    label 414.25, 279, 229 x 21, badge 379.5,308
+  step 5 call arrow semantics->layout, row 312 + 54: 678,362 1234.5,362
+    label 833.75, 316, 245 x 38, badge 678,362
+  step 6 call arrow layout->renderer, row 366 + 37: 1234.5,399 1525.5,399
+    label 1261.5, 370, 237 x 21, badge 1234.5,399
+  step 7 call arrow renderer->viewer, row 403 + 37: 1525.5,436 1816.5,436
+    label 1572.5, 407, 197 x 21, badge 1525.5,436
+  step 8 call arrow viewer->reader, row 440 + 37: 1816.5,473 2103.5,473
+    label 1874, 444, 172 x 21, badge 1816.5,473
+
+scenario full-flow as lanes on big-picture, all closed
+  size 782 x 404
+  lane author at 109: header 0, 0, 218 x 59, line 59 to 404
+  lane aerie at 379.5: header 250, 0, 259 x 59, line 59 to 404
+  lane reader at 664.5: header 547, 0, 235 x 59, line 59 to 404
+  step 1 call arrow author->aerie, row 75 + 37: 109,108 379.5,108
+    label 162.25, 79, 164 x 21, badge 109,108
+  step 2 call self aerie->aerie, row 112 + 37: 379.5,116 403.5,116 403.5,145 379.5,145
+    label 407.5, 120, 164 x 21, badge 379.5,116
+  step 3 call self aerie->aerie, row 149 + 37: 379.5,153 403.5,153 403.5,182 379.5,182
+    label 407.5, 157, 172 x 21, badge 379.5,153
+  step 4 call self aerie->aerie, row 186 + 37: 379.5,190 403.5,190 403.5,219 379.5,219
+    label 407.5, 194, 229 x 21, badge 379.5,190
+  step 5 call self aerie->aerie, row 223 + 54: 379.5,227 403.5,227 403.5,273 379.5,273
+    label 407.5, 231, 245 x 38, badge 379.5,227
+  step 6 call self aerie->aerie, row 277 + 37: 379.5,281 403.5,281 403.5,310 379.5,310
+    label 407.5, 285, 237 x 21, badge 379.5,281
+  step 7 call self aerie->aerie, row 314 + 37: 379.5,318 403.5,318 403.5,347 379.5,347
+    label 407.5, 322, 197 x 21, badge 379.5,318
+  step 8 call arrow aerie->reader, row 351 + 37: 379.5,384 664.5,384
+    label 436, 355, 172 x 21, badge 379.5,384
+
+scenario full-flow as lanes on big-picture, meaning opened
+  size 1631 x 493
+  band aerie, depth 0: 250, 0, 1114 x 28
+  band meaning, depth 1: 250, 28, 565 x 28
+  lane author at 109: header 0, 72, 218 x 59, line 131 to 493
+  lane lines at 379.5: header 250, 72, 259 x 76, line 148 to 493
+  lane semantics at 678: header 541, 72, 274 x 76, line 148 to 493
+  lane editor at 956: header 847, 72, 218 x 59, line 131 to 493
+  lane picture at 1230.5: header 1097, 72, 267 x 76, line 148 to 493
+  lane reader at 1513.5: header 1396, 72, 235 x 59, line 131 to 493
+  step 1 call arrow author->editor, row 164 + 37: 109,197 956,197
+    label 450.5, 168, 164 x 21, badge 109,197
+  step 2 call arrow editor->semantics, row 201 + 37: 956,234 678,234
+    label 735, 205, 164 x 21, badge 956,234
+  step 3 call arrow semantics->lines, row 238 + 37: 678,271 379.5,271
+    label 442.75, 242, 172 x 21, badge 678,271
+  step 4 call arrow lines->semantics, row 275 + 37: 379.5,308 678,308
+    label 414.25, 279, 229 x 21, badge 379.5,308
+  step 5 call arrow semantics->picture, row 312 + 54: 678,362 1230.5,362
+    label 831.75, 316, 245 x 38, badge 678,362
+  step 6 call self picture->picture, row 366 + 37: 1230.5,370 1254.5,370 1254.5,399 1230.5,399
+    label 1258.5, 374, 237 x 21, badge 1230.5,370
+  step 7 call self picture->picture, row 403 + 37: 1230.5,407 1254.5,407 1254.5,436 1230.5,436
+    label 1258.5, 411, 197 x 21, badge 1230.5,407
+  step 8 call arrow picture->reader, row 440 + 37: 1230.5,473 1513.5,473
+    label 1286, 444, 172 x 21, badge 1230.5,473
+
+scenario full-flow as lanes on big-picture, picture opened
+  size 1925 x 476
+  band aerie, depth 0: 0, 0, 1408 x 28
+  band picture, depth 1: 0, 28, 857 x 28
+  lane layout at 137.5: header 0, 72, 275 x 59, line 131 to 476
+  lane renderer at 428.5: header 307, 72, 243 x 59, line 131 to 476
+  lane viewer at 719.5: header 582, 72, 275 x 59, line 131 to 476
+  lane editor at 998: header 889, 72, 218 x 59, line 131 to 476
+  lane meaning at 1273.5: header 1139, 72, 269 x 59, line 131 to 476
+  lane author at 1549: header 1440, 72, 218 x 59, line 131 to 476
+  lane reader at 1807.5: header 1690, 72, 235 x 59, line 131 to 476
+  step 1 call arrow author->editor, row 147 + 37: 1549,180 998,180
+    label 1191.5, 151, 164 x 21, badge 1549,180
+  step 2 call arrow editor->meaning, row 184 + 37: 998,217 1273.5,217
+    label 1053.75, 188, 164 x 21, badge 998,217
+  step 3 call self meaning->meaning, row 221 + 37: 1273.5,225 1297.5,225 1297.5,254 1273.5,254
+    label 1301.5, 229, 172 x 21, badge 1273.5,225
+  step 4 call self meaning->meaning, row 258 + 37: 1273.5,262 1297.5,262 1297.5,291 1273.5,291
+    label 1301.5, 266, 229 x 21, badge 1273.5,262
+  step 5 call arrow meaning->layout, row 295 + 54: 1273.5,345 137.5,345
+    label 583, 299, 245 x 38, badge 1273.5,345
+  step 6 call arrow layout->renderer, row 349 + 37: 137.5,382 428.5,382
+    label 164.5, 353, 237 x 21, badge 137.5,382
+  step 7 call arrow renderer->viewer, row 386 + 37: 428.5,419 719.5,419
+    label 475.5, 390, 197 x 21, badge 428.5,419
+  step 8 call arrow viewer->reader, row 423 + 37: 719.5,456 1807.5,456
+    label 1177.5, 427, 172 x 21, badge 719.5,456

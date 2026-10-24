@@ -111,6 +111,7 @@ export {
   type TrailLoop,
   type TrailShape,
 } from './trail.ts';
+export { overviewShapes } from './overview.ts';
 export {
   headerMiddle,
   timings,

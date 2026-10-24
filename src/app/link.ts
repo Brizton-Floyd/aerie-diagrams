@@ -4,6 +4,8 @@
 import type { Id } from '../lines/index.ts';
 import {
   normalisePicture,
+  defaultPicture,
+  switchView,
   type Activity,
   type Dropped,
   type Picture,
@@ -15,7 +17,7 @@ import {
 export const STALE_LINK = 'This link is older than the diagram. Showing the closest picture.';
 
 /** INT-501: the fragment's keys, in the order they are written. */
-const KEYS = ['view', 'aud', 'open', 'closed', 'sel', 'play', 'lanes', 'present'] as const;
+const KEYS = ['view', 'aud', 'open', 'closed', 'sel', 'flow', 'play', 'lanes', 'present'] as const;
 
 type Key = (typeof KEYS)[number];
 
@@ -56,6 +58,13 @@ export function writeFragment(semantics: Semantics, picture: Picture): string {
     if (marked('open').length > 0) parts.set('open', marked('open').join(','));
     if (marked('closed').length > 0) parts.set('closed', marked('closed').join(','));
     if (activity.kind === 'selected') parts.set('sel', activity.element);
+    if (activity.kind === 'reading' && semantics.scope(shown.view).view.mainScenario !== undefined)
+      parts.set('flow', 'none');
+    if (
+      activity.kind === 'overview' &&
+      (activity.step !== 1 || activity.scenario !== semantics.scope(shown.view).view.mainScenario)
+    )
+      parts.set('flow', `${activity.scenario}.${String(activity.step)}`);
     if (activity.kind === 'playing') {
       parts.set('play', `${activity.scenario}.${String(activity.step)}`);
       if (activity.lanes) parts.set('lanes', '1');
@@ -91,7 +100,7 @@ function stepped(value: string): { id: Id; steps: number[] } {
  * INT-504 and INT-505: the picture a fragment describes, normalised (MODEL-603), and the parts of it
  * that named ids the model does not have, so the reader can be told. The fragment may start with
  * `#` or not. Unknown keys are ignored; when a key is given twice, the first counts; when a link
- * names more than one activity, a walkthrough wins over a scenario and a scenario over a selection.
+ * names more than one activity, presentation wins over playback, then overview, then selection.
  */
 export function readFragment(
   semantics: Semantics,
@@ -107,9 +116,14 @@ export function readFragment(
   const zoom = new Map<Id, ZoomMark>();
   for (const id of ids(given.get('open'))) zoom.set(id, 'open');
   for (const id of ids(given.get('closed'))) zoom.set(id, 'closed');
-  let activity: Activity = { kind: 'reading' };
+  let activity: Activity = switchView(
+    semantics,
+    defaultPicture(semantics),
+    given.get('view') ?? semantics.firstView,
+  ).activity;
   const present = given.get('present');
   const play = given.get('play');
+  const flow = given.get('flow');
   const sel = given.get('sel');
   if (present !== undefined) {
     const { id, steps } = stepped(present);
@@ -127,8 +141,13 @@ export function readFragment(
       step: steps[0] ?? 1,
       lanes: given.get('lanes') === '1',
     };
+  } else if (flow !== undefined && flow !== 'none') {
+    const { id, steps } = stepped(flow);
+    activity = { kind: 'overview', scenario: id, step: steps[0] ?? 1 };
   } else if (sel !== undefined) {
     activity = { kind: 'selected', element: sel };
+  } else if (flow === 'none') {
+    activity = { kind: 'reading' };
   }
   const aud = given.get('aud');
   const read = normalisePicture(semantics, {

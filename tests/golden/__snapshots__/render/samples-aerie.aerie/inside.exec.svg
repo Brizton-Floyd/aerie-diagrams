@@ -1,0 +1,253 @@
+<?xml-stylesheet href="../signal.css" type="text/css"?>
+<svg xmlns="http://www.w3.org/2000/svg" class="aerie" viewBox="0 0 909 1144" width="909" height="1144" overflow="visible" role="img" aria-label="How Aerie works: Inside Aerie" data-view="inside" data-audience="exec">
+  <defs>
+    <pattern id="aerie-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect class="hatch-bg" width="7" height="7"/>
+      <path class="hatch-line" d="M0 0V7"/>
+    </pattern>
+    <radialGradient id="aerie-dawn" cx="0.18" cy="0" r="1.05" fx="0.12" fy="0">
+      <stop class="dawn-0" offset="0"/>
+      <stop class="dawn-1" offset="0.55"/>
+      <stop class="dawn-2" offset="1"/>
+    </radialGradient>
+  </defs>
+  <g class="boxes">
+    <g class="node leaf person" data-id="author" transform="translate(239 12)">
+      <rect class="shape" width="218" height="59" rx="29.5"/>
+      <rect class="ring" x="-3" y="-3" width="224" height="65" rx="32.5"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
+      <g class="icon" data-icon="person" transform="translate(12 12) scale(0.34375)">
+        <circle cx="32" cy="21" r="10"/>
+        <path d="M12 56c0-12 9-20 20-20s20 8 20 20"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="90">Model author</text>
+      <text class="t-tagline" x="44" y="44" data-width="138">Describes the system</text>
+    </g>
+    <g class="node open depth-0" data-id="aerie" transform="translate(12 157)">
+      <rect class="shape" width="694" height="960" rx="14"/>
+      <rect class="dawn" width="694" height="960" rx="14"/>
+      <rect class="ring" x="-3" y="-3" width="700" height="966" rx="17"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
+      <g class="icon" data-icon="stack" transform="translate(12 12) scale(0.34375)">
+        <path d="M32 9 56 21 32 33 8 21Z"/>
+        <path d="M8 31l24 12 24-12"/>
+        <path d="M8 41l24 12 24-12"/>
+      </g>
+      <g class="control" transform="translate(673 21)">
+        <circle r="9"/>
+        <path d="M-4 0H4"/>
+      </g>
+    </g>
+    <g class="node leaf" data-id="editor" transform="translate(238.5 210)">
+      <rect class="shape" width="218" height="59" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="224" height="65" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
+      <g class="icon" data-icon="document" transform="translate(12 12) scale(0.34375)">
+        <path d="M17 8h21l10 10v38H17Z"/>
+        <path d="M38 8v10h10"/>
+        <path d="M24 31h17M24 40h17M24 49h10"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="86">Model editor</text>
+      <text class="t-tagline" x="44" y="44" data-width="162">Write architecture as text</text>
+    </g>
+    <g class="node open depth-1" data-id="meaning" transform="translate(30 335)">
+      <rect class="shape" width="521.5" height="284" rx="14"/>
+      <rect class="dawn" width="521.5" height="284" rx="14"/>
+      <rect class="ring" x="-3" y="-3" width="527.5" height="290" rx="17"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
+      <g class="icon" data-icon="gear" transform="translate(12 12) scale(0.34375)">
+        <path d="M28.1 16.5 29 10.7h6l.9 5.8 4.3 1.8 4.7-3.5 4.3 4.3-3.5 4.7 1.8 4.3 5.8.9v6l-5.8.9-1.8 4.3 3.5 4.7-4.3 4.3-4.7-3.5-4.3 1.8-.9 5.8h-6l-.9-5.8-4.3-1.8-4.7 3.5-4.3-4.3 3.5-4.7-1.8-4.3-5.8-.9v-6l5.8-.9 1.8-4.3-3.5-4.7 4.3-4.3 4.7 3.5Z"/>
+        <circle cx="32" cy="32" r="6"/>
+      </g>
+      <g class="control" transform="translate(500.5 21)">
+        <circle r="9"/>
+        <path d="M-4 0H4"/>
+      </g>
+    </g>
+    <g class="node leaf" data-id="lines" transform="translate(192.67 525)">
+      <rect class="shape" width="259" height="76" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="265" height="82" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
+      <g class="icon" data-icon="module" transform="translate(12 12) scale(0.34375)">
+        <path d="M32 8 53 20v24L32 56 11 44V20Z"/>
+        <path d="M11 20l21 12 21-12"/>
+        <path d="M32 32v24"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="103">Lines language</text>
+      <text class="t-tagline" x="44" y="44" data-width="201">Parse the text and report errors</text>
+    </g>
+    <g class="node leaf" data-id="semantics" transform="translate(210.5 388)">
+      <rect class="shape" width="274" height="76" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="280" height="82" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
+      <g class="icon" data-icon="module" transform="translate(12 12) scale(0.34375)">
+        <path d="M32 8 53 20v24L32 56 11 44V20Z"/>
+        <path d="M11 20l21 12 21-12"/>
+        <path d="M32 32v24"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="116">Model semantics</text>
+      <text class="t-tagline" x="44" y="44" data-width="218">Resolve views, wording and steps</text>
+    </g>
+    <g class="node open depth-1" data-id="picture" transform="translate(275.5 707)">
+      <rect class="shape" width="412.5" height="387" rx="14"/>
+      <rect class="dawn" width="412.5" height="387" rx="14"/>
+      <rect class="ring" x="-3" y="-3" width="418.5" height="393" rx="17"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
+      <g class="icon" data-icon="web" transform="translate(12 12) scale(0.34375)">
+        <rect x="8" y="11" width="48" height="42" rx="5"/>
+        <path d="M8 21h48"/>
+        <path d="M27 29l-7 7 7 7"/>
+        <path d="M37 29l7 7-7 7"/>
+      </g>
+      <g class="control" transform="translate(391.5 21)">
+        <circle r="9"/>
+        <path d="M-4 0H4"/>
+      </g>
+    </g>
+    <g class="node leaf" data-id="layout" transform="translate(395 777)">
+      <rect class="shape" width="275" height="59" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="281" height="65" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
+      <g class="icon" data-icon="module" transform="translate(12 12) scale(0.34375)">
+        <path d="M32 8 53 20v24L32 56 11 44V20Z"/>
+        <path d="M11 20l21 12 21-12"/>
+        <path d="M32 32v24"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="96">Layout engine</text>
+      <text class="t-tagline" x="44" y="44" data-width="188">Place boxes and connections</text>
+    </g>
+    <g class="node leaf" data-id="renderer" transform="translate(411 897)">
+      <rect class="shape" width="243" height="59" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="249" height="65" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
+      <g class="icon" data-icon="module" transform="translate(12 12) scale(0.34375)">
+        <path d="M32 8 53 20v24L32 56 11 44V20Z"/>
+        <path d="M11 20l21 12 21-12"/>
+        <path d="M32 32v24"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="105">Signal renderer</text>
+      <text class="t-tagline" x="44" y="44" data-width="164">Draw the diagram as SVG</text>
+    </g>
+    <g class="node leaf" data-id="viewer" transform="translate(395 1017)">
+      <rect class="shape" width="275" height="59" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="281" height="65" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
+      <g class="icon" data-icon="module" transform="translate(12 12) scale(0.34375)">
+        <path d="M32 8 53 20v24L32 56 11 44V20Z"/>
+        <path d="M11 20l21 12 21-12"/>
+        <path d="M32 32v24"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="106">Browser viewer</text>
+      <text class="t-tagline" x="44" y="44" data-width="180">Open parts and follow flows</text>
+    </g>
+    <g class="node leaf person" data-id="reader" transform="translate(602 12)">
+      <rect class="shape" width="235" height="59" rx="29.5"/>
+      <rect class="ring" x="-3" y="-3" width="241" height="65" rx="32.5"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
+      <g class="icon" data-icon="person" transform="translate(12 12) scale(0.34375)">
+        <circle cx="32" cy="21" r="10"/>
+        <path d="M12 56c0-12 9-20 20-20s20 8 20 20"/>
+      </g>
+      <text class="t-name" x="44" y="26" data-width="105">Diagram reader</text>
+      <text class="t-tagline" x="44" y="44" data-width="153">Explore and understand</text>
+    </g>
+  </g>
+  <g class="edges">
+    <g class="edge" data-id="author-&gt;editor">
+      <path class="line" d="M348 71L348 210"/>
+      <path class="flow" d="M348 71L348 210"/>
+      <path class="arrow" d="M343 198L348 210L353 198"/>
+    </g>
+    <g class="edge" data-id="editor-&gt;semantics">
+      <path class="line" d="M347.5 269L347.5 388"/>
+      <path class="flow" d="M347.5 269L347.5 388"/>
+      <path class="arrow" d="M342.5 376L347.5 388L352.5 376"/>
+    </g>
+    <g class="edge" data-id="semantics-&gt;lines">
+      <path class="line" d="M347.5 464L347.5 506.09Q347.5 515 356.42 515L360.33 515Q365.33 515 365.33 520L365.33 525"/>
+      <path class="flow" d="M347.5 464L347.5 506.09Q347.5 515 356.42 515L360.33 515Q365.33 515 365.33 520L365.33 525"/>
+      <path class="arrow" d="M360.33 513L365.33 525L370.33 513"/>
+    </g>
+    <g class="edge" data-id="lines-&gt;semantics">
+      <path class="line" d="M279 525L279 464"/>
+      <path class="flow" d="M279 525L279 464"/>
+      <path class="arrow" d="M284 476L279 464L274 476"/>
+    </g>
+    <g class="edge" data-id="semantics-&gt;layout">
+      <path class="line" d="M416 464L416 469Q416 474 421 474L523.5 474Q532.5 474 532.5 483L532.5 777"/>
+      <path class="flow" d="M416 464L416 469Q416 474 421 474L523.5 474Q532.5 474 532.5 483L532.5 777"/>
+      <path class="arrow" d="M527.5 765L532.5 777L537.5 765"/>
+    </g>
+    <g class="edge" data-id="layout-&gt;renderer">
+      <path class="line" d="M532.5 836L532.5 897"/>
+      <path class="flow" d="M532.5 836L532.5 897"/>
+      <path class="arrow" d="M527.5 885L532.5 897L537.5 885"/>
+    </g>
+    <g class="edge" data-id="renderer-&gt;viewer">
+      <path class="line" d="M532.5 956L532.5 1017"/>
+      <path class="flow" d="M532.5 956L532.5 1017"/>
+      <path class="arrow" d="M527.5 1005L532.5 1017L537.5 1005"/>
+    </g>
+    <g class="edge" data-id="viewer-&gt;reader">
+      <path class="line" d="M532.5 1076L532.5 1123Q532.5 1132 541.5 1132L711 1132Q720 1132 720 1123L720 71"/>
+      <path class="flow" d="M532.5 1076L532.5 1123Q532.5 1132 541.5 1132L711 1132Q720 1132 720 1123L720 71"/>
+      <path class="arrow" d="M725 83L720 71L715 83"/>
+    </g>
+  </g>
+  <g class="heads">
+    <g class="head depth-0" data-id="aerie" transform="translate(12 157)">
+      <text class="t-name" x="44" y="26" data-width="36">Aerie</text>
+      <text class="t-tagline" x="44" y="44" data-width="176">One model, every audience</text>
+    </g>
+    <g class="head depth-1" data-id="meaning" transform="translate(30 335)">
+      <text class="t-name" x="44" y="26" data-width="79">Model tools</text>
+      <text class="t-tagline" x="44" y="44" data-width="213">Check the model and its meaning</text>
+    </g>
+    <g class="head depth-1" data-id="picture" transform="translate(275.5 707)">
+      <text class="t-name" x="44" y="26" data-width="108">Diagram builder</text>
+      <text class="t-tagline" x="44" y="44" data-width="171">Build an interactive picture</text>
+    </g>
+  </g>
+  <g class="labels">
+    <g class="label" data-id="author-&gt;editor">
+      <title>Model author writes the model in Model editor.</title>
+      <rect class="pill" x="193.5" y="101" width="137" height="21" rx="10"/>
+      <text class="t-label" x="200.5" y="117" data-width="123">writes the model in</text>
+    </g>
+    <g class="label" data-id="editor-&gt;semantics">
+      <title>Model editor sends model text to Model semantics.</title>
+      <rect class="pill" x="193" y="289" width="141" height="21" rx="10"/>
+      <text class="t-label" x="200" y="305" data-width="127">sends model text to</text>
+    </g>
+    <g class="label" data-id="semantics-&gt;lines">
+      <title>Model semantics checks the text with Lines language.</title>
+      <rect class="pill" x="364.5" y="484" width="144" height="21" rx="10"/>
+      <text class="t-label" x="371.5" y="500" data-width="130">checks the text with</text>
+    </g>
+    <g class="label" data-id="lines-&gt;semantics">
+      <title>Lines language returns the parsed model to Model semantics.</title>
+      <rect class="pill" x="66" y="484" width="193" height="21" rx="10"/>
+      <text class="t-label" x="73" y="500" data-width="179">returns the parsed model to</text>
+    </g>
+    <g class="label" data-id="semantics-&gt;layout">
+      <title>Model semantics supplies the resolved picture to Layout engine.</title>
+      <rect class="pill" x="299" y="652.5" width="218" height="21" rx="10"/>
+      <text class="t-label" x="306" y="668.5" data-width="204">supplies the resolved picture to</text>
+    </g>
+    <g class="label" data-id="layout-&gt;renderer">
+      <title>Layout engine supplies positioned boxes to Signal renderer.</title>
+      <rect class="pill" x="312.5" y="856" width="199" height="21" rx="10"/>
+      <text class="t-label" x="319.5" y="872" data-width="185">supplies positioned boxes to</text>
+    </g>
+    <g class="label" data-id="renderer-&gt;viewer">
+      <title>Signal renderer supplies the drawing to Browser viewer.</title>
+      <rect class="pill" x="349.5" y="976" width="165" height="21" rx="10"/>
+      <text class="t-label" x="356.5" y="992" data-width="151">supplies the drawing to</text>
+    </g>
+    <g class="label" data-id="viewer-&gt;reader">
+      <title>Browser viewer shows the diagram to Diagram reader.</title>
+      <rect class="pill" x="734.5" y="101" width="153" height="21" rx="10"/>
+      <text class="t-label" x="741.5" y="117" data-width="139">shows the diagram to</text>
+    </g>
+  </g>
+</svg>

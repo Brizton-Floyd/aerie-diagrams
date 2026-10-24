@@ -111,6 +111,7 @@ type OwnerKind =
   | 'view'
   | 'scenario'
   | 'scenario-step'
+  | 'stage'
   | 'walkthrough'
   | 'walk-step'
   | 'system'
@@ -190,6 +191,16 @@ interface ViewB {
   pendingKinds: Placed[];
   show: { item: ShowItem; span: Span }[];
   kinds: Located[];
+  mainScenario: Placed | null;
+}
+
+interface StageB {
+  statement: Statement;
+  range: Piece;
+  from: number;
+  to: number;
+  title: WordsB;
+  about: ProseB;
 }
 
 interface StepB {
@@ -215,6 +226,7 @@ interface ScenarioB {
   steps: StepB[];
   /** Every step line, sound or not (E601, E706). */
   stepCount: number;
+  stages: StageB[];
 }
 
 interface WalkStepB {
@@ -274,8 +286,9 @@ const ALLOWED: Record<OwnerKind, readonly string[]> = {
   model: ['description', 'rewording'],
   element: ['element', 'icon', 'code', 'description', 'rewording'],
   relationship: ['description', 'rewording'],
-  view: ['show', 'kind', 'description', 'rewording'],
-  scenario: ['sentence', 'description', 'rewording'],
+  view: ['show', 'kind', 'scenario', 'description', 'rewording'],
+  scenario: ['sentence', 'walk-step', 'description', 'rewording'],
+  stage: ['description', 'rewording'],
   'scenario-step': ['description', 'rewording'],
   walkthrough: ['walk-step', 'description', 'rewording'],
   'walk-step': ['open', 'close', 'for', 'description', 'rewording'],
@@ -474,6 +487,10 @@ class Parser {
       case 'view':
       case 'scenario':
       case 'walkthrough':
+        if (read.kind === 'scenario' && holder.kind === 'view') {
+          this.visitMainScenario(statement, read);
+          return;
+        }
         this.visitTitled(statement, read);
         return;
       case 'show':
@@ -492,6 +509,10 @@ class Parser {
         }
         return;
       case 'walk-step':
+        if (holder.kind === 'scenario') {
+          this.visitStage(statement, read);
+          return;
+        }
         this.visitWalkStep(statement, read);
         return;
       case 'description':
@@ -894,6 +915,7 @@ class Parser {
         pendingKinds: [],
         show: [],
         kinds: [],
+        mainScenario: null,
       });
     } else if (read.kind === 'scenario') {
       this.scenarios.push({
@@ -906,11 +928,50 @@ class Parser {
         about,
         steps: [],
         stepCount: 0,
+        stages: [],
       });
     } else {
       this.walkthroughs.push({ id, valid, head, span, idSpan, title, about, steps: [] });
     }
     this.visitChildren(statement, holder);
+  }
+
+  visitMainScenario(statement: Statement, read: TitleRead): void {
+    this.leafChildren(statement, 'scenario');
+    const view = this.views.at(-1);
+    if (view === undefined) return;
+    if (read.id === null || read.hasColon || !isId(read.id.text) || view.mainScenario !== null) {
+      this.report('E504', this.span(statement, read.id ?? read.head), read.id?.text ?? '');
+      return;
+    }
+    view.mainScenario = { statement, piece: read.id };
+  }
+
+  visitStage(statement: Statement, read: WalkStepRead): void {
+    const scenario = this.scenarios.at(-1);
+    if (scenario === undefined) return;
+    const range = read.target ?? read.head;
+    const match = /^(\d+)(?: *- *(\d+))?$/.exec(read.target?.text ?? '');
+    const title = newWords();
+    const about = newProse();
+    if (read.colon === null || read.after === null || read.after.text === '') {
+      this.report(
+        'E011',
+        this.endOfLine(statement),
+        range.text,
+        'title',
+        `step ${range.text}: Stage title`,
+      );
+    } else title.base = this.located(statement, read.after, decodeWords(read.after.text));
+    scenario.stages.push({
+      statement,
+      range,
+      from: Number(match?.[1] ?? Number.NaN),
+      to: Number(match?.[2] ?? match?.[1] ?? Number.NaN),
+      title,
+      about,
+    });
+    this.visitChildren(statement, owner('stage', { words: title, prose: about }));
   }
 
   /** `show`, `kind`, `open`, `close` and `for` lines (E010, E014, E009, E013, E501). */
@@ -1433,6 +1494,12 @@ class Parser {
 
   /** E601, E008, E401 and W601 for scenario steps. */
   checkScenarios(relationships: RelationshipB[]): void {
+    const ids = new Set(this.scenarios.map((scenario) => scenario.id));
+    for (const view of this.views) {
+      const ref = view.mainScenario;
+      if (ref !== null && !ids.has(ref.piece.text))
+        this.report('E504', this.placed(ref), ref.piece.text);
+    }
     const joined = new Set<string>();
     for (const relationship of relationships) {
       for (const object of relationship.objects) {
@@ -1444,6 +1511,40 @@ class Parser {
     const example =
       first !== undefined && second !== undefined ? `${first} uses ${second}` : 'web calls api';
     for (const scenario of this.scenarios) {
+      let valid = true;
+      for (const stage of scenario.stages) {
+        if (
+          !Number.isSafeInteger(stage.from) ||
+          !Number.isSafeInteger(stage.to) ||
+          stage.from < 1 ||
+          stage.to < stage.from ||
+          stage.to > scenario.stepCount
+        ) {
+          this.report(
+            'E605',
+            this.span(stage.statement, stage.range),
+            stage.range.text,
+            scenario.stepCount,
+          );
+          valid = false;
+        }
+      }
+      if (valid && scenario.stages.length > 0) {
+        let next = 1;
+        let complete = true;
+        for (const stage of scenario.stages) {
+          if (stage.from !== next) complete = false;
+          next = stage.to + 1;
+        }
+        const last = scenario.stages.at(-1);
+        if ((!complete || next !== scenario.stepCount + 1) && last !== undefined)
+          this.report(
+            'E606',
+            this.span(last.statement, last.range),
+            scenario.id,
+            scenario.stepCount,
+          );
+      }
       if (scenario.stepCount === 0 && scenario.valid) {
         this.report('E601', scenario.head.span, scenario.id, example);
       }
@@ -1725,6 +1826,8 @@ class ModelWriter {
     const at = `/views/${String(index)}`;
     this.put(at, view.span);
     this.put(`${at}/id`, view.idSpan);
+    if (view.mainScenario !== null)
+      this.put(`${at}/mainScenario`, this.parser.placed(view.mainScenario));
     view.show.forEach((item, j) => {
       this.put(`${at}/show/${String(j)}`, item.span);
     });
@@ -1737,6 +1840,7 @@ class ModelWriter {
       about: this.prose(`${at}/about`, view.about),
       show: view.show.map((item) => item.item),
       kinds: view.kinds.length === 0 ? ['runtime'] : view.kinds.map((kind) => kind.text),
+      ...(view.mainScenario === null ? {} : { mainScenario: view.mainScenario.piece.text }),
     };
   }
 
@@ -1760,6 +1864,22 @@ class ModelWriter {
           about: this.prose(`${stepAt}/about`, step.about),
         };
       }),
+      ...(scenario.stages.length === 0
+        ? {}
+        : {
+            stages: scenario.stages.map((stage, j) => {
+              const path = `${at}/stages/${String(j)}`;
+              this.put(path, this.parser.lineSpan(stage.statement));
+              this.put(`${path}/from`, this.parser.span(stage.statement, stage.range));
+              this.put(`${path}/to`, this.parser.span(stage.statement, stage.range));
+              return {
+                from: stage.from,
+                to: stage.to,
+                title: this.words(`${path}/title`, stage.title),
+                about: this.prose(`${path}/about`, stage.about),
+              };
+            }),
+          }),
     };
   }
 

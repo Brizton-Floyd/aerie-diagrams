@@ -1,0 +1,81 @@
+// How Aerie turns a Lines model into an interactive diagram.
+// Modules are grouped for explanation; this is a draft architecture description for review.
+model aerie-flow: How Aerie works
+  > One architecture model becomes an interactive picture for every audience.
+
+audiences exec "Plain", manager "More detail" (default), engineer "Technical" (code)
+
+author: Model author | Describes the system [person]
+  > Writes the architecture once in a Lines file.
+
+aerie: Aerie | One model, every audience [system]
+  editor: Model editor | Write architecture as text [part]
+    icon document
+    > Loads a model or checks edits beside the diagram.
+    @engineer: Live editor | src/app/live.ts
+
+  meaning: Model tools | Check the model and its meaning [part]
+    icon gear
+    > Checks the text and resolves the parts, views and wording.
+    @engineer: Language and semantics | src/lines and src/model
+    lines: Lines language | Parse the text and report errors [module]
+    semantics: Model semantics | Resolve views, wording and steps [module]
+
+  picture: Diagram builder | Build an interactive picture [part]
+    icon web
+    > Places the diagram, draws it and responds to reader actions.
+    @engineer: Layout, rendering and viewer | src/layout, src/render and src/app
+    layout: Layout engine | Place boxes and connections [module]
+    renderer: Signal renderer | Draw the diagram as SVG [module]
+    viewer: Browser viewer | Open parts and follow flows [module]
+
+reader: Diagram reader | Explore and understand [person]
+  > Reads the diagram, changes wording, opens parts and follows scenarios.
+
+author writes the model in editor
+editor sends model text to semantics
+semantics checks the text with lines
+lines returns the parsed model to semantics
+semantics supplies the resolved picture to layout
+layout supplies positioned boxes to renderer
+renderer supplies the drawing to viewer
+viewer shows the diagram to reader
+
+view big-picture: Big picture
+  show author, aerie +1, reader
+  scenario full-flow
+  > Four stages explain how Aerie turns architecture text into a picture.
+
+view inside: Inside Aerie
+  show author, aerie +2, reader
+  > The actual participants behind each high-level stage.
+
+scenario full-flow: Create a diagram
+  > How one model becomes an interactive picture, at a glance and step by step.
+  author writes the model in editor
+    > The author writes or edits a Lines file.
+  editor sends model text to semantics
+    > The live editor checks each change. If it finds errors, the last good diagram stays visible.
+  semantics checks the text with lines
+    > The language parses text into a canonical model and reports errors with their line and column.
+  lines returns the parsed model to semantics
+    > Model semantics resolves nesting, views, audience wording and scenarios.
+  semantics supplies the resolved picture to layout
+    > The viewer asks layout to place the resolved picture. Space is reserved for every audience.
+  layout supplies positioned boxes to renderer
+    > Signal uses the positions to draw SVG boxes, connections and labels.
+  renderer supplies the drawing to viewer
+    > The browser viewer displays the drawing and manages reader actions.
+  viewer shows the diagram to reader
+    > The reader explores the picture and can share a link to the same view and state.
+
+  step 1: Write the model
+    > Describe the system's parts and connections once in a Lines file.
+  step 2-4: Check its meaning
+    > The language checks the text; model semantics resolves the views and wording.
+    @engineer: Parse and resolve the model
+  step 5-7: Build the picture
+    > Layout places the boxes and connections, then Signal draws the diagram.
+    @engineer: Lay out and render SVG
+  step 8: Explore the diagram
+    > Readers open parts, change wording and follow flows on the same model.

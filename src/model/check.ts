@@ -22,6 +22,18 @@ export function modelDiagnostics(
   const at = (...pointers: string[]): Span =>
     pointers.map((pointer) => sourceMap[pointer]).find((span) => span !== undefined) ?? START;
   const found: Diagnostic[] = [];
+  semantics.views.forEach((view, index) => {
+    if (view.mainScenario === undefined || semantics.stage(view.mainScenario, view.id) === view.id)
+      return;
+    found.push(
+      diagnostic(
+        'E505',
+        at(`/views/${String(index)}/mainScenario`, `/views/${String(index)}`),
+        view.mainScenario,
+        view.id,
+      ),
+    );
+  });
   semantics.model.scenarios.forEach((scenario, index) => {
     if (semantics.stage(scenario.id, null) !== null) return;
     const element = unstaged(semantics, scenario.id);

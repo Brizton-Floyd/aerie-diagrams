@@ -105,6 +105,7 @@ function cameraOf(value: unknown): CameraState | null {
 export function visitKey(picture: Picture, fragment: string): string {
   const { activity } = picture;
   if (activity.kind === 'playing') return `play ${activity.scenario}`;
+  if (activity.kind === 'overview') return `flow ${activity.scenario}`;
   if (activity.kind === 'presenting') return `present ${activity.walkthrough}`;
   return fragment;
 }
@@ -245,6 +246,8 @@ export function visitName(semantics: Semantics, visit: Visit, audience: Id): str
   const { activity } = picture;
   if (activity.kind === 'selected') return semantics.name(activity.element, audience);
   if (activity.kind === 'playing') return scenarioTitle(semantics, activity.scenario, audience);
+  if (activity.kind === 'overview')
+    return `${scenarioTitle(semantics, activity.scenario, audience)} overview`;
   if (activity.kind === 'presenting') {
     return walkthroughTitle(semantics, activity.walkthrough, audience);
   }

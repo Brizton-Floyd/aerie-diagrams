@@ -1,0 +1,184 @@
+view big-picture, default (no changes)
+  author
+  aerie (open)
+    editor
+    meaning (closed, 2 inside)
+    picture (closed, 3 inside)
+  reader
+  author->editor carries 0
+    exec: writes the model in
+    manager: writes the model in
+    engineer: writes the model in
+  editor->meaning carries 1
+    exec: sends model text to
+    manager: sends model text to
+    engineer: sends model text to
+  meaning->picture carries 4
+    exec: supplies the resolved picture to
+    manager: supplies the resolved picture to
+    engineer: supplies the resolved picture to
+  picture->reader carries 7
+    exec: shows the diagram to
+    manager: shows the diagram to
+    engineer: shows the diagram to
+
+view big-picture, everything open (meaning open, picture open)
+  author
+  aerie (open)
+    editor
+    meaning (open)
+      lines
+      semantics
+    picture (open)
+      layout
+      renderer
+      viewer
+  reader
+  author->editor carries 0
+    exec: writes the model in
+    manager: writes the model in
+    engineer: writes the model in
+  editor->semantics carries 1
+    exec: sends model text to
+    manager: sends model text to
+    engineer: sends model text to
+  semantics->lines carries 2
+    exec: checks the text with
+    manager: checks the text with
+    engineer: checks the text with
+  lines->semantics carries 3
+    exec: returns the parsed model to
+    manager: returns the parsed model to
+    engineer: returns the parsed model to
+  semantics->layout carries 4
+    exec: supplies the resolved picture to
+    manager: supplies the resolved picture to
+    engineer: supplies the resolved picture to
+  layout->renderer carries 5
+    exec: supplies positioned boxes to
+    manager: supplies positioned boxes to
+    engineer: supplies positioned boxes to
+  renderer->viewer carries 6
+    exec: supplies the drawing to
+    manager: supplies the drawing to
+    engineer: supplies the drawing to
+  viewer->reader carries 7
+    exec: shows the diagram to
+    manager: shows the diagram to
+    engineer: shows the diagram to
+
+view big-picture, all closed (aerie closed)
+  author
+  aerie (closed, 3 inside)
+  reader
+  author->aerie carries 0
+    exec: writes the model in
+    manager: writes the model in
+    engineer: writes the model in
+  aerie->reader carries 7
+    exec: shows the diagram to
+    manager: shows the diagram to
+    engineer: shows the diagram to
+
+view inside, default (no changes)
+  author
+  aerie (open)
+    editor
+    meaning (open)
+      lines
+      semantics
+    picture (open)
+      layout
+      renderer
+      viewer
+  reader
+  author->editor carries 0
+    exec: writes the model in
+    manager: writes the model in
+    engineer: writes the model in
+  editor->semantics carries 1
+    exec: sends model text to
+    manager: sends model text to
+    engineer: sends model text to
+  semantics->lines carries 2
+    exec: checks the text with
+    manager: checks the text with
+    engineer: checks the text with
+  lines->semantics carries 3
+    exec: returns the parsed model to
+    manager: returns the parsed model to
+    engineer: returns the parsed model to
+  semantics->layout carries 4
+    exec: supplies the resolved picture to
+    manager: supplies the resolved picture to
+    engineer: supplies the resolved picture to
+  layout->renderer carries 5
+    exec: supplies positioned boxes to
+    manager: supplies positioned boxes to
+    engineer: supplies positioned boxes to
+  renderer->viewer carries 6
+    exec: supplies the drawing to
+    manager: supplies the drawing to
+    engineer: supplies the drawing to
+  viewer->reader carries 7
+    exec: shows the diagram to
+    manager: shows the diagram to
+    engineer: shows the diagram to
+
+view inside, everything open (no changes)
+  author
+  aerie (open)
+    editor
+    meaning (open)
+      lines
+      semantics
+    picture (open)
+      layout
+      renderer
+      viewer
+  reader
+  author->editor carries 0
+    exec: writes the model in
+    manager: writes the model in
+    engineer: writes the model in
+  editor->semantics carries 1
+    exec: sends model text to
+    manager: sends model text to
+    engineer: sends model text to
+  semantics->lines carries 2
+    exec: checks the text with
+    manager: checks the text with
+    engineer: checks the text with
+  lines->semantics carries 3
+    exec: returns the parsed model to
+    manager: returns the parsed model to
+    engineer: returns the parsed model to
+  semantics->layout carries 4
+    exec: supplies the resolved picture to
+    manager: supplies the resolved picture to
+    engineer: supplies the resolved picture to
+  layout->renderer carries 5
+    exec: supplies positioned boxes to
+    manager: supplies positioned boxes to
+    engineer: supplies positioned boxes to
+  renderer->viewer carries 6
+    exec: supplies the drawing to
+    manager: supplies the drawing to
+    engineer: supplies the drawing to
+  viewer->reader carries 7
+    exec: shows the diagram to
+    manager: shows the diagram to
+    engineer: shows the diagram to
+
+view inside, all closed (aerie closed)
+  author
+  aerie (closed, 3 inside)
+  reader
+  author->aerie carries 0
+    exec: writes the model in
+    manager: writes the model in
+    engineer: writes the model in
+  aerie->reader carries 7
+    exec: shows the diagram to
+    manager: shows the diagram to
+    engineer: shows the diagram to

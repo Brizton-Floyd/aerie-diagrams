@@ -1,0 +1,11 @@
+[
+  {
+    "id": "E606",
+    "severity": "error",
+    "line": 7,
+    "column": 8,
+    "endLine": 7,
+    "endColumn": 9,
+    "message": "The stages of `request` must cover steps 1 to 2 once, in order, with no gaps."
+  }
+]
