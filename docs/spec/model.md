@@ -169,7 +169,7 @@ The **picture** is everything that decides what a reader sees. Shared links carr
 - **MODEL-604** Selection and playback exclude each other: starting a scenario or a walkthrough clears
   the selection.
 - **MODEL-605** A static scenario overview shows every step and keeps one selected for explanation.
-  It is a separate activity, excluding element selection, playback and presentation. It uses the
+  It is a separate activity, with at most one of an overview, element selection, playback or presentation shown at a time. Selecting an element replaces the overview with its details (INT-627). It uses the
   scenario's stage view, clamps its selected step and drops unknown scenarios as playback does.
   Opening containers and changing audience preserve the overview. Default pictures without an authored main scenario are unchanged.
 

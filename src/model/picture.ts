@@ -211,11 +211,12 @@ export function reveal(semantics: Semantics, picture: Picture, id: Id): Picture 
 
 /**
  * Selects an element, revealing it first (MODEL-207), or clears the selection with null. Nothing is
- * selected during an overview, scenario playback or presentation: the picture is returned unchanged.
+ * selected during scenario playback or presentation: the picture is returned unchanged. Selecting
+ * an element from a static overview replaces the overview with that element's details (INT-627).
  */
 export function select(semantics: Semantics, picture: Picture, id: Id | null): Picture {
   const { kind } = picture.activity;
-  if (kind === 'playing' || kind === 'presenting' || kind === 'overview') return picture;
+  if (kind === 'playing' || kind === 'presenting') return picture;
   if (id === null) return normal(semantics, { ...picture, activity: READING });
   const shown = reveal(semantics, picture, id);
   return normal(semantics, { ...shown, activity: { kind: 'selected', element: id } });
