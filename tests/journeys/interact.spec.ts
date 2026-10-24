@@ -1,5 +1,6 @@
-// A reader exploring the Lotto sample (docs/spec/interaction.md; acceptance A6): switching the
-// audience moves nothing, selecting explains an element in the side panel, containers open in place
+// A reader exploring the Lotto sample (docs/spec/interaction.md; acceptance A6): the wording is plain
+// first with more on demand, and changing it moves nothing; selecting explains an element in the side
+// panel, containers open in place
 // with a glide, the camera magnifies and moves, everything works from the keyboard and is announced
 // to screen readers, and reduced motion makes every change instant. Real clicks and keys only.
 import { expect, test, type Page } from '@playwright/test';
@@ -19,12 +20,14 @@ import {
 test.use({ viewport: { width: 1600, height: 900 } });
 
 const panel = (page: Page) => page.locator('aside.panel');
-const tab = (page: Page, name: string) => page.getByRole('tab', { name });
+/** INT-104: the stage's chip while the diagram is worded for a deeper audience. */
+const chip = (page: Page) => page.locator('.wording');
+const more = (page: Page) => panel(page).locator('button.more');
 
 const ENGINE_PARTS = ['request-handling', 'game-analysis', 'pick-generation', 'history-lookup'];
 
-test.describe('the audience switch', () => {
-  test('JOURNEY-001 switching audience rewords the page and moves nothing', async ({ page }) => {
+test.describe('wording for the reader', () => {
+  test('JOURNEY-001 changing the wording rewords the page and moves nothing', async ({ page }) => {
     await openLotto(page, 'services');
     const before = await boxes(page);
     expect(Object.keys(before).length).toBeGreaterThan(20);
@@ -43,29 +46,21 @@ test.describe('the audience switch', () => {
     expect(await boxes(page)).toEqual(before);
   });
 
-  test('INT-101 and INT-105 one tab per audience in declared order, an accessible tab list', async ({
+  test('INT-101 and INT-001 every reader starts with the plain wording, with no switch to set first', async ({
     page,
   }) => {
     await openLotto(page);
-    const list = page.getByRole('tablist', { name: 'Written for' });
-    await expect(list.getByRole('tab')).toHaveText(['Executive', 'Manager', 'Engineer']);
-    await expect(tab(page, 'Manager')).toHaveAttribute('aria-selected', 'true');
-    await expect(page.locator('.audience .written')).toHaveText('Written for');
-    await tab(page, 'Engineer').click();
-    await expect(tab(page, 'Engineer')).toHaveAttribute('aria-selected', 'true');
-    await expect(tab(page, 'Manager')).toHaveAttribute('aria-selected', 'false');
-    // The underline glides under the current tab.
-    await settled(page);
-    const thumb = await page.locator('.tabs .thumb').boundingBox();
-    const engineer = await tab(page, 'Engineer').boundingBox();
-    expect(thumb?.x).toBeCloseTo(engineer?.x ?? Number.NaN, 0);
-    await expect(page.getByText('Now written for Engineer')).toBeAttached();
-    // The tab list's own arrow keys move along the tabs.
-    await tab(page, 'Engineer').focus();
-    await page.keyboard.press('ArrowLeft');
-    await expect(tab(page, 'Manager')).toHaveAttribute('aria-selected', 'true');
-    await expect(tab(page, 'Manager')).toBeFocused();
-    await expect(page.getByText('Now written for Manager')).toBeAttached();
+    // Lotto declares Executive first, though Manager is its default (LANG-104).
+    await expect(node(page, 'engine').locator('text').first()).toHaveText('Number engine');
+    await expect(page.getByRole('tablist')).toHaveCount(0);
+    await expect(page.getByText('Written for')).toHaveCount(0);
+    await expect(chip(page)).toBeHidden();
+    // The plain wording is the default picture, so the address holds no audience.
+    expect(new URL(page.url()).hash).toBe('');
+    // A link still carries a level.
+    await page.goto('/?model=samples/lotto.aerie#aud=manager');
+    await expect(node(page, 'engine').locator('text').first()).toHaveText('Analysis engine');
+    await expect(chip(page)).toContainText('Worded for Manager');
   });
 
   test('INT-102 every piece of wording changes: names, taglines, labels, the side panel and the crumb', async ({
@@ -73,15 +68,13 @@ test.describe('the audience switch', () => {
   }) => {
     await openLotto(page, 'engineering');
     await clickElement(page, 'screen-api');
-    await expect(panel(page).locator('h1')).toHaveText('Screen API');
-    await page.keyboard.press('1');
-    await expect(page.locator('.crumb')).toContainText('How the code is organised');
-    await expect(node(page, 'screen-api').locator('text').first()).toHaveText('Website back end');
     await expect(panel(page).locator('h1')).toHaveText('Website back end');
-    await expect(panel(page).locator('.lead')).toHaveText('Gets each screen its data');
-    await expect(page.locator('button[data-view="engineering"]')).toHaveText(
-      'How the code is organised',
-    );
+    await page.keyboard.press('2');
+    await expect(page.locator('.crumb')).toContainText('Engineering');
+    await expect(node(page, 'screen-api').locator('text').first()).toHaveText('Screen API');
+    await expect(panel(page).locator('h1')).toHaveText('Screen API');
+    await expect(panel(page).locator('.lead')).toHaveText('Prepares data for each screen');
+    await expect(page.locator('button[data-view="engineering"]')).toContainText('Engineering');
   });
 
   test('INT-103 the selection and the zoom state stay as they were', async ({ page }) => {
@@ -92,12 +85,153 @@ test.describe('the audience switch', () => {
     await expect(button(page, 'pick-generation')).toHaveAttribute('aria-pressed', 'true');
     await settled(page);
     const before = await boxes(page);
-    await tab(page, 'Executive').click();
-    await expect(page.getByText('Now written for Executive')).toBeAttached();
+    await page.keyboard.press('2');
+    await expect(page.getByText('Now worded for Manager')).toBeAttached();
     await settled(page);
     expect(await boxes(page)).toEqual(before);
     await expect(button(page, 'pick-generation')).toHaveAttribute('aria-pressed', 'true');
     await expect(button(page, 'engine-service')).toHaveAttribute('aria-expanded', 'true');
+  });
+
+  test('INT-104, INT-105 and LOOK-812 a chip says the diagram is worded for a deeper audience, and goes back to plain', async ({
+    page,
+  }) => {
+    await openLotto(page, 'services');
+    await expect(chip(page)).toBeHidden();
+    const before = await boxes(page);
+    await page.keyboard.press('3');
+    await expect(chip(page)).toBeVisible();
+    await expect(chip(page)).toContainText('Worded for Engineer');
+    await expect(page.getByText('Now worded for Engineer')).toBeAttached();
+    expect(new URL(page.url()).hash).toContain('aud=engineer');
+    await chip(page).getByRole('button', { name: 'Back to plain wording' }).click();
+    await expect(chip(page)).toBeHidden();
+    await expect(node(page, 'screen-api').locator('text').first()).toHaveText('Website back end');
+    await expect(page.getByText('Now worded for Executive')).toBeAttached();
+    await settled(page);
+    expect(await boxes(page)).toEqual(before);
+  });
+
+  test('INT-207 and LOOK-811 More technical uncovers each deeper wording in turn, then words the whole diagram', async ({
+    page,
+  }) => {
+    await openLotto(page, 'big-picture');
+    await clickElement(page, 'engine');
+    const side = panel(page);
+    await expect(side.locator('h1')).toHaveText('Number engine');
+    await expect(more(page)).toHaveAttribute('aria-expanded', 'false');
+    await expect(more(page)).toHaveText(/^More technical\s*Manager wording$/);
+    await expect(side.locator('.layer')).toHaveCount(2);
+    await expect(side.locator('.layer:visible')).toHaveCount(0);
+    // The first press opens the Manager layer: only what Manager words differently.
+    await more(page).click();
+    const manager = side.locator('.layer[data-audience="manager"]');
+    await expect(manager).toBeVisible();
+    await expect(manager.locator('.layer-who')).toHaveText('Manager wording');
+    await expect(manager.locator('.layer-name')).toHaveText('Analysis engine');
+    await expect(manager.locator('.layer-line')).toHaveText('Generates and scores picks');
+    await expect(more(page)).toHaveAttribute('aria-expanded', 'true');
+    await expect(more(page)).toHaveText(/^Even more technical\s*Engineer wording$/);
+    await expect(
+      side.getByRole('button', { name: 'Word the whole diagram for Manager' }),
+    ).toBeVisible();
+    // The second opens the Engineer layer, in the code voice; then there is no more to open.
+    await more(page).click();
+    const engineer = side.locator('.layer[data-audience="engineer"]');
+    await expect(engineer.locator('.layer-name')).toHaveText('Core API');
+    await expect(engineer.locator('.layer-line')).toHaveText('lotto-options-core-server :8002');
+    await expect(engineer.locator('.layer-line')).toHaveClass(/\bcode\b/);
+    await expect(more(page)).toBeHidden();
+    // The depth is remembered: the next element opens as far.
+    await clickElement(page, 'store');
+    await expect(side.locator('h1')).toHaveText('Results store');
+    await expect(side.locator('.layer[data-audience="engineer"]')).toBeVisible();
+    await expect(side.locator('.layer[data-audience="engineer"] .layer-name')).toHaveText(
+      'Results service',
+    );
+    // A layer shows only what changes: Manager keeps the name and tagline, words it anew.
+    const store = side.locator('.layer[data-audience="manager"]');
+    await expect(store.locator('.layer-name')).toHaveCount(0);
+    await expect(store.locator('.layer-about')).toBeVisible();
+    // An audience that words the element as the one before adds no layer.
+    await clickElement(page, 'website');
+    await expect(side.locator('h1')).toHaveText('Website');
+    await expect(side.locator('.layer[data-audience="manager"]')).toHaveCount(0);
+    await expect(side.locator('.layer[data-audience="engineer"]')).toBeVisible();
+    // Word the whole diagram that way; the diagram's wording changes, nothing moves.
+    const before = await boxes(page);
+    await side.getByRole('button', { name: 'Word the whole diagram for Engineer' }).click();
+    await expect(node(page, 'engine').locator('text').first()).toHaveText('Core API');
+    await expect(chip(page)).toContainText('Worded for Engineer');
+    await expect(side).toContainText('Worded for Engineer.');
+    await settled(page);
+    expect(await boxes(page)).toEqual(before);
+    await side.getByRole('button', { name: 'Back to the plain wording' }).click();
+    await expect(node(page, 'engine').locator('text').first()).toHaveText('Number engine');
+    // Less closes every layer, and the next element opens closed.
+    await side.getByRole('button', { name: 'Less' }).click();
+    await expect(side.locator('.layer:visible')).toHaveCount(0);
+    await clickElement(page, 'engine');
+    await expect(side.locator('h1')).toHaveText('Number engine');
+    await expect(side.locator('.layer:visible')).toHaveCount(0);
+  });
+
+  test('INT-207 the depth lasts for the session: a reload keeps it, a new tab starts plain', async ({
+    page,
+    context,
+  }) => {
+    await openLotto(page, 'big-picture');
+    await clickElement(page, 'engine');
+    await more(page).click();
+    await expect(panel(page).locator('.layer[data-audience="manager"]')).toBeVisible();
+    await page.reload();
+    await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+    await expect(panel(page).locator('h1')).toHaveText('Number engine');
+    await expect(panel(page).locator('.layer[data-audience="manager"]')).toBeVisible();
+    await expect(panel(page).locator('.layer[data-audience="engineer"]')).toBeHidden();
+    const other = await context.newPage();
+    await other.goto('/?model=samples/lotto.aerie#sel=engine');
+    await expect(other.locator('#app')).toHaveAttribute('data-ready', 'true');
+    await expect(other.locator('aside.panel h1')).toHaveText('Number engine');
+    await expect(other.locator('aside.panel .layer:visible')).toHaveCount(0);
+    // The diagram itself stays plain: only the panel opens deeper.
+    await expect(node(page, 'engine').locator('text').first()).toHaveText('Number engine');
+  });
+
+  test('INT-208 and LOOK-810 resting on a box shows its hover card with the deeper names; leaving hides it', async ({
+    page,
+  }) => {
+    await openLotto(page, 'big-picture');
+    const card = page.locator('.peek');
+    await expect(card).toBeHidden();
+    await node(page, 'engine').locator('text').first().hover();
+    await expect(card).toBeVisible();
+    await expect(card).toHaveClass(/\bon\b/);
+    await expect(card).toHaveAttribute('aria-hidden', 'true');
+    await expect(card.locator('.peek-kind')).toHaveText('Service in Lotto suite');
+    await expect(card.locator('.peek-layers dt')).toHaveText(['Manager', 'Engineer']);
+    await expect(card.locator('.peek-layers dd')).toHaveText([
+      'Analysis engine · Generates and scores picks',
+      'Core API · lotto-options-core-server :8002',
+    ]);
+    await expect(card.locator('.peek-hint')).toHaveText(
+      'Click to read more, double-click to open it',
+    );
+    // It sits beside the box, never over it.
+    const box = await boxOf(page, 'engine');
+    const placed = await card.boundingBox();
+    expect(
+      (placed?.x ?? 0) >= box.x + box.width || (placed?.x ?? 0) + (placed?.width ?? 0) <= box.x,
+    ).toBe(true);
+    await page.mouse.move(2, 2);
+    await expect(card).toBeHidden();
+    // Pressing hides it too, and it never shows while presenting.
+    await node(page, 'website').locator('text').first().hover();
+    await expect(card).toBeVisible();
+    await expect(card.locator('.peek-hint')).toHaveText('Click to read more');
+    await page.mouse.down();
+    await expect(card).toBeHidden();
+    await page.mouse.up();
   });
 });
 
@@ -115,18 +249,12 @@ test.describe('selecting and the side panel', () => {
     await expect(edge(page, 'engine-service->history-service')).toHaveClass(/\bon\b/);
     await expect(node(page, 'engine-service')).toHaveClass(/\brel\b/);
     await expect(edge(page, 'user->website')).toHaveClass(/\bdim\b/);
-    // INT-205: the kind label, the name, the tagline, every level and the connections.
+    // INT-205: the kind label, the name, the tagline, More technical and the connections.
     const side = panel(page);
     await expect(side.locator('.kicker')).toHaveText('Service in Lotto suite');
     await expect(side.locator('h1')).toHaveText('Results store');
     await expect(side.locator('.lead')).toHaveText("Keeps each game's past draws");
-    await expect(side.getByRole('heading', { name: 'At every level' })).toBeVisible();
-    await expect(side.locator('.levels li')).toHaveText([
-      /Executive\s*Results store\s*Keeps each game's past draws/i,
-      /Manager\s*Results store\s*Keeps each game's past draws/i,
-      /Engineer\s*Results service\s*lottery-result-persistence-service :8001/i,
-    ]);
-    await expect(side.locator('.levels li.on')).toHaveAttribute('data-audience', 'manager');
+    await expect(more(page)).toHaveText(/^More technical\s*Manager wording$/);
     await expect(side.locator('.sentences li').first()).toHaveText(
       'Draw history lookup fetches draw history from Draw history service.',
     );
@@ -140,7 +268,7 @@ test.describe('selecting and the side panel', () => {
     await expect(side.locator('.kicker')).toHaveText('Store in Results store');
     await page.keyboard.press('Escape');
     await expect(page.locator('svg.aerie g.node > .shape[aria-pressed="true"]')).toHaveCount(0);
-    await expect(side.locator('.kicker')).toHaveText('View');
+    await expect(side.locator('.kicker')).toHaveText('Architecture');
   });
 
   test('INT-205 a name in a sentence reveals its element when it is not drawn (MODEL-207)', async ({
@@ -171,22 +299,42 @@ test.describe('selecting and the side panel', () => {
     await expect(page.locator('svg.aerie .dim')).toHaveCount(0);
   });
 
-  test('INT-204 with nothing selected the panel describes the view and offers its scenarios', async ({
+  test('INT-204 and LOOK-809 with nothing selected the panel opens on the cover, then the view and its scenarios', async ({
     page,
   }) => {
     await openLotto(page, 'services');
     const side = panel(page);
-    await expect(side.locator('.kicker')).toHaveText('View');
-    await expect(side.locator('h1')).toHaveText('Services');
-    await expect(side.locator('.lead').first()).toHaveText(
+    const cover = side.locator('.cover');
+    await expect(cover.locator('.kicker')).toHaveText('Architecture');
+    await expect(cover.locator('h1')).toHaveText('The Lotto suite');
+    await expect(cover.locator('.cover-lead')).toHaveText(
+      'How results come in, how picks are generated, and what each part does.',
+    );
+    await expect(cover.locator('.cover-stats span')).toHaveText([
+      '19 parts',
+      '3 views',
+      '2 scenarios',
+    ]);
+    const tour = cover.getByRole('button', { name: /Take the tour/ });
+    await expect(tour).toHaveText(/^Take the tour\s*8 steps$/);
+    await expect(side.getByRole('heading', { name: 'This view' })).toBeVisible();
+    await expect(side.locator('.view-title')).toHaveText('Services');
+    await expect(side.locator('.this-view .lead').first()).toHaveText(
       'The same suite one level down: what each part contains and which parts talk to each other.',
     );
-    await expect(side.getByRole('heading', { name: 'Read it' })).toBeVisible();
+    await expect(side.getByRole('heading', { name: 'How to read it' })).toBeVisible();
     await expect(side).toContainText(
-      'Click any box to see what it does and how it connects. Use the round button on a box to open it in place. Switch who it is written for at the top; nothing moves.',
+      'Click a box to see what it does and what it talks to. Boxes with a + hold more inside: press it, or double-click the box, to open it right here. Rest the pointer on a box for a quick look.',
     );
-    await expect(side.getByRole('heading', { name: 'Play a scenario' })).toBeVisible();
-    await expect(side.locator('[data-play]')).toHaveText(['Generate picks', 'Results poll']);
+    await expect(side.getByRole('heading', { name: 'Watch it work' })).toBeVisible();
+    await expect(side.locator('[data-play]')).toHaveText([
+      /^Generate picks\s*14 steps$/,
+      /^Results poll\s*6 steps$/,
+    ]);
+    // The cover's button presents the tour (INT-701).
+    await tour.click();
+    await expect(page.locator('#app')).toHaveClass(/\bpresenting\b/);
+    await expect(page.locator('.narration-meta .count')).toHaveText('1 of 8');
   });
 
   test('INT-205 relationships of kinds the view does not draw, the inside of a container, and its scenarios', async ({
@@ -195,42 +343,48 @@ test.describe('selecting and the side panel', () => {
     await openLotto(page, 'big-picture');
     await clickElement(page, 'engine');
     const side = panel(page);
-    await expect(side.getByRole('heading', { name: 'Not drawn in this view' })).toBeVisible();
+    await expect(
+      side.getByRole('heading', { name: 'Also connected, not drawn in this view' }),
+    ).toBeVisible();
     await expect(side.locator('.hidden-kind')).toContainText(
       'Engine service depends on Strategies library.',
     );
     await expect(side.locator('.sentences').first()).not.toContainText('depends on');
-    await expect(side.getByRole('heading', { name: 'Inside' })).toBeVisible();
+    await expect(side.getByRole('heading', { name: 'Inside (4)' })).toBeVisible();
     await expect(side.locator('.inside .name')).toHaveText([
       'Engine service',
       'Strategies library',
       'Shared data formats',
       'Legacy desktop support',
     ]);
-    await expect(side.getByRole('heading', { name: 'In scenarios' })).toBeVisible();
-    await expect(side.locator('[data-play]')).toHaveText(['Generate picks']);
+    await expect(side.getByRole('heading', { name: 'Takes part in' })).toBeVisible();
+    await expect(side.locator('[data-play]')).toHaveText([/^Generate picks\s*14 steps$/]);
     // The panel's button opens the container in place, and then closes it.
-    await side.getByRole('button', { name: 'Open in place' }).click();
+    await side.getByRole('button', { name: 'Open it here' }).click();
     await expect(node(page, 'engine-service')).toBeVisible();
     await expect(button(page, 'engine')).toHaveAttribute('aria-expanded', 'true');
-    await expect(side.getByRole('button', { name: 'Close in place' })).toBeVisible();
-    await side.getByRole('button', { name: 'Close in place' }).click();
+    await expect(side.getByRole('button', { name: 'Close it' })).toBeVisible();
+    await side.getByRole('button', { name: 'Close it' }).click();
     await expect(node(page, 'engine-service')).toHaveCount(0);
   });
 
-  test('INT-206 hovering a box thickens its outline; a label shows its full sentences', async ({
+  test('INT-206 and LOOK-306 hovering a box lights its outline; a label shows its full sentences', async ({
     page,
   }) => {
     await openLotto(page, 'services');
-    const outline = () =>
+    const look = () =>
       node(page, 'website')
         .locator('.shape')
-        .evaluate((shape) => getComputedStyle(shape).strokeWidth);
-    expect(await outline()).toBe('1px');
+        .evaluate((shape) => {
+          const style = getComputedStyle(shape);
+          return { stroke: style.stroke, glow: style.filter.includes('drop-shadow(') };
+        });
+    const before = await look();
     await node(page, 'website').hover();
-    await expect.poll(outline).toBe('1.6px');
+    await expect.poll(async () => (await look()).stroke).not.toBe(before.stroke);
+    expect((await look()).glow).toBe(true);
     await expect(label(page, 'website->screen-api').locator('title')).toHaveText(
-      'Website gets screen data from Screen API.',
+      'Website works through Website back end.',
     );
   });
 });
@@ -239,13 +393,13 @@ test.describe('opening in place', () => {
   test('JOURNEY-002 open Engine service in place and close it again', async ({ page }) => {
     await openLotto(page, 'services');
     const control = node(page, 'engine-service').locator('.control');
-    await expect(control.locator('title')).toHaveText('Open in place');
+    await expect(control.locator('title')).toHaveText('Open it here');
     await control.click();
     for (const id of ENGINE_PARTS) await expect(node(page, id)).toBeVisible();
     await expect(edge(page, 'screen-api->request-handling')).toBeAttached();
     await expect(edge(page, 'screen-api->engine-service')).toHaveCount(0);
     await settled(page);
-    await expect(control.locator('title')).toHaveText('Close in place');
+    await expect(control.locator('title')).toHaveText('Close it');
     await node(page, 'engine-service').locator('.control').click();
     for (const id of ENGINE_PARTS) await expect(node(page, id)).toHaveCount(0);
     await expect(edge(page, 'screen-api->engine-service')).toBeAttached();
@@ -269,10 +423,7 @@ test.describe('opening in place', () => {
     expect(await boxes(page)).toEqual(opened);
     await settled(page);
     expect(await boxes(page)).toEqual(opened);
-    await expect(page.getByRole('tab', { name: 'Engineer' })).toHaveAttribute(
-      'aria-selected',
-      'true',
-    );
+    await expect(chip(page)).toContainText('Worded for Engineer');
   });
 
   test('INT-302 double-clicking a container opens it; LAYOUT-402 the picture glides', async ({
@@ -357,10 +508,10 @@ test.describe('the camera', () => {
   }) => {
     await openLotto(page, 'services');
     const fitted = await scale(page);
-    await page.getByRole('button', { name: 'Magnify' }).click();
+    await page.getByRole('button', { name: 'Move closer (+)' }).click();
     await settled(page);
     expect(await scale(page)).toBeCloseTo(fitted * 1.25, 5);
-    await page.getByRole('button', { name: 'Shrink' }).click();
+    await page.getByRole('button', { name: 'Move back (-)' }).click();
     await settled(page);
     expect(await scale(page)).toBeCloseTo(fitted, 5);
     await page.locator('body').press('+');
@@ -369,16 +520,17 @@ test.describe('the camera', () => {
     await page.locator('body').press('-');
     await settled(page);
     expect(await scale(page)).toBeCloseTo(fitted, 5);
-    for (let i = 0; i < 15; i++) await page.getByRole('button', { name: 'Magnify' }).click();
+    for (let i = 0; i < 15; i++)
+      await page.getByRole('button', { name: 'Move closer (+)' }).click();
     await settled(page);
     expect(await scale(page)).toBeCloseTo(2.5, 5);
-    for (let i = 0; i < 25; i++) await page.getByRole('button', { name: 'Shrink' }).click();
+    for (let i = 0; i < 25; i++) await page.getByRole('button', { name: 'Move back (-)' }).click();
     await settled(page);
     expect(await scale(page)).toBeCloseTo(0.2, 5);
-    await page.getByRole('button', { name: 'Fit all' }).click();
+    await page.getByRole('button', { name: 'Show everything (0)' }).click();
     await settled(page);
     expect(await scale(page)).toBeCloseTo(fitted, 5);
-    await page.getByRole('button', { name: 'Magnify' }).click();
+    await page.getByRole('button', { name: 'Move closer (+)' }).click();
     await page.locator('body').press('0');
     await settled(page);
     expect(await scale(page)).toBeCloseTo(fitted, 5);
@@ -388,7 +540,7 @@ test.describe('the camera', () => {
     page,
   }) => {
     await openLotto(page, 'services');
-    await page.getByRole('button', { name: 'Magnify' }).click();
+    await page.getByRole('button', { name: 'Move closer (+)' }).click();
     await settled(page);
     const before = await boxOf(page, 'engine-service');
     const zoomed = await scale(page);
@@ -400,7 +552,7 @@ test.describe('the camera', () => {
     expect(after.y).toBeCloseTo(before.y, 0);
     expect(await scale(page)).toBeCloseTo(zoomed, 5);
     // In fit mode, the camera follows the closed container instead (LAYOUT-453), never below 1.
-    await page.getByRole('button', { name: 'Fit all' }).click();
+    await page.getByRole('button', { name: 'Show everything (0)' }).click();
     await settled(page);
     const fitted = await scale(page);
     await node(page, 'engine-service').locator('.control').click();
@@ -422,7 +574,7 @@ test.describe('the keyboard and screen readers', () => {
       const where = await page.evaluate(() => {
         const active = document.activeElement;
         if (active === null) return 'none';
-        const area = active.closest('header, nav, main, aside')?.tagName ?? 'other';
+        const area = active.closest('header.top, nav, main, aside')?.tagName ?? 'other';
         const id = active.closest('g.node')?.getAttribute('data-id') ?? null;
         return id === null ? area.toLowerCase() : `node ${id}`;
       });
@@ -467,10 +619,10 @@ test.describe('the keyboard and screen readers', () => {
     await openLotto(page, 'services');
     await page.locator('select[name="model"]').focus();
     await page.keyboard.press('3');
-    await expect(tab(page, 'Manager')).toHaveAttribute('aria-selected', 'true');
+    await expect(chip(page)).toBeHidden();
     await page.locator('aside.panel h1').click();
     await page.keyboard.press('3');
-    await expect(tab(page, 'Engineer')).toHaveAttribute('aria-selected', 'true');
+    await expect(chip(page)).toContainText('Worded for Engineer');
   });
 
   test('INT-903 elements are announced with name and tagline, containers say whether they are open, and the relationships are read as sentences', async ({
@@ -484,7 +636,7 @@ test.describe('the keyboard and screen readers', () => {
     await expect(button(page, 'engine')).toHaveAttribute('aria-expanded', 'true');
     const sentences = page.getByRole('list', { name: 'Relationships in this picture' });
     await expect(sentences.getByRole('listitem').first()).toHaveText('User uses Website.');
-    await expect(sentences).toContainText('Website gets screen data from Screen API.');
+    await expect(sentences).toContainText('Website works through Website back end.');
     await page.keyboard.press('3');
     await expect(sentences).toContainText('Website calls /ui/* on BFF.');
     await expect(
@@ -515,7 +667,7 @@ test.describe('reduced motion', () => {
     await expect(panel(page).locator('h1')).toHaveText('Request handling');
     expect(await page.evaluate(() => document.getAnimations().length)).toBe(0);
     // The camera jumps.
-    await page.getByRole('button', { name: 'Magnify' }).click();
+    await page.getByRole('button', { name: 'Move closer (+)' }).click();
     expect(await page.evaluate(() => document.getAnimations().length)).toBe(0);
   });
 

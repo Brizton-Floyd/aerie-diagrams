@@ -7,7 +7,7 @@ import {
   MOTION,
   SHAPE,
   classes,
-  contourStyle,
+  signalStyle,
   renderLanes,
   textOf,
   walk,
@@ -15,7 +15,7 @@ import {
 } from '../../../src/render/index.ts';
 import { LOTTO, SHAPES, child, draw, group, layouter, withClass } from './helpers.ts';
 
-const css = contourStyle();
+const css = signalStyle();
 
 function rule(selector: string): string {
   const at = css.indexOf(`${selector} {`);
@@ -38,14 +38,19 @@ async function playing(step: number): Promise<SvgNode> {
 const steps = (root: SvgNode): SvgNode[] => withClass(root, 'step');
 
 describe('the scenario trail', () => {
-  it('LOOK-701 a call step is a 2.4 px accent curve with round caps and a chevron; the current one draws itself in 900 ms', async () => {
+  it('LOOK-701 a call step is a 2 px accent-ink curve with round caps and a chevron; the current one draws itself in live light in 900 ms', async () => {
     const root = await playing(3);
     const [, , current] = steps(root);
     expect(current && classes(current)).toEqual(['step', 'call', 'now']);
     expect(current && child(current, 'curve').attrs['pathLength']).toBe(1);
     expect(current && child(current, 'arrow').attrs['d']).toMatch(/^M.+L.+L.+$/);
-    expect(rule('.aerie .step .curve')).toBe(
-      'fill: none; stroke: var(--aerie-accent); stroke-width: 2.4px; stroke-linecap: round;',
+    expect(rule('.aerie .step .curve, .aerie .step .arrow')).toBe(
+      'fill: none; stroke: var(--aerie-accent-ink); stroke-width: 2px; stroke-linecap: round; stroke-linejoin: round; ' +
+        'filter: drop-shadow(0 0 3px color-mix(in srgb, var(--aerie-glow) 60%, transparent));',
+    );
+    expect(rule('.aerie .step.now .curve, .aerie .step.now .arrow')).toBe(
+      'stroke: var(--aerie-live); stroke-width: 2.6px; ' +
+        'filter: drop-shadow(0 0 5px color-mix(in srgb, var(--aerie-live) 75%, transparent));',
     );
     expect(rule('.aerie .step.now.call .curve')).toBe(
       'stroke-dasharray: 1 1; animation: aerie-draw var(--aerie-step-draw) var(--aerie-ease) backwards;',
@@ -60,11 +65,11 @@ describe('the scenario trail', () => {
     expect(reply?.children.filter((each) => typeof each !== 'string')).toHaveLength(1);
     expect(reply && child(reply, 'curve').attrs['pathLength']).toBeNull();
     expect(rule('.aerie .step.reply .curve')).toBe(
-      'stroke: var(--aerie-trail-back); stroke-width: 2.6px; stroke-dasharray: 1 5;',
+      'stroke: var(--aerie-trail-back); stroke-width: 2.6px; stroke-dasharray: 1 6;',
     );
   });
 
-  it('LOOK-703 earlier steps stay on the map, 1.6 px at past', async () => {
+  it('LOOK-703 earlier steps stay on the diagram, 1.6 px at past', async () => {
     const root = await playing(5);
     expect(steps(root).map((node) => classes(node).at(-1))).toEqual([
       'past',
@@ -78,7 +83,7 @@ describe('the scenario trail', () => {
     );
   });
 
-  it('LOOK-704 each step has a numbered badge of radius 9; the current one radius 12, filled accent', async () => {
+  it('LOOK-704 each step has a numbered badge of radius 9; the current one radius 12, filled accent, ringed in live light', async () => {
     const root = await playing(4);
     const badges = withClass(root, 'badge');
     expect(badges.map((node) => textOf(node))).toEqual(['1', '2', '3', '4']);
@@ -86,9 +91,13 @@ describe('the scenario trail', () => {
     expect(SHAPE.currentBadge).toBe(12);
     expect(classes(badges[3] ?? badges[0] ?? root)).toEqual(['badge', 'now']);
     expect(rule('.aerie .badge circle')).toBe(
-      'fill: var(--aerie-paper); stroke: var(--aerie-accent); stroke-width: 1.6px;',
+      'fill: var(--aerie-surface); stroke: var(--aerie-accent-ink); stroke-width: 1.2px;',
     );
-    expect(rule('.aerie .badge.now circle')).toBe('fill: var(--aerie-accent);');
+    expect(rule('.aerie .badge.now circle')).toBe(
+      'fill: var(--aerie-accent); stroke: var(--aerie-live); stroke-width: 1.5px; ' +
+        'filter: drop-shadow(0 0 8px color-mix(in srgb, var(--aerie-glow) 80%, transparent)); ' +
+        'animation: aerie-ping calc(var(--aerie-glide) * 1.6) var(--aerie-ease) 2;',
+    );
     expect(rule('.aerie .badge.now .t-badge')).toBe(
       'font-size: 13px; fill: var(--aerie-on-accent);',
     );
@@ -129,9 +138,11 @@ describe('the scenario trail', () => {
     expect(steps(root)).toHaveLength(9);
     expect(withClass(root, 'row').map((node) => node.attrs['data-step'])).toEqual([9]);
     expect(rule('.aerie .lane-line')).toBe(
-      'fill: none; stroke: var(--aerie-contour); stroke-width: 1px; stroke-dasharray: 3 4;',
+      'fill: none; stroke: color-mix(in srgb, var(--aerie-frame) 55%, transparent); stroke-width: 1px; stroke-dasharray: 2 5;',
     );
-    expect(rule('.aerie .row.now')).toBe('fill: var(--aerie-accent-soft);');
+    expect(rule('.aerie .row.now')).toBe(
+      'fill: color-mix(in srgb, var(--aerie-accent) 14%, transparent);',
+    );
     // The current step's lanes are outlined.
     const current = lanes.rows[8];
     expect(classes(group(root, 'node', current?.from ?? ''))).toContain('now');
@@ -149,17 +160,21 @@ describe('the scenario trail', () => {
 describe('motion', () => {
   it('LOOK-901 the timings and the glide easing', () => {
     expect(MOTION).toEqual({
-      glide: 560,
-      ease: 'cubic-bezier(.45,.05,.25,1)',
+      glide: 520,
+      ease: 'cubic-bezier(.16,1,.3,1)',
       swap: 170,
       dimming: 280,
       hover: 250,
       stepDraw: 900,
+      arriveStep: 45,
+      peek: 180,
       autoplay: 2400,
       presenterFade: 300,
       presenterIdle: 2500,
     });
-    expect(css).toContain('--aerie-glide: 560ms;');
+    expect(css).toContain('--aerie-glide: 520ms;');
+    expect(css).toContain('--aerie-arrive-step: 45ms;');
+    expect(css).toContain('--aerie-peek: 180ms;');
     expect(css).toContain('--aerie-presenter-fade: 300ms;');
     // The autoplay pace and the presenter's wait before its controls hide are not motion, so they
     // are no custom properties for reduced motion to zero.
@@ -186,20 +201,43 @@ describe('motion', () => {
       /@media \(prefers-reduced-motion: reduce\) \{\n {2}:root:not\(\[data-motion="full"\]\) \{\n(\s+--aerie-[a-z-]+: 0ms;\n)+/,
     );
     const reduced = rule('[data-motion="reduce"]');
-    for (const name of ['glide', 'swap', 'dimming', 'hover', 'step-draw', 'presenter-fade']) {
+    for (const name of [
+      'glide',
+      'swap',
+      'dimming',
+      'hover',
+      'step-draw',
+      'arrive-step',
+      'peek',
+      'presenter-fade',
+    ]) {
       expect(reduced).toContain(`--aerie-${name}: 0ms;`);
     }
     expect(css).toContain('animation-duration: 0ms !important;');
     expect(css).toContain('transition-delay: 0ms !important;');
-    // Every duration in a rule is one of the motion variables, so it follows the setting.
-    const rules = css.split('\n').filter((line) => !line.includes('--aerie-texture-tile'));
-    const durations = rules.join('\n').match(/\b\d+(?:\.\d+)?m?s\b/g) ?? [];
+    // Every duration in a rule is one of the motion variables, so it follows the setting; the
+    // flowing light and the ping are multiples of the glide, so they stand still with it.
+    const durations = css.match(/\b\d+(?:\.\d+)?m?s\b/g) ?? [];
     expect(
       durations.filter(
         (each) =>
-          !['0ms', '1ms', '560ms', '170ms', '280ms', '250ms', '900ms', '300ms'].includes(each),
+          ![
+            '0ms',
+            '1ms',
+            '520ms',
+            '170ms',
+            '280ms',
+            '250ms',
+            '900ms',
+            '45ms',
+            '180ms',
+            '300ms',
+          ].includes(each),
       ),
     ).toEqual([]);
+    expect(rule('.aerie .edge.on .flow')).toContain(
+      'calc(var(--aerie-glide) * 2.4) linear infinite',
+    );
   });
 });
 

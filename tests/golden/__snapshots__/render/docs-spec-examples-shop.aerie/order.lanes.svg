@@ -1,80 +1,88 @@
-<?xml-stylesheet href="../contour.css" type="text/css"?>
-<svg xmlns="http://www.w3.org/2000/svg" class="aerie" viewBox="0 0 584 209" width="584" height="209" overflow="visible" role="img" aria-label="Corner shop: Placing an order, as lanes" data-view="overview" data-audience="owner" data-scenario="order">
+<?xml-stylesheet href="../signal.css" type="text/css"?>
+<svg xmlns="http://www.w3.org/2000/svg" class="aerie" viewBox="0 0 585 209" width="585" height="209" overflow="visible" role="img" aria-label="Corner shop: Placing an order, as lanes" data-view="overview" data-audience="owner" data-scenario="order">
   <defs>
     <pattern id="aerie-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
       <rect class="hatch-bg" width="7" height="7"/>
       <path class="hatch-line" d="M0 0V7"/>
     </pattern>
+    <radialGradient id="aerie-dawn" cx="0.18" cy="0" r="1.05" fx="0.12" fy="0">
+      <stop class="dawn-0" offset="0"/>
+      <stop class="dawn-1" offset="0.55"/>
+      <stop class="dawn-2" offset="1"/>
+    </radialGradient>
   </defs>
   <g class="rows">
-    <rect class="row now" data-step="2" x="0" y="156" width="584" height="37"/>
+    <rect class="row now" data-step="2" x="0" y="156" width="585" height="37"/>
   </g>
   <g class="bands">
     <g class="band open depth-0" data-id="shop">
-      <rect class="shape" x="0" y="0" width="402" height="28" rx="9"/>
-      <text class="t-band" x="10" y="19" data-width="30">Shop</text>
+      <rect class="shape" x="0" y="0" width="403" height="28" rx="9"/>
+      <text class="t-band" x="10" y="19" data-width="34">Shop</text>
     </g>
   </g>
   <g class="lanes">
-    <path class="lane-line" data-id="web" d="M110 103V209"/>
-    <path class="lane-line" data-id="orders" d="M327 90V209"/>
-    <path class="lane-line" data-id="customer" d="M509 90V209"/>
+    <path class="lane-line" data-id="web" d="M110.5 103V209"/>
+    <path class="lane-line" data-id="orders" d="M328 90V209"/>
+    <path class="lane-line" data-id="customer" d="M510 90V209"/>
   </g>
   <g class="boxes">
     <g class="node leaf now" data-id="web" transform="translate(0 44)">
-      <rect class="shape" width="220" height="59" rx="4"/>
-      <rect class="ring" x="-3" y="-3" width="226" height="65" rx="7"/>
+      <rect class="shape" width="221" height="59" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="227" height="65" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="box" transform="translate(12 12) scale(0.34375)">
         <rect x="12" y="12" width="40" height="40" rx="8"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="63">Storefront</text>
-      <text class="t-tagline" x="44" y="44" data-width="164">Where customers browse</text>
+      <text class="t-name" x="44" y="26" data-width="70">Storefront</text>
+      <text class="t-tagline" x="44" y="44" data-width="165">Where customers browse</text>
     </g>
-    <g class="node leaf now" data-id="orders" transform="translate(252 44)">
-      <rect class="shape" width="150" height="46" rx="4"/>
-      <rect class="ring" x="-3" y="-3" width="156" height="52" rx="7"/>
+    <g class="node leaf now" data-id="orders" transform="translate(253 44)">
+      <rect class="shape" width="150" height="46" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="156" height="52" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="cylinder" transform="translate(12 12) scale(0.34375)">
         <path d="M14 14c0-3.3 8-6 18-6s18 2.7 18 6-8 6-18 6-18-2.7-18-6Z"/>
         <path d="M14 14v36c0 3.3 8 6 18 6s18-2.7 18-6V14"/>
         <path d="M14 26c0 3.3 8 6 18 6s18-2.7 18-6"/>
         <path d="M14 38c0 3.3 8 6 18 6s18-2.7 18-6"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="75">Orders store</text>
+      <text class="t-name" x="44" y="26" data-width="86">Orders store</text>
     </g>
-    <g class="node leaf person" data-id="customer" transform="translate(434 44)">
+    <g class="node leaf person" data-id="customer" transform="translate(435 44)">
       <rect class="shape" width="150" height="46" rx="23"/>
       <rect class="ring" x="-3" y="-3" width="156" height="52" rx="26"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="person" transform="translate(12 12) scale(0.34375)">
         <circle cx="32" cy="21" r="10"/>
         <path d="M12 56c0-12 9-20 20-20s20 8 20 20"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="59">Customer</text>
+      <text class="t-name" x="44" y="26" data-width="67">Customer</text>
     </g>
   </g>
   <g class="trail">
     <g class="step call past" data-step="1">
-      <path class="curve" d="M509 152L110 152"/>
-      <path class="arrow" d="M122 147L110 152L122 157"/>
+      <path class="curve" d="M510 152L110.5 152"/>
+      <path class="arrow" d="M122.5 147L110.5 152L122.5 157"/>
     </g>
     <g class="step call now" data-step="2">
-      <path class="curve" d="M110 189L327 189" pathLength="1"/>
-      <path class="arrow" d="M315 194L327 189L315 184"/>
+      <path class="curve" d="M110.5 189L328 189" pathLength="1"/>
+      <path class="arrow" d="M316 194L328 189L316 184"/>
     </g>
   </g>
   <g class="labels">
     <g class="label" data-step="1">
-      <text class="t-label" x="279.5" y="139" data-width="60">buys from</text>
+      <text class="t-label" x="277.25" y="139" data-width="66">buys from</text>
     </g>
     <g class="label" data-step="2">
-      <text class="t-label" x="175" y="176" data-width="87">saves orders in</text>
+      <text class="t-label" x="169.75" y="176" data-width="99">saves orders in</text>
     </g>
   </g>
   <g class="badges">
-    <g class="badge" data-step="1" transform="translate(509 152)">
+    <g class="badge" data-step="1" transform="translate(510 152)">
       <circle r="9"/>
       <text class="t-badge" y="4">1</text>
     </g>
-    <g class="badge now" data-step="2" transform="translate(110 189)">
+    <g class="badge now" data-step="2" transform="translate(110.5 189)">
       <circle r="12"/>
       <text class="t-badge" y="4.5">2</text>
     </g>

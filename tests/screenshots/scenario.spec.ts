@@ -3,7 +3,7 @@
 // bar, in both themes at 1600 x 900, compared only with Aerie's earlier screenshots (ACC-003,
 // ACC-006). Update deliberately: `npx playwright test --project screenshots --update-snapshots`.
 import { expect, test, type Page } from '@playwright/test';
-import { HIDE_TEXT, openModel } from './page.ts';
+import { HIDE_TEXT, openModel, useTheme } from './page.ts';
 
 test.use({ viewport: { width: 1600, height: 900 } });
 
@@ -11,7 +11,17 @@ test.use({ viewport: { width: 1600, height: 900 } });
 async function still(page: Page): Promise<void> {
   await page.mouse.move(0, 0);
   await expect
-    .poll(() => page.evaluate(() => document.getAnimations().length), { timeout: 5000 })
+    .poll(
+      () =>
+        page.evaluate(
+          () =>
+            // The light flowing along a selected line runs without end (LOOK-601).
+            document
+              .getAnimations()
+              .filter((each) => each.effect?.getComputedTiming().iterations !== Infinity).length,
+        ),
+      { timeout: 5000 },
+    )
     .toBe(0);
 }
 
@@ -23,12 +33,14 @@ async function choose(page: Page, step: number): Promise<void> {
   await page
     .locator(`aside.panel button.step-choice[data-step="${String(step)}"]`)
     .dispatchEvent('click');
-  await expect(page.locator('.caption-bar .count')).toHaveText(`${String(step)}/14`);
+  await expect(page.locator('.caption-bar .count')).toHaveText(`Step ${String(step)} of 14`);
 }
 
 for (const theme of ['light', 'dark'] as const) {
   test.describe(`${theme} theme`, () => {
-    test.use({ colorScheme: theme });
+    test.beforeEach(async ({ page }) => {
+      await useTheme(page, theme);
+    });
 
     test(`LOOK-701 to LOOK-706 and LOOK-805 Generate picks on the map and as lanes, ${theme}`, async ({
       page,

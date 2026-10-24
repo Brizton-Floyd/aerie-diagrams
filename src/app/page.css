@@ -1,5 +1,39 @@
-/* The page chrome in the Contour look (docs/spec/look.md, LOOK-801 to LOOK-806). Colours are the
-   tokens the Contour stylesheet defines (src/render/style.ts). */
+/* The page chrome in the Signal look (docs/spec/look.md, LOOK-801 to LOOK-814): a crisp
+   instrument panel of hairlines, glass over the stage, and violet light for what the reader is
+   doing. Colours are only the tokens the Signal stylesheet defines (src/render/style.ts), mixed
+   with each other, so the theme switch (LOOK-002) restyles the page without a redraw. */
+:root {
+  --sans: 'Inter', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  /* Hairlines and washes are the ink at a few percent, so they suit both themes. */
+  --hair: color-mix(in srgb, var(--aerie-ink) 9%, transparent);
+  --hair-2: color-mix(in srgb, var(--aerie-ink) 14%, transparent);
+  --wash: color-mix(in srgb, var(--aerie-ink) 4%, transparent);
+  --wash-2: color-mix(in srgb, var(--aerie-ink) 7%, transparent);
+  --glass: color-mix(in srgb, var(--aerie-surface) 78%, transparent);
+  --lift-1: 0 1px 2px color-mix(in srgb, var(--aerie-shadow) 60%, transparent);
+  --lift-2:
+    0 0 0 1px var(--hair), 0 8px 24px color-mix(in srgb, var(--aerie-shadow) 70%, transparent);
+  --lift-3:
+    0 0 0 1px var(--hair-2), 0 24px 60px color-mix(in srgb, var(--aerie-shadow) 80%, transparent),
+    0 0 40px color-mix(in srgb, var(--aerie-glow) 10%, transparent);
+}
+/* In daylight, and on paper, a shadow is a soft tint, not a pool of dark. */
+:root[data-theme='light'] {
+  --lift-1: 0 1px 2px color-mix(in srgb, var(--aerie-shadow) 30%, transparent);
+  --lift-2:
+    0 0 0 1px var(--hair), 0 8px 24px color-mix(in srgb, var(--aerie-shadow) 28%, transparent);
+  --lift-3:
+    0 0 0 1px var(--hair-2), 0 24px 60px color-mix(in srgb, var(--aerie-shadow) 40%, transparent),
+    0 0 40px color-mix(in srgb, var(--aerie-glow) 8%, transparent);
+}
+@media print {
+  :root {
+    --lift-1: none;
+    --lift-2: 0 0 0 1px var(--hair);
+    --lift-3: 0 0 0 1px var(--hair-2);
+  }
+}
 * {
   box-sizing: border-box;
 }
@@ -11,10 +45,10 @@ body {
 body {
   background: var(--aerie-bg);
   color: var(--aerie-ink);
-  font:
-    400 15px 'Source Sans 3',
-    system-ui,
-    sans-serif;
+  font: 400 14px/1.5 var(--sans);
+  letter-spacing: -0.006em;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'cv11', 'ss03';
 }
 button,
 select,
@@ -23,32 +57,37 @@ input {
   color: inherit;
 }
 
-/* LOOK-801: a 58 px top bar; below it a 214 px sidebar, the stage and a 344 px side panel. */
+/* LOOK-801: a 52 px top bar; below it a 232 px sidebar, the stage and a 368 px side panel. */
 .page {
   display: grid;
-  grid-template-rows: 58px minmax(0, 1fr);
+  grid-template-rows: 52px minmax(0, 1fr);
   height: 100vh;
   min-width: 1280px;
 }
 .body {
   display: grid;
-  grid-template-columns: 214px minmax(0, 1fr) 344px;
+  grid-template-columns: 232px minmax(0, 1fr) 368px;
   min-height: 0;
 }
 
-/* LOOK-802: the top bar. */
+/* LOOK-802: the top bar, one dark line with the product mark lit from within. */
 .top {
+  position: relative;
+  z-index: 3;
   display: flex;
   align-items: center;
-  gap: 22px;
-  padding: 0 18px;
-  background: var(--aerie-paper);
-  border-bottom: 3px double var(--aerie-rule);
+  gap: 18px;
+  padding: 0 12px 0 16px;
+  background: var(--aerie-bg);
+  border-bottom: 1px solid var(--hair);
 }
 .brand {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
+  height: 22px;
+  padding-right: 18px;
+  border-right: 1px solid var(--hair);
 }
 .logo {
   fill: none;
@@ -56,16 +95,15 @@ input {
   stroke-width: 1.5;
   stroke-linecap: round;
   stroke-linejoin: round;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--aerie-glow) 70%, transparent));
 }
 .logo .summit {
   fill: var(--aerie-accent);
   stroke: none;
 }
 .word {
-  font:
-    600 21px 'Source Serif 4',
-    Georgia,
-    serif;
+  font: 600 16px var(--sans);
+  letter-spacing: -0.02em;
 }
 .crumb {
   flex: 1;
@@ -73,10 +111,7 @@ input {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  font:
-    400 15px 'Source Serif 4',
-    Georgia,
-    serif;
+  font: 500 13.5px var(--sans);
   color: var(--aerie-muted);
 }
 .crumb .here {
@@ -84,173 +119,210 @@ input {
   font-weight: 600;
 }
 .crumb .slash {
-  padding: 0 8px;
-}
-.audience {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.written {
-  font:
-    italic 400 14px 'Source Serif 4',
-    Georgia,
-    serif;
-  color: var(--aerie-muted);
-}
-.tabs {
-  position: relative;
-  display: flex;
-}
-.tabs button {
-  width: 104px;
-  padding: 8px 0 9px;
-  border: 0;
-  background: none;
-  font:
-    600 14px 'Source Sans 3',
-    system-ui,
-    sans-serif;
-  color: var(--aerie-muted);
-  cursor: pointer;
-}
-.tabs button[aria-selected='true'] {
-  color: var(--aerie-ink);
-}
-.tabs .thumb {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 104px;
-  height: 3px;
-  border-radius: 2px;
-  background: var(--aerie-accent);
-  transition: transform var(--aerie-glide) var(--aerie-ease);
-}
-.tool {
-  padding: 5px 11px;
-  border: 1px solid var(--aerie-ink);
-  border-radius: 3px;
-  background: var(--aerie-paper);
-  font:
-    600 13px 'Source Sans 3',
-    system-ui,
-    sans-serif;
-  cursor: pointer;
+  padding: 0 10px;
+  color: var(--hair-2);
 }
 .tools {
   display: flex;
   gap: 8px;
 }
-/* A fixed width, so the bar's geometry is the same in every face and on every system. */
-.tool.theme {
-  width: 64px;
-}
-/* INT-507: wide enough for "Link copied", so the bar does not move when it says so. */
-.tool.copy {
-  width: 92px;
+.tool {
+  height: 30px;
+  padding: 0 13px;
+  border: 1px solid var(--hair-2);
+  border-radius: 7px;
+  background: var(--wash);
+  font: 500 13px var(--sans);
+  cursor: pointer;
+  transition:
+    background-color var(--aerie-hover) ease,
+    border-color var(--aerie-hover) ease;
 }
 .tool:hover {
+  background: var(--wash-2);
+  border-color: color-mix(in srgb, var(--aerie-ink) 24%, transparent);
+  color: var(--aerie-ink);
+}
+.tool svg,
+.cam svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* Fixed widths, so the bar's geometry is the same in every face and on every system. INT-507: the
+   copy button is wide enough for "Link copied", so the bar does not move when it says so. */
+.tool.copy {
+  width: 100px;
   background: var(--aerie-ink);
-  color: var(--aerie-paper);
+  border-color: var(--aerie-ink);
+  color: var(--aerie-bg);
+}
+.top .tool.copy:hover {
+  background: color-mix(in srgb, var(--aerie-ink) 86%, var(--aerie-bg));
+  color: var(--aerie-bg);
+}
+.tool.edit {
+  width: 64px;
+}
+/* LOOK-002: the theme button, a sun to go light and a moon to go dark. */
+.tool.theme {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  padding: 0;
+}
+.tool:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.tool:disabled:hover {
+  background: var(--wash);
+  color: inherit;
 }
 
-/* LOOK-803: the sidebar. */
+/* LOOK-803: the sidebar, a quiet list with the current item lit. */
 .side-wrap {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  background: var(--aerie-paper);
-  border-right: 1px solid var(--aerie-rule);
+  background: var(--aerie-bg);
+  border-right: 1px solid var(--hair);
 }
 .side {
   flex: 1;
   overflow: auto;
-  padding: 18px 14px;
+  padding: 18px 10px 12px;
 }
 .side section {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 4px;
-  margin-bottom: 18px;
+  gap: 2px;
+  margin-bottom: 22px;
 }
 .side h2 {
-  margin: 0 0 4px 8px;
-  font:
-    600 12px 'Source Sans 3',
-    system-ui,
-    sans-serif;
-  letter-spacing: 0.14em;
+  margin: 0 0 4px 10px;
+  font: 500 11px var(--sans);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--aerie-muted);
 }
-.side select {
-  width: 100%;
-  padding: 4px;
-  border: 1px solid var(--aerie-rule);
-  border-radius: 3px;
-  background: var(--aerie-paper);
-  font:
-    400 14px 'Source Serif 4',
-    Georgia,
-    serif;
-}
 .side .item {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 7px 8px;
+  gap: 10px;
+  min-height: 32px;
+  padding: 6px 10px;
   border: 0;
-  border-radius: 3px;
+  border-radius: 7px;
   background: none;
   text-align: left;
-  font:
-    400 15px 'Source Serif 4',
-    Georgia,
-    serif;
+  font: 500 13.5px/1.3 var(--sans);
+  color: color-mix(in srgb, var(--aerie-ink) 82%, var(--aerie-muted));
   cursor: pointer;
+  transition: background-color var(--aerie-hover) ease;
 }
 .side .item:hover {
-  background: var(--aerie-band-0);
+  background: var(--wash);
+  color: var(--aerie-ink);
 }
 .side .item.on {
-  background: var(--aerie-band-1);
-  box-shadow: inset 3px 0 0 var(--aerie-accent);
+  background: var(--wash-2);
+  color: var(--aerie-ink);
+  box-shadow: inset 0 0 0 1px var(--hair);
+}
+.side .item-title {
+  flex: 1;
+  min-width: 0;
+}
+.side .item-meta {
+  flex: none;
+  font: 400 11px var(--mono);
+  color: var(--aerie-muted);
+  font-variant-numeric: tabular-nums;
+}
+/* Each item's mark: a view is a small square, lit when current; a scenario a live play triangle;
+   a tour a small screen. */
+.side .view-mark {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--aerie-muted);
+  border-radius: 4px;
+}
+.side .item.on .view-mark {
+  border-color: var(--aerie-accent-ink);
+  background: var(--aerie-accent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--aerie-glow) 80%, transparent);
 }
 .side .play {
   flex: none;
   width: 0;
   height: 0;
-  border-left: 7px solid var(--aerie-accent);
+  margin: 0 3px 0 4px;
+  border-left: 7px solid var(--aerie-live);
   border-top: 4.5px solid transparent;
   border-bottom: 4.5px solid transparent;
 }
-.side label {
-  font:
-    400 14px 'Source Serif 4',
-    Georgia,
-    serif;
+.side .present {
+  flex: none;
+  width: 14px;
+  height: 11px;
+  border: 1.4px solid var(--aerie-accent-ink);
+  border-radius: 3px;
+}
+.side-foot {
+  display: grid;
+  gap: 6px;
+  padding: 14px 20px 12px;
+  border-top: 1px solid var(--hair);
+}
+.side-foot:empty {
+  display: none;
+}
+.side-foot .foot-label {
+  margin: 0;
+  font: 500 11px var(--sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--aerie-muted);
 }
-.side .file {
-  display: grid;
-  gap: 4px;
-  margin-top: 4px;
+.side-foot select {
+  width: 100%;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--hair-2);
+  border-radius: 7px;
+  background: var(--wash);
+  font: 500 13px var(--sans);
 }
-.side .file input {
-  font-size: 12px;
+.side-foot .file {
+  position: relative;
+  font: 500 12.5px var(--sans);
+  color: var(--aerie-accent-ink);
+  cursor: pointer;
+}
+.side-foot .file span {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--aerie-accent-ink) 40%, transparent);
+  text-underline-offset: 3px;
+}
+.side-foot .file input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
 }
 .motion {
-  padding: 12px 22px 16px;
-  border-top: 1px solid var(--aerie-rule);
-  font:
-    400 13px 'Source Sans 3',
-    system-ui,
-    sans-serif;
+  padding: 10px 20px 14px;
+  border-top: 1px solid var(--hair);
+  font: 400 12.5px var(--sans);
   color: var(--aerie-muted);
 }
 
-/* The stage: the diagram, placed by the camera (LAYOUT-451, INT-351), over the texture
+/* The stage: the diagram, placed by the camera (LAYOUT-451, INT-351), over the dot grid
    (LOOK-307). The drawing fills the stage, so empty stage can be clicked and dragged. */
 /* Clipped, not hidden: the browser never scrolls the stage behind the camera's back, as it would to
    show a focused element; the camera brings it into view instead (INT-354). */
@@ -275,45 +347,49 @@ input {
 }
 .loading {
   margin: 34px;
-  font:
-    italic 400 15px 'Source Serif 4',
-    Georgia,
-    serif;
+  font: 400 14px var(--sans);
   color: var(--aerie-muted);
 }
 
-/* LOOK-806: the camera buttons at the stage's top right, each a fixed width. */
+/* LOOK-806 and LOOK-808: the stage's own controls float over it as glass. */
+.camera,
+.travel .cam,
+.travel .recent,
+.wording,
+.notice {
+  border: 1px solid var(--hair-2);
+  background: var(--glass);
+  box-shadow: var(--lift-2);
+  backdrop-filter: blur(14px) saturate(140%);
+}
+
+/* LOOK-806: the camera, one group of icon buttons at the stage's top right. */
 .camera {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 16px;
+  right: 16px;
   display: flex;
-  gap: 4px;
+  padding: 3px;
+  border-radius: 9px;
 }
 .camera .cam {
-  width: 34px;
-  height: 28px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 30px;
   padding: 0;
-  border: 1px solid var(--aerie-rule);
-  border-radius: 3px;
-  background: var(--aerie-paper);
-  font:
-    600 14px 'Source Sans 3',
-    system-ui,
-    sans-serif;
+  border: 0;
+  border-radius: 7px;
+  background: none;
   cursor: pointer;
   transition: background-color var(--aerie-hover) ease;
 }
-.camera .cam:last-child {
-  width: 60px;
-  font-size: 13px;
-}
 .camera .cam:hover {
-  background: var(--aerie-band-1);
+  background: var(--wash-2);
 }
 
-/* LOOK-808: Back, Forward and the recent visits at the stage's top left, like the camera buttons.
-   Every part has a fixed width (travel.ts counts on them), so no part takes its size from text. */
+/* LOOK-808: Back, Forward and the recent visits at the stage's top left. Every part has a fixed
+   width (travel.ts counts on them), so no part takes its size from text. */
 .travel {
   position: absolute;
   top: 14px;
@@ -325,25 +401,20 @@ input {
   width: 34px;
   height: 28px;
   padding: 0;
-  border: 1px solid var(--aerie-rule);
-  border-radius: 3px;
-  background: var(--aerie-paper);
-  font:
-    600 16px 'Source Sans 3',
-    system-ui,
-    sans-serif;
+  border-radius: 8px;
+  font: 600 16px var(--sans);
   cursor: pointer;
   transition: background-color var(--aerie-hover) ease;
 }
 .travel .cam:hover {
-  background: var(--aerie-band-1);
+  background: var(--wash-2);
 }
 .travel .cam[aria-disabled='true'] {
   color: var(--aerie-muted);
   cursor: default;
 }
 .travel .cam[aria-disabled='true']:hover {
-  background: var(--aerie-paper);
+  background: var(--glass);
 }
 .travel .recent {
   display: flex;
@@ -351,9 +422,7 @@ input {
   margin: 0 0 0 8px;
   padding: 0;
   list-style: none;
-  border: 1px solid var(--aerie-rule);
-  border-radius: 3px;
-  background: var(--aerie-paper);
+  border-radius: 8px;
 }
 .travel .recent li {
   display: flex;
@@ -375,11 +444,9 @@ input {
   padding: 0 8px;
   overflow: hidden;
   border: 0;
+  border-radius: 7px;
   background: none;
-  font:
-    400 13px 'Source Sans 3',
-    system-ui,
-    sans-serif;
+  font: 400 13px var(--sans);
   color: var(--aerie-muted);
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -387,17 +454,51 @@ input {
   transition: background-color var(--aerie-hover) ease;
 }
 .travel .recent button:hover {
-  background: var(--aerie-band-1);
+  background: var(--wash-2);
   color: var(--aerie-ink);
 }
 .travel .recent button[aria-current='true'] {
-  background: var(--aerie-band-1);
+  background: var(--wash-2);
   color: var(--aerie-ink);
   font-weight: 600;
   cursor: default;
 }
 
-/* Read by screen readers only (INT-105, INT-903). */
+/* LOOK-812 (INT-104): while the diagram is worded for a deeper audience, a chip at the stage's top
+   left says so and offers the way back. It sits below Back and Forward. */
+.wording {
+  position: absolute;
+  top: 54px;
+  left: 14px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 5px 5px 14px;
+  border-radius: 999px;
+  font: 600 13px var(--sans);
+  animation: aerie-drop var(--aerie-glide) var(--aerie-ease) backwards;
+}
+.wording button {
+  height: 26px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--wash-2);
+  font: 600 12.5px var(--sans);
+  cursor: pointer;
+}
+.wording button:hover {
+  background: color-mix(in srgb, var(--aerie-ink) 12%, transparent);
+}
+@keyframes aerie-drop {
+  from {
+    opacity: 0;
+    translate: 0 -6px;
+  }
+}
+
+/* Read by screen readers only (INT-903). */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -417,77 +518,32 @@ input:focus-visible,
 .panel h1:focus-visible,
 .caption-bar:focus-visible,
 .narration-bar:focus-visible {
-  outline: 2px solid var(--aerie-accent);
+  outline: 2px solid var(--aerie-accent-ink);
   outline-offset: 2px;
 }
 .problems {
   margin: 34px;
   padding: 14px 18px;
-  background: var(--aerie-paper);
-  border: 1px solid var(--aerie-rule);
-  border-left: 4px solid var(--aerie-accent);
-  font:
-    400 15px 'Source Serif 4',
-    Georgia,
-    serif;
+  background: var(--aerie-surface);
+  border: 1px solid var(--hair-2);
+  border-left: 3px solid var(--aerie-accent);
+  border-radius: 10px;
+  font: 400 14px/1.5 var(--sans);
 }
 
-/* LOOK-804: the side panel. */
-.panel {
-  overflow: auto;
-  padding: 22px;
-  background: var(--aerie-paper);
-  border-left: 1px solid var(--aerie-rule);
-}
-.panel .kicker {
-  margin: 0;
-  font:
-    600 11.5px 'Source Sans 3',
-    system-ui,
-    sans-serif;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--aerie-accent-ink);
-}
-.panel h1 {
-  margin: 6px 0 10px;
-  font:
-    600 23px/1.2 'Source Serif 4',
-    Georgia,
-    serif;
-}
-.panel .lead {
-  margin: 0 0 12px;
-  font:
-    400 15px/1.5 'Source Serif 4',
-    Georgia,
-    serif;
-}
-.panel code {
-  font:
-    400 14px 'Source Code Pro',
-    ui-monospace,
-    monospace;
-}
-
-/* The stage's notice ("Showing the last version without errors", INT-806 and INT-854) and what is
-   shown over the stage, such as watch mode's error list (INT-852), both below the buttons at the
+/* The stage's notice ("Your last edit has an error...", INT-806 and INT-854) and what is shown
+   over the stage, such as watch mode's error list (INT-852), both below the controls at the
    stage's top (LOOK-806, LOOK-808). */
 .notice {
   position: absolute;
-  top: 52px;
+  top: 54px;
   left: 50%;
   z-index: 1;
   margin: 0;
   padding: 6px 14px;
   transform: translateX(-50%);
-  background: var(--aerie-paper);
-  border: 1px solid var(--aerie-rule);
-  border-left: 4px solid var(--aerie-accent);
-  font:
-    400 14px 'Source Serif 4',
-    Georgia,
-    serif;
+  border-radius: 999px;
+  font: 500 13.5px var(--sans);
   white-space: nowrap;
 }
 .overlay {
@@ -511,21 +567,78 @@ input:focus-visible,
   display: none !important;
 }
 
+/* LOOK-810 (INT-208): the hover card, glass with a lit edge: what a box is and how the deeper
+   wording calls it, at a glance. */
+.peek {
+  position: absolute;
+  z-index: 4;
+  width: 300px;
+  padding: 14px 16px 12px;
+  border: 1px solid var(--hair-2);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--aerie-surface) 88%, transparent);
+  backdrop-filter: blur(18px) saturate(150%);
+  box-shadow: var(--lift-3);
+  pointer-events: none;
+  opacity: 0;
+  translate: -6px 0;
+  transition:
+    opacity var(--aerie-peek) ease,
+    translate var(--aerie-peek) var(--aerie-ease);
+}
+.peek.from-left {
+  translate: 6px 0;
+}
+.peek.on {
+  opacity: 1;
+  translate: 0 0;
+}
+.peek p {
+  margin: 0;
+}
+.peek-kind {
+  font: 500 10.5px var(--mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--aerie-accent-ink);
+}
+.peek .peek-about {
+  margin-top: 6px;
+  font: 400 13.5px/1.55 var(--sans);
+}
+.peek-about code,
+.peek-layers .code {
+  font: 400 12.5px/1.45 var(--mono);
+}
+.peek-layers {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 5px 10px;
+  margin: 10px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--hair);
+}
+.peek-layers dt {
+  padding-top: 2px;
+  font: 500 10px var(--mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--aerie-muted);
+}
+.peek-layers dd {
+  margin: 0;
+  font: 400 13px/1.45 var(--sans);
+  overflow-wrap: anywhere;
+}
+.peek .peek-hint {
+  margin-top: 10px;
+  font: 400 12px var(--sans);
+  color: var(--aerie-muted);
+}
+
 /* INT-801: the split editor takes the sidebar's place, 40% of the window and at least 360 px. */
 .body.editing {
-  grid-template-columns: var(--editor-width, 40vw) minmax(0, 1fr) 344px;
-}
-/* A fixed width, so the bar's geometry is the same in every face and on every system. */
-.tool.edit {
-  width: 64px;
-}
-.tool:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-.tool:disabled:hover {
-  background: var(--aerie-paper);
-  color: inherit;
+  grid-template-columns: var(--editor-width, 40vw) minmax(0, 1fr) 368px;
 }
 .editor-pane {
   position: relative;
@@ -533,14 +646,14 @@ input:focus-visible,
   flex-direction: column;
   min-width: 0;
   min-height: 0;
-  background: var(--aerie-paper);
-  border-right: 1px solid var(--aerie-rule);
+  background: var(--aerie-surface);
+  border-right: 1px solid var(--hair);
 }
 .editor-bar {
   display: flex;
   gap: 8px;
   padding: 10px 14px;
-  border-bottom: 1px solid var(--aerie-rule);
+  border-bottom: 1px solid var(--hair);
 }
 .editor-host {
   flex: 1;
@@ -556,7 +669,7 @@ input:focus-visible,
   cursor: col-resize;
 }
 .divider:hover {
-  background: var(--aerie-rule);
+  background: var(--hair-2);
 }
 
 /* INT-806: the error list below the editor, errors before warnings. */
@@ -567,7 +680,7 @@ input:focus-visible,
   margin: 0;
   padding: 6px 0;
   list-style: none;
-  border-top: 1px solid var(--aerie-rule);
+  border-top: 1px solid var(--hair);
 }
 .errors:empty {
   display: none;
@@ -577,20 +690,17 @@ input:focus-visible,
   width: 100%;
   padding: 5px 14px 5px 12px;
   border: 0;
-  border-left: 4px solid var(--aerie-accent);
+  border-left: 3px solid var(--aerie-accent);
   background: none;
   text-align: left;
-  font:
-    400 14px/1.4 'Source Serif 4',
-    Georgia,
-    serif;
+  font: 400 13.5px/1.45 var(--sans);
   cursor: pointer;
 }
 .errors .warning button {
   border-left-color: var(--aerie-muted);
 }
 .errors button:hover {
-  background: var(--aerie-band-0);
+  background: var(--wash);
 }
 
 /* INT-801: while editing, the breadcrumb's view title opens a menu of views and scenarios. */
@@ -601,7 +711,7 @@ input:focus-visible,
   font: inherit;
   color: inherit;
   cursor: pointer;
-  text-decoration: underline dotted var(--aerie-contour-soft);
+  text-decoration: underline dotted var(--hair-2);
   text-underline-offset: 4px;
 }
 .crumb-menu {
@@ -609,18 +719,16 @@ input:focus-visible,
   margin: 0;
   min-width: 220px;
   padding: 6px;
-  background: var(--aerie-paper);
+  background: var(--aerie-surface);
   color: var(--aerie-ink);
-  border: 1px solid var(--aerie-rule);
-  border-radius: 3px;
+  border: 1px solid var(--hair-2);
+  border-radius: 10px;
+  box-shadow: var(--lift-3);
 }
 .crumb-menu .heading {
   margin: 6px 8px 4px;
-  font:
-    600 12px 'Source Sans 3',
-    system-ui,
-    sans-serif;
-  letter-spacing: 0.14em;
+  font: 500 11px var(--sans);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--aerie-muted);
 }
@@ -629,40 +737,34 @@ input:focus-visible,
   width: 100%;
   padding: 6px 8px;
   border: 0;
-  border-radius: 3px;
+  border-radius: 7px;
   background: none;
   text-align: left;
-  font:
-    400 15px 'Source Serif 4',
-    Georgia,
-    serif;
+  font: 500 13.5px var(--sans);
   cursor: pointer;
 }
 .crumb-menu button:hover {
-  background: var(--aerie-band-0);
+  background: var(--wash-2);
 }
 
-/* INT-802: the editor in Source Code Pro, each line coloured by its kind. Three classes deep, so
+/* INT-802: the editor in JetBrains Mono, each line coloured by its kind. Three classes deep, so
    these win over CodeMirror's own theme. */
 .editor-host .cm-editor {
   height: 100%;
-  background: var(--aerie-paper);
-  color: var(--aerie-edge);
+  background: var(--aerie-surface);
+  color: var(--aerie-ink);
 }
 .editor-host .cm-editor .cm-scroller {
-  font:
-    400 13.5px/20px 'Source Code Pro',
-    ui-monospace,
-    monospace;
+  font: 400 13.5px/20px var(--mono);
 }
 .editor-host .cm-editor .cm-gutters {
-  background: var(--aerie-paper);
+  background: var(--aerie-surface);
   color: var(--aerie-muted);
-  border-right: 1px solid var(--aerie-rule);
+  border-right: 1px solid var(--hair);
 }
 .editor-host .cm-editor .cm-activeLine,
 .editor-host .cm-editor .cm-activeLineGutter {
-  background: var(--aerie-band-0);
+  background: var(--wash);
 }
 .editor-host .cm-editor .cm-cursor {
   border-left-color: var(--aerie-ink);
@@ -671,7 +773,7 @@ input:focus-visible,
   background: var(--aerie-accent-soft) !important;
 }
 .editor-host .cm-editor.cm-focused {
-  outline: 2px solid var(--aerie-accent);
+  outline: 2px solid var(--aerie-accent-ink);
   outline-offset: -2px;
 }
 .editor-host .cm-editor .lines-keyword {
@@ -687,11 +789,12 @@ input:focus-visible,
   color: var(--aerie-muted);
 }
 .editor-host .cm-editor .lines-comment {
-  color: var(--aerie-contour);
+  color: var(--aerie-muted);
+  font-style: italic;
 }
 .editor-host .cm-editor .lines-tag {
   color: var(--aerie-muted);
-  background: var(--aerie-band-0);
+  background: var(--wash-2);
 }
 .editor-host .cm-editor .lines-kind {
   color: var(--aerie-accent-ink);
@@ -722,13 +825,11 @@ input:focus-visible,
   background: var(--aerie-muted);
 }
 .editor-host .cm-editor .cm-tooltip {
-  background: var(--aerie-paper);
+  background: var(--aerie-surface);
   color: var(--aerie-ink);
-  border: 1px solid var(--aerie-rule);
-  font:
-    400 14px 'Source Sans 3',
-    system-ui,
-    sans-serif;
+  border: 1px solid var(--hair-2);
+  border-radius: 8px;
+  font: 400 13.5px var(--sans);
 }
 .editor-host .cm-editor .cm-diagnostic-error {
   border-left-color: var(--aerie-accent);
@@ -737,28 +838,50 @@ input:focus-visible,
   border-left-color: var(--aerie-muted);
 }
 .editor-host .cm-editor .cm-tooltip-autocomplete ul li[aria-selected] {
-  background: var(--aerie-band-1);
+  background: var(--aerie-accent-soft);
   color: var(--aerie-ink);
 }
 .editor-host .cm-editor .cm-completionDetail {
   color: var(--aerie-muted);
 }
 
-.panel section {
-  margin-top: 16px;
-  padding-top: 14px;
-  border-top: 1px solid var(--aerie-rule);
+/* LOOK-804: the side panel. */
+.panel {
+  position: relative;
+  overflow: auto;
+  padding: 24px 24px 32px;
+  background: color-mix(in srgb, var(--aerie-surface) 55%, var(--aerie-bg));
+  border-left: 1px solid var(--hair);
 }
+/* Panel content arrives from a slight blur to sharp. */
+.panel-content > * {
+  animation: aerie-arrive-panel calc(var(--aerie-glide) * 0.9) var(--aerie-ease) backwards;
+}
+.panel-content > :nth-child(2) {
+  animation-delay: var(--aerie-arrive-step);
+}
+.panel-content > :nth-child(n + 3) {
+  animation-delay: calc(var(--aerie-arrive-step) * 2);
+}
+@keyframes aerie-arrive-panel {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+    filter: blur(6px);
+  }
+}
+.panel .kicker,
 .panel h2,
 .panel h3 {
   margin: 0 0 8px;
-  font:
-    600 12px 'Source Sans 3',
-    system-ui,
-    sans-serif;
-  letter-spacing: 0.14em;
+  font: 500 11px var(--mono);
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--aerie-muted);
+}
+.panel .kicker {
+  margin: 0;
+  color: var(--aerie-accent-ink);
 }
 .panel h3 {
   margin-top: 12px;
@@ -767,6 +890,9 @@ input:focus-visible,
   display: flex;
   align-items: center;
   gap: 8px;
+  margin: 8px 0;
+  font: 600 22px/1.2 var(--sans);
+  letter-spacing: -0.022em;
 }
 .panel h1:focus {
   outline: none;
@@ -780,13 +906,22 @@ input:focus-visible,
 }
 .panel p,
 .panel li {
-  font:
-    400 15px/1.5 'Source Serif 4',
-    Georgia,
-    serif;
+  font: 400 14px/1.6 var(--sans);
 }
 .panel p {
   margin: 0 0 10px;
+}
+.panel .lead {
+  margin: 0 0 12px;
+  font: 400 15px/1.55 var(--sans);
+  color: color-mix(in srgb, var(--aerie-ink) 88%, var(--aerie-muted));
+}
+.panel strong {
+  font-weight: 600;
+  color: var(--aerie-ink);
+}
+.panel code {
+  font: 400 13px var(--mono);
 }
 .panel ul {
   margin: 0;
@@ -795,10 +930,12 @@ input:focus-visible,
 }
 .panel .code,
 .panel em.code {
-  font:
-    400 14px/1.5 'Source Code Pro',
-    ui-monospace,
-    monospace;
+  font: 400 13px/1.55 var(--mono);
+}
+.panel section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--hair);
 }
 .panel .sentences li {
   margin-bottom: 8px;
@@ -810,43 +947,23 @@ input:focus-visible,
   margin: 2px 0 0;
   color: var(--aerie-muted);
 }
-/* LOOK-804: names in sentences are links, underlined in contour-soft, accent on hover. */
+.panel-content > p.about {
+  color: var(--aerie-ink);
+}
+/* LOOK-804: names in sentences are links, underlined in violet, violet on hover. */
 .panel .name {
   padding: 0;
   border: 0;
   background: none;
-  font:
-    600 15px 'Source Sans 3',
-    system-ui,
-    sans-serif;
+  font: 500 14px var(--sans);
   text-decoration: underline;
-  text-decoration-color: var(--aerie-contour-soft);
+  text-decoration-color: color-mix(in srgb, var(--aerie-accent-ink) 45%, transparent);
   text-underline-offset: 3px;
   cursor: pointer;
   transition: color var(--aerie-hover) ease;
 }
 .panel .name:hover {
   color: var(--aerie-accent-ink);
-}
-.panel .levels li {
-  display: grid;
-  padding: 6px 8px;
-  border-radius: 3px;
-}
-.panel .levels li.on {
-  background: var(--aerie-band-1);
-}
-.panel .levels .who {
-  font:
-    600 11.5px 'Source Sans 3',
-    system-ui,
-    sans-serif;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--aerie-muted);
-}
-.panel .levels .what {
-  font-weight: 600;
 }
 .panel .inside li {
   display: grid;
@@ -858,86 +975,325 @@ input:focus-visible,
 .panel .line {
   color: var(--aerie-muted);
 }
+
+/* LOOK-809 (INT-204): the cover, the model's title under a violet aurora over a dot grid. */
+.cover {
+  margin: -24px -24px 0;
+  padding: 30px 24px 24px;
+  background:
+    radial-gradient(
+      ellipse 70% 60% at 90% -10%,
+      color-mix(in srgb, var(--aerie-glow) 30%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 60% 50% at 10% -20%,
+      color-mix(in srgb, var(--aerie-live) 14%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(circle at 1px 1px, var(--aerie-grid) 1px, transparent 1.4px) 0 0 / 18px 18px,
+    var(--aerie-bg);
+  border-bottom: 1px solid var(--hair);
+}
+.panel .cover-title {
+  margin: 10px 0;
+  font: 700 30px/1.08 var(--sans);
+  letter-spacing: -0.035em;
+}
+.panel .cover-lead {
+  font: 400 15px/1.55 var(--sans);
+  color: color-mix(in srgb, var(--aerie-ink) 85%, var(--aerie-muted));
+}
+.panel .cover-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 14px 0 18px;
+}
+.cover-stats span {
+  padding: 3px 10px;
+  border: 1px solid var(--hair-2);
+  border-radius: 6px;
+  background: var(--wash);
+  font: 400 11.5px var(--mono);
+  color: var(--aerie-muted);
+}
+/* "Take the tour": the one call to action, a violet gradient with a glow and a light that sweeps
+   across it on hover. */
+.panel .cta {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  width: 100%;
+  height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 9px;
+  background: linear-gradient(135deg, var(--aerie-cta-from), var(--aerie-cta-to));
+  color: var(--aerie-on-accent);
+  font: 600 14px var(--sans);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--aerie-on-accent) 30%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--aerie-glow) 60%, transparent),
+    0 8px 30px color-mix(in srgb, var(--aerie-glow) 45%, transparent);
+  cursor: pointer;
+  transition:
+    translate var(--aerie-hover) var(--aerie-ease),
+    box-shadow var(--aerie-hover) ease;
+}
+.panel .cta::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    color-mix(in srgb, var(--aerie-on-accent) 22%, transparent) 50%,
+    transparent 70%
+  );
+  translate: -100% 0;
+  transition: translate calc(var(--aerie-glide) * 1.4) var(--aerie-ease);
+}
+.panel .cta:hover::after {
+  translate: 100% 0;
+}
+.panel .cta:hover {
+  translate: 0 -1px;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--aerie-on-accent) 30%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--aerie-glow) 80%, transparent),
+    0 10px 40px color-mix(in srgb, var(--aerie-glow) 60%, transparent);
+}
+.panel .cta .play {
+  border-left-color: var(--aerie-on-accent);
+}
+.panel .cta-count {
+  margin-left: auto;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--aerie-shadow) 25%, transparent);
+  font: 500 11.5px var(--mono);
+}
+.panel .this-view {
+  border-top: 0;
+}
+.panel .view-title {
+  margin: 0 0 6px;
+  font: 600 17px/1.3 var(--sans);
+  letter-spacing: -0.015em;
+}
+
+/* Scenario buttons: rows of a list, each with its length. */
 .panel .plays li {
   margin-bottom: 6px;
 }
 .panel .play-scenario {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 8px;
+  width: 100%;
+  height: auto;
+  min-height: 42px;
+  padding: 8px 12px;
+  border-radius: 9px;
+  text-align: left;
+}
+.panel .play-title {
+  flex: 1;
+  font: 500 13.5px var(--sans);
+}
+.panel .play-count {
+  font: 400 11px var(--mono);
+  color: var(--aerie-muted);
 }
 .panel .play {
+  flex: none;
   width: 0;
   height: 0;
-  border-left: 7px solid var(--aerie-accent);
+  border-left: 7px solid var(--aerie-live);
   border-top: 4.5px solid transparent;
   border-bottom: 4.5px solid transparent;
 }
-.panel .tool:hover .play {
-  border-left-color: var(--aerie-paper);
+
+/* LOOK-811 (INT-207): "More technical", each deeper wording a lit layer. */
+.panel .deeper {
+  display: grid;
+  gap: 10px;
+}
+.panel .layer {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--aerie-glow) 7%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--aerie-glow) 22%, transparent);
+}
+.panel .layer + .layer {
+  background: color-mix(in srgb, var(--aerie-live) 6%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--aerie-live) 22%, transparent);
+}
+.panel .layer.entering {
+  animation: aerie-unfold calc(var(--aerie-glide) * 0.8) var(--aerie-ease) backwards;
+}
+@keyframes aerie-unfold {
+  from {
+    opacity: 0;
+    translate: 0 -8px;
+  }
+}
+.panel .layer p {
+  margin: 0 0 4px;
+}
+.panel .layer .layer-who {
+  font: 500 10.5px var(--mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--aerie-muted);
+}
+.panel .layer .layer-name {
+  font: 600 15px/1.3 var(--sans);
+}
+.panel .layer-line {
+  color: var(--aerie-muted);
+}
+.panel .layer .code,
+.panel .layer code {
+  font: 400 13px/1.5 var(--mono);
+}
+.panel .layer .layer-about {
+  margin-top: 6px;
+}
+.panel .deeper-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+}
+.panel .more {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--hair-2);
+  border-radius: 9px;
+  background: var(--wash);
+  font: 500 13.5px var(--sans);
+  cursor: pointer;
+  transition:
+    background-color var(--aerie-hover) ease,
+    border-color var(--aerie-hover) ease,
+    box-shadow var(--aerie-hover) ease;
+}
+.panel .more:hover {
+  border-color: color-mix(in srgb, var(--aerie-glow) 60%, transparent);
+  background: color-mix(in srgb, var(--aerie-glow) 10%, transparent);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--aerie-glow) 20%, transparent);
+}
+.panel .more .chev {
+  width: 7px;
+  height: 7px;
+  border-right: 1.6px solid var(--aerie-accent-ink);
+  border-bottom: 1.6px solid var(--aerie-accent-ink);
+  rotate: 45deg;
+  translate: 0 -2px;
+}
+.panel .more-who {
+  margin-left: auto;
+  font: 400 11px var(--mono);
+  color: var(--aerie-muted);
+}
+.panel .whole,
+.panel .fewer {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: 500 12.5px var(--sans);
+  color: var(--aerie-accent-ink);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--aerie-accent-ink) 45%, transparent);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.panel .fewer {
+  color: var(--aerie-muted);
+}
+.panel .deeper-note {
+  margin: 0;
+  font: 400 14px var(--sans);
+  color: var(--aerie-muted);
 }
 
-/* INT-603 and LOOK-805: the caption bar, 24 px from the stage's sides and 18 px from its bottom. Its
-   height is fixed inside the room a fitted picture leaves for it (LAYOUT-451), so its size never
-   comes from wrapped text. */
-.caption-bar {
+/* LOOK-805 and LOOK-813: the caption and narration bars, glass over the bottom of the stage, lit
+   along the top edge. */
+.caption-bar,
+.narration-bar {
   position: absolute;
   left: 24px;
   right: 24px;
   bottom: 18px;
   z-index: 1;
-  height: 70px;
   overflow-y: auto;
-  padding: 9px 16px;
-  background: var(--aerie-paper);
-  border: 1px solid var(--aerie-rule);
-  border-left: 4px solid var(--aerie-accent);
+  border: 1px solid var(--hair-2);
+  border-radius: 14px;
+  background:
+    linear-gradient(
+        90deg,
+        transparent,
+        color-mix(in srgb, var(--aerie-glow) 70%, transparent),
+        color-mix(in srgb, var(--aerie-live) 60%, transparent),
+        transparent
+      )
+      top / 100% 1px no-repeat,
+    var(--glass);
+  backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: var(--lift-3);
+}
+/* INT-603: the caption bar's height is fixed inside the room a fitted picture leaves for it
+   (LAYOUT-451), so its size never comes from wrapped text. */
+.caption-bar {
+  display: flex;
+  align-items: center;
+  height: 70px;
+  padding: 10px 20px;
+}
+.caption-bar .count {
+  flex: none;
+  margin-right: 10px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--aerie-glow) 18%, transparent);
+  font: 500 12px var(--mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--aerie-accent-ink);
 }
 .caption-text {
   overflow-wrap: anywhere;
   margin: 0;
-  font:
-    400 15px/1.4 'Source Serif 4',
-    Georgia,
-    serif;
+  font: 400 15px/1.45 var(--sans);
 }
 /* MODEL-105: an audience that reads code reads captions in monospace. */
 .caption-text.code {
-  font:
-    400 14px/1.45 'Source Code Pro',
-    ui-monospace,
-    monospace;
+  font: 400 13.5px/1.45 var(--mono);
 }
 .caption-text code {
-  font:
-    400 14px 'Source Code Pro',
-    ui-monospace,
-    monospace;
-}
-.caption-bar .count {
-  display: inline-block;
-  width: 52px;
-  font:
-    600 14px 'Source Sans 3',
-    system-ui,
-    sans-serif;
-  letter-spacing: 0.04em;
-  font-variant-numeric: tabular-nums;
-  color: var(--aerie-accent-ink);
+  font: 400 13.5px var(--mono);
 }
 
 /* INT-602: a playing scenario's side panel. The controls stay in view while the list scrolls. */
 .panel .player {
   position: sticky;
-  top: -22px;
+  top: -24px;
   z-index: 1;
   display: grid;
   gap: 10px;
-  margin: 14px -22px 0;
-  padding: 12px 22px;
-  background: var(--aerie-paper);
-  border-top: 1px solid var(--aerie-rule);
-  border-bottom: 1px solid var(--aerie-rule);
+  margin: 16px -24px 0;
+  padding: 14px 24px;
+  background: color-mix(in srgb, var(--aerie-surface) 70%, var(--aerie-bg));
+  border-top: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
+  backdrop-filter: blur(12px);
 }
 .panel .controls {
   display: flex;
@@ -945,48 +1301,53 @@ input:focus-visible,
 }
 /* Fixed widths, so the controls keep their places as Play turns into Pause. */
 .panel .controls .tool {
-  width: 62px;
-  padding: 5px 0;
+  width: 68px;
+  height: 34px;
+  padding: 0;
 }
-/* LOOK-804: the scenario Play button is filled accent with on-accent text. */
-.panel .play-button {
-  background: var(--aerie-accent);
-  border-color: var(--aerie-accent);
+/* LOOK-804: the scenario's Play button is the violet gradient with on-accent text. */
+.panel .play-button,
+.panel .play-button:hover {
+  background: linear-gradient(135deg, var(--aerie-cta-from), var(--aerie-cta-to));
+  border-color: transparent;
   color: var(--aerie-on-accent);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--aerie-glow) 40%, transparent);
 }
 .panel .tool[aria-disabled='true'] {
   opacity: 0.5;
   cursor: default;
 }
 .panel .tool[aria-disabled='true']:hover {
-  background: var(--aerie-paper);
+  background: var(--wash);
   color: inherit;
 }
 .panel .modes {
   display: flex;
   justify-self: start;
-  border: 1px solid var(--aerie-rule);
-  border-radius: 3px;
+  padding: 3px;
+  border-radius: 9px;
+  background: var(--wash);
+  box-shadow: inset 0 0 0 1px var(--hair);
 }
 .panel .mode {
-  width: 96px;
-  padding: 4px 0;
+  width: 112px;
+  height: 28px;
+  padding: 0;
   border: 0;
+  border-radius: 7px;
   background: none;
-  font:
-    600 13px 'Source Sans 3',
-    system-ui,
-    sans-serif;
+  font: 500 12.5px var(--sans);
   color: var(--aerie-muted);
   cursor: pointer;
   transition: background-color var(--aerie-hover) ease;
 }
 .panel .mode:hover {
-  background: var(--aerie-band-0);
+  background: var(--wash);
 }
 .panel .mode[aria-pressed='true'] {
-  background: var(--aerie-band-1);
+  background: var(--wash-2);
   color: var(--aerie-ink);
+  box-shadow: inset 0 0 0 1px var(--hair-2);
 }
 .panel .steps {
   display: grid;
@@ -1005,67 +1366,59 @@ input:focus-visible,
   width: 100%;
   padding: 7px 8px;
   border: 0;
-  border-radius: 3px;
+  border-radius: 8px;
   background: none;
   text-align: left;
   cursor: pointer;
   transition: background-color var(--aerie-hover) ease;
 }
 .panel .step-choice:hover {
-  background: var(--aerie-band-0);
+  background: var(--wash);
 }
-/* The current step is shaded, earlier steps are marked done. */
+/* The current step is lit, earlier steps are marked done. */
 .panel .steps .now .step-choice {
-  background: var(--aerie-band-1);
-  box-shadow: inset 3px 0 0 var(--aerie-accent);
+  background: color-mix(in srgb, var(--aerie-glow) 10%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--aerie-glow) 35%, transparent);
 }
 .panel .steps .number {
   display: grid;
   place-items: center;
   width: 22px;
   height: 22px;
-  border: 1.6px solid var(--aerie-accent);
+  border: 1px solid var(--hair-2);
   border-radius: 50%;
-  background: var(--aerie-paper);
-  font:
-    600 12px 'Source Sans 3',
-    system-ui,
-    sans-serif;
-  color: var(--aerie-accent-ink);
+  background: var(--aerie-bg);
+  font: 500 11px var(--mono);
+  color: var(--aerie-muted);
 }
 .panel .steps .done .number {
-  background: var(--aerie-accent-soft);
+  border-color: color-mix(in srgb, var(--aerie-accent-ink) 50%, transparent);
+  background: color-mix(in srgb, var(--aerie-glow) 12%, transparent);
+  color: var(--aerie-accent-ink);
 }
 .panel .steps .now .number {
+  border-color: var(--aerie-accent-ink);
   background: var(--aerie-accent);
   color: var(--aerie-on-accent);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--aerie-glow) 70%, transparent);
 }
 .panel .steps .what {
   display: grid;
   gap: 1px;
 }
-/* "{subject} to {object}" in small capitals. */
+/* "{subject} to {object}" in small mono capitals. */
 .panel .steps .ends {
-  font:
-    600 13px 'Source Sans 3',
-    system-ui,
-    sans-serif;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.06em;
+  font: 500 10.5px var(--mono);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
   color: var(--aerie-muted);
 }
 .panel .steps .caption {
-  font:
-    400 14.5px/1.45 'Source Serif 4',
-    Georgia,
-    serif;
+  font: 400 13.5px/1.5 var(--sans);
   overflow-wrap: anywhere;
 }
 .panel .steps .caption.code {
-  font:
-    400 13.5px/1.45 'Source Code Pro',
-    ui-monospace,
-    monospace;
+  font: 400 12.5px/1.5 var(--mono);
 }
 /* Reply steps are in italic. */
 .panel .steps .reply .caption,
@@ -1073,9 +1426,8 @@ input:focus-visible,
   font-style: italic;
 }
 
-/* INT-701: presenting fills the screen (or the window) with the stage. The sidebar, side panel and
-   editor hide; of the top bar only the audience tabs stay, at the top right (INT-001, INT-104), and
-   the camera buttons sit below them. */
+/* INT-701: presenting fills the screen (or the window) with the stage. The top bar, sidebar, side
+   panel and editor hide; the camera stays at the top right. */
 .page.presenting {
   grid-template-rows: minmax(0, 1fr);
 }
@@ -1083,27 +1435,9 @@ input:focus-visible,
 .page.presenting .body.editing {
   grid-template-columns: minmax(0, 1fr);
 }
-.page.presenting .body > :not(.aerie-stage) {
-  display: none;
-}
-/* A fixed width, so the box never takes its size from the text of "Written for". */
+.page.presenting .body > :not(.aerie-stage),
 .page.presenting .top {
-  position: fixed;
-  top: 14px;
-  right: 14px;
-  z-index: 2;
-  justify-content: flex-end;
-  width: 432px;
-  height: 44px;
-  padding: 0 4px 0 14px;
-  border: 1px solid var(--aerie-rule);
-  border-radius: 3px;
-}
-.page.presenting .top > :not(.audience, .sr-only) {
   display: none;
-}
-.page.presenting .camera {
-  top: 72px;
 }
 /* INT-557: a presentation has its own Back and Next. */
 .page.presenting .travel {
@@ -1114,32 +1448,27 @@ input:focus-visible,
   display: none;
 }
 
-/* INT-701 and LOOK-805: the narration bar at the bottom of the stage, like the caption bar but in
-   the presenter's type scale. Its height is fixed inside the room a fitted picture leaves for it
-   (INT-702), so its size never comes from wrapped text; the right end is kept for the controls. */
+/* LOOK-813 (INT-701): the narration bar, in the presenter's type scale. Its height is fixed inside
+   the room a fitted picture leaves for it (INT-702), so its size never comes from wrapped text; the
+   right end is kept for the controls. */
 .narration-bar {
-  position: absolute;
-  left: 24px;
-  right: 24px;
-  bottom: 18px;
-  z-index: 1;
   height: 152px;
-  overflow-y: auto;
-  padding: 14px 268px 14px 20px;
-  background: var(--aerie-paper);
-  border: 1px solid var(--aerie-rule);
-  border-left: 4px solid var(--aerie-accent);
+  padding: 18px 300px 16px 26px;
 }
 .narration-meta {
   display: flex;
+  align-items: center;
   gap: 14px;
   margin: 0;
-  font:
-    600 13px 'Source Sans 3',
-    system-ui,
-    sans-serif;
-  letter-spacing: 0.04em;
+  font: 500 12px var(--sans);
   color: var(--aerie-muted);
+}
+.narration-meta .count {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--aerie-glow) 20%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--aerie-glow) 40%, transparent);
+  font: 500 11.5px var(--mono);
 }
 .narration-meta .count,
 .narration-meta .scenario-count {
@@ -1148,59 +1477,100 @@ input:focus-visible,
 }
 .narration-text {
   overflow-wrap: anywhere;
-  margin: 6px 0 0;
-  font:
-    400 28px/1.35 'Source Serif 4',
-    Georgia,
-    serif;
+  margin: 10px 0 0;
+  font: 500 27px/1.32 var(--sans);
+  letter-spacing: -0.022em;
+}
+.narration-text strong {
+  font-weight: 700;
+  color: var(--aerie-accent-ink);
 }
 /* LOOK-102: an audience that reads code reads the narration in monospace. */
 .narration-text.code {
-  font:
-    400 24px/1.4 'Source Code Pro',
-    ui-monospace,
-    monospace;
+  font: 400 23px/1.4 var(--mono);
+  letter-spacing: 0;
 }
 .narration-text code {
-  font:
-    400 24px 'Source Code Pro',
-    ui-monospace,
-    monospace;
+  font: 400 23px var(--mono);
 }
 .narration-end {
   margin: 6px 0 0;
-  font:
-    italic 400 15px 'Source Serif 4',
-    Georgia,
-    serif;
+  font: 400 14px var(--sans);
   color: var(--aerie-muted);
 }
 
 /* INT-701: Back, Next and Exit at the bottom right, inside the narration bar's right end, each a
-   fixed width. They fade out when the pointer has been still (LOOK-901), and stay while the
-   pointer rests on them or one has the keyboard focus. */
+   fixed width, with the wording button below them (INT-104). They fade out when the pointer has
+   been still (LOOK-901), and stay while the pointer rests on them or one has the keyboard focus. */
 .presenter-controls {
   position: absolute;
-  right: 44px;
-  bottom: 78px;
+  right: 48px;
+  bottom: 40px;
   z-index: 2;
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 74px);
   gap: 6px;
+  padding: 4px;
+  border: 1px solid var(--hair-2);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--aerie-bg) 70%, transparent);
   transition: opacity var(--aerie-presenter-fade) ease;
 }
 .presenter-controls.idle:not(:hover, :focus-within) {
   opacity: 0;
 }
 .presenter-controls .tool {
-  width: 72px;
-  height: 32px;
+  width: 74px;
+  height: 34px;
   padding: 0;
+}
+.presenter-controls .tool[data-control='next'],
+.presenter-controls .tool[data-control='next']:hover {
+  background: linear-gradient(135deg, var(--aerie-cta-from), var(--aerie-cta-to));
+  border-color: transparent;
+  color: var(--aerie-on-accent);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--aerie-glow) 45%, transparent);
+}
+.presenter-controls .tool[data-control='wording'] {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  width: auto;
+  height: 30px;
+  border-style: dashed;
+  background: none;
+  font: 400 11.5px var(--mono);
+  color: var(--aerie-muted);
 }
 .presenter-controls .tool[aria-disabled='true'] {
   opacity: 0.5;
   cursor: default;
 }
 .presenter-controls .tool[aria-disabled='true']:hover {
-  background: var(--aerie-paper);
+  background: var(--wash);
   color: inherit;
+}
+
+/* LOOK-814: printed, the page is the light theme's stage and side panel, without the controls. */
+@media print {
+  .page,
+  .page:not(.presenting) {
+    height: auto;
+    min-width: 0;
+  }
+  .side-wrap,
+  .tools,
+  .camera,
+  .travel,
+  .wording,
+  .peek,
+  .presenter-controls {
+    display: none !important;
+  }
+  .body {
+    grid-template-columns: minmax(0, 1fr) 368px;
+  }
+  .aerie-stage {
+    min-height: 90vh;
+    background-image: none;
+  }
 }

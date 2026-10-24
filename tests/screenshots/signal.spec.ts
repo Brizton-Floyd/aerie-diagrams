@@ -1,21 +1,25 @@
-// Screenshots of Aerie's own drawings in the Contour look (docs/spec/look.md), compared only with
+// Screenshots of Aerie's own drawings in the Signal look (docs/spec/look.md), compared only with
 // Aerie's earlier screenshots (ACC-003, ACC-006): every Lotto view in every audience in both themes
 // at 1600 x 900, the shapes sample, and in the browser, drawn text that fits its reserved space.
 // Update deliberately: `npx playwright test --project screenshots --update-snapshots`.
 import { expect, test } from '@playwright/test';
-import { HIDE_TEXT, choices, openModel, show } from './page.ts';
+import { choices, HIDE_TEXT, openModel, show, useTheme } from './page.ts';
 
-const THEMES = ['light', 'dark'] as const;
+const THEMES = ['dark', 'light'] as const;
 
 test.use({ viewport: { width: 1600, height: 900 } });
 
 for (const theme of THEMES) {
   test.describe(`${theme} theme`, () => {
-    test.use({ colorScheme: theme });
+    test.beforeEach(async ({ page }) => {
+      await useTheme(page, theme);
+    });
 
     test(`LOOK-301 to LOOK-502, LOOK-801 to LOOK-807 and SCOPE-004 every Lotto view in every audience, ${theme}`, async ({
       page,
     }) => {
+      // Nine pictures, each waited on until it is still, and a screenshot of each.
+      test.slow();
       await openModel(page, 'samples/lotto.aerie');
       const { views, audiences } = await choices(page);
       expect(views).toEqual(['big-picture', 'services', 'engineering']);
@@ -81,12 +85,9 @@ for (const model of ['samples/lotto.aerie', 'samples/shapes.aerie']) {
     await openModel(page, model);
     // The bundled faces are the ones drawing (LOOK-101), so drawn widths are the measured ones.
     const loaded = await page.evaluate(() =>
-      [
-        '600 14px "Source Sans 3"',
-        '13.5px "Source Serif 4"',
-        'italic 13.5px "Source Serif 4"',
-        '13.5px "Source Code Pro"',
-      ].map((face) => document.fonts.check(face)),
+      ['600 14px "Inter"', '13.5px "Inter"', '500 13.5px "Inter"', '13.5px "JetBrains Mono"'].map(
+        (face) => document.fonts.check(face),
+      ),
     );
     expect(loaded).toEqual([true, true, true, true]);
     const { views, audiences } = await choices(page);

@@ -4,11 +4,11 @@
 // (ACC-003, ACC-006). Update deliberately: `npx playwright test --project screenshots
 // --update-snapshots`.
 import { expect, test, type Page } from '@playwright/test';
-import { HIDE_TEXT, openModel } from './page.ts';
+import { HIDE_TEXT, openModel, useTheme } from './page.ts';
 
 test.use({ viewport: { width: 1600, height: 900 } });
 
-/** Waits until the tour shows `count` ("4 / 8") and every glide, fade and trail has ended. */
+/** Waits until the tour shows `count` ("4 of 8") and every glide, fade and trail has ended. */
 async function atStep(page: Page, count: string): Promise<void> {
   await expect(page.locator('.narration-bar .narration-meta .count')).toHaveText(count);
   await still(page);
@@ -16,7 +16,17 @@ async function atStep(page: Page, count: string): Promise<void> {
 
 async function still(page: Page): Promise<void> {
   await expect
-    .poll(() => page.evaluate(() => document.getAnimations().length), { timeout: 5000 })
+    .poll(
+      () =>
+        page.evaluate(
+          () =>
+            // The light flowing along a selected line runs without end (LOOK-601).
+            document
+              .getAnimations()
+              .filter((each) => each.effect?.getComputedTiming().iterations !== Infinity).length,
+        ),
+      { timeout: 5000 },
+    )
     .toBe(0);
 }
 
@@ -39,7 +49,9 @@ async function idle(page: Page): Promise<void> {
 
 for (const theme of ['light', 'dark'] as const) {
   test.describe(`${theme} theme`, () => {
-    test.use({ colorScheme: theme });
+    test.beforeEach(async ({ page }) => {
+      await useTheme(page, theme);
+    });
 
     test(`LOOK-603 the tour presented: a focus step, a scenario step and the last step, ${theme}`, async ({
       page,
@@ -47,22 +59,22 @@ for (const theme of ['light', 'dark'] as const) {
       await openModel(page, 'samples/lotto.aerie');
       await page.addStyleTag({ content: HIDE_TEXT });
       await page.locator('button[data-walkthrough="tour"]').click();
-      await atStep(page, '1 / 8');
+      await atStep(page, '1 of 8');
       // Step 4: Services with Engine service open and Pick generation focused, the controls shown.
       for (let at = 1; at < 4; at++) await page.keyboard.press('ArrowRight');
-      await atStep(page, '4 / 8');
+      await atStep(page, '4 of 8');
       await restOnControls(page);
       await still(page);
       await expect(page).toHaveScreenshot(`lotto-tour-4-${theme}.png`);
       // Step 7 at Generate picks' step 9, the controls hidden.
       for (let at = 4; at < 7 + 8; at++) await page.keyboard.press('ArrowRight');
-      await expect(page.locator('.narration-bar .scenario-count')).toHaveText('9/14');
-      await atStep(page, '7 / 8');
+      await expect(page.locator('.narration-bar .scenario-count')).toHaveText('Step 9 of 14');
+      await atStep(page, '7 of 8');
       await idle(page);
       await expect(page).toHaveScreenshot(`lotto-tour-7-9-${theme}.png`);
       // The last step, with "End of the walkthrough" under the narration (INT-706).
       await page.keyboard.press('End');
-      await atStep(page, '8 / 8');
+      await atStep(page, '8 of 8');
       await expect(page.locator('.narration-bar .narration-end')).toBeAttached();
       await idle(page);
       await expect(page).toHaveScreenshot(`lotto-tour-8-${theme}.png`);

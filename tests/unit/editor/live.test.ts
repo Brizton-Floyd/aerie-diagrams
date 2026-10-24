@@ -217,6 +217,8 @@ describe('the error list', () => {
   });
 
   it('INT-806 the stage says it shows an earlier version', () => {
-    expect(KEPT_NOTICE).toBe('Showing the last version without errors');
+    expect(KEPT_NOTICE).toBe(
+      'Your last edit has an error, so this is the last version that worked',
+    );
   });
 });

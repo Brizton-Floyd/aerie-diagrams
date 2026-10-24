@@ -9,7 +9,8 @@ import { h, prose } from './dom.ts';
 import { captionOf } from './scenario.ts';
 
 /** INT-706: what the narration bar says under the narration on the last step. */
-export const END_OF_WALKTHROUGH = 'End of the walkthrough';
+export const END_OF_WALKTHROUGH =
+  'That is the end of the tour. Press Exit, or Esc, to explore on your own.';
 
 /** INT-701: the narration bar of one walkthrough step, for the current audience. */
 export interface Narration {
@@ -41,7 +42,7 @@ export function narrationOf(semantics: Semantics, picture: Picture): Narration |
   // INT-705: a step without narration shows its view's title, or the scenario step's caption.
   const text = told ?? inside?.text ?? semantics.viewTitle(picture.view, audience);
   return {
-    count: `${String(activity.step)} / ${String(pictures.length)}`,
+    count: `${String(activity.step)} of ${String(pictures.length)}`,
     title: walkthroughTitle(semantics, activity.walkthrough, audience),
     text,
     code: semantics.audience(audience).code,
@@ -88,6 +89,8 @@ export interface PresenterActions {
   forward(): void;
   /** INT-703: ends the presentation. */
   exit(): void;
+  /** INT-106: words the presentation for the next audience, round to the first. */
+  wording(): void;
 }
 
 /**
@@ -99,6 +102,7 @@ export class PresenterControls {
   readonly element: HTMLElement;
   private readonly back: HTMLButtonElement;
   private readonly next: HTMLButtonElement;
+  private readonly wordingButton: HTMLButtonElement;
   private timer = 0;
   private active = false;
 
@@ -111,10 +115,14 @@ export class PresenterControls {
     this.next = button('next', 'Next', () => {
       actions.forward();
     });
+    this.wordingButton = button('wording', '', () => {
+      actions.wording();
+    });
     this.element = h(
       'div',
       { class: 'presenter-controls', role: 'group', 'aria-label': 'Present', hidden: true },
       [
+        this.wordingButton,
         this.back,
         this.next,
         button('exit', 'Exit', () => {
@@ -131,7 +139,7 @@ export class PresenterControls {
    * Shows the controls for a step, or hides them with null when nothing is presented. Back and
    * Next say when they would do nothing (INT-706).
    */
-  update(at: { first: boolean; last: boolean } | null): void {
+  update(at: { first: boolean; last: boolean; wording: string } | null): void {
     const was = this.active;
     this.active = at !== null;
     this.element.hidden = at === null;
@@ -141,6 +149,8 @@ export class PresenterControls {
     }
     this.back.setAttribute('aria-disabled', at.first ? 'true' : 'false');
     this.next.setAttribute('aria-disabled', at.last ? 'true' : 'false');
+    this.wordingButton.textContent = at.wording;
+    this.wordingButton.title = 'Word the presentation for the next audience (keys 1 to 6)';
     if (!was) this.wake();
   }
 

@@ -1,7 +1,7 @@
 # Interaction
 
-How a reader explores a diagram and how an author edits one: the audience switch, selecting and the
-side panel, opening in place, the camera, the navigation sidebar, shared links, Back and Forward
+How a reader explores a diagram and how an author edits one: wording for the reader, selecting and
+the side panel, opening in place, the camera, the navigation sidebar, shared links, Back and Forward
 through the reader's visits, scenario playback, presenter-mode walkthroughs, the live split editor and
 watch mode. What is drawn is defined in
 [model.md](model.md), where it is drawn in [layout.md](layout.md), and how it looks in
@@ -12,32 +12,42 @@ Requirement ids: `INT-nnn`. Conventions are in [overview.md](overview.md#reading
 ## The screen
 
 - **INT-001** The page has a top bar, a navigation sidebar on the left, the stage with the diagram in
-  the middle and the side panel on the right ([look.md](look.md#page-chrome)). The audience switch is
-  in the top bar and is always visible, in every mode.
+  the middle and the side panel on the right ([look.md](look.md#page-chrome)). There is no audience
+  switch to choose first: every reader starts with the plainest wording, and the deeper wording is one
+  step away (INT-101, INT-207).
 - **INT-002** The page shows one model. A production build carries one or more models; the query
   parameter `model` chooses one by name (`/?model=lotto`), and without it the first is shown. In watch
   mode the model is the author's file (INT-851).
 - **INT-003** While the model loads, the stage shows "Loading the diagram". When the model has errors
-  and there is no earlier version to show, the stage shows the errors in plain words (INT-806) instead
-  of a diagram.
+  and there is no earlier version to show, the stage shows "Aerie can't draw lotto.aerie yet. Fix these
+  first:" (with the file's name) and the errors in plain words (INT-806) instead of a diagram.
 - **INT-004** Every keyboard shortcut in this document works only when the keyboard focus is not in a
   text field or the editor.
 
-## The audience switch
+## Wording for the reader
 
-- **INT-101** The switch shows one tab per audience, in declared order, labelled with the audience's
-  display name, after the words "Written for". The current audience's tab is marked, with an
-  underline that glides to it.
-- **INT-102** Choosing a tab, or pressing the digit key of its position (1 to 6), switches the
-  audience. Every piece of wording on the page changes to that audience's: names, taglines, labels,
-  the side panel, captions, the step list and narration. Wording fades out and back in (LOOK-901).
+Plain first, more on demand. The model's audiences (LANG-102) are still the levels of wording; the
+reader meets them as layers to uncover rather than as a switch to set first.
+
+- **INT-101** The page reads in the **plain wording**: the first audience the model declares, whatever
+  its `(default)` flag says (LANG-104). The first picture, a link without `aud`, and a presentation
+  without a `for` line all start there.
+- **INT-102** The whole diagram can be worded for another audience: by the side panel's "Word the
+  whole diagram for Engineer" (INT-207), by the digit key of the audience's position (1 to 6), by a
+  link's `aud`, and while presenting by the wording button (INT-106). Every piece of wording on the
+  page then changes to that audience's: names, taglines, labels, the side panel, captions, the step
+  list and narration. Wording fades out and back in (LOOK-901).
 - **INT-103** Nothing moves: no box, line, label or trail changes place or size, and the camera stays
   where it is (RULE-005). The selection, the zoom state, a playing scenario and its current step all
   stay as they were.
-- **INT-104** The switch works the same during scenario playback and while presenting, so the
-  presenter can change the audience live in front of the room.
-- **INT-105** The tabs form an accessible tab list, and a screen reader hears "Now written for
-  Engineer" after a switch.
+- **INT-104** While the diagram is worded for an audience other than the plain one, a chip at the
+  stage's top left says "Worded for Engineer" and offers "Back to plain wording", which words it
+  plainly again. The chip is not shown while presenting.
+- **INT-105** A screen reader hears "Now worded for Engineer" after a change of wording.
+- **INT-106** Wording works the same during scenario playback and while presenting, so the presenter
+  can change it live in front of the room: the narration bar's wording button names the current
+  wording ("Executive wording") and words the presentation for the next audience, round to the first;
+  the digit keys work too.
 
 ## Selecting and the side panel
 
@@ -48,30 +58,50 @@ Requirement ids: `INT-nnn`. Conventions are in [overview.md](overview.md#reading
   edge that carries a relationship with an end in the selected element or inside it.
 - **INT-203** If the selected element stops being drawn because the reader closes a container around
   it, the selection moves to that container (MODEL-603).
-- **INT-204** With nothing selected and nothing playing, the side panel describes the view: the kicker
-  "View", its title, its description, a short "Read it" note ("Click any box to see what it does and
-  how it connects. Use the round button on a box to open it in place. Switch who it is written for at
-  the top; nothing moves."), and a "Play a scenario" list with a button for each scenario.
+- **INT-204** With nothing selected and nothing playing, the side panel opens on the model's **cover**:
+  the kicker "Architecture", the model's title, its description, its size ("19 parts", "3 views",
+  "2 scenarios"), and, when the model has a walkthrough, the button "Take the tour" with its number of
+  steps, which presents the first walkthrough (INT-701). Then the view: "This view" with its title and
+  description; "How to read it" ("Click a box to see what it does and what it talks to. Boxes with a +
+  hold more inside: press it, or double-click the box, to open it right here. Rest the pointer on a box
+  for a quick look."); and "Watch it work", a button for each scenario with its number of steps.
 - **INT-205** With an element selected, the side panel shows, for the current audience:
   1. the kind label (MODEL-005) as the kicker, the icon and name as the title, and the tagline as the
      lead;
   2. the description;
-  3. "At every level": the name and tagline for each audience, the current one shaded;
+  3. "More technical" (INT-207);
   4. "Connections": every relationship with an end in the element or inside it, in model order, as
      sentences (MODEL-305), each followed by its description if it has one. Relationships of kinds the
-     view does not draw follow under "Not drawn in this view". Every element name in a sentence is a
-     link that reveals and selects that element (MODEL-207);
-  5. for a container, "Inside": each child's name (a link) and tagline, then an "Open in place" or
-     "Close in place" button;
-  6. "In scenarios": each scenario the element or anything inside it takes part in, with a button that
-     plays it.
-- **INT-206** Hovering an element's box thickens its outline. Hovering a label shows its full sentences
-  (MODEL-305).
+     view does not draw follow under "Also connected, not drawn in this view". Every element name in a
+     sentence is a link that reveals and selects that element (MODEL-207);
+  5. for a container, "Inside (4)" with its number of children: each child's name (a link) and
+     tagline, then an "Open it here" or "Close it" button;
+  6. "Takes part in": each scenario the element or anything inside it takes part in, with a button that
+     plays it and its number of steps.
+- **INT-206** Hovering an element's box lights its outline (LOOK-306). Hovering a label shows its full
+  sentences (MODEL-305).
+- **INT-207** **More technical** uncovers the deeper wording one layer at a time. The audiences after
+  the current one, in declared order, are its layers; each holds only what that audience words
+  differently from the layer before (its name, its tagline, and its description, or only the
+  paragraphs it adds, LANG-303), and an audience that words the element exactly as the one before adds
+  no layer. The button reads "More technical" and then "Even more technical", with the next layer's
+  name ("Manager wording"); each press opens the next layer below the description, and "Less" closes
+  them all. Under the last open layer, "Word the whole diagram for Engineer" words the diagram for that
+  audience (INT-102). The page remembers how many layers the reader opened and opens the next element
+  as far, for as long as the browser tab lasts. An element worded the same by every later audience has
+  no "More technical"; while the diagram is worded for a deeper audience with no layers left, the panel
+  says "Worded for Engineer." with a link "Back to the plain wording".
+- **INT-208** Resting the pointer on a box for 380 ms shows its **hover card** beside it: the kind label
+  (MODEL-005), the first sentence of its description, how each deeper layer names it ("ENGINEER
+  core-server · Spring Boot module"), and the hint "Click to read more" (with ", double-click to open
+  it" for a container). An open container shows a card only over its header. The card hides when the
+  pointer leaves, presses or turns the wheel, and never shows while presenting. It is hidden from
+  screen readers, which have the same wording in the side panel.
 
 ## Opening in place
 
 - **INT-301** Every drawn container has a round open and close control at the top right of its box: a
-  plus when closed, a minus when open, with the tooltip "Open in place" or "Close in place".
+  plus when closed, a minus when open, with the tooltip "Open it here" or "Close it".
 - **INT-302** Clicking the control, double-clicking the box, or using the side panel's button opens or
   closes the container (MODEL-206). The picture changes with the glide of LAYOUT-402, and the camera
   follows LAYOUT-404: it comes closer to the container and its neighbours at a readable scale instead
@@ -89,9 +119,9 @@ depth.
 
 - **INT-351** The wheel magnifies around the pointer. Dragging the stage moves the picture; a drag
   shorter than 4 px is a click.
-- **INT-352** The camera buttons magnify by 1.25, shrink by 0.8, and "Fit all" fits the whole picture
-  and returns the camera to fit mode, following nothing (LAYOUT-404). The keys `+`, `-` and `0` do the
-  same.
+- **INT-352** The camera buttons "Move closer (+)" magnifies by 1.25, "Move back (-)" shrinks by 0.8,
+  and "Show everything (0)" fits the whole picture and returns the camera to fit mode, following
+  nothing (LAYOUT-404). The keys `+`, `-` and `0` do the same.
 - **INT-353** The scale stays between 0.2 and 2.5. The camera is not part of the picture: a shared link
   opens fitted. Back and Forward bring back the camera of a visit (INT-554).
 - **INT-354** Selecting an element, by a click, a key or a link in the side panel, gently brings it and
@@ -102,14 +132,16 @@ depth.
 ## The navigation sidebar
 
 - **INT-401** The sidebar lists the model's views, scenarios and walkthroughs under the headings
-  "Views", "Scenarios" and "Walkthroughs", each in declared order and titled for the current audience.
-  A heading with nothing under it is left out.
+  "Views", "Scenarios" and "Tours" (readers call a walkthrough a tour), each in declared order and
+  titled for the current audience; scenarios and tours show their number of steps ("14 steps"). A
+  heading with nothing under it is left out.
 - **INT-402** Choosing a view shows it with its default zoom (MODEL-209), clears the selection, stops
   any scenario, and glides from the old picture to the new one (LAYOUT-402), fitting the camera.
 - **INT-403** Choosing a scenario plays it (INT-601). Choosing a walkthrough presents it from its first
   step (INT-701).
-- **INT-404** The current view, or the playing scenario, is marked. At the bottom of the sidebar is the
-  "Reduce motion" checkbox (LOOK-903).
+- **INT-404** The current view, or the playing scenario, is marked. Below the lists, the "Model" footer
+  chooses another bundled model or opens "your own .aerie file" (except in watch mode), and at the
+  bottom of the sidebar is the "Reduce motion" checkbox (LOOK-903).
 
 ## Shared links
 
@@ -142,11 +174,13 @@ walkthrough step.
 - **INT-504** Ids are written as they are; commas and dots are not encoded. Unknown keys are ignored.
 - **INT-505** Opening a link shows its picture directly, without a glide. A part that no longer fits
   the model (a view, element or step that is gone) is dropped (MODEL-603), and the stage shows, for six
-  seconds, "Part of this link no longer matches the diagram, so Aerie is showing the closest picture."
+  seconds, "This link is older than the diagram. Showing the closest picture."
 - **INT-506** Every visit (INT-551) adds an entry to the browser's history, so Back and Forward step
   between visits. Moving the camera, and moving within a playing scenario or a presented walkthrough,
   replace the current entry.
 - **INT-507** The "Copy link" button copies the full address and reads "Link copied" for a moment.
+  When the browser refuses the clipboard it reads "Couldn't copy" instead, and a screen reader hears
+  "Couldn't copy. Use the address bar."
 
 ## Back and Forward
 
@@ -181,7 +215,7 @@ where they were, as they left it, so they never have to find their place again.
 - **INT-556** The visits last as long as the browser tab: a reload keeps them, and going back to an
   earlier diagram's entries finds its visits again. Choosing another diagram, or opening a file,
   starts its visits afresh.
-- **INT-557** Moving within a playing scenario (its steps, Play, the lanes and the audience switch) or
+- **INT-557** Moving within a playing scenario (its steps, Play, the lanes and a change of wording) or
   a presented walkthrough stays in the same visit; they keep their own controls (INT-605, INT-703).
   While presenting, Back, Forward and the list hide with the rest of the chrome (INT-701).
 
@@ -191,40 +225,40 @@ where they were, as they left it, so they never have to find their place again.
   and shows step 1. The breadcrumb adds the scenario's title, and the camera fits with room for the
   caption bar.
 - **INT-602** The side panel shows the kicker "Scenario", its title and description, the controls Back,
-  Play (Pause while playing), Next and Done, a switch between "On the map" and "As lanes", and the
-  numbered list of steps. Each step shows "{subject} to {object}" in small capitals and its caption.
+  Play (Pause while playing), Next and End, a switch between "On the diagram" and "As lanes", and the
+  numbered list of steps. Each step shows "{subject} to {object}" in capitals and its caption.
   The current step is shaded, earlier steps are marked done, and reply steps are in italic. Choosing a
   step jumps to it. The controls stay in view while the list scrolls.
 - **INT-603** A step's **caption** is its description for the current audience or, when it has none,
-  its sentence (MODEL-104). The caption bar shows the step number, "/" and the number of steps, and the
-  caption.
-- **INT-604** On the map, steps 1 to the current one are drawn as the trail (LAYOUT-501 to
+  its sentence (MODEL-104). The caption bar shows "Step 5 of 14" and the caption.
+- **INT-604** On the diagram, steps 1 to the current one are drawn as the trail (LAYOUT-501 to
   LAYOUT-504, LOOK-701 to LOOK-705), the current one drawing itself. As lanes, the stage shows the
   lanes layout (LAYOUT-601 to LAYOUT-607) with the current row marked. Switching between the two
   cross-fades; the step stays the same.
 - **INT-605** Next and the Right arrow go one step forward; Back and the Left arrow one step back. Play
   and Space advance one step every 2.4 s until the last step, then stop; pressing Play on the last step
-  starts again from step 1. Done and Esc end the scenario and return to the view, fitted.
+  starts again from step 1. End and Esc end the scenario and return to the view, fitted.
 - **INT-606** Ending a scenario, switching view, or starting another scenario stops the current one.
 
 ## Presenter-mode walkthroughs
 
 - **INT-701** Presenting a walkthrough fills the screen: Aerie asks for full screen and otherwise fills
-  the window. The sidebar and side panel hide. The stage shows the diagram, a narration bar at the
-  bottom (the step's narration for the current audience, LOOK type scale, with "3 / 8" and the
-  walkthrough's title), the audience tabs at the top right, and Back, Next and Exit at the bottom right,
-  which hide after a few seconds without pointer movement and return when it moves.
+  the window. The top bar, sidebar and side panel hide. The stage shows the diagram, a narration bar at
+  the bottom (the step's narration for the current audience, LOOK type scale, with "3 of 8" and the
+  walkthrough's title), and at its bottom right Back, Next and Exit with the wording button (INT-106)
+  below them, which hide after a few seconds without pointer movement and return when it moves. The
+  sidebar's "Tours" and the cover's "Take the tour" start a presentation.
 - **INT-702** Each step shows its picture (MODEL-501 to MODEL-503) with the glide of LAYOUT-402. A step
   with focus fits the camera to its focus elements with an 80 px margin, never above scale 1.15;
   otherwise the camera fits the whole picture.
 - **INT-703** Right arrow, Page Down, Space and Next go forward; Left arrow, Page Up and Back go back
-  (MODEL-504 inside scenario steps); Home and End go to the first and last step. Digits switch the
-  audience (MODEL-505). Esc, Exit, or leaving full screen ends the presentation.
+  (MODEL-504 inside scenario steps); Home and End go to the first and last step. Digits and the
+  wording button change the wording (INT-106, MODEL-505). Esc, Exit, or leaving full screen ends the presentation.
 - **INT-704** While presenting, clicks do not select, open or close; the reader can still magnify and
   move the camera, and the next step fits it again.
 - **INT-705** A step without narration shows its view's title, or the scenario step's caption.
-- **INT-706** On the last step, Next does nothing, and the narration bar shows "End of the
-  walkthrough" under the narration.
+- **INT-706** On the last step, Next does nothing, and the narration bar shows "That is the end of the
+  tour. Press Exit, or Esc, to explore on your own." under the narration.
 - **INT-707** Ending the presentation returns to reading at the same view, zoom and audience, with
   nothing focused and no scenario playing.
 
@@ -235,7 +269,7 @@ where they were, as they left it, so they never have to find their place again.
   the live diagram and side panel on the right. While editing, the breadcrumb's view title opens a
   menu of views, scenarios and walkthroughs. "Done" closes the editor.
 - **INT-802** The editor shows line numbers and colours each line by its kind (keywords, ids,
-  rewordings, descriptions, comments, tags and kinds), in Source Code Pro.
+  rewordings, descriptions, comments, tags and kinds), in JetBrains Mono.
 - **INT-803** Pressing Enter keeps the indent, and adds two spaces after a line that opens a block (a
   `model`, `system`, element, `view`, `scenario`, `walkthrough` or walkthrough `step` line). Tab and Shift+Tab
   indent and outdent by two spaces.
@@ -247,7 +281,7 @@ where they were, as they left it, so they never have to find their place again.
   updates with the glide of LAYOUT-402, keeping the view, audience, zoom state and selection wherever
   their ids still exist (MODEL-603).
 - **INT-806** With errors, the diagram keeps the last version without errors and says so at the top of
-  the stage ("Showing the last version without errors"). Below the editor, an error list shows each
+  the stage ("Your last edit has an error, so this is the last version that worked"). Below the editor, an error list shows each
   diagnostic as "Line 12, column 5: " and its message (LANG-903), errors before warnings. Choosing one
   moves the cursor to it. In the text, each diagnostic is underlined with a wavy line (`accent` for
   errors, `muted` for warnings) and marked in the margin, and hovering shows its message. Warnings never

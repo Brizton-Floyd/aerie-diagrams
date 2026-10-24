@@ -77,11 +77,11 @@ are in [overview.md](overview.md#reading-this-spec).
 | rules  | Edge crossings, bends and fit scale against the committed baseline; timings reported                              | SCORE-001 to SCORE-003, LAYOUT-901 |
 | golden | Layout results (boxes, routes, label boxes) for every sample, view and zoom state                                 | LAYOUT-003                         |
 
-### A5: Contour renderer
+### A5: Signal renderer (Contour until decision 0007)
 
 | Suite       | What it proves                                                                                                   | Requirements                               |
 | ----------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| unit        | Tokens for both themes, and contrast computed from them                                                          | LOOK-001 to LOOK-013, SCORE-004            |
+| unit        | Tokens for both themes, dark the default, and contrast computed from them                                        | LOOK-001 to LOOK-013, SCORE-004            |
 | unit        | Type scale, box anatomy, shapes, icons, relationship and selection styles in the drawing code                    | LOOK-101 to LOOK-603                       |
 | golden      | The drawn SVG (numbers rounded, ids stable) for every sample, view and audience; the stylesheet with both themes | LOOK-201 to LOOK-503                       |
 | screenshots | Every Lotto view in every audience in both themes at 1600 x 900, and one sample of each shape                    | LOOK-301 to LOOK-502, LOOK-801 to LOOK-807 |
@@ -89,12 +89,12 @@ are in [overview.md](overview.md#reading-this-spec).
 
 ### A6: Interactions
 
-| Suite       | What it proves                                                                                 | Requirements                                 |
-| ----------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------- |
-| unit        | The transition plan (who glides, fades in, leaves, when lines return), fitting and the camera  | LAYOUT-401 to LAYOUT-455, INT-351 to INT-354 |
-| journeys    | Audience switch, select and side panel, open in place, camera, keyboard and screen reader text | INT-001 to INT-304, INT-901 to INT-905       |
-| journeys    | Reduced motion makes every change instant; an accessibility audit finds no problems            | LOOK-901 to LOOK-903, SCORE-005              |
-| screenshots | A selection, and an open container                                                             | LOOK-601, LOOK-602                           |
+| Suite       | What it proves                                                                                                                                  | Requirements                                 |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| unit        | The transition plan (who glides, fades in, leaves, when lines return), fitting and the camera                                                   | LAYOUT-401 to LAYOUT-455, INT-351 to INT-354 |
+| journeys    | Plain wording first, More technical, the hover card and the chip; select and side panel, open in place, camera, keyboard and screen reader text | INT-001 to INT-304, INT-901 to INT-905       |
+| journeys    | Reduced motion makes every change instant; an accessibility audit finds no problems                                                             | LOOK-901 to LOOK-903, SCORE-005              |
+| screenshots | A selection, and an open container                                                                                                              | LOOK-601, LOOK-602                           |
 
 ### A7: Navigation sidebar and shared links
 
@@ -300,6 +300,21 @@ to another part of the diagram, and the reader had to search for where they had 
 | unit        | Visits in history order: new, replaced, gone back to, the recent ones, kept for a reload, named per audience | INT-551 to INT-556              |
 | journeys    | Back, Forward, the recent visits, the keys and the browser bring back the exact picture and camera           | JOURNEY-011, INT-551 to INT-557 |
 | screenshots | Back, Forward and the recent visits at the stage's top left                                                  | LOOK-808                        |
+
+### After v1: Signal and plain wording first
+
+The owner chose the Signal look and plain wording first after reviewing Contour (decision
+[0007](../decisions/0007-signal-look.md), read log `signal.md`).
+
+| Suite       | What it proves                                                                                                           | Requirements                               |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
+| unit        | Both themes' tokens and contrast, the opacity tokens, no colour outside the tokens in the drawing or the page            | LOOK-001 to LOOK-014, SCORE-004            |
+| journeys    | Dark by default; the theme button switches to light, redraws nothing and is remembered; printing is light                | LOOK-002, LOOK-814                         |
+| journeys    | Plain first with no switch; the chip and "Back to plain wording"; the presenter's wording button                         | INT-001, INT-101 to INT-106                |
+| journeys    | More technical: layers in turn, only what changes, the depth kept for the session, whole-diagram wording; the hover card | INT-207, INT-208                           |
+| journeys    | The cover and "Take the tour"; the top bar, sidebar and side panel measurements; the first drawing arrives once          | INT-204, LOOK-801 to LOOK-809, LOOK-904    |
+| journeys    | An accessibility audit finds no problems in either theme, in every wording, with every layer open                        | LOOK-014, SCORE-005                        |
+| screenshots | Every Lotto view in every wording in both themes, a selection, a scenario, a tour step                                   | LOOK-301 to LOOK-706, LOOK-801 to LOOK-813 |
 
 ## Browser journeys
 

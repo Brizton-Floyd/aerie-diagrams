@@ -1,305 +1,346 @@
-<?xml-stylesheet href="../contour.css" type="text/css"?>
-<svg xmlns="http://www.w3.org/2000/svg" class="aerie" viewBox="0 0 1442 1396" width="1442" height="1396" overflow="visible" role="img" aria-label="The Lotto suite: Services" data-view="services" data-audience="exec">
+<?xml-stylesheet href="../signal.css" type="text/css"?>
+<svg xmlns="http://www.w3.org/2000/svg" class="aerie" viewBox="0 0 1470 1396" width="1470" height="1396" overflow="visible" role="img" aria-label="The Lotto suite: Services" data-view="services" data-audience="exec">
   <defs>
     <pattern id="aerie-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
       <rect class="hatch-bg" width="7" height="7"/>
       <path class="hatch-line" d="M0 0V7"/>
     </pattern>
+    <radialGradient id="aerie-dawn" cx="0.18" cy="0" r="1.05" fx="0.12" fy="0">
+      <stop class="dawn-0" offset="0"/>
+      <stop class="dawn-1" offset="0.55"/>
+      <stop class="dawn-2" offset="1"/>
+    </radialGradient>
   </defs>
   <g class="boxes">
-    <g class="node leaf person" data-id="user" transform="translate(556 29)">
+    <g class="node leaf person" data-id="user" transform="translate(554 29)">
       <rect class="shape" width="178" height="59" rx="29.5"/>
       <rect class="ring" x="-3" y="-3" width="184" height="65" rx="32.5"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="person" transform="translate(12 12) scale(0.34375)">
         <circle cx="32" cy="21" r="10"/>
         <path d="M12 56c0-12 9-20 20-20s20 8 20 20"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="28">User</text>
+      <text class="t-name" x="44" y="26" data-width="32">User</text>
       <text class="t-tagline" x="44" y="44" data-width="105">Using a browser</text>
     </g>
     <g class="node open depth-0" data-id="suite" transform="translate(12 174)">
-      <rect class="shape" width="1193.5" height="1195" rx="18"/>
-      <rect class="inner" x="5" y="5" width="1183.5" height="1185" rx="13"/>
-      <rect class="ring" x="-3" y="-3" width="1199.5" height="1201" rx="21"/>
+      <rect class="shape" width="1221.5" height="1195" rx="14"/>
+      <rect class="dawn" width="1221.5" height="1195" rx="14"/>
+      <rect class="ring" x="-3" y="-3" width="1227.5" height="1201" rx="17"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="stack" transform="translate(12 12) scale(0.34375)">
         <path d="M32 9 56 21 32 33 8 21Z"/>
         <path d="M8 31l24 12 24-12"/>
         <path d="M8 41l24 12 24-12"/>
       </g>
-      <g class="control" transform="translate(1172.5 21)">
+      <g class="control" transform="translate(1200.5 21)">
         <circle r="9"/>
         <path d="M-4 0H4"/>
       </g>
     </g>
-    <g class="node leaf" data-id="website" transform="translate(503.5 244)">
-      <rect class="shape" width="283" height="59" rx="4"/>
-      <rect class="ring" x="-3" y="-3" width="289" height="65" rx="7"/>
+    <g class="node leaf" data-id="website" transform="translate(501.83 244)">
+      <rect class="shape" width="283" height="59" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="289" height="65" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="web" transform="translate(12 12) scale(0.34375)">
         <rect x="8" y="11" width="48" height="42" rx="5"/>
         <path d="M8 21h48"/>
         <path d="M27 29l-7 7 7 7"/>
         <path d="M37 29l7 7-7 7"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="49">Website</text>
-      <text class="t-tagline" x="44" y="44" data-width="214">Picks a game, generates numbers</text>
+      <text class="t-name" x="44" y="26" data-width="56">Website</text>
+      <text class="t-tagline" x="44" y="44" data-width="217">Picks a game, generates numbers</text>
     </g>
-    <g class="node leaf" data-id="screen-api" transform="translate(522 364)">
-      <rect class="shape" width="246" height="76" rx="4"/>
-      <rect class="ring" x="-3" y="-3" width="252" height="82" rx="7"/>
+    <g class="node leaf" data-id="screen-api" transform="translate(518.33 364)">
+      <rect class="shape" width="250" height="76" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="256" height="82" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="api" transform="translate(12 12) scale(0.34375)">
         <rect x="26" y="18" width="14" height="28" rx="3"/>
         <path d="M7 25h19M7 39h19"/>
         <path d="M40 32h16"/>
         <path d="M50 26l6 6-6 6"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="106">Website back end</text>
-      <text class="t-tagline" x="44" y="44" data-width="157">Gets each screen its data</text>
+      <text class="t-name" x="44" y="26" data-width="122">Website back end</text>
+      <text class="t-tagline" x="44" y="44" data-width="163">Gets each screen its data</text>
     </g>
     <g class="node open depth-1" data-id="engine" transform="translate(30 506)">
-      <rect class="shape" width="774" height="304" rx="18"/>
-      <rect class="inner" x="5" y="5" width="764" height="294" rx="13"/>
-      <rect class="ring" x="-3" y="-3" width="780" height="310" rx="21"/>
+      <rect class="shape" width="774.33" height="304" rx="14"/>
+      <rect class="dawn" width="774.33" height="304" rx="14"/>
+      <rect class="ring" x="-3" y="-3" width="780.33" height="310" rx="17"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="gear" transform="translate(12 12) scale(0.34375)">
         <path d="M28.1 16.5 29 10.7h6l.9 5.8 4.3 1.8 4.7-3.5 4.3 4.3-3.5 4.7 1.8 4.3 5.8.9v6l-5.8.9-1.8 4.3 3.5 4.7-4.3 4.3-4.7-3.5-4.3 1.8-.9 5.8h-6l-.9-5.8-4.3-1.8-4.7 3.5-4.3-4.3 3.5-4.7-1.8-4.3-5.8-.9v-6l5.8-.9 1.8-4.3-3.5-4.7 4.3-4.3 4.7 3.5Z"/>
         <circle cx="32" cy="32" r="6"/>
       </g>
-      <g class="control" transform="translate(753 21)">
+      <g class="control" transform="translate(753.33 21)">
         <circle r="9"/>
         <path d="M-4 0H4"/>
       </g>
     </g>
-    <g class="node closed" data-id="engine-service" transform="translate(504 576)">
-      <rect class="shape" width="282" height="96" rx="8"/>
-      <rect class="inner" x="5" y="5" width="272" height="86" rx="3"/>
-      <rect class="ring" x="-3" y="-3" width="288" height="102" rx="11"/>
+    <g class="node closed" data-id="engine-service" transform="translate(500.33 576)">
+      <rect class="shape" width="286" height="96" rx="10"/>
+      <rect class="ring" x="-3" y="-3" width="292" height="102" rx="13"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="module" transform="translate(12 12) scale(0.34375)">
         <path d="M32 8 53 20v24L32 56 11 44V20Z"/>
         <path d="M11 20l21 12 21-12"/>
         <path d="M32 32v24"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="87">Engine service</text>
-      <text class="t-tagline" x="44" y="44" data-width="198">Answers requests and does the</text>
-      <text class="t-tagline" x="44" y="61" data-width="34">work</text>
-      <text class="t-chip" x="44" y="79" data-width="80">4 parts inside</text>
-      <g class="control" transform="translate(261 21)">
+      <text class="t-name" x="44" y="26" data-width="100">Engine service</text>
+      <text class="t-tagline" x="44" y="44" data-width="202">Answers requests and does the</text>
+      <text class="t-tagline" x="44" y="61" data-width="32">work</text>
+      <text class="t-chip" x="44" y="79" data-width="88">4 parts inside</text>
+      <g class="control" transform="translate(265 21)">
         <circle r="9"/>
         <path d="M-4 0H4M0-4V4"/>
       </g>
     </g>
-    <g class="node leaf" data-id="strategies" transform="translate(171 733)">
-      <rect class="shape" width="248" height="59" rx="4"/>
-      <rect class="ring" x="-3" y="-3" width="254" height="65" rx="7"/>
+    <g class="node leaf" data-id="strategies" transform="translate(172 733)">
+      <rect class="shape" width="246" height="59" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="252" height="65" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="books" transform="translate(12 12) scale(0.34375)">
         <path d="M7 55h50"/>
         <rect x="12" y="17" width="9" height="38" rx="1.5"/>
         <rect x="23" y="12" width="9" height="43" rx="1.5"/>
         <path d="M35.5 19.5l8.7-2.3 9.6 35.6-8.7 2.4Z"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="105">Strategies library</text>
-      <text class="t-tagline" x="44" y="44" data-width="192">The number-picking methods</text>
+      <text class="t-name" x="44" y="26" data-width="117">Strategies library</text>
+      <text class="t-tagline" x="44" y="44" data-width="190">The number-picking methods</text>
     </g>
-    <g class="node leaf" data-id="formats" transform="translate(208 594.5)">
-      <rect class="shape" width="276" height="59" rx="4"/>
-      <rect class="ring" x="-3" y="-3" width="282" height="65" rx="7"/>
+    <g class="node leaf" data-id="formats" transform="translate(198.33 594.5)">
+      <rect class="shape" width="282" height="59" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="288" height="65" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="module" transform="translate(12 12) scale(0.34375)">
         <path d="M32 8 53 20v24L32 56 11 44V20Z"/>
         <path d="M11 20l21 12 21-12"/>
         <path d="M32 32v24"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="124">Shared data formats</text>
-      <text class="t-tagline" x="44" y="44" data-width="220">The shapes of requests and results</text>
+      <text class="t-name" x="44" y="26" data-width="138">Shared data formats</text>
+      <text class="t-tagline" x="44" y="44" data-width="226">The shapes of requests and results</text>
     </g>
-    <g class="node leaf" data-id="legacy" transform="translate(439 733)">
-      <rect class="shape" width="243" height="59" rx="4"/>
-      <rect class="ring" x="-3" y="-3" width="249" height="65" rx="7"/>
+    <g class="node leaf" data-id="legacy" transform="translate(438 733)">
+      <rect class="shape" width="243" height="59" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="249" height="65" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="monitor" transform="translate(12 12) scale(0.34375)">
         <rect x="8" y="11" width="48" height="32" rx="3"/>
         <path d="M32 43v9M21 53h22"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="145">Legacy desktop support</text>
-      <text class="t-tagline" x="44" y="44" data-width="182">Kept for the old desktop app</text>
+      <text class="t-name" x="44" y="26" data-width="165">Legacy desktop support</text>
+      <text class="t-tagline" x="44" y="44" data-width="183">Kept for the old desktop app</text>
     </g>
-    <g class="node open depth-1" data-id="store" transform="translate(542.5 898)">
-      <rect class="shape" width="645" height="448" rx="18"/>
-      <rect class="inner" x="5" y="5" width="635" height="438" rx="13"/>
-      <rect class="ring" x="-3" y="-3" width="651" height="454" rx="21"/>
+    <g class="node open depth-1" data-id="store" transform="translate(541.5 898)">
+      <rect class="shape" width="674" height="448" rx="14"/>
+      <rect class="dawn" width="674" height="448" rx="14"/>
+      <rect class="ring" x="-3" y="-3" width="680" height="454" rx="17"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="cylinder" transform="translate(12 12) scale(0.34375)">
         <path d="M14 14c0-3.3 8-6 18-6s18 2.7 18 6-8 6-18 6-18-2.7-18-6Z"/>
         <path d="M14 14v36c0 3.3 8 6 18 6s18-2.7 18-6V14"/>
         <path d="M14 26c0 3.3 8 6 18 6s18-2.7 18-6"/>
         <path d="M14 38c0 3.3 8 6 18 6s18-2.7 18-6"/>
       </g>
-      <g class="control" transform="translate(624 21)">
+      <g class="control" transform="translate(653 21)">
         <circle r="9"/>
         <path d="M-4 0H4"/>
       </g>
     </g>
-    <g class="node leaf" data-id="history-service" transform="translate(600.5 1132)">
-      <rect class="shape" width="264" height="76" rx="4"/>
-      <rect class="ring" x="-3" y="-3" width="270" height="82" rx="7"/>
+    <g class="node leaf" data-id="history-service" transform="translate(621.5 1132)">
+      <rect class="shape" width="268" height="76" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="274" height="82" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="history" transform="translate(12 12) scale(0.34375)">
         <path d="M14.5 24A19 19 0 1 1 13 34"/>
         <path d="M8 18l6.5 6.5L21 18"/>
         <path d="M33 21v12l8 5"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="123">Draw history service</text>
-      <text class="t-tagline" x="44" y="44" data-width="208">Answers requests for past draws</text>
+      <text class="t-name" x="44" y="26" data-width="140">Draw history service</text>
+      <text class="t-tagline" x="44" y="44" data-width="212">Answers requests for past draws</text>
     </g>
-    <g class="node leaf" data-id="updater" transform="translate(843.83 968)">
-      <rect class="shape" width="283" height="76" rx="4"/>
-      <rect class="ring" x="-3" y="-3" width="289" height="82" rx="7"/>
+    <g class="node leaf" data-id="updater" transform="translate(867.83 968)">
+      <rect class="shape" width="283" height="76" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="289" height="82" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="refresh" transform="translate(12 12) scale(0.34375)">
         <path d="M49 25A18 18 0 0 0 16 21"/>
         <path d="M15 39a18 18 0 0 0 33 4"/>
         <path d="M51 13v12H39"/>
         <path d="M13 51V39h12"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="96">Results updater</text>
-      <text class="t-tagline" x="44" y="44" data-width="191">Refreshes every game every 2</text>
-      <text class="t-tagline" x="44" y="61" data-width="38">hours</text>
+      <text class="t-name" x="44" y="26" data-width="107">Results updater</text>
+      <text class="t-tagline" x="44" y="44" data-width="196">Refreshes every game every 2</text>
+      <text class="t-tagline" x="44" y="61" data-width="37">hours</text>
     </g>
-    <g class="node leaf" data-id="reader" transform="translate(895.5 1132)">
-      <rect class="shape" width="274" height="76" rx="4"/>
-      <rect class="ring" x="-3" y="-3" width="280" height="82" rx="7"/>
+    <g class="node leaf" data-id="reader" transform="translate(915.5 1132)">
+      <rect class="shape" width="282" height="76" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="288" height="82" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="document" transform="translate(12 12) scale(0.34375)">
         <path d="M17 8h21l10 10v38H17Z"/>
         <path d="M38 8v10h10"/>
         <path d="M24 31h17M24 40h17M24 49h10"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="87">Results reader</text>
-      <text class="t-tagline" x="44" y="44" data-width="218">Downloads and saves each game's</text>
-      <text class="t-tagline" x="44" y="61" data-width="44">results</text>
+      <text class="t-name" x="44" y="26" data-width="98">Results reader</text>
+      <text class="t-tagline" x="44" y="44" data-width="226">Downloads and saves each game's</text>
+      <text class="t-tagline" x="44" y="61" data-width="43">results</text>
     </g>
-    <g class="node leaf" data-id="saved-draws" transform="translate(857.5 1269)">
-      <rect class="shape" width="194" height="59" rx="4"/>
-      <rect class="ring" x="-3" y="-3" width="200" height="65" rx="7"/>
+    <g class="node leaf" data-id="saved-draws" transform="translate(880.17 1269)">
+      <rect class="shape" width="194" height="59" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="200" height="65" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="archive" transform="translate(12 12) scale(0.34375)">
         <rect x="9" y="11" width="46" height="11" rx="2"/>
         <path d="M13 22v30h38V22"/>
         <path d="M27 32h10"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="77">Saved draws</text>
+      <text class="t-name" x="44" y="26" data-width="88">Saved draws</text>
       <text class="t-tagline" x="44" y="44" data-width="114">One file per game</text>
     </g>
-    <g class="node leaf external" data-id="texas" transform="translate(1089 12)">
-      <rect class="shape" width="262" height="76" rx="4"/>
-      <rect class="ring" x="-3" y="-3" width="268" height="82" rx="7"/>
+    <g class="node leaf external" data-id="texas" transform="translate(1118 12)">
+      <rect class="shape" width="259" height="76" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="265" height="82" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="building" transform="translate(12 12) scale(0.34375)">
         <path d="M8 56h48"/>
         <path d="M16 56V10h32v46"/>
         <path d="M24 18h4M36 18h4M24 27h4M36 27h4M24 36h4M36 36h4"/>
         <path d="M29 56V46h6v10"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="132">Texas Lottery website</text>
-      <text class="t-tagline" x="44" y="44" data-width="206">Publishes winning numbers per</text>
-      <text class="t-tagline" x="44" y="61" data-width="35">game</text>
+      <text class="t-name" x="44" y="26" data-width="151">Texas Lottery website</text>
+      <text class="t-tagline" x="44" y="44" data-width="201">Publishes winning numbers per</text>
+      <text class="t-tagline" x="44" y="61" data-width="36">game</text>
     </g>
   </g>
   <g class="edges">
     <g class="edge" data-id="user-&gt;website">
-      <path class="line" d="M645 88L645 244"/>
-      <path class="arrow" d="M640 232L645 244L650 232"/>
+      <path class="line" d="M643 88L643 244"/>
+      <path class="flow" d="M643 88L643 244"/>
+      <path class="arrow" d="M638 232L643 244L648 232"/>
     </g>
     <g class="edge" data-id="website-&gt;screen-api">
-      <path class="line" d="M645 303L645 364"/>
-      <path class="arrow" d="M640 352L645 364L650 352"/>
+      <path class="line" d="M643.33 303L643.33 364"/>
+      <path class="flow" d="M643.33 303L643.33 364"/>
+      <path class="arrow" d="M638.33 352L643.33 364L648.33 352"/>
     </g>
     <g class="edge" data-id="screen-api-&gt;engine-service">
-      <path class="line" d="M645 440L645 576"/>
-      <path class="arrow" d="M640 564L645 576L650 564"/>
+      <path class="line" d="M643.33 440L643.33 576"/>
+      <path class="flow" d="M643.33 440L643.33 576"/>
+      <path class="arrow" d="M638.33 564L643.33 576L648.33 564"/>
     </g>
     <g class="edge" data-id="engine-service-&gt;strategies">
-      <path class="line" d="M598 672L598 677Q598 682 593 682L304 682Q295 682 295 691L295 733"/>
+      <path class="line" d="M595.67 672L595.67 677Q595.67 682 590.67 682L304 682Q295 682 295 691L295 733"/>
+      <path class="flow" d="M595.67 672L595.67 677Q595.67 682 590.67 682L304 682Q295 682 295 691L295 733"/>
       <path class="arrow" d="M290 721L295 733L300 721"/>
     </g>
     <g class="edge" data-id="engine-service-&gt;history-service">
-      <path class="line" d="M692 672L692 874Q692 883 683 883L580.5 883Q571.5 883 571.5 892L571.5 1103Q571.5 1112 580.5 1112L723.5 1112Q732.5 1112 732.5 1121L732.5 1132"/>
-      <path class="arrow" d="M727.5 1120L732.5 1132L737.5 1120"/>
+      <path class="line" d="M691 672L691 874Q691 883 682 883L579.5 883Q570.5 883 570.5 892L570.5 1103Q570.5 1112 579.5 1112L746.5 1112Q755.5 1112 755.5 1121L755.5 1132"/>
+      <path class="flow" d="M691 672L691 874Q691 883 682 883L579.5 883Q570.5 883 570.5 892L570.5 1103Q570.5 1112 579.5 1112L746.5 1112Q755.5 1112 755.5 1121L755.5 1132"/>
+      <path class="arrow" d="M750.5 1120L755.5 1132L760.5 1120"/>
     </g>
     <g class="edge" data-id="legacy-&gt;history-service">
-      <path class="line" d="M560.5 792L560.5 1113Q560.5 1122 569.5 1122L661.5 1122Q666.5 1122 666.5 1127L666.5 1132"/>
-      <path class="arrow" d="M661.5 1120L666.5 1132L671.5 1120"/>
+      <path class="line" d="M559.5 792L559.5 1113Q559.5 1122 568.5 1122L683.5 1122Q688.5 1122 688.5 1127L688.5 1132"/>
+      <path class="flow" d="M559.5 792L559.5 1113Q559.5 1122 568.5 1122L683.5 1122Q688.5 1122 688.5 1127L688.5 1132"/>
+      <path class="arrow" d="M683.5 1120L688.5 1132L693.5 1120"/>
     </g>
     <g class="edge" data-id="history-service-&gt;saved-draws">
-      <path class="line" d="M732.5 1208L732.5 1250Q732.5 1259 741.5 1259L917.17 1259Q922.17 1259 922.17 1264L922.17 1269"/>
-      <path class="arrow" d="M917.17 1257L922.17 1269L927.17 1257"/>
+      <path class="line" d="M755.5 1208L755.5 1250Q755.5 1259 764.5 1259L939.83 1259Q944.83 1259 944.83 1264L944.83 1269"/>
+      <path class="flow" d="M755.5 1208L755.5 1250Q755.5 1259 764.5 1259L939.83 1259Q944.83 1259 944.83 1264L944.83 1269"/>
+      <path class="arrow" d="M939.83 1257L944.83 1269L949.83 1257"/>
     </g>
     <g class="edge" data-id="updater-&gt;reader">
-      <path class="line" d="M1032.5 1044L1032.5 1132"/>
-      <path class="arrow" d="M1027.5 1120L1032.5 1132L1037.5 1120"/>
+      <path class="line" d="M1056.5 1044L1056.5 1132"/>
+      <path class="flow" d="M1056.5 1044L1056.5 1132"/>
+      <path class="arrow" d="M1051.5 1120L1056.5 1132L1061.5 1120"/>
     </g>
     <g class="edge" data-id="reader-&gt;texas">
-      <path class="line" d="M1078.17 1208L1078.17 1375Q1078.17 1384 1087.17 1384L1211 1384Q1220 1384 1220 1375L1220 88"/>
-      <path class="arrow" d="M1225 100L1220 88L1215 100"/>
+      <path class="line" d="M1103.5 1208L1103.5 1375Q1103.5 1384 1112.5 1384L1239 1384Q1248 1384 1248 1375L1248 88"/>
+      <path class="flow" d="M1103.5 1208L1103.5 1375Q1103.5 1384 1112.5 1384L1239 1384Q1248 1384 1248 1375L1248 88"/>
+      <path class="arrow" d="M1253 100L1248 88L1243 100"/>
     </g>
     <g class="edge" data-id="reader-&gt;saved-draws">
-      <path class="line" d="M986.83 1208L986.83 1269"/>
-      <path class="arrow" d="M981.83 1257L986.83 1269L991.83 1257"/>
+      <path class="line" d="M1009.5 1208L1009.5 1269"/>
+      <path class="flow" d="M1009.5 1208L1009.5 1269"/>
+      <path class="arrow" d="M1004.5 1257L1009.5 1269L1014.5 1257"/>
     </g>
     <g class="edge" data-id="updater-&gt;history-service">
-      <path class="line" d="M938.17 1044L938.17 1049Q938.17 1054 933.17 1054L807.5 1054Q798.5 1054 798.5 1063L798.5 1132"/>
-      <path class="arrow" d="M793.5 1120L798.5 1132L803.5 1120"/>
+      <path class="line" d="M962.17 1044L962.17 1049Q962.17 1054 957.17 1054L831.5 1054Q822.5 1054 822.5 1063L822.5 1132"/>
+      <path class="flow" d="M962.17 1044L962.17 1049Q962.17 1054 957.17 1054L831.5 1054Q822.5 1054 822.5 1063L822.5 1132"/>
+      <path class="arrow" d="M817.5 1120L822.5 1132L827.5 1120"/>
     </g>
   </g>
   <g class="heads">
     <g class="head depth-0" data-id="suite" transform="translate(12 174)">
-      <text class="t-name" x="44" y="26" data-width="65">Lotto suite</text>
-      <text class="t-tagline" x="44" y="44" data-width="176">Our lottery number service</text>
+      <text class="t-name" x="44" y="26" data-width="72">Lotto suite</text>
+      <text class="t-tagline" x="44" y="44" data-width="172">Our lottery number service</text>
     </g>
     <g class="head depth-1" data-id="engine" transform="translate(30 506)">
-      <text class="t-name" x="44" y="26" data-width="93">Number engine</text>
-      <text class="t-tagline" x="44" y="44" data-width="207">Turns past draws into suggested</text>
-      <text class="t-tagline" x="44" y="61" data-width="35">picks</text>
+      <text class="t-name" x="44" y="26" data-width="105">Number engine</text>
+      <text class="t-tagline" x="44" y="44" data-width="210">Turns past draws into suggested</text>
+      <text class="t-tagline" x="44" y="61" data-width="34">picks</text>
     </g>
-    <g class="head depth-1" data-id="store" transform="translate(542.5 898)">
-      <text class="t-name" x="44" y="26" data-width="78">Results store</text>
-      <text class="t-tagline" x="44" y="44" data-width="192">Keeps each game's past draws</text>
+    <g class="head depth-1" data-id="store" transform="translate(541.5 898)">
+      <text class="t-name" x="44" y="26" data-width="89">Results store</text>
+      <text class="t-tagline" x="44" y="44" data-width="200">Keeps each game's past draws</text>
     </g>
   </g>
   <g class="labels">
     <g class="label" data-id="user-&gt;website">
       <title>User uses Website.</title>
-      <text class="t-label" x="607" y="134" data-width="25">uses</text>
+      <rect class="pill" x="595" y="118" width="45" height="21" rx="10"/>
+      <text class="t-label" x="602" y="134" data-width="31">uses</text>
     </g>
     <g class="label" data-id="website-&gt;screen-api">
       <title>Website works through Website back end.</title>
-      <text class="t-label" x="532" y="339" data-width="87">works through</text>
+      <rect class="pill" x="511.33" y="323" width="108" height="21" rx="10"/>
+      <text class="t-label" x="518.33" y="339" data-width="94">works through</text>
     </g>
     <g class="label" data-id="screen-api-&gt;engine-service">
       <title>Website back end asks for numbers from Request handling.</title>
-      <text class="t-label" x="499" y="476" data-width="132">asks for numbers from</text>
+      <rect class="pill" x="482.33" y="460" width="161" height="21" rx="10"/>
+      <text class="t-label" x="489.33" y="476" data-width="147">asks for numbers from</text>
     </g>
     <g class="label" data-id="engine-service-&gt;strategies">
       <title>Pick generation picks and scores tickets with Strategies library.</title>
-      <text class="t-label" x="88" y="708" data-width="165">picks and scores tickets with</text>
+      <rect class="pill" x="70" y="692" width="201" height="21" rx="10"/>
+      <text class="t-label" x="77" y="708" data-width="187">picks and scores tickets with</text>
     </g>
     <g class="label" data-id="engine-service-&gt;history-service">
       <title>Draw history lookup fetches draw history from Draw history service.</title>
-      <text class="t-label" x="737.5" y="859.5" data-width="152">fetches draw history from</text>
+      <rect class="pill" x="722" y="843.5" width="181" height="21" rx="10"/>
+      <text class="t-label" x="729" y="859.5" data-width="167">fetches draw history from</text>
     </g>
     <g class="label" data-id="legacy-&gt;history-service">
       <title>Legacy desktop support reads draw history from Draw history service.</title>
-      <text class="t-label" x="372" y="859.5" data-width="144">reads draw history from</text>
+      <rect class="pill" x="358.5" y="843.5" width="169" height="21" rx="10"/>
+      <text class="t-label" x="365.5" y="859.5" data-width="155">reads draw history from</text>
     </g>
     <g class="label" data-id="history-service-&gt;saved-draws">
       <title>Draw history service reads Saved draws.</title>
-      <text class="t-label" x="689" y="1244" data-width="32">reads</text>
+      <rect class="pill" x="702.5" y="1228" width="51" height="21" rx="10"/>
+      <text class="t-label" x="709.5" y="1244" data-width="37">reads</text>
     </g>
     <g class="label" data-id="updater-&gt;reader">
       <title>Results updater has each game refreshed by Results reader.</title>
-      <text class="t-label" x="839.5" y="1088.5" data-width="161">has each game refreshed by</text>
+      <rect class="pill" x="844.5" y="1072.5" width="199" height="21" rx="10"/>
+      <text class="t-label" x="851.5" y="1088.5" data-width="185">has each game refreshed by</text>
     </g>
     <g class="label" data-id="reader-&gt;texas">
       <title>Results reader downloads results from Texas Lottery website.</title>
-      <text class="t-label" x="1258" y="134" data-width="139">downloads results from</text>
+      <rect class="pill" x="1272" y="118" width="167" height="21" rx="10"/>
+      <text class="t-label" x="1279" y="134" data-width="153">downloads results from</text>
     </g>
     <g class="label" data-id="reader-&gt;saved-draws">
       <title>Results reader saves draws into Saved draws.</title>
-      <text class="t-label" x="817.33" y="1244" data-width="98">saves draws into</text>
+      <rect class="pill" x="827" y="1228" width="124" height="21" rx="10"/>
+      <text class="t-label" x="834" y="1244" data-width="110">saves draws into</text>
     </g>
     <g class="label" data-id="updater-&gt;history-service">
       <title>Results updater announces each finished refresh to Draw history service.</title>
-      <text class="t-label" x="587.5" y="1088.5" data-width="204">announces each finished refresh to</text>
+      <rect class="pill" x="579.5" y="1072.5" width="243" height="21" rx="10"/>
+      <text class="t-label" x="586.5" y="1088.5" data-width="229">announces each finished refresh to</text>
     </g>
   </g>
 </svg>

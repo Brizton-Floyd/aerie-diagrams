@@ -58,7 +58,7 @@
     "engineering, everything open": {
       "crossings": 0,
       "bends": 6,
-      "fitScale": 0.461
+      "fitScale": 0.457
     },
     "engineering, all closed": {
       "crossings": 0,
@@ -73,7 +73,7 @@
     "engineering, engine-service opened": {
       "crossings": 0,
       "bends": 6,
-      "fitScale": 0.942
+      "fitScale": 0.929
     }
   },
   "samples/shapes.aerie": {
@@ -115,7 +115,7 @@
     "icon-set, default": {
       "crossings": 0,
       "bends": 0,
-      "fitScale": 1.109
+      "fitScale": 1.115
     },
     "icon-set, all closed": {
       "crossings": 0,
@@ -202,7 +202,7 @@
     "engineering, everything open": {
       "crossings": 0,
       "bends": 8,
-      "fitScale": 0.512
+      "fitScale": 0.51
     },
     "engineering, all closed": {
       "crossings": 0,

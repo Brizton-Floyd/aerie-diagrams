@@ -4,11 +4,10 @@
 import { ROLES, faceOf, type FaceName, type RoleName } from '../layout/index.ts';
 import type { Token } from './tokens.ts';
 
-/** LOOK-101: the three families, each with fallbacks used only until the bundled font loads. */
+/** LOOK-101: the families, each with fallbacks used only until the bundled font loads. */
 export const FAMILIES: Record<string, string> = {
-  'Source Sans 3': '"Source Sans 3", system-ui, sans-serif',
-  'Source Serif 4': '"Source Serif 4", Georgia, serif',
-  'Source Code Pro': '"Source Code Pro", ui-monospace, monospace',
+  Inter: '"Inter", system-ui, sans-serif',
+  'JetBrains Mono': '"JetBrains Mono", ui-monospace, monospace',
 };
 
 /** A face as a CSS font shorthand at a size. */
@@ -66,14 +65,14 @@ export const DRAWN: Record<RoleName, DrawnRole> = {
     className: 't-label',
     face: ROLES.label.face,
     size: ROLES.label.size,
-    colour: 'ink',
+    colour: 'muted',
     baseline: 14,
   },
   labelCode: {
     className: 't-label-code',
     face: ROLES.labelCode.face,
     size: ROLES.labelCode.size,
-    colour: 'ink',
+    colour: 'muted',
     baseline: 14,
   },
   band: {
@@ -92,7 +91,7 @@ export const DRAWN: Record<RoleName, DrawnRole> = {
 export const BADGE_TEXT = {
   className: 't-badge',
   /** Not measured, so not one of the layout's faces: always one or two figures on a circle. */
-  family: 'Source Serif 4',
+  family: 'Inter',
   weight: 600,
   size: 11,
   currentSize: 13,

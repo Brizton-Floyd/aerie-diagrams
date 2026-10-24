@@ -22,6 +22,16 @@ export async function openLotto(page: Page, view?: string): Promise<void> {
   await settled(page);
 }
 
+/**
+ * Opens the page in a theme (LOOK-002): as a reader who chose it earlier on this device, so the
+ * page remembers it from the start. Dark is the default.
+ */
+export async function useTheme(page: Page, theme: 'dark' | 'light'): Promise<void> {
+  await page.addInitScript((chosen) => {
+    localStorage.setItem('aerie.theme', chosen);
+  }, theme);
+}
+
 /** An element's box group. */
 export const node = (page: Page, id: string): Locator =>
   page.locator(`svg.aerie g.boxes > g.node[data-id="${id}"]`);
@@ -48,11 +58,33 @@ export async function clickElement(page: Page, id: string): Promise<void> {
   else await node(page, id).locator('text').first().click();
 }
 
-/** Waits until nothing on the page is moving: every glide, fade and swap has ended. */
+/**
+ * Waits until nothing on the page is moving: every glide, fade and swap has ended. The light that
+ * flows along a selected line (LOOK-601) runs without end, so it never counts.
+ */
 export async function settled(page: Page): Promise<void> {
   await expect
-    .poll(() => page.evaluate(() => document.getAnimations().length), { timeout: 5000 })
+    .poll(
+      () =>
+        page.evaluate(
+          () =>
+            document
+              .getAnimations()
+              .filter((each) => each.effect?.getComputedTiming().iterations !== Infinity).length,
+        ),
+      { timeout: 5000 },
+    )
     .toBe(0);
+}
+
+/**
+ * Expects the diagram worded for an audience (INT-104): the stage's chip names a deeper one, and
+ * there is no chip for the plain wording.
+ */
+export async function wordedFor(page: Page, audience: string): Promise<void> {
+  const chip = page.locator('.wording');
+  if (audience === 'plain') await expect(chip).toBeHidden();
+  else await expect(chip).toContainText(`Worded for ${audience}`);
 }
 
 const round = (value: number): number => Math.round(value * 100) / 100;

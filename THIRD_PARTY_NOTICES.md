@@ -16,23 +16,20 @@ licence. The full licence texts follow the list.
   Layout Kernel at <https://github.com/eclipse-elk/elk>. The exact release Aerie ships is the npm
   package <https://www.npmjs.com/package/elkjs/v/0.12.0>, which contains the files Aerie uses.
 
-## Source Serif 4, Source Sans 3 and Source Code Pro
+## Inter and JetBrains Mono
 
-- What: the three font families Aerie draws with and measures text from
-  ([look.md](docs/spec/look.md#type)), from the Fontsource packages
-  `@fontsource/source-serif-4` 5.3.1, `@fontsource/source-sans-3` 5.3.1 and
-  `@fontsource/source-code-pro` 5.3.1. Aerie's page serves the packages' unmodified font files
+- What: the two font families Aerie draws with and measures text from
+  ([look.md](docs/spec/look.md#type)), from the Fontsource packages `@fontsource/inter` 5.3.0 and
+  `@fontsource/jetbrains-mono` 5.3.0. Aerie's page serves the packages' unmodified font files
   (WOFF2 and WOFF) from its own build and never fetches fonts from a font service.
 - Copyright, as each font file states it:
-  - Source Serif 4 (version 4.004): © 2014 - 2021 Adobe Systems Incorporated
-    (http://www.adobe.com/), with Reserved Font Name ‘Source’.
-  - Source Sans 3 (version 3.052): © 2023 Adobe (http://www.adobe.com/), with Reserved Font Name
-    ‘Source’.
-  - Source Code Pro (version 1.026): © 2023 Adobe (http://www.adobe.com/), with Reserved Font Name
-    ‘Source’.
+  - Inter (version 4.001): Copyright 2016 The Inter Project Authors
+    (https://github.com/rsms/inter).
+  - JetBrains Mono (version 2.211): Copyright 2020 The JetBrains Mono Project Authors
+    (https://github.com/JetBrains/JetBrainsMono).
 - Licence: SIL Open Font License 1.1 (OFL-1.1), text below and at <https://openfontlicense.org>.
-- Source: <https://github.com/adobe-fonts/source-serif>, <https://github.com/adobe-fonts/source-sans>
-  and <https://github.com/adobe-fonts/source-code-pro>; packaged by <https://fontsource.org>.
+- Source: <https://github.com/rsms/inter> and <https://github.com/JetBrains/JetBrainsMono>;
+  packaged by <https://fontsource.org>.
 
 ## CodeMirror 6
 

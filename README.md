@@ -6,12 +6,12 @@ Aerie is diagram-as-code for architecture. Engineers describe a system once, in 
 every reader explores it as an interactive diagram at their own level: the same model reads differently
 for an executive, a manager and an engineer, and opens deeper in place when someone wants more detail.
 
-Private. Version 1.1.0: the Lines language, the interactive viewer with its audience switch,
-scenarios and presenter mode, the live editor and watch mode, the Aerie skill for Claude, and drift
+Private. The Lines language, the interactive viewer in the Signal look (dark, with a
+light theme), plain wording first with "More technical" on demand, scenarios and presenter mode, the live editor and watch mode, the Aerie skill for Claude, and drift
 detection, which checks a model against the code it describes, on the command line and on every pull
 request ([CHANGELOG.md](CHANGELOG.md)).
 
-![The Lotto sample's Big picture, written for an executive](docs/screenshots/a11-v1/lotto-big-picture-exec.png)
+![The Lotto sample's Big picture in the Signal look, in its plain wording](docs/screenshots/signal/after-dark-1-overview.png)
 
 ## Quick start
 
@@ -31,11 +31,13 @@ npm run dev
 ```
 
 Open the address it prints. It shows [the Lotto sample](samples/lotto.aerie), Aerie's flagship
-model of a real lottery number service. Pick a view in the sidebar and an audience at the top
-(or press 1, 2 or 3): the words change for an executive, a manager or an engineer, and nothing
-moves. Click a box to read about it in the side panel, and use its round button to open it in
-place. Choose a scenario to play it on the diagram (arrow keys to step, Space to play, Esc to end),
-or the walkthrough to present it full screen. The address always holds what you see, so "Copy
+model of a real lottery number service. Everyone starts with the plainest wording. Click a box to
+read about it in the side panel, and press "More technical" there to uncover how a manager or an
+engineer would put it, or rest the pointer on a box for a quick look; "Word the whole diagram for
+Engineer" (or the keys 1, 2 and 3) changes every word on the page, and nothing moves. Use a box's
+round button to open it in place. Choose a scenario to play it on the diagram (arrow keys to step,
+Space to play, Esc to end), or "Take the tour" to present it full screen. The sun button in the top
+bar switches to the light theme for bright rooms and projectors. The address always holds what you see, so "Copy
 link" shares the exact picture. "Edit" opens the live split editor beside the diagram; you can
 also open a local `.aerie` file from the sidebar.
 

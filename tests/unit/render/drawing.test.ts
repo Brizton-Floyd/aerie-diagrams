@@ -1,4 +1,4 @@
-// The drawing code of the Contour renderer (docs/spec/look.md): type, box anatomy, shapes, icons,
+// The drawing code of the Signal renderer (docs/spec/look.md): type, box anatomy, shapes, icons,
 // relationships, and the selection and focus marks.
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -11,10 +11,10 @@ import {
   BADGE_TEXT,
   ICONS,
   ICON_GRID,
-  TEXTURE,
+  SHAPE,
   chevron,
   classes,
-  contourStyle,
+  signalStyle,
   cornerOf,
   emphasis,
   font,
@@ -38,40 +38,37 @@ import {
 } from './helpers.ts';
 
 const ROOT = join(import.meta.dirname, '../../..');
-const css = contourStyle();
+const css = signalStyle();
 
-/** The declarations of the stylesheet rule for an exact selector. */
+/** The declarations of the stylesheet rule for an exact selector, on one line. */
 function rule(selector: string): string {
   const at = css.indexOf(`${selector} {`);
   if (at < 0) throw new Error(`No rule for ${selector}.`);
-  return css.slice(at + selector.length + 2, css.indexOf('}', at)).trim();
+  return css
+    .slice(at + selector.length + 2, css.indexOf('}', at))
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 const texts = (root: SvgNode): SvgNode[] => [...walk(root)].filter((node) => node.tag === 'text');
 
 describe('type', () => {
-  it('LOOK-101 draws in Source Serif 4, Source Sans 3 and Source Code Pro, bundled and credited', () => {
-    expect(font('sans-600', 14)).toBe('600 14px "Source Sans 3", system-ui, sans-serif');
-    expect(font('serif-400-italic', 13.5)).toBe(
-      'italic 400 13.5px "Source Serif 4", Georgia, serif',
-    );
-    expect(font('code-400', 13.5)).toBe('400 13.5px "Source Code Pro", ui-monospace, monospace');
+  it('LOOK-101 draws in Inter and JetBrains Mono, bundled and credited', () => {
+    expect(font('sans-600', 14)).toBe('600 14px "Inter", system-ui, sans-serif');
+    expect(font('sans-500', 13.5)).toBe('500 13.5px "Inter", system-ui, sans-serif');
+    expect(font('mono-400', 13.5)).toBe('400 13.5px "JetBrains Mono", ui-monospace, monospace');
     // The page serves the font files itself (main.ts imports them from the Fontsource packages),
     // never from a font service, and the licences ship in the third-party notices.
     const main = read('src/main.ts');
-    for (const family of ['source-sans-3', 'source-serif-4', 'source-code-pro']) {
+    for (const family of ['inter', 'jetbrains-mono']) {
       expect(main).toContain(`import '@fontsource/${family}/`);
     }
-    expect(main + read('index.html') + css).not.toMatch(
+    expect(main).not.toContain('@fontsource/source-');
+    expect(main + read('index.html') + css + read('src/app/page.css')).not.toMatch(
       /fonts\.googleapis|fonts\.gstatic|https?:\/\//,
     );
     const notices = readFileSync(join(ROOT, 'THIRD_PARTY_NOTICES.md'), 'utf8');
-    for (const name of [
-      'Source Serif 4',
-      'Source Sans 3',
-      'Source Code Pro',
-      'SIL Open Font License 1.1',
-    ]) {
+    for (const name of ['Inter', 'JetBrains Mono', 'SIL Open Font License 1.1']) {
       expect(notices).toContain(name);
     }
   });
@@ -79,26 +76,26 @@ describe('type', () => {
   it('LOOK-101 the type scale: each drawn role in its face, size and colour', () => {
     expect(rule('.aerie .t-name')).toBe(`font: ${font('sans-600', 14)}; fill: var(--aerie-ink);`);
     expect(rule('.aerie .t-tagline')).toBe(
-      `font: ${font('serif-400', 13.5)}; fill: var(--aerie-muted);`,
+      `font: ${font('sans-400', 13.5)}; fill: var(--aerie-muted);`,
     );
     expect(rule('.aerie .t-tagline-code')).toBe(
-      `font: ${font('code-400', 13.5)}; fill: var(--aerie-muted);`,
+      `font: ${font('mono-400', 13.5)}; fill: var(--aerie-muted);`,
     );
     expect(rule('.aerie .t-chip')).toBe(
-      `font: ${font('serif-400-italic', 13.5)}; fill: var(--aerie-accent-ink);`,
+      `font: ${font('sans-500', 13.5)}; fill: var(--aerie-accent-ink);`,
     );
     expect(rule('.aerie .t-label')).toBe(
-      `font: ${font('serif-400-italic', 13.5)}; fill: var(--aerie-ink);`,
+      `font: ${font('sans-500', 13.5)}; fill: var(--aerie-muted);`,
     );
     expect(rule('.aerie .t-label-code')).toBe(
-      `font: ${font('code-400', 13.5)}; fill: var(--aerie-ink);`,
+      `font: ${font('mono-400', 13.5)}; fill: var(--aerie-muted);`,
     );
     expect(rule('.aerie .t-band')).toBe(`font: ${font('sans-600', 13.5)}; fill: var(--aerie-ink);`);
     // LAYOUT-102: drawn as measured, with kerning and ligatures off.
     expect(rule('.aerie text')).toContain('font-kerning: none; font-variant-ligatures: none;');
   });
 
-  it('LOOK-102 the code audience reads taglines and labels in Source Code Pro; names stay in Source Sans 3', async () => {
+  it('LOOK-102 the code audience reads taglines and labels in JetBrains Mono; names stay in Inter', async () => {
     const engineer = await draw(LOTTO, 'services', 'engineer');
     const manager = await draw(LOTTO, 'services', 'manager');
     const roles = (root: SvgNode): Set<string> =>
@@ -119,7 +116,7 @@ describe('type', () => {
     expect(BADGE_TEXT.size).toBe(11);
     expect(BADGE_TEXT.currentSize).toBe(13);
     expect(rule('.aerie .t-badge')).toBe(
-      'font: 600 11px "Source Serif 4", Georgia, serif; fill: var(--aerie-accent-ink); text-anchor: middle;',
+      'font: 600 11px "Inter", system-ui, sans-serif; fill: var(--aerie-accent-ink); text-anchor: middle;',
     );
   });
 });
@@ -152,41 +149,42 @@ describe('box anatomy', () => {
 });
 
 describe('shapes', () => {
-  it('LOOK-301 a leaf is a paper card with a 1 px ink outline and 4 px corners', async () => {
+  it('LOOK-301 a leaf is a hairline card with an outline, 8 px corners and a soft shadow', async () => {
     const root = await draw(LOTTO, 'big-picture', 'manager');
     const website = group(root, 'node', 'website');
     expect(classes(website)).toEqual(['node', 'leaf']);
-    expect(child(website, 'shape').attrs['rx']).toBe(4);
+    expect(child(website, 'shape').attrs['rx']).toBe(8);
     expect(rule('.aerie .shape')).toBe(
-      'fill: var(--aerie-paper); stroke: var(--aerie-ink); stroke-width: 1px;',
+      'fill: var(--aerie-surface); stroke: var(--aerie-outline); stroke-width: 1px;',
+    );
+    expect(rule('.aerie .node:not(.open) > .shape')).toBe(
+      'filter: drop-shadow(0 1px 0 color-mix(in srgb, var(--aerie-shadow) 80%, transparent)) ' +
+        'drop-shadow(0 8px 18px color-mix(in srgb, var(--aerie-shadow) 55%, transparent));',
     );
   });
 
-  it('LOOK-302 a closed container: 8 px corners, a solid contour line inset 5 px, the chip and a plus', async () => {
+  it('LOOK-302 a closed container: 10 px corners, no inner line, the chip and a plus', async () => {
     const root = await draw(LOTTO, 'big-picture', 'manager');
     const engine = group(root, 'node', 'engine');
     expect(classes(engine)).toEqual(['node', 'closed']);
     const shape = child(engine, 'shape');
-    expect(shape.attrs['rx']).toBe(8);
-    expect(child(engine, 'inner').attrs).toMatchObject({
-      x: 5,
-      y: 5,
-      width: Number(shape.attrs['width']) - 10,
-      height: Number(shape.attrs['height']) - 10,
-      rx: 3,
-    });
-    expect(rule('.aerie .inner')).toBe(
-      'fill: none; stroke: var(--aerie-contour); stroke-width: 1px;',
-    );
+    expect(shape.attrs['rx']).toBe(10);
+    expect(withClass(engine, 'inner')).toEqual([]);
     const control = child(engine, 'control');
     expect(control.attrs['transform']).toBe(
       `translate(${String(Number(shape.attrs['width']) - 21)} 21)`,
     );
     expect(child(control, 'circle').attrs['r']).toBe(9);
     expect(child(control, 'path').attrs['d']).toBe('M-4 0H4M0-4V4');
+    expect(rule('.aerie .control circle')).toBe(
+      'fill: var(--aerie-band-1); stroke: var(--aerie-outline); stroke-width: 1px;',
+    );
+    expect(rule('.aerie .control path')).toBe(
+      'fill: none; stroke: var(--aerie-ink); stroke-width: 1.4px; stroke-linecap: round;',
+    );
   });
 
-  it('LOOK-303 an open container is a band of its depth with 18 px corners, a dotted inner line and a minus', async () => {
+  it('LOOK-303 an open container is a band of its depth with 14 px corners, the dawn and a minus', async () => {
     const root = await draw(SHAPES, 'shapes', 'manager');
     const depths = ['ground', 'ridge', 'crest', 'summit', 'peak'].map((id) =>
       classes(group(root, 'node', id)),
@@ -199,14 +197,21 @@ describe('shapes', () => {
       ['node', 'open', 'depth-3'],
     ]);
     const ground = group(root, 'node', 'ground');
-    expect(child(ground, 'shape').attrs['rx']).toBe(18);
-    expect(child(ground, 'inner').attrs['rx']).toBe(13);
+    const shape = child(ground, 'shape');
+    expect(shape.attrs['rx']).toBe(14);
+    expect(child(ground, 'dawn').attrs).toEqual({
+      class: 'dawn',
+      width: shape.attrs['width'],
+      height: shape.attrs['height'],
+      rx: 14,
+    });
     expect(child(child(ground, 'control'), 'path').attrs['d']).toBe('M-4 0H4');
-    expect(rule('.aerie .open > .shape')).toBe('stroke: var(--aerie-contour);');
+    expect(rule('.aerie .open > .shape')).toBe('stroke: var(--aerie-frame);');
     expect(rule('.aerie .depth-2 > .shape')).toBe('fill: var(--aerie-band-2);');
-    expect(rule('.aerie .open > .inner')).toBe(
-      'stroke: var(--aerie-contour-soft); stroke-dasharray: 2 3;',
-    );
+    expect(rule('.aerie .dawn')).toBe('fill: url(#aerie-dawn); pointer-events: none;');
+    expect(rule('.aerie .dawn-0')).toBe('stop-color: var(--aerie-dawn); stop-opacity: 0.9;');
+    const gradient = [...walk(root)].find((node) => node.tag === 'radialGradient');
+    expect(gradient?.attrs['id']).toBe('aerie-dawn');
     // Its header text is drawn above the lines, on a halo of its band.
     const head = group(root, 'head', 'ground');
     expect(classes(head)).toEqual(['head', 'depth-0']);
@@ -224,7 +229,7 @@ describe('shapes', () => {
     ]);
   });
 
-  it('LOOK-304 a person is a pill with a 1.4 px ink outline', async () => {
+  it('LOOK-304 a person is a pill with a 1.4 px outline', async () => {
     const root = await draw(LOTTO, 'big-picture', 'manager');
     const user = group(root, 'node', 'user');
     expect(classes(user)).toEqual(['node', 'leaf', 'person']);
@@ -234,7 +239,7 @@ describe('shapes', () => {
     expect(rule('.aerie .person > .shape')).toBe('stroke-width: 1.4px;');
   });
 
-  it('LOOK-305 an external element is hatched at 45 degrees, 2 px lines every 7 px, with a dashed ink outline', async () => {
+  it('LOOK-305 an external element is hatched at 45 degrees, 2 px lines every 7 px, with a dashed outline', async () => {
     const root = await draw(LOTTO, 'big-picture', 'manager');
     expect(classes(group(root, 'node', 'texas'))).toEqual(['node', 'leaf', 'external']);
     const pattern = [...walk(root)].find((node) => node.tag === 'pattern');
@@ -243,13 +248,13 @@ describe('shapes', () => {
         '<rect class="hatch-bg" width="7" height="7"/><path class="hatch-line" d="M0 0V7"/></pattern>',
     );
     expect(rule('.aerie .external > .shape')).toBe(
-      'fill: url(#aerie-hatch); stroke: var(--aerie-ink); stroke-dasharray: 5 3;',
+      'fill: url(#aerie-hatch); stroke-dasharray: 4 4;',
     );
     expect(rule('.aerie .hatch-bg')).toBe('fill: var(--aerie-hatch-bg);');
     expect(rule('.aerie .hatch-line')).toBe('stroke: var(--aerie-hatch-line); stroke-width: 2px;');
   });
 
-  it('LOOK-306 hover thickens the outline to 1.6 px; keyboard focus shows a 2 px accent ring 2 px outside', async () => {
+  it('LOOK-306 hover lights the outline; keyboard focus shows a 2 px live ring 2 px outside', async () => {
     const root = await draw(LOTTO, 'big-picture', 'manager');
     const website = group(root, 'node', 'website');
     const shape = child(website, 'shape');
@@ -259,43 +264,39 @@ describe('shapes', () => {
       y: -3,
       width: Number(shape.attrs['width']) + 6,
       height: Number(shape.attrs['height']) + 6,
-      rx: 7,
+      rx: 11,
     });
-    expect(rule('.aerie .node:hover > .shape')).toBe('stroke-width: 1.6px;');
+    expect(rule('.aerie .node:not(.open):hover > .shape')).toMatch(
+      /^stroke: var\(--aerie-outline-hover\); filter: drop-shadow\(.*var\(--aerie-glow\)/,
+    );
+    expect(rule('.aerie .node.open:hover > .shape')).toBe('stroke-width: 1.6px;');
     expect(rule('.aerie .ring')).toBe(
-      'fill: none; stroke: var(--aerie-accent); stroke-width: 2px; display: none;',
+      'fill: none; stroke: var(--aerie-live); stroke-width: 2px; display: none;',
     );
     expect(rule('.aerie .node:has(> .shape:focus-visible) > .ring')).toBe('display: inline;');
   });
 
-  it('LOOK-307 the stage texture is a 520 x 360 tile of six soft curves at 1.2 px that join across its edges', () => {
-    expect(TEXTURE.width).toBe(520);
-    expect(TEXTURE.height).toBe(360);
-    expect(TEXTURE.stroke).toBe(1.2);
-    expect(TEXTURE.curves).toHaveLength(6);
-    // A curve that crosses the tile starts and ends at the same height, leaving and arriving at
-    // the same slope, so neighbouring tiles join without a step.
-    for (const curve of TEXTURE.curves.filter((d) => d.startsWith('M0 '))) {
-      const numbers = curve.match(/-?[\d.]+/g)?.map(Number) ?? [];
-      const [x0 = 0, y0 = 0, c1x = 0, c1y = 0] = numbers;
-      const [c2x = 0, c2y = 0, x1 = 0, y1 = 0] = numbers.slice(-4);
-      expect([x0, x1]).toEqual([0, 520]);
-      expect(y1).toBe(y0);
-      expect((c1y - y0) / (c1x - x0)).toBeCloseTo((y1 - c2y) / (x1 - c2x), 6);
-    }
+  it('LOOK-307 the stage is bg with a 22 px dot grid under the dawn', () => {
     expect(rule('.aerie-stage')).toBe(
-      'background-color: var(--aerie-bg); background-image: var(--aerie-texture-tile);',
+      'background-color: var(--aerie-bg); background-image: ' +
+        'radial-gradient(ellipse 70% 55% at 50% -12%, color-mix(in srgb, var(--aerie-dawn) 95%, transparent), transparent 70%), ' +
+        'radial-gradient(circle at 1px 1px, var(--aerie-grid) 1px, transparent 1.4px); ' +
+        'background-size: auto, 22px 22px;',
     );
   });
 });
 
 describe('icons', () => {
-  it('LOOK-401 icons are stroked line drawings on a 64-unit grid, 4.2 units wide, in ink, round caps and joins', async () => {
+  it('LOOK-401 icons are stroked line drawings on a 64-unit grid, 3.6 units wide, in accent-ink, on a tile', async () => {
     expect(ICON_GRID).toBe(64);
     expect(rule('.aerie .icon')).toBe(
-      'fill: none; stroke: var(--aerie-ink); stroke-width: 4.2px; stroke-linecap: round; stroke-linejoin: round;',
+      'fill: none; stroke: var(--aerie-accent-ink); stroke-width: 3.6px; stroke-linecap: round; stroke-linejoin: round;',
     );
-    expect(rule('.aerie .icon .dot')).toBe('fill: var(--aerie-ink); stroke: none;');
+    expect(rule('.aerie .icon .dot')).toBe('fill: var(--aerie-accent-ink); stroke: none;');
+    expect(rule('.aerie .icon-tile')).toBe(
+      'fill: color-mix(in srgb, var(--aerie-glow) 14%, transparent); ' +
+        'stroke: color-mix(in srgb, var(--aerie-glow) 34%, transparent); stroke-width: 1px;',
+    );
     // Every coordinate stays on the grid, clear of the stroke's edge.
     for (const [name, shapes] of Object.entries(ICONS)) {
       for (const shape of shapes) {
@@ -311,7 +312,18 @@ describe('icons', () => {
       }
     }
     const root = await draw(LOTTO, 'big-picture', 'manager');
-    expect(child(group(root, 'node', 'engine'), 'icon').attrs['data-icon']).toBe('gear');
+    const engine = group(root, 'node', 'engine');
+    expect(child(engine, 'icon').attrs['data-icon']).toBe('gear');
+    // The tile reaches 5 px past the icon on every side, with 8 px corners.
+    expect(child(engine, 'icon-tile').attrs).toEqual({
+      class: 'icon-tile',
+      x: BOX.pad - 5,
+      y: BOX.pad - 5,
+      width: BOX.icon + 10,
+      height: BOX.icon + 10,
+      rx: 8,
+    });
+    expect([SHAPE.tilePad, SHAPE.tileCorner]).toEqual([5, 8]);
   });
 
   it('LOOK-402 the v1 set has a drawing for every icon name, and only those', async () => {
@@ -324,7 +336,7 @@ describe('icons', () => {
 });
 
 describe('relationships', () => {
-  it('LOOK-501 a route is a 1.3 px edge stroke with corners rounded to 9 px, ending in a 12 px chevron', async () => {
+  it('LOOK-501 a route is a 1.2 px edge stroke with corners rounded to 9 px, ending in a 12 px chevron', async () => {
     expect(
       roundedRoute([
         { x: 0, y: 0 },
@@ -343,28 +355,47 @@ describe('relationships', () => {
     ).toBe('M0 0L0 45Q0 50 5 50L5 50Q10 50 10 55L10 100');
     expect(chevron({ x: 0, y: 100 }, { x: 0, y: 0 })).toBe('M-5 88L0 100L5 88');
     expect(rule('.aerie .edge .line')).toBe(
-      'fill: none; stroke: var(--aerie-edge); stroke-width: 1.3px;',
+      'fill: none; stroke: var(--aerie-edge); stroke-width: 1.2px;',
     );
     expect(rule('.aerie .edge .arrow')).toBe(
-      'fill: none; stroke: var(--aerie-edge); stroke-width: 1.6px; stroke-linecap: round; stroke-linejoin: round;',
+      'fill: none; stroke: var(--aerie-edge); stroke-width: 1.5px; stroke-linecap: round; stroke-linejoin: round;',
     );
     const root = await draw(LOTTO, 'big-picture', 'manager');
     const edge = group(root, 'edge', 'website->screen-api');
     expect(
       edge.children.map((each) => (typeof each === 'string' ? each : each.attrs['class'])),
-    ).toEqual(['line', 'arrow']);
+    ).toEqual(['line', 'flow', 'arrow']);
+    // The flowing light runs the same route as the line, and shows only on a line in play.
+    expect(child(edge, 'flow').attrs['d']).toBe(child(edge, 'line').attrs['d']);
+    expect(rule('.aerie .edge .flow')).toBe('fill: none; stroke: none; pointer-events: none;');
   });
 
-  it('LOOK-502 a label is its text with no box, italic serif or the code voice, over a 5 px halo', async () => {
+  it('LOOK-502 a label sits on a pill fitted to the words placed for the audience', async () => {
     const root = await draw(LOTTO, 'big-picture', 'manager');
     const label = group(root, 'label', 'website->screen-api');
     expect(
       label.children.filter((each) => typeof each !== 'string').map((each) => each.tag),
-    ).toEqual(['title', 'text']);
-    expect(textOf(child(label, 'text'))).toBe('gets screen data from');
-    expect(rule('.aerie .t-label, .aerie .t-label-code')).toBe(
-      'stroke: var(--aerie-halo); stroke-width: 5px; stroke-linejoin: round; paint-order: stroke fill;',
+    ).toEqual(['title', 'rect', 'text']);
+    const text = child(label, 't-label');
+    expect(textOf(text)).toBe('gets screen data from');
+    const pill = child(label, 'pill');
+    const top = Number(text.attrs['y']) - DRAWN.label.baseline;
+    expect(pill.attrs).toEqual({
+      class: 'pill',
+      x: Number(text.attrs['x']) - 7,
+      y: top - 2,
+      width: Number(text.attrs['data-width']) + 14,
+      height: BOX.labelLine + 4,
+      rx: 10,
+    });
+    expect(rule('.aerie .pill')).toBe(
+      'fill: var(--aerie-pill); stroke: var(--aerie-rule); stroke-width: 1px; ' +
+        'transition: fill var(--aerie-hover) ease, stroke var(--aerie-hover) ease;',
     );
+    // The pill fits each audience's own words, so it changes width while the reserve stays.
+    const exec = group(await draw(LOTTO, 'big-picture', 'exec'), 'label', 'website->screen-api');
+    expect(textOf(child(exec, 't-label'))).toBe('works through');
+    expect(Number(child(exec, 'pill').attrs['width'])).toBeLessThan(Number(pill.attrs['width']));
   });
 
   it('LOOK-503 a label carries its full sentence for the hover tooltip, one per carried relationship', async () => {
@@ -395,7 +426,7 @@ describe('relationships', () => {
 });
 
 describe('selection and focus', () => {
-  it('LOOK-601 a selected element is outlined in accent; its lines turn accent and their other ends thicken', async () => {
+  it('LOOK-601 a selected element is outlined in light; its lines glow, carry a flowing light, and their other ends are outlined', async () => {
     const root = await draw(LOTTO, 'big-picture', 'manager', DEFAULT_ZOOM, {
       focus: { kind: 'select', ids: ['screen-api'] },
     });
@@ -404,12 +435,29 @@ describe('selection and focus', () => {
     expect(classes(group(root, 'node', 'engine'))).toContain('rel');
     expect(classes(group(root, 'edge', 'website->screen-api'))).toContain('on');
     expect(classes(group(root, 'label', 'website->screen-api'))).toContain('on');
-    expect(rule('.aerie .sel > .shape, .aerie .now > .shape')).toBe(
-      'stroke: var(--aerie-accent); stroke-width: 2.2px;',
+    expect(
+      rule(
+        '.aerie .node.sel > .shape, .aerie .node.now > .shape, .aerie .node.sel:hover > .shape, .aerie .node.now:hover > .shape',
+      ),
+    ).toBe(
+      'stroke: var(--aerie-accent-ink); stroke-width: 1.5px; filter: ' +
+        'drop-shadow(0 0 1px color-mix(in srgb, var(--aerie-glow) 90%, transparent)) ' +
+        'drop-shadow(0 0 22px color-mix(in srgb, var(--aerie-glow) 45%, transparent));',
     );
-    expect(rule('.aerie .rel > .shape')).toBe('stroke-width: 1.6px;');
-    expect(rule('.aerie .edge.on .line')).toBe('stroke: var(--aerie-accent); stroke-width: 1.8px;');
-    expect(rule('.aerie .edge.on .arrow')).toBe('stroke: var(--aerie-accent);');
+    expect(rule('.aerie .rel > .shape')).toBe(
+      'stroke: color-mix(in srgb, var(--aerie-accent-ink) 70%, transparent); stroke-width: 1.2px;',
+    );
+    expect(rule('.aerie .edge.on .line')).toBe(
+      'stroke: var(--aerie-accent); stroke-width: 1.6px; filter: drop-shadow(0 0 4px color-mix(in srgb, var(--aerie-glow) 70%, transparent));',
+    );
+    expect(rule('.aerie .edge.on .arrow')).toBe('stroke: var(--aerie-accent-ink);');
+    expect(rule('.aerie .edge.on .flow')).toBe(
+      'stroke: var(--aerie-live); stroke-width: 2px; stroke-linecap: round; stroke-dasharray: 2 30; ' +
+        'animation: aerie-flow calc(var(--aerie-glide) * 2.4) linear infinite;',
+    );
+    expect(rule('.aerie .label.on .pill')).toBe(
+      'stroke: color-mix(in srgb, var(--aerie-glow) 60%, transparent); fill: var(--aerie-accent-soft);',
+    );
     expect(rule('.aerie .label.on text')).toBe('fill: var(--aerie-accent-ink);');
   });
 
@@ -422,9 +470,9 @@ describe('selection and focus', () => {
     expect(classes(group(root, 'node', 'user'))).toContain('dim');
     expect(classes(group(root, 'edge', 'user->website'))).toContain('dim');
     expect(
-      rule('.aerie .context > .shape, .aerie .context > .inner, .aerie .context > .control'),
+      rule('.aerie .context > .shape, .aerie .context > .dawn, .aerie .context > .control'),
     ).toBe('opacity: 0.55;');
-    expect(rule('.aerie .node.dim > *')).toBe('opacity: 0.2;');
+    expect(rule('.aerie .node.dim > *')).toBe('opacity: 0.22;');
     expect(rule('.aerie .edge.dim')).toBe('opacity: 0.14;');
     // Elements inside the selected element keep full strength.
     const drawing = LOTTO.drawing('big-picture', LOTTO.scope('big-picture').everythingOpen());
@@ -523,8 +571,8 @@ describe('the page a reader explores', () => {
     const root = await draw(LOTTO, 'services', 'manager', DEFAULT_ZOOM, { interactive: true });
     const tip = (id: string): string =>
       textOf(child(child(group(root, 'node', id), 'control'), 'title'));
-    expect(tip('engine-service')).toBe('Open in place');
-    expect(tip('suite')).toBe('Close in place');
+    expect(tip('engine-service')).toBe('Open it here');
+    expect(tip('suite')).toBe('Close it');
   });
 
   it('INT-206 each label has its reserved space to hover, which shows its full sentences', async () => {

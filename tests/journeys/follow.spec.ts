@@ -2,7 +2,7 @@
 // docs/spec/interaction.md, INT-354; acceptance JOURNEY-010): opening containers in place brings the
 // camera closer to them instead of shrinking the whole picture, so their text stays readable and
 // they stay on screen; selecting brings an element into view without shrinking; closing returns the
-// camera to where it was; Fit all still fits everything. Real clicks and keys only.
+// camera to where it was; Show everything still fits everything. Real clicks and keys only.
 import { expect, test, type Page } from '@playwright/test';
 import { boxOf, boxes, button, node, openLotto, scale, settled, type Rect } from './reader.ts';
 
@@ -97,7 +97,7 @@ test.describe('following the reader', () => {
     }
   });
 
-  test('LAYOUT-453 opening a container never shrinks the picture below scale 1, and Fit all still fits it whole', async ({
+  test('LAYOUT-453 opening a container never shrinks the picture below scale 1, and Show everything still fits it whole', async ({
     page,
   }) => {
     await openLotto(page);
@@ -107,12 +107,12 @@ test.describe('following the reader', () => {
     expect(await scale(page)).toBeGreaterThanOrEqual(1);
     // Part of the picture is off the stage now, where the reader can drag to it.
     expect(await inView(page, 'user')).toBe(false);
-    await page.getByRole('button', { name: 'Fit all' }).click();
+    await page.getByRole('button', { name: 'Show everything (0)' }).click();
     await settled(page);
     expect(await scale(page)).toBeLessThan(first);
     for (const id of ['user', 'texas', 'suite', 'saved-draws'])
       expect(await inView(page, id)).toBe(true);
-    // Fit all follows nothing: a resized stage fits the whole picture again.
+    // Show everything follows nothing: a resized stage fits the whole picture again.
     await page.setViewportSize({ width: 1500, height: 900 });
     await settled(page);
     for (const id of ['user', 'texas', 'suite']) expect(await inView(page, id)).toBe(true);
@@ -122,7 +122,7 @@ test.describe('following the reader', () => {
     await openLotto(page);
     await toggle(page, 'engine');
     await toggle(page, 'engine-service');
-    await page.setViewportSize({ width: 1300, height: 800 });
+    await page.setViewportSize({ width: 1360, height: 800 });
     await expect.poll(() => inView(page, 'engine-service')).toBe(true);
     expect(await scale(page)).toBeGreaterThanOrEqual(1);
   });

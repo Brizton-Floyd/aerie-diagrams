@@ -1,4 +1,4 @@
-// The Contour renderer (docs/spec/look.md): draws a laid-out picture as SVG in the Contour look, as
+// The Signal renderer (docs/spec/look.md): draws a laid-out picture as SVG in the Signal look, as
 // pure TypeScript that runs the same in Node and in the browser. It builds on the language, the
 // model and the layout (src/lines/index.ts, src/model/index.ts, src/layout/index.ts).
 //
@@ -7,8 +7,8 @@
 //   const picture = await layouter.picture(view, zoom, audience);
 //   const svg = renderPicture(semantics, picture, { focus, trail });   // an SvgNode tree
 //   stage.innerHTML = toMarkup(svg);                                   // or walk the tree
-//   // once per page: a <style> with contourStyle(); the theme is `data-theme` on an ancestor
-//   // ("light" or "dark", else the system's), reduced motion is `data-motion="reduce"`.
+//   // once per page: a <style> with signalStyle(); the theme is `data-theme` on an ancestor
+//   // ("light", else dark), reduced motion is `data-motion="reduce"`.
 //
 // - Drawings carry classes and geometry only. Every colour, stroke width, face and timing is in the
 //   stylesheet, written from the tokens (tokens.ts, style.ts), so a theme switch redraws nothing.
@@ -39,7 +39,7 @@ export {
   type Spoken,
 } from './picture.ts';
 export { ROUTE, chevron, roundedRoute } from './route.ts';
-export { HATCH_ID, MOTION, TEXTURE, contourStyle, textureTile, tokenVar } from './style.ts';
+export { DAWN_ID, HATCH_ID, MOTION, signalStyle, tokenMix, tokenVar } from './style.ts';
 export {
   classes,
   el,
@@ -54,6 +54,7 @@ export {
   type Value,
 } from './svg.ts';
 export {
+  DEFAULT_THEME,
   LINE_PAIRINGS,
   OPACITY,
   TEXT_PAIRINGS,
@@ -67,7 +68,6 @@ export {
   type Pairing,
   type Palette,
   type Theme,
-  type ThemeTokens,
   type Token,
 } from './tokens.ts';
 export { BADGE_TEXT, DRAWN, FAMILIES, font, type DrawnRole } from './type.ts';

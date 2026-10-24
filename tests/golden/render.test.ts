@@ -6,14 +6,14 @@
 //
 // Drawings carry classes and geometry only; colours, strokes and faces live in the stylesheet, so
 // both themes share one drawing and the themes are covered by the stylesheet's own golden
-// (`contour.css`, which holds both token sets). Each golden is a standalone SVG file that names
+// (`signal.css`, which holds both token sets). Each golden is a standalone SVG file that names
 // that stylesheet, so it can be opened in a browser to look at.
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_ZOOM } from '../../src/model/index.ts';
 import { trailShapes } from '../../src/layout/index.ts';
 import {
-  contourStyle,
+  signalStyle,
   renderLanes,
   renderPicture,
   toMarkup,
@@ -23,15 +23,15 @@ import { SOURCES, scenarios } from '../rules/pictures.ts';
 
 const DIR = join(import.meta.dirname, '__snapshots__/render');
 
-/** A drawing as a standalone, indented SVG file that names the Contour stylesheet golden. */
+/** A drawing as a standalone, indented SVG file that names the Signal stylesheet golden. */
 function file(root: SvgNode, depth: number): string {
-  const sheet = `${'../'.repeat(depth)}contour.css`;
+  const sheet = `${'../'.repeat(depth)}signal.css`;
   return `<?xml-stylesheet href="${sheet}" type="text/css"?>\n${toMarkup(root, '  ')}\n`;
 }
 
 describe('render goldens', () => {
-  it('LOOK-001 the Contour stylesheet, with the tokens of both themes', async () => {
-    await expect(contourStyle()).toMatchFileSnapshot(join(DIR, 'contour.css'));
+  it('LOOK-001 the Signal stylesheet, with the tokens of both themes', async () => {
+    await expect(signalStyle()).toMatchFileSnapshot(join(DIR, 'signal.css'));
   });
 
   it.each(SOURCES)('LOOK-201 to LOOK-503 every view of $path in every audience', async (source) => {

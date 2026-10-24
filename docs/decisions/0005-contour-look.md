@@ -1,6 +1,6 @@
 # 0005 Contour: the visual identity
 
-Status: accepted, 2026-10-22
+Status: superseded by [0007](0007-signal-look.md) on 2026-10-24; accepted 2026-10-22
 
 ## Decision
 

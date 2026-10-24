@@ -1,136 +1,153 @@
-<?xml-stylesheet href="../contour.css" type="text/css"?>
-<svg xmlns="http://www.w3.org/2000/svg" class="aerie" viewBox="0 0 837 681" width="837" height="681" overflow="visible" role="img" aria-label="The Lotto suite: Engineering: code modules" data-view="engineering" data-audience="engineer">
+<?xml-stylesheet href="../signal.css" type="text/css"?>
+<svg xmlns="http://www.w3.org/2000/svg" class="aerie" viewBox="0 0 845 681" width="845" height="681" overflow="visible" role="img" aria-label="The Lotto suite: Engineering: code modules" data-view="engineering" data-audience="engineer">
   <defs>
     <pattern id="aerie-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
       <rect class="hatch-bg" width="7" height="7"/>
       <path class="hatch-line" d="M0 0V7"/>
     </pattern>
+    <radialGradient id="aerie-dawn" cx="0.18" cy="0" r="1.05" fx="0.12" fy="0">
+      <stop class="dawn-0" offset="0"/>
+      <stop class="dawn-1" offset="0.55"/>
+      <stop class="dawn-2" offset="1"/>
+    </radialGradient>
   </defs>
   <g class="boxes">
     <g class="node open depth-0" data-id="suite" transform="translate(12 12)">
-      <rect class="shape" width="813" height="657" rx="18"/>
-      <rect class="inner" x="5" y="5" width="803" height="647" rx="13"/>
-      <rect class="ring" x="-3" y="-3" width="819" height="663" rx="21"/>
+      <rect class="shape" width="821" height="657" rx="14"/>
+      <rect class="dawn" width="821" height="657" rx="14"/>
+      <rect class="ring" x="-3" y="-3" width="827" height="663" rx="17"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="stack" transform="translate(12 12) scale(0.34375)">
         <path d="M32 9 56 21 32 33 8 21Z"/>
         <path d="M8 31l24 12 24-12"/>
         <path d="M8 41l24 12 24-12"/>
       </g>
-      <g class="control" transform="translate(792 21)">
+      <g class="control" transform="translate(800 21)">
         <circle r="9"/>
         <path d="M-4 0H4"/>
       </g>
     </g>
-    <g class="node leaf" data-id="screen-api" transform="translate(30 82)">
-      <rect class="shape" width="246" height="76" rx="4"/>
-      <rect class="ring" x="-3" y="-3" width="252" height="82" rx="7"/>
+    <g class="node leaf" data-id="screen-api" transform="translate(38 82)">
+      <rect class="shape" width="250" height="76" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="256" height="82" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="api" transform="translate(12 12) scale(0.34375)">
         <rect x="26" y="18" width="14" height="28" rx="3"/>
         <path d="M7 25h19M7 39h19"/>
         <path d="M40 32h16"/>
         <path d="M50 26l6 6-6 6"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="65">Screen API</text>
+      <text class="t-name" x="44" y="26" data-width="75">Screen API</text>
       <text class="t-tagline-code" x="44" y="44" data-width="187">lotto-options-core-bff,</text>
       <text class="t-tagline-code" x="44" y="61" data-width="106">WebFlux :8080</text>
     </g>
-    <g class="node open depth-1" data-id="engine" transform="translate(135 224)">
-      <rect class="shape" width="672" height="427" rx="18"/>
-      <rect class="inner" x="5" y="5" width="662" height="417" rx="13"/>
-      <rect class="ring" x="-3" y="-3" width="678" height="433" rx="21"/>
+    <g class="node open depth-1" data-id="engine" transform="translate(145 224)">
+      <rect class="shape" width="670" height="427" rx="14"/>
+      <rect class="dawn" width="670" height="427" rx="14"/>
+      <rect class="ring" x="-3" y="-3" width="676" height="433" rx="17"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="gear" transform="translate(12 12) scale(0.34375)">
         <path d="M28.1 16.5 29 10.7h6l.9 5.8 4.3 1.8 4.7-3.5 4.3 4.3-3.5 4.7 1.8 4.3 5.8.9v6l-5.8.9-1.8 4.3 3.5 4.7-4.3 4.3-4.7-3.5-4.3 1.8-.9 5.8h-6l-.9-5.8-4.3-1.8-4.7 3.5-4.3-4.3 3.5-4.7-1.8-4.3-5.8-.9v-6l5.8-.9 1.8-4.3-3.5-4.7 4.3-4.3 4.7 3.5Z"/>
         <circle cx="32" cy="32" r="6"/>
       </g>
-      <g class="control" transform="translate(651 21)">
+      <g class="control" transform="translate(649 21)">
         <circle r="9"/>
         <path d="M-4 0H4"/>
       </g>
     </g>
-    <g class="node closed" data-id="engine-service" transform="translate(228 294)">
-      <rect class="shape" width="230" height="79" rx="8"/>
-      <rect class="inner" x="5" y="5" width="220" height="69" rx="3"/>
-      <rect class="ring" x="-3" y="-3" width="236" height="85" rx="11"/>
+    <g class="node closed" data-id="engine-service" transform="translate(238 294)">
+      <rect class="shape" width="230" height="79" rx="10"/>
+      <rect class="ring" x="-3" y="-3" width="236" height="85" rx="13"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="module" transform="translate(12 12) scale(0.34375)">
         <path d="M32 8 53 20v24L32 56 11 44V20Z"/>
         <path d="M11 20l21 12 21-12"/>
         <path d="M32 32v24"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="69">core-server</text>
+      <text class="t-name" x="44" y="26" data-width="81">core-server</text>
       <text class="t-tagline-code" x="44" y="44" data-width="146">Spring Boot module</text>
-      <text class="t-chip" x="44" y="62" data-width="80">3 parts inside</text>
+      <text class="t-chip" x="44" y="62" data-width="88">3 parts inside</text>
       <g class="control" transform="translate(209 21)">
         <circle r="9"/>
         <path d="M-4 0H4M0-4V4"/>
       </g>
     </g>
-    <g class="node leaf" data-id="strategies" transform="translate(541 444)">
-      <rect class="shape" width="248" height="59" rx="4"/>
-      <rect class="ring" x="-3" y="-3" width="254" height="65" rx="7"/>
+    <g class="node leaf" data-id="strategies" transform="translate(551 444)">
+      <rect class="shape" width="246" height="59" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="252" height="65" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="books" transform="translate(12 12) scale(0.34375)">
         <path d="M7 55h50"/>
         <rect x="12" y="17" width="9" height="38" rx="1.5"/>
         <rect x="23" y="12" width="9" height="43" rx="1.5"/>
         <path d="M35.5 19.5l8.7-2.3 9.6 35.6-8.7 2.4Z"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="123">core-result-analyzer</text>
+      <text class="t-name" x="44" y="26" data-width="141">core-result-analyzer</text>
       <text class="t-tagline-code" x="44" y="44" data-width="171">Generators and scorer</text>
     </g>
-    <g class="node leaf" data-id="formats" transform="translate(175.1 574)">
-      <rect class="shape" width="276" height="59" rx="4"/>
-      <rect class="ring" x="-3" y="-3" width="282" height="65" rx="7"/>
+    <g class="node leaf" data-id="formats" transform="translate(182.7 574)">
+      <rect class="shape" width="282" height="59" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="288" height="65" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="grid" transform="translate(12 12) scale(0.34375)">
         <rect x="9" y="12" width="46" height="40" rx="3"/>
         <path d="M9 24h46M9 38h46M32 24v28"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="70">core-model</text>
+      <text class="t-name" x="44" y="26" data-width="79">core-model</text>
       <text class="t-tagline-code" x="44" y="44" data-width="195">Request and result types</text>
     </g>
-    <g class="node leaf" data-id="legacy" transform="translate(164 444)">
-      <rect class="shape" width="243" height="59" rx="4"/>
-      <rect class="ring" x="-3" y="-3" width="249" height="65" rx="7"/>
+    <g class="node leaf" data-id="legacy" transform="translate(174 444)">
+      <rect class="shape" width="243" height="59" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="249" height="65" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="monitor" transform="translate(12 12) scale(0.34375)">
         <rect x="8" y="11" width="48" height="32" rx="3"/>
         <path d="M32 43v9M21 53h22"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="124">core-legacy-desktop</text>
+      <text class="t-name" x="44" y="26" data-width="144">core-legacy-desktop</text>
       <text class="t-tagline-code" x="44" y="44" data-width="187">Quarantined by ADR-0009</text>
     </g>
   </g>
   <g class="edges">
     <g class="edge" data-id="engine-service-&gt;strategies">
-      <path class="line" d="M400.5 373L400.5 378Q400.5 383 405.5 383L656 383Q665 383 665 392L665 444"/>
-      <path class="arrow" d="M660 432L665 444L670 432"/>
+      <path class="line" d="M410.5 373L410.5 378Q410.5 383 415.5 383L665 383Q674 383 674 392L674 444"/>
+      <path class="flow" d="M410.5 373L410.5 378Q410.5 383 415.5 383L665 383Q674 383 674 392L674 444"/>
+      <path class="arrow" d="M669 432L674 444L679 432"/>
     </g>
     <g class="edge" data-id="engine-service-&gt;formats">
-      <path class="line" d="M343 373L343 384Q343 393 352 393L511 393Q520 393 520 402L520 545Q520 554 511 554L349.7 554Q340.7 554 340.7 563L340.7 574"/>
-      <path class="arrow" d="M335.7 562L340.7 574L345.7 562"/>
+      <path class="line" d="M353 373L353 384Q353 393 362 393L521 393Q530 393 530 402L530 545Q530 554 521 554L360.9 554Q351.9 554 351.9 563L351.9 574"/>
+      <path class="flow" d="M353 373L353 384Q353 393 362 393L521 393Q530 393 530 402L530 545Q530 554 521 554L360.9 554Q351.9 554 351.9 563L351.9 574"/>
+      <path class="arrow" d="M346.9 562L351.9 574L356.9 562"/>
     </g>
     <g class="edge" data-id="engine-service-&gt;legacy">
-      <path class="line" d="M285.5 373L285.5 444"/>
-      <path class="arrow" d="M280.5 432L285.5 444L290.5 432"/>
+      <path class="line" d="M295.5 373L295.5 444"/>
+      <path class="flow" d="M295.5 373L295.5 444"/>
+      <path class="arrow" d="M290.5 432L295.5 444L300.5 432"/>
     </g>
     <g class="edge" data-id="strategies-&gt;formats">
-      <path class="line" d="M665 503L665 555Q665 564 656 564L400.9 564Q395.9 564 395.9 569L395.9 574"/>
-      <path class="arrow" d="M390.9 562L395.9 574L400.9 562"/>
+      <path class="line" d="M674 503L674 555Q674 564 665 564L413.3 564Q408.3 564 408.3 569L408.3 574"/>
+      <path class="flow" d="M674 503L674 555Q674 564 665 564L413.3 564Q408.3 564 408.3 569L408.3 574"/>
+      <path class="arrow" d="M403.3 562L408.3 574L413.3 562"/>
     </g>
     <g class="edge" data-id="legacy-&gt;formats">
-      <path class="line" d="M285.5 503L285.5 574"/>
-      <path class="arrow" d="M280.5 562L285.5 574L290.5 562"/>
+      <path class="line" d="M295.5 503L295.5 574"/>
+      <path class="flow" d="M295.5 503L295.5 574"/>
+      <path class="arrow" d="M290.5 562L295.5 574L300.5 562"/>
     </g>
     <g class="edge" data-id="screen-api-&gt;formats">
-      <path class="line" d="M153 158L153 545Q153 554 162 554L221.3 554Q230.3 554 230.3 563L230.3 574"/>
-      <path class="arrow" d="M225.3 562L230.3 574L235.3 562"/>
+      <path class="line" d="M163 158L163 545Q163 554 172 554L230.1 554Q239.1 554 239.1 563L239.1 574"/>
+      <path class="flow" d="M163 158L163 545Q163 554 172 554L230.1 554Q239.1 554 239.1 563L239.1 574"/>
+      <path class="arrow" d="M234.1 562L239.1 574L244.1 562"/>
     </g>
   </g>
   <g class="heads">
     <g class="head depth-0" data-id="suite" transform="translate(12 12)">
-      <text class="t-name" x="44" y="26" data-width="65">Lotto suite</text>
+      <text class="t-name" x="44" y="26" data-width="72">Lotto suite</text>
       <text class="t-tagline-code" x="44" y="44" data-width="195">Runs as one stack on one</text>
       <text class="t-tagline-code" x="44" y="61" data-width="57">machine</text>
     </g>
-    <g class="head depth-1" data-id="engine" transform="translate(135 224)">
-      <text class="t-name" x="44" y="26" data-width="93">Analysis engine</text>
+    <g class="head depth-1" data-id="engine" transform="translate(145 224)">
+      <text class="t-name" x="44" y="26" data-width="108">Analysis engine</text>
       <text class="t-tagline-code" x="44" y="44" data-width="203">lotto-options-core-server</text>
       <text class="t-tagline-code" x="44" y="61" data-width="41">:8002</text>
     </g>
@@ -138,27 +155,33 @@
   <g class="labels">
     <g class="label" data-id="engine-service-&gt;strategies">
       <title>core-server depends on core-result-analyzer.</title>
-      <text class="t-label-code" x="577" y="419" data-width="81">depends on</text>
+      <rect class="pill" x="579" y="403" width="95" height="21" rx="10"/>
+      <text class="t-label-code" x="586" y="419" data-width="81">depends on</text>
     </g>
     <g class="label" data-id="engine-service-&gt;formats">
       <title>core-server depends on core-model.</title>
-      <text class="t-label-code" x="432" y="479" data-width="81">depends on</text>
+      <rect class="pill" x="435" y="463" width="95" height="21" rx="10"/>
+      <text class="t-label-code" x="442" y="479" data-width="81">depends on</text>
     </g>
     <g class="label" data-id="engine-service-&gt;legacy">
       <title>core-server depends on core-legacy-desktop.</title>
-      <text class="t-label-code" x="197.5" y="419" data-width="81">depends on</text>
+      <rect class="pill" x="200.5" y="403" width="95" height="21" rx="10"/>
+      <text class="t-label-code" x="207.5" y="419" data-width="81">depends on</text>
     </g>
     <g class="label" data-id="strategies-&gt;formats">
       <title>core-result-analyzer depends on core-model.</title>
-      <text class="t-label-code" x="577" y="539" data-width="81">depends on</text>
+      <rect class="pill" x="579" y="523" width="95" height="21" rx="10"/>
+      <text class="t-label-code" x="586" y="539" data-width="81">depends on</text>
     </g>
     <g class="label" data-id="legacy-&gt;formats">
       <title>core-legacy-desktop depends on core-model.</title>
-      <text class="t-label-code" x="197.5" y="539" data-width="81">depends on</text>
+      <rect class="pill" x="200.5" y="523" width="95" height="21" rx="10"/>
+      <text class="t-label-code" x="207.5" y="539" data-width="81">depends on</text>
     </g>
     <g class="label" data-id="screen-api-&gt;formats">
       <title>Screen API depends on core-model.</title>
-      <text class="t-label-code" x="53.5" y="194" data-width="81">depends on</text>
+      <rect class="pill" x="48" y="178" width="95" height="21" rx="10"/>
+      <text class="t-label-code" x="55" y="194" data-width="81">depends on</text>
     </g>
   </g>
 </svg>
