@@ -25,12 +25,52 @@ import {
   type Camera,
   type Point,
 } from '../../../src/layout/index.ts';
-import { LOTTO, layouter } from './helpers.ts';
+import { LOTTO, layouter, semanticsOf } from './helpers.ts';
 
 const OPEN_ENGINE_SERVICE: Zoom = new Map([['engine-service', 'open']]);
 const ENGINE_PARTS = ['request-handling', 'game-analysis', 'pick-generation', 'history-lookup'];
 
 describe('the transition plan', () => {
+  it.each([
+    {
+      name: 'renamed top-level element',
+      before: 'a: A\nb: B\na calls b\n',
+      after: 'requester: A\nb: B\nrequester calls b\n',
+      leaving: ['a'],
+      ancestor: null,
+    },
+    {
+      name: 'deleted child with a surviving parent',
+      before: 'root: Root\n  a: A\n  b: B\nview full: Full\n  show root +1\n',
+      after: 'root: Root\n  b: B\nview full: Full\n  show root +1\n',
+      leaving: ['a'],
+      ancestor: 'root',
+    },
+    {
+      name: 'deleted subtree with a surviving grandparent',
+      before: 'root: Root\n  branch: Branch\n    a: A\n  b: B\nview full: Full\n  show root +2\n',
+      after: 'root: Root\n  b: B\nview full: Full\n  show root +2\n',
+      leaving: ['branch', 'a'],
+      ancestor: 'root',
+    },
+  ])('LAYOUT-402 a $name leaves safely during a valid model edit', async (sample) => {
+    const old = semanticsOf(sample.before);
+    const next = semanticsOf(sample.after);
+    const before = await layouter(old).structure(old.firstView, DEFAULT_ZOOM);
+    const after = await layouter(next).structure(next.firstView, DEFAULT_ZOOM);
+    const plan = transitionPlan(next.tree, before, after);
+    expect(plan.leave.map((each) => each.id)).toEqual(sample.leaving);
+    for (const leaving of plan.leave) {
+      const box = before.result.boxes[leaving.id];
+      if (box === undefined) throw new Error('Missing old box');
+      expect(leaving.toward).toEqual(
+        sample.ancestor === null
+          ? { x: box.x + box.width / 2, y: box.y + box.height / 2 }
+          : headerMiddle(after, sample.ancestor),
+      );
+    }
+  });
+
   it('LAYOUT-401 opening a container lays the new picture out from scratch', async () => {
     const before = await layouter(LOTTO).structure('services', DEFAULT_ZOOM);
     const after = await layouter(LOTTO).structure('services', OPEN_ENGINE_SERVICE);

@@ -181,7 +181,9 @@ Box anatomy and metric names (`pad`, `icon`, `iconGap`, and so on) are defined i
      labels disappear at once;
   2. elements that are new are placed at their new box and fade in, starting at `0.4 G` and lasting
      `0.7 G`; elements that leave shrink toward the middle of their nearest drawn ancestor's header
-     and fade out over `0.5 G`;
+     and fade out over `0.5 G`. If a live edit removes an id from the model, its previous drawing
+     supplies the ancestor chain; if none survives in the new picture, it shrinks toward its own
+     previous middle;
   3. the new edges and labels fade in, starting at `G + 60 ms` and lasting `0.6 G`.
 - **LAYOUT-403** Changes never interleave: a change that arrives during a transition first finishes
   the current one at once, then starts.
