@@ -17,6 +17,10 @@ Date: 2026-10-24
 - http://127.0.0.1:4398/ - this repository's live Aerie sample; compared the same element click with the overview active and cleared.
 - https://github.com/Brizton-Floyd/aerie-diagrams - this repository's issue and pull-request dashboard.
 - https://github.com/Brizton-Floyd/aerie-diagrams/pull/85 - this task's defect fix and CI status.
+- https://github.com/Brizton-Floyd/aerie-diagrams/actions/runs/40129001180 - failed CI job metadata; the job did not start.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/actions/jobs/120976484395 - confirmed that no CI steps ran.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/check-runs/120976484395 - failed check metadata.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/check-runs/120976484395/annotations - GitHub's explanation of the account-level Actions restriction.
 
 ## Diagnosis
 
