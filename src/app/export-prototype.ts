@@ -3,7 +3,7 @@ import assets from './export-prototype.assets.json';
 import './export-prototype.css';
 
 export function showExportPrototype(root: HTMLElement) {
-  let variant = new URLSearchParams(location.search).get('variant') || 'A';
+  let variant = new URLSearchParams(location.search).get('variant') || 'B';
   let audience: 'exec' | 'engineer' = 'exec';
   let step = 1;
   const titles: Record<string, string> = {
@@ -21,7 +21,7 @@ export function showExportPrototype(root: HTMLElement) {
       )
       .join('');
   function pageHeader(title: string, subtitle: string) {
-    return `<div class="xp-doc-heading"><div class="xp-eyebrow">HOW AERIE WORKS / ${audience === 'exec' ? 'PLAIN WORDING' : 'TECHNICAL WORDING'}</div><h2>${title}</h2><p>${subtitle}</p></div>`;
+    return `<div class="xp-doc-heading"><div class="xp-eyebrow">${audience === 'exec' ? 'PLAIN WORDING' : 'TECHNICAL WORDING'}</div><h2>${title}</h2><p>${subtitle}</p></div>`;
   }
   function render() {
     root.className = 'xp-root';
@@ -92,11 +92,11 @@ export function showExportPrototype(root: HTMLElement) {
     <div class="xp-bottom-note"><b>Two separate choices:</b> one view or many views · static or interactive. Either scope can use plain or technical wording.</div>`;
   }
   function staticPage() {
-    return `<p class="xp-intro">A Confluence-style page containing <b>one static export</b>. The diagram and every stage explanation are inside the same white boundary.</p><div class="xp-wiki"><div class="xp-wiki-bar">Team knowledge <span>/</span> Architecture <span>/</span> How Aerie works <b>Static image concept</b></div><article class="xp-document">${pageHeader('Big picture, fully expanded', 'Create a diagram · all nested elements visible · all four stages included')}<div class="xp-export-content"><div class="xp-full-diagram">${drawing()}</div><aside class="xp-all-explanations"><div class="xp-eyebrow">FOLLOW THE NUMBERS</div>${legend()}<div class="xp-caption-note">These explanations are included in the export itself. Nothing needs a hover or a click to be read.</div></aside></div><footer class="xp-export-footer">How Aerie works · Big picture · ${audience === 'exec' ? 'Plain' : 'Technical'} · Fully expanded</footer></article></div><div class="xp-bottom-note"><b>What the reader does:</b> reads the entire diagram and its explanations. PNG is the portable inline-image candidate; a PDF could provide a document alternative.</div>`;
+    return `<p class="xp-intro">A Confluence-style page containing <b>one static export</b>. The diagram and every stage explanation are inside the same white boundary.</p><div class="xp-wiki"><div class="xp-wiki-bar">Team knowledge <span>/</span> Architecture <span>/</span> Diagram <b>Static image concept</b></div><article class="xp-document">${pageHeader('Big picture, fully expanded', 'Create a diagram · all nested elements visible · all four stages included')}<div class="xp-export-content"><div class="xp-full-diagram">${drawing()}</div><aside class="xp-all-explanations"><div class="xp-eyebrow">FOLLOW THE NUMBERS</div>${legend()}<div class="xp-caption-note">These explanations are included in the export itself. Nothing needs a hover or a click to be read.</div></aside></div><footer class="xp-export-footer">Big picture · ${audience === 'exec' ? 'Plain' : 'Technical'} · Fully expanded</footer></article></div><div class="xp-bottom-note"><b>What the reader does:</b> reads the entire diagram and its explanations. PNG is the portable inline-image candidate; a PDF could provide a document alternative.</div>`;
   }
   function interactivePage() {
     const selected = data().steps[step - 1]!;
-    return `<p class="xp-intro">An <b>interactive embed concept</b>. Try the numbered buttons or click a number on the diagram. This demonstrates the experience, not a working Confluence integration.</p><div class="xp-wiki"><div class="xp-wiki-bar">Team knowledge <span>/</span> Architecture <span>/</span> How Aerie works <b>Interactive embed concept</b></div><article class="xp-document">${pageHeader('Explore how a diagram is created', 'Every nested box is open. Select a stage to highlight its path.')}<div class="xp-export-content"><div class="xp-full-diagram xp-live-diagram">${drawing()}</div><aside class="xp-live-panel"><div class="xp-eyebrow">CHOOSE A STAGE</div><div class="xp-stage-buttons">${data()
+    return `<p class="xp-intro">An <b>interactive embed concept</b>. Try the numbered buttons or click a number on the diagram. This demonstrates the experience, not a working Confluence integration.</p><div class="xp-wiki"><div class="xp-wiki-bar">Team knowledge <span>/</span> Architecture <span>/</span> Diagram <b>Interactive embed concept</b></div><article class="xp-document">${pageHeader('Explore how a diagram is created', 'Every nested box is open. Select a stage to highlight its path.')}<div class="xp-export-content"><div class="xp-full-diagram xp-live-diagram">${drawing()}</div><aside class="xp-live-panel"><div class="xp-eyebrow">CHOOSE A STAGE</div><div class="xp-stage-buttons">${data()
       .steps.map(
         (s) =>
           `<button data-select-step="${s.number}" aria-pressed="${step === s.number}">${s.number}</button>`,

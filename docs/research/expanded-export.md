@@ -99,3 +99,13 @@ User decisions remain open: single versus multiple views, static versus interact
 explanation placement, detailed-step coverage and acceptable large-diagram behavior. Work summary:
 GPT-6.1 Sol with inherited runtime effort, inline research and prototype; no delegated workers or
 model change. The branch and these assets are disposable planning evidence, not for merging.
+
+## User feedback: starting export direction
+
+The user selected a static export of the current view, fully expanded, with all flow explanations
+included and a choice of plain or technical wording. The static diagram-plus-explanation composition
+is the starting design. Whole-model documents and interactive embeds are outside this first release.
+The export heading and footer no longer add the application name. A clarification is pending on
+whether the user also wants the modeled application's name removed from authored diagram content;
+component names have not been altered while that question remains open. This feedback does not
+certify the exporter, decide large-model limits or establish real Confluence import acceptance.

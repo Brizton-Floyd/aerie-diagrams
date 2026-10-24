@@ -35,6 +35,10 @@ prototype stay on a separate branch, with no production implementation or Conflu
 - `/tmp/aerie-export-prototype-progress.md` - authored visual evidence and open-decision tracker comment.
 - `/tmp/aerie-export-backlog-comment.md` - authored pointer from the existing sharing backlog to this map.
 
+- `/tmp/aerie-export-static-selection.md` - authored resolution capturing the user's static-export choice.
+- `/tmp/aerie-export-map-current.md` - refreshed canonical map body, updated with the selected prototype decision.
+- `/tmp/aerie-export-content-pointer.md` - content ticket points to the canonical prototype resolution.
+
 ## URLs
 
 - https://github.com/Brizton-Floyd/aerie-diagrams/issues/42 - existing broader export backlog.
@@ -91,6 +95,14 @@ prototype stay on a separate branch, with no production implementation or Conflu
 
 GitHub API reads and native relationship writes used only this repository's issues. The user explicitly invoked the
 tracker workflow; no outreach or external Confluence write occurred.
+
+## Follow-up selection
+
+The user chose the static, current-view, fully expanded composition with flow explanations and
+Plain/Technical wording. Only the prototype decision is resolved in this session. The prototype's
+export heading/footer no longer add the application name. A required clarification remains pending
+about authored application/component names inside the diagram, so those labels were not changed.
+The accepted decision is indexed in the map; no production exporter was implemented or merged.
 
 ## Forbidden sources opened
 
