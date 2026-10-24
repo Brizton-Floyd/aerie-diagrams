@@ -48,6 +48,14 @@ Date: 2026-10-24
 - https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/check-runs/120997860423/annotations - confirmed an account-level restriction prevented CI from starting.
 - https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/check-runs/120997852504/annotations - confirmed the second workflow also did not start.
 
+- https://github.com/Brizton-Floyd/aerie-diagrams/pull/101 - combined model navigation fixes and merge verification.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/issues/86 - verified merged issue state.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/issues/87 - verified merged issue state.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/issues/93 - verified merged issue state.
+
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/issues/88 - verified navigation issue closed.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/issues/89 - verified missing-model issue closed.
+
 ## Forbidden sources opened
 
 None.

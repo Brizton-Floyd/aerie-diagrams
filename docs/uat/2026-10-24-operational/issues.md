@@ -18,13 +18,14 @@ The full evidence is in [the audit report](report.md). Issues are ordered by the
 | 12      | P3       | [#97: Count or label the implicit Overview consistently](https://github.com/Brizton-Floyd/aerie-diagrams/issues/97)                    |
 | 13      | P2       | [#98: Expose contextual technical wording in stage explanations](https://github.com/Brizton-Floyd/aerie-diagrams/issues/98)            |
 
-The element-details issue links the already prepared PR 85. Narrow-window support remains a deferred-scope enhancement, not a regression against the v1 size contract.
+The element-details issue was fixed by PR 85. Narrow-window support remains a deferred-scope enhancement, not a regression against the v1 size contract.
 
 ## Implementation queue
 
-1. [#86](https://github.com/Brizton-Floyd/aerie-diagrams/issues/86): implemented in [PR #99](https://github.com/Brizton-Floyd/aerie-diagrams/pull/99). The full local Linux gate passed.
-2. [#87](https://github.com/Brizton-Floyd/aerie-diagrams/issues/87): implemented in [PR #100](https://github.com/Brizton-Floyd/aerie-diagrams/pull/100). The full local Linux gate passed, including all 122 browser journeys.
-3. [#93](https://github.com/Brizton-Floyd/aerie-diagrams/issues/93): the existing element-details fix is prepared in [PR #85](https://github.com/Brizton-Floyd/aerie-diagrams/pull/85).
-4. Remaining P2 defects and usability gaps follow in audit order, then the P3 findings. Narrow-window support remains deferred scope.
+1. [#86](https://github.com/Brizton-Floyd/aerie-diagrams/issues/86): merged in [PR #99](https://github.com/Brizton-Floyd/aerie-diagrams/pull/99). The full local Linux gate passed.
+2. [#87](https://github.com/Brizton-Floyd/aerie-diagrams/issues/87): merged in [PR #100](https://github.com/Brizton-Floyd/aerie-diagrams/pull/100). The full local Linux gate passed.
+3. [#93](https://github.com/Brizton-Floyd/aerie-diagrams/issues/93): merged in [PR #85](https://github.com/Brizton-Floyd/aerie-diagrams/pull/85). The full local Linux gate passed.
+4. [#88](https://github.com/Brizton-Floyd/aerie-diagrams/issues/88) and [#89](https://github.com/Brizton-Floyd/aerie-diagrams/issues/89): merged in [PR #101](https://github.com/Brizton-Floyd/aerie-diagrams/pull/101). The combined full local Linux gate passed: 885 unit tests, 358 layout rules, 27 goldens, 23 screenshot tests and 136 browser journeys.
+5. Next: keyboard focus and visibility (#90, #91), then split-editor resizing (#92). Remaining P2 findings follow in audit order, then P3. Narrow-window support remains deferred scope.
 
-All three fixes remain in draft pull requests for review. Both new fixes could not start CI because of an account-level GitHub Actions restriction. Issues remain open until their fixes merge.
+The user explicitly authorized merges after local validation while the account-level GitHub Actions restriction prevents CI from starting. All shipped changes received independent review. Draft reload recovery (#94) is separate from the in-session model history fix.
