@@ -50,6 +50,9 @@ prototype stay on a separate branch, with no production implementation or Conflu
 - `/Users/briztonfloyd/.codex/visualizations/2026/10/24/01a16eb6-c800-7203-852e-b93904fb0934/export-scenario-detail.png` - captured all-stage/all-step layout.
 - `/Users/briztonfloyd/.codex/visualizations/2026/10/24/01a16eb6-c800-7203-852e-b93904fb0934/export-technical-reference-full.png` - full-page capture for visual evidence.
 
+- `/tmp/aerie-export-content-resolution.md` - authored canonical resolution of the confirmed content choices.
+- `/tmp/aerie-export-map-delivery.md` - raw Markdown map body refreshed using structured GitHub CLI output before indexing the closed content decision.
+
 ## URLs
 
 - https://github.com/Brizton-Floyd/aerie-diagrams/issues/42 - existing broader export backlog.
@@ -132,6 +135,12 @@ Variant D stays on the disposable branch. Extra technical notes are authored fro
 and the rationale example cites its actual decision; both are explicitly distinguished from the
 model's existing wording. No outside product design source informed this example, and no human
 content decision is closed by producing it.
+
+## Content resolution
+
+The user confirmed the remaining source, invalid-edit and audience decisions. Closed only the
+content ticket in this session, indexed its resolution, and claimed the first-release acceptance
+ticket. Format selection is the next live human question. No production implementation occurred.
 
 ## Forbidden sources opened
 

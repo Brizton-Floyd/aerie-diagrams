@@ -141,3 +141,14 @@ for such additional notes remains part of the open content decision.
 Visual assets: [component reference](export-prototype/component-reference.png),
 [architecture rationale](export-prototype/architecture-rationale.png) and
 [scenario detail](export-prototype/scenario-detail.png). No product exporter or schema was added.
+
+## Content decision complete
+
+The user confirmed the optional component reference, authored model content as its source, export
+of the last valid displayed model with an application-only warning when edits are invalid, and
+the model's audience choices defaulting to current wording. These join the earlier choices of
+current-view expansion, one selected scenario, all stages and detailed steps, and unbranded output
+with authored names preserved. The canonical resolution is on
+[the closed content decision](https://github.com/Brizton-Floyd/aerie-diagrams/issues/104).
+The release decision remains open for formats, controls, limits and actual import acceptance.
+No production implementation was started.
