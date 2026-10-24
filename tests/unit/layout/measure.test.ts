@@ -16,8 +16,8 @@ function fontFile(name: string): Map<number, number> {
   return fontAdvances(readFileSync(join(ROOT, 'node_modules/@fontsource', name))).advances;
 }
 
-const SANS_600 = fontFile('source-sans-3/files/source-sans-3-latin-600-normal.woff');
-const SERIF_ITALIC = fontFile('source-serif-4/files/source-serif-4-latin-400-italic.woff');
+const SANS_600 = fontFile('inter/files/inter-latin-600-normal.woff');
+const SANS_500 = fontFile('inter/files/inter-latin-500-normal.woff');
 
 /** Font units of a string from a font file's own advances. */
 const units = (text: string, advances: Map<number, number>): number =>
@@ -32,12 +32,15 @@ describe('measuring text', () => {
     // The committed table is exactly what the font files say.
     expect(serializeAdvances(buildAdvances())).toBe(read(ADVANCES_FILE));
     // The width is the sum of the advances at the font size, rounded up to a whole pixel.
+    // Inter has 2048 units to the em.
     for (const name of ['Website', 'Draw history service', 'Texas Lottery website']) {
-      expect(measure(name, ROLES.name)).toBe(Math.ceil((units(name, SANS_600) * 14) / 1000));
+      expect(measure(name, ROLES.name)).toBe(Math.ceil((units(name, SANS_600) * 14) / 2048 - 1e-9));
     }
     const label = 'fetches draw history from (+1 more)';
-    expect(measure(label, ROLES.label)).toBe(Math.ceil((units(label, SERIF_ITALIC) * 13.5) / 1000));
-    // Source Code Pro gives every character 600 units: 13.5 px x 0.6 = 8.1 px each.
+    expect(measure(label, ROLES.label)).toBe(
+      Math.ceil((units(label, SANS_500) * 13.5) / 2048 - 1e-9),
+    );
+    // JetBrains Mono gives every character 600 of its 1000 units: 13.5 px x 0.6 = 8.1 px each.
     expect(measure('x'.repeat(10), ROLES.taglineCode)).toBe(81);
     expect(measure('x'.repeat(28), ROLES.taglineCode)).toBe(227);
     expect(measure('', ROLES.name)).toBe(0);
@@ -52,28 +55,26 @@ describe('measuring text', () => {
   it('LAYOUT-102 keeps kerning and ligatures off when measuring and when drawing', () => {
     // Pairs that kern or join in the font measure as their letters one by one.
     for (const text of ['AV', 'To', 'fi', 'ffl', 'Wa']) {
-      const each = units(text, SERIF_ITALIC);
-      expect(measure(text.repeat(40), ROLES.label)).toBe(Math.ceil((each * 40 * 13.5) / 1000));
+      const each = units(text, SANS_500);
+      expect(measure(text.repeat(40), ROLES.label)).toBe(
+        Math.ceil((each * 40 * 13.5) / 2048 - 1e-9),
+      );
     }
     expect(DRAWN_TEXT_STYLE).toEqual({ fontKerning: 'none', fontVariantLigatures: 'none' });
   });
 
   it('LAYOUT-103 sets the face, size and wrap width of each text role from the type scale', () => {
     expect(ROLES.name).toEqual({ face: 'sans-600', size: 14, line: 18, wrap: null });
-    expect(ROLES.tagline).toEqual({ face: 'serif-400', size: 13.5, line: 17, wrap: 230 });
-    expect(ROLES.taglineCode).toEqual({ face: 'code-400', size: 13.5, line: 17, wrap: 230 });
-    expect(ROLES.chip).toEqual({ face: 'serif-400-italic', size: 13.5, line: 20, wrap: null });
-    expect(ROLES.label).toEqual({ face: 'serif-400-italic', size: 13.5, line: 17, wrap: 240 });
-    expect(ROLES.labelCode).toEqual({ face: 'code-400', size: 13.5, line: 17, wrap: 240 });
+    expect(ROLES.tagline).toEqual({ face: 'sans-400', size: 13.5, line: 17, wrap: 230 });
+    expect(ROLES.taglineCode).toEqual({ face: 'mono-400', size: 13.5, line: 17, wrap: 230 });
+    expect(ROLES.chip).toEqual({ face: 'sans-500', size: 13.5, line: 20, wrap: null });
+    expect(ROLES.label).toEqual({ face: 'sans-500', size: 13.5, line: 17, wrap: 240 });
+    expect(ROLES.labelCode).toEqual({ face: 'mono-400', size: 13.5, line: 17, wrap: 240 });
     expect(ROLES.band).toEqual({ face: 'sans-600', size: 13.5, line: 18, wrap: null });
-    expect(faceOf('sans-600')).toEqual({ family: 'Source Sans 3', weight: 600, style: 'normal' });
-    expect(faceOf('serif-400')).toEqual({ family: 'Source Serif 4', weight: 400, style: 'normal' });
-    expect(faceOf('serif-400-italic')).toEqual({
-      family: 'Source Serif 4',
-      weight: 400,
-      style: 'italic',
-    });
-    expect(faceOf('code-400')).toEqual({ family: 'Source Code Pro', weight: 400, style: 'normal' });
+    expect(faceOf('sans-600')).toEqual({ family: 'Inter', weight: 600, style: 'normal' });
+    expect(faceOf('sans-500')).toEqual({ family: 'Inter', weight: 500, style: 'normal' });
+    expect(faceOf('sans-400')).toEqual({ family: 'Inter', weight: 400, style: 'normal' });
+    expect(faceOf('mono-400')).toEqual({ family: 'JetBrains Mono', weight: 400, style: 'normal' });
     // Names never wrap, however long.
     const long = 'A name far longer than any tagline would ever be allowed to run on one line';
     expect(lines(long, ROLES.name)).toEqual([long]);

@@ -10,7 +10,7 @@ rules in [AGENTS.md](../AGENTS.md). Dependencies are in brackets.
 | A2    | Lines language: grammar, parser to the canonical JSON model, error catalogue, formatter, spec examples         | A1           |
 | A3    | Model semantics: containment, relationship lifting, audience resolution and defaults                           | A2           |
 | A4    | Layout interface, unmodified ELK structure layout, audience space reserve, layout rule checks                  | A3           |
-| A5    | Contour renderer: shapes, bands, type, own icons, relationship sentences; own goldens and screenshots          | A4           |
+| A5    | Signal renderer: shapes, bands, type, own icons, relationship sentences; own goldens and screenshots           | A4           |
 | A6    | Interactions: select with side panel, highlight and dim, open in place, audience switch, glide, reduced motion | A5           |
 | A7    | Navigation sidebar and full-state shared links                                                                 | A6           |
 | A8    | Scenarios on the architecture: lanes layout, red trail, step list, play and step                               | A6           |

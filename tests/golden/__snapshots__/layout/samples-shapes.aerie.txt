@@ -1,93 +1,93 @@
 view shapes, default (no changes)
-  size 670 x 795
-  visitor (215 x 59, rim): 152, 12, 215 x 59
-  outside (265 x 59, rim): 393, 12, 265 x 59
+  size 673 x 795
+  visitor (213 x 59, rim): 153, 12, 213 x 59
+  outside (269 x 59, rim): 392, 12, 269 x 59
   ground (open, at least 311 wide, header 53): 12, 157, 455 x 611
     ridge (open, at least 311 wide, header 53): 30, 215, 419 x 530
       crest (open, at least 165 wide, header 53): 48, 273, 383 x 449
         summit (open, at least 165 wide, header 53): 66, 331, 347 x 368
           peak (open, at least 311 wide, header 70): 84, 389, 311 x 287
-            cairn (189 x 59): 165, 459, 189 x 59
+            cairn (190 x 59): 164.67, 459, 190 x 59
             shed (230 x 79): 113, 579, 230 x 79
   visitor->cairn: 260,71 260,459
     label 124, 101, 132 x 21
-  cairn->outside: 291,518 291,528 353,528 353,783 526,783 526,71
-    label 531, 101, 75 x 21
+  cairn->outside: 291.33,518 291.33,528 353,528 353,783 527,783 527,71
+    label 532, 101, 75 x 21
   cairn->shed: 228,518 228,579
     label 102, 538, 124 x 21
 
 view shapes, everything open (shed open)
-  size 670 x 966
-  visitor (215 x 59, rim): 152, 12, 215 x 59
-  outside (265 x 59, rim): 393, 12, 265 x 59
+  size 673 x 966
+  visitor (213 x 59, rim): 153, 12, 213 x 59
+  outside (269 x 59, rim): 392, 12, 269 x 59
   ground (open, at least 311 wide, header 53): 12, 157, 455 x 782
     ridge (open, at least 311 wide, header 53): 30, 215, 419 x 701
       crest (open, at least 165 wide, header 53): 48, 273, 383 x 620
         summit (open, at least 165 wide, header 53): 66, 331, 347 x 539
           peak (open, at least 311 wide, header 70): 84, 389, 311 x 458
-            cairn (189 x 59): 165, 459, 189 x 59
+            cairn (190 x 59): 164.67, 459, 190 x 59
             shed (open, at least 230 wide, header 53): 113, 579, 230 x 250
               rake (178 x 59): 131, 632, 178 x 59
               spade (178 x 59): 131, 752, 178 x 59
   visitor->cairn: 260,71 260,459
     label 124, 101, 132 x 21
-  cairn->outside: 291,518 291,528 353,528 353,954 526,954 526,71
-    label 531, 101, 75 x 21
+  cairn->outside: 291.33,518 291.33,528 353,528 353,954 527,954 527,71
+    label 532, 101, 75 x 21
   cairn->shed: 228,518 228,579
     label 102, 538, 124 x 21
   rake->spade: 220,691 220,752
     label 143, 711, 75 x 21
 
 view shapes, all closed (ground closed)
-  size 558 x 243
-  visitor (215 x 59, rim): 40, 12, 215 x 59
-  outside (265 x 59, rim): 281, 12, 265 x 59
+  size 561 x 243
+  visitor (213 x 59, rim): 41, 12, 213 x 59
+  outside (269 x 59, rim): 280, 12, 269 x 59
   ground (311 x 79): 44, 152, 311 x 79
   visitor->ground: 148,71 148,152
     label 12, 101, 132 x 21
-  ground->outside: 251,152 251,81 414,81 414,71
+  ground->outside: 251,152 251,81 415,81 415,71
     label 256, 101, 75 x 21
 
 view shapes, ridge closed (ridge closed)
-  size 596 x 334
-  visitor (215 x 59, rim): 78, 12, 215 x 59
-  outside (265 x 59, rim): 319, 12, 265 x 59
+  size 599 x 334
+  visitor (213 x 59, rim): 79, 12, 213 x 59
+  outside (269 x 59, rim): 318, 12, 269 x 59
   ground (open, at least 311 wide, header 53): 12, 157, 347 x 150
     ridge (311 x 79): 30, 210, 311 x 79
   visitor->ridge: 186,71 186,210
     label 50, 101, 132 x 21
-  ridge->outside: 185.5,289 185.5,322 452,322 452,71
-    label 457, 101, 75 x 21
+  ridge->outside: 185.5,289 185.5,322 453,322 453,71
+    label 458, 101, 75 x 21
 
 view shapes, crest closed (crest closed)
-  size 558 x 415
-  visitor (215 x 59, rim): 40, 12, 215 x 59
-  outside (265 x 59, rim): 281, 12, 265 x 59
+  size 561 x 415
+  visitor (213 x 59, rim): 41, 12, 213 x 59
+  outside (269 x 59, rim): 280, 12, 269 x 59
   ground (open, at least 311 wide, header 53): 29, 157, 347 x 231
     ridge (open, at least 311 wide, header 53): 47, 215, 311 x 150
       crest (165 x 79): 65, 268, 165 x 79
   visitor->crest: 148,71 148,268
     label 12, 101, 132 x 21
-  crest->outside: 147.5,347 147.5,403 414,403 414,71
-    label 419, 101, 75 x 21
+  crest->outside: 147.5,347 147.5,403 415,403 415,71
+    label 420, 101, 75 x 21
 
 view shapes, summit closed (summit closed)
-  size 559 x 496
-  visitor (215 x 59, rim): 41, 12, 215 x 59
-  outside (265 x 59, rim): 282, 12, 265 x 59
+  size 562 x 496
+  visitor (213 x 59, rim): 42, 12, 213 x 59
+  outside (269 x 59, rim): 281, 12, 269 x 59
   ground (open, at least 311 wide, header 53): 12, 157, 347 x 312
     ridge (open, at least 311 wide, header 53): 30, 215, 311 x 231
       crest (open, at least 165 wide, header 53): 48, 273, 201 x 150
         summit (165 x 79): 66, 326, 165 x 79
   visitor->summit: 149,71 149,326
     label 13, 101, 132 x 21
-  summit->outside: 148.5,405 148.5,484 415,484 415,71
-    label 420, 101, 75 x 21
+  summit->outside: 148.5,405 148.5,484 416,484 416,71
+    label 421, 101, 75 x 21
 
 view shapes, peak closed (peak closed)
-  size 650 x 594
-  visitor (215 x 59, rim): 132, 12, 215 x 59
-  outside (265 x 59, rim): 373, 12, 265 x 59
+  size 653 x 594
+  visitor (213 x 59, rim): 133, 12, 213 x 59
+  outside (269 x 59, rim): 372, 12, 269 x 59
   ground (open, at least 311 wide, header 53): 12, 157, 455 x 410
     ridge (open, at least 311 wide, header 53): 30, 215, 419 x 329
       crest (open, at least 165 wide, header 53): 48, 273, 383 x 248
@@ -95,51 +95,51 @@ view shapes, peak closed (peak closed)
           peak (311 x 96): 84, 384, 311 x 96
   visitor->peak: 240,71 240,384
     label 104, 101, 132 x 21
-  peak->outside: 239.5,480 239.5,582 506,582 506,71
-    label 511, 101, 75 x 21
+  peak->outside: 239.5,480 239.5,582 507,582 507,71
+    label 512, 101, 75 x 21
 
 view icon-set, default (no changes)
-  size 1167 x 709
-  icons (open, at least 255 wide, header 53): 12, 12, 1143 x 685
-    people (open, at least 201 wide, header 40): 272, 65, 284 x 614
-      i-person (202 x 59): 313, 105, 202 x 59
-      i-web (186 x 59): 321, 225, 186 x 59
-      i-monitor (210 x 59): 309, 345, 210 x 59
-      i-api (235 x 59): 296.5, 465, 235 x 59
-      i-route (248 x 76): 290, 585, 248 x 76
-    work (open, at least 116 wide, header 40): 576, 73.5, 287 x 597
-      i-gear (150 x 59): 644.5, 113.5, 150 x 59
-      i-module (150 x 59): 644.5, 233.5, 150 x 59
-      i-stack (218 x 59): 610.5, 353.5, 218 x 59
-      i-dice (202 x 59): 618.5, 473.5, 202 x 59
-      i-refresh (251 x 59): 594, 593.5, 251 x 59
-    keeping (open, at least 134 wide, header 40): 30, 73.5, 222 x 597
+  size 1161 x 709
+  icons (open, at least 255 wide, header 53): 12, 12, 1137 x 685
+    people (open, at least 218 wide, header 40): 272, 65, 278 x 614
+      i-person (202 x 59): 310, 105, 202 x 59
+      i-web (186 x 59): 318, 225, 186 x 59
+      i-monitor (210 x 59): 306, 345, 210 x 59
+      i-api (235 x 59): 293.5, 465, 235 x 59
+      i-route (242 x 76): 290, 585, 242 x 76
+    work (open, at least 121 wide, header 40): 570, 73.5, 287 x 597
+      i-gear (150 x 59): 638.5, 113.5, 150 x 59
+      i-module (150 x 59): 638.5, 233.5, 150 x 59
+      i-stack (218 x 59): 604.5, 353.5, 218 x 59
+      i-dice (202 x 59): 612.5, 473.5, 202 x 59
+      i-refresh (251 x 59): 588, 593.5, 251 x 59
+    keeping (open, at least 141 wide, header 40): 30, 73.5, 222 x 597
       i-cylinder (170 x 59): 56, 113.5, 170 x 59
       i-grid (150 x 59): 66, 233.5, 150 x 59
       i-document (170 x 59): 56, 353.5, 170 x 59
       i-archive (186 x 59): 48, 473.5, 186 x 59
       i-books (186 x 59): 48, 593.5, 186 x 59
-    places (open, at least 123 wide, header 40): 883, 133.5, 254 x 477
-      i-building (178 x 59): 921, 173.5, 178 x 59
-      i-search (202 x 59): 909, 293.5, 202 x 59
-      i-history (218 x 59): 901, 413.5, 218 x 59
-      i-box (150 x 59): 935, 533.5, 150 x 59
-  i-person->i-web: 414,164 414,225
-    label 369, 184, 43 x 21
-  i-web->i-monitor: 414,284 414,345
-    label 337, 304, 75 x 21
-  i-monitor->i-api: 414,404 414,465
-    label 361, 424, 51 x 21
-  i-api->i-route: 414,524 414,585
-    label 312, 544, 100 x 21
-  i-gear->i-module: 719.5,172.5 719.5,233.5
-    label 666.5, 192.5, 51 x 21
-  i-module->i-stack: 719.5,292.5 719.5,353.5
-    label 650.5, 312.5, 67 x 21
-  i-stack->i-dice: 719.5,412.5 719.5,473.5
-    label 666.5, 432.5, 51 x 21
-  i-dice->i-refresh: 719.5,532.5 719.5,593.5
-    label 642.5, 552.5, 75 x 21
+    places (open, at least 129 wide, header 40): 877, 133.5, 254 x 477
+      i-building (178 x 59): 915, 173.5, 178 x 59
+      i-search (202 x 59): 903, 293.5, 202 x 59
+      i-history (218 x 59): 895, 413.5, 218 x 59
+      i-box (150 x 59): 929, 533.5, 150 x 59
+  i-person->i-web: 411,164 411,225
+    label 366, 184, 43 x 21
+  i-web->i-monitor: 411,284 411,345
+    label 334, 304, 75 x 21
+  i-monitor->i-api: 411,404 411,465
+    label 358, 424, 51 x 21
+  i-api->i-route: 411,524 411,585
+    label 309, 544, 100 x 21
+  i-gear->i-module: 713.5,172.5 713.5,233.5
+    label 660.5, 192.5, 51 x 21
+  i-module->i-stack: 713.5,292.5 713.5,353.5
+    label 644.5, 312.5, 67 x 21
+  i-stack->i-dice: 713.5,412.5 713.5,473.5
+    label 660.5, 432.5, 51 x 21
+  i-dice->i-refresh: 713.5,532.5 713.5,593.5
+    label 636.5, 552.5, 75 x 21
   i-cylinder->i-grid: 141,172.5 141,233.5
     label 88, 192.5, 51 x 21
   i-grid->i-document: 141,292.5 141,353.5
@@ -148,46 +148,46 @@ view icon-set, default (no changes)
     label 72, 432.5, 67 x 21
   i-archive->i-books: 141,532.5 141,593.5
     label 72, 552.5, 67 x 21
-  i-building->i-search: 1010,232.5 1010,293.5
-    label 957, 252.5, 51 x 21
-  i-search->i-history: 1010,352.5 1010,413.5
-    label 957, 372.5, 51 x 21
-  i-history->i-box: 1010,472.5 1010,533.5
-    label 957, 492.5, 51 x 21
+  i-building->i-search: 1004,232.5 1004,293.5
+    label 951, 252.5, 51 x 21
+  i-search->i-history: 1004,352.5 1004,413.5
+    label 951, 372.5, 51 x 21
+  i-history->i-box: 1004,472.5 1004,533.5
+    label 951, 492.5, 51 x 21
 
 view icon-set, all closed (icons closed)
   size 279 x 103
   icons (255 x 79): 12, 12, 255 x 79
 
 view icon-set, people closed (people closed)
-  size 1084 x 692
-  icons (open, at least 255 wide, header 53): 12, 12, 1060 x 668
-    people (201 x 66): 272, 330.5, 201 x 66
-    work (open, at least 116 wide, header 40): 493, 65, 287 x 597
-      i-gear (150 x 59): 561.5, 105, 150 x 59
-      i-module (150 x 59): 561.5, 225, 150 x 59
-      i-stack (218 x 59): 527.5, 345, 218 x 59
-      i-dice (202 x 59): 535.5, 465, 202 x 59
-      i-refresh (251 x 59): 511, 585, 251 x 59
-    keeping (open, at least 134 wide, header 40): 30, 65, 222 x 597
+  size 1101 x 692
+  icons (open, at least 255 wide, header 53): 12, 12, 1077 x 668
+    people (218 x 66): 272, 330.5, 218 x 66
+    work (open, at least 121 wide, header 40): 510, 65, 287 x 597
+      i-gear (150 x 59): 578.5, 105, 150 x 59
+      i-module (150 x 59): 578.5, 225, 150 x 59
+      i-stack (218 x 59): 544.5, 345, 218 x 59
+      i-dice (202 x 59): 552.5, 465, 202 x 59
+      i-refresh (251 x 59): 528, 585, 251 x 59
+    keeping (open, at least 141 wide, header 40): 30, 65, 222 x 597
       i-cylinder (170 x 59): 56, 105, 170 x 59
       i-grid (150 x 59): 66, 225, 150 x 59
       i-document (170 x 59): 56, 345, 170 x 59
       i-archive (186 x 59): 48, 465, 186 x 59
       i-books (186 x 59): 48, 585, 186 x 59
-    places (open, at least 123 wide, header 40): 800, 125, 254 x 477
-      i-building (178 x 59): 838, 165, 178 x 59
-      i-search (202 x 59): 826, 285, 202 x 59
-      i-history (218 x 59): 818, 405, 218 x 59
-      i-box (150 x 59): 852, 525, 150 x 59
-  i-gear->i-module: 636.5,164 636.5,225
-    label 583.5, 184, 51 x 21
-  i-module->i-stack: 636.5,284 636.5,345
-    label 567.5, 304, 67 x 21
-  i-stack->i-dice: 636.5,404 636.5,465
-    label 583.5, 424, 51 x 21
-  i-dice->i-refresh: 636.5,524 636.5,585
-    label 559.5, 544, 75 x 21
+    places (open, at least 129 wide, header 40): 817, 125, 254 x 477
+      i-building (178 x 59): 855, 165, 178 x 59
+      i-search (202 x 59): 843, 285, 202 x 59
+      i-history (218 x 59): 835, 405, 218 x 59
+      i-box (150 x 59): 869, 525, 150 x 59
+  i-gear->i-module: 653.5,164 653.5,225
+    label 600.5, 184, 51 x 21
+  i-module->i-stack: 653.5,284 653.5,345
+    label 584.5, 304, 67 x 21
+  i-stack->i-dice: 653.5,404 653.5,465
+    label 600.5, 424, 51 x 21
+  i-dice->i-refresh: 653.5,524 653.5,585
+    label 576.5, 544, 75 x 21
   i-cylinder->i-grid: 141,164 141,225
     label 88, 184, 51 x 21
   i-grid->i-document: 141,284 141,345
@@ -196,42 +196,42 @@ view icon-set, people closed (people closed)
     label 72, 424, 67 x 21
   i-archive->i-books: 141,524 141,585
     label 72, 544, 67 x 21
-  i-building->i-search: 927,224 927,285
-    label 874, 244, 51 x 21
-  i-search->i-history: 927,344 927,405
-    label 874, 364, 51 x 21
-  i-history->i-box: 927,464 927,525
-    label 874, 484, 51 x 21
+  i-building->i-search: 944,224 944,285
+    label 891, 244, 51 x 21
+  i-search->i-history: 944,344 944,405
+    label 891, 364, 51 x 21
+  i-history->i-box: 944,464 944,525
+    label 891, 484, 51 x 21
 
 view icon-set, work closed (work closed)
-  size 1044 x 709
-  icons (open, at least 255 wide, header 53): 12, 12, 1020 x 685
-    people (open, at least 201 wide, header 40): 272, 65, 284 x 614
-      i-person (202 x 59): 313, 105, 202 x 59
-      i-web (186 x 59): 321, 225, 186 x 59
-      i-monitor (210 x 59): 309, 345, 210 x 59
-      i-api (235 x 59): 296.5, 465, 235 x 59
-      i-route (248 x 76): 290, 585, 248 x 76
-    work (164 x 66): 576, 339, 164 x 66
-    keeping (open, at least 134 wide, header 40): 30, 73.5, 222 x 597
+  size 1045 x 709
+  icons (open, at least 255 wide, header 53): 12, 12, 1021 x 685
+    people (open, at least 218 wide, header 40): 272, 65, 278 x 614
+      i-person (202 x 59): 310, 105, 202 x 59
+      i-web (186 x 59): 318, 225, 186 x 59
+      i-monitor (210 x 59): 306, 345, 210 x 59
+      i-api (235 x 59): 293.5, 465, 235 x 59
+      i-route (242 x 76): 290, 585, 242 x 76
+    work (171 x 66): 570, 339, 171 x 66
+    keeping (open, at least 141 wide, header 40): 30, 73.5, 222 x 597
       i-cylinder (170 x 59): 56, 113.5, 170 x 59
       i-grid (150 x 59): 66, 233.5, 150 x 59
       i-document (170 x 59): 56, 353.5, 170 x 59
       i-archive (186 x 59): 48, 473.5, 186 x 59
       i-books (186 x 59): 48, 593.5, 186 x 59
-    places (open, at least 123 wide, header 40): 760, 133.5, 254 x 477
-      i-building (178 x 59): 798, 173.5, 178 x 59
-      i-search (202 x 59): 786, 293.5, 202 x 59
-      i-history (218 x 59): 778, 413.5, 218 x 59
-      i-box (150 x 59): 812, 533.5, 150 x 59
-  i-person->i-web: 414,164 414,225
-    label 369, 184, 43 x 21
-  i-web->i-monitor: 414,284 414,345
-    label 337, 304, 75 x 21
-  i-monitor->i-api: 414,404 414,465
-    label 361, 424, 51 x 21
-  i-api->i-route: 414,524 414,585
-    label 312, 544, 100 x 21
+    places (open, at least 129 wide, header 40): 761, 133.5, 254 x 477
+      i-building (178 x 59): 799, 173.5, 178 x 59
+      i-search (202 x 59): 787, 293.5, 202 x 59
+      i-history (218 x 59): 779, 413.5, 218 x 59
+      i-box (150 x 59): 813, 533.5, 150 x 59
+  i-person->i-web: 411,164 411,225
+    label 366, 184, 43 x 21
+  i-web->i-monitor: 411,284 411,345
+    label 334, 304, 75 x 21
+  i-monitor->i-api: 411,404 411,465
+    label 358, 424, 51 x 21
+  i-api->i-route: 411,524 411,585
+    label 309, 544, 100 x 21
   i-cylinder->i-grid: 141,172.5 141,233.5
     label 88, 192.5, 51 x 21
   i-grid->i-document: 141,292.5 141,353.5
@@ -240,95 +240,95 @@ view icon-set, work closed (work closed)
     label 72, 432.5, 67 x 21
   i-archive->i-books: 141,532.5 141,593.5
     label 72, 552.5, 67 x 21
-  i-building->i-search: 887,232.5 887,293.5
-    label 834, 252.5, 51 x 21
-  i-search->i-history: 887,352.5 887,413.5
-    label 834, 372.5, 51 x 21
-  i-history->i-box: 887,472.5 887,533.5
-    label 834, 492.5, 51 x 21
+  i-building->i-search: 888,232.5 888,293.5
+    label 835, 252.5, 51 x 21
+  i-search->i-history: 888,352.5 888,413.5
+    label 835, 372.5, 51 x 21
+  i-history->i-box: 888,472.5 888,533.5
+    label 835, 492.5, 51 x 21
 
 view icon-set, keeping closed (keeping closed)
-  size 1109 x 709
-  icons (open, at least 255 wide, header 53): 12, 12, 1085 x 685
-    people (open, at least 201 wide, header 40): 214, 65, 284 x 614
-      i-person (202 x 59): 255, 105, 202 x 59
-      i-web (186 x 59): 263, 225, 186 x 59
-      i-monitor (210 x 59): 251, 345, 210 x 59
-      i-api (235 x 59): 238.5, 465, 235 x 59
-      i-route (248 x 76): 232, 585, 248 x 76
-    work (open, at least 116 wide, header 40): 518, 73.5, 287 x 597
-      i-gear (150 x 59): 586.5, 113.5, 150 x 59
-      i-module (150 x 59): 586.5, 233.5, 150 x 59
-      i-stack (218 x 59): 552.5, 353.5, 218 x 59
-      i-dice (202 x 59): 560.5, 473.5, 202 x 59
-      i-refresh (251 x 59): 536, 593.5, 251 x 59
-    keeping (164 x 66): 30, 339, 164 x 66
-    places (open, at least 123 wide, header 40): 825, 133.5, 254 x 477
-      i-building (178 x 59): 863, 173.5, 178 x 59
-      i-search (202 x 59): 851, 293.5, 202 x 59
-      i-history (218 x 59): 843, 413.5, 218 x 59
-      i-box (150 x 59): 877, 533.5, 150 x 59
-  i-person->i-web: 356,164 356,225
-    label 311, 184, 43 x 21
-  i-web->i-monitor: 356,284 356,345
-    label 279, 304, 75 x 21
-  i-monitor->i-api: 356,404 356,465
-    label 303, 424, 51 x 21
-  i-api->i-route: 356,524 356,585
-    label 254, 544, 100 x 21
-  i-gear->i-module: 661.5,172.5 661.5,233.5
-    label 608.5, 192.5, 51 x 21
-  i-module->i-stack: 661.5,292.5 661.5,353.5
-    label 592.5, 312.5, 67 x 21
-  i-stack->i-dice: 661.5,412.5 661.5,473.5
-    label 608.5, 432.5, 51 x 21
-  i-dice->i-refresh: 661.5,532.5 661.5,593.5
-    label 584.5, 552.5, 75 x 21
-  i-building->i-search: 952,232.5 952,293.5
-    label 899, 252.5, 51 x 21
-  i-search->i-history: 952,352.5 952,413.5
-    label 899, 372.5, 51 x 21
-  i-history->i-box: 952,472.5 952,533.5
-    label 899, 492.5, 51 x 21
+  size 1110 x 709
+  icons (open, at least 255 wide, header 53): 12, 12, 1086 x 685
+    people (open, at least 218 wide, header 40): 221, 65, 278 x 614
+      i-person (202 x 59): 259, 105, 202 x 59
+      i-web (186 x 59): 267, 225, 186 x 59
+      i-monitor (210 x 59): 255, 345, 210 x 59
+      i-api (235 x 59): 242.5, 465, 235 x 59
+      i-route (242 x 76): 239, 585, 242 x 76
+    work (open, at least 121 wide, header 40): 519, 73.5, 287 x 597
+      i-gear (150 x 59): 587.5, 113.5, 150 x 59
+      i-module (150 x 59): 587.5, 233.5, 150 x 59
+      i-stack (218 x 59): 553.5, 353.5, 218 x 59
+      i-dice (202 x 59): 561.5, 473.5, 202 x 59
+      i-refresh (251 x 59): 537, 593.5, 251 x 59
+    keeping (171 x 66): 30, 339, 171 x 66
+    places (open, at least 129 wide, header 40): 826, 133.5, 254 x 477
+      i-building (178 x 59): 864, 173.5, 178 x 59
+      i-search (202 x 59): 852, 293.5, 202 x 59
+      i-history (218 x 59): 844, 413.5, 218 x 59
+      i-box (150 x 59): 878, 533.5, 150 x 59
+  i-person->i-web: 360,164 360,225
+    label 315, 184, 43 x 21
+  i-web->i-monitor: 360,284 360,345
+    label 283, 304, 75 x 21
+  i-monitor->i-api: 360,404 360,465
+    label 307, 424, 51 x 21
+  i-api->i-route: 360,524 360,585
+    label 258, 544, 100 x 21
+  i-gear->i-module: 662.5,172.5 662.5,233.5
+    label 609.5, 192.5, 51 x 21
+  i-module->i-stack: 662.5,292.5 662.5,353.5
+    label 593.5, 312.5, 67 x 21
+  i-stack->i-dice: 662.5,412.5 662.5,473.5
+    label 609.5, 432.5, 51 x 21
+  i-dice->i-refresh: 662.5,532.5 662.5,593.5
+    label 585.5, 552.5, 75 x 21
+  i-building->i-search: 953,232.5 953,293.5
+    label 900, 252.5, 51 x 21
+  i-search->i-history: 953,352.5 953,413.5
+    label 900, 372.5, 51 x 21
+  i-history->i-box: 953,472.5 953,533.5
+    label 900, 492.5, 51 x 21
 
 view icon-set, places closed (places closed)
-  size 1077 x 709
-  icons (open, at least 255 wide, header 53): 12, 12, 1053 x 685
-    people (open, at least 201 wide, header 40): 272, 65, 284 x 614
-      i-person (202 x 59): 313, 105, 202 x 59
-      i-web (186 x 59): 321, 225, 186 x 59
-      i-monitor (210 x 59): 309, 345, 210 x 59
-      i-api (235 x 59): 296.5, 465, 235 x 59
-      i-route (248 x 76): 290, 585, 248 x 76
-    work (open, at least 116 wide, header 40): 576, 73.5, 287 x 597
-      i-gear (150 x 59): 644.5, 113.5, 150 x 59
-      i-module (150 x 59): 644.5, 233.5, 150 x 59
-      i-stack (218 x 59): 610.5, 353.5, 218 x 59
-      i-dice (202 x 59): 618.5, 473.5, 202 x 59
-      i-refresh (251 x 59): 594, 593.5, 251 x 59
-    keeping (open, at least 134 wide, header 40): 30, 73.5, 222 x 597
+  size 1079 x 709
+  icons (open, at least 255 wide, header 53): 12, 12, 1055 x 685
+    people (open, at least 218 wide, header 40): 272, 65, 278 x 614
+      i-person (202 x 59): 310, 105, 202 x 59
+      i-web (186 x 59): 318, 225, 186 x 59
+      i-monitor (210 x 59): 306, 345, 210 x 59
+      i-api (235 x 59): 293.5, 465, 235 x 59
+      i-route (242 x 76): 290, 585, 242 x 76
+    work (open, at least 121 wide, header 40): 570, 73.5, 287 x 597
+      i-gear (150 x 59): 638.5, 113.5, 150 x 59
+      i-module (150 x 59): 638.5, 233.5, 150 x 59
+      i-stack (218 x 59): 604.5, 353.5, 218 x 59
+      i-dice (202 x 59): 612.5, 473.5, 202 x 59
+      i-refresh (251 x 59): 588, 593.5, 251 x 59
+    keeping (open, at least 141 wide, header 40): 30, 73.5, 222 x 597
       i-cylinder (170 x 59): 56, 113.5, 170 x 59
       i-grid (150 x 59): 66, 233.5, 150 x 59
       i-document (170 x 59): 56, 353.5, 170 x 59
       i-archive (186 x 59): 48, 473.5, 186 x 59
       i-books (186 x 59): 48, 593.5, 186 x 59
-    places (164 x 66): 883, 339, 164 x 66
-  i-person->i-web: 414,164 414,225
-    label 369, 184, 43 x 21
-  i-web->i-monitor: 414,284 414,345
-    label 337, 304, 75 x 21
-  i-monitor->i-api: 414,404 414,465
-    label 361, 424, 51 x 21
-  i-api->i-route: 414,524 414,585
-    label 312, 544, 100 x 21
-  i-gear->i-module: 719.5,172.5 719.5,233.5
-    label 666.5, 192.5, 51 x 21
-  i-module->i-stack: 719.5,292.5 719.5,353.5
-    label 650.5, 312.5, 67 x 21
-  i-stack->i-dice: 719.5,412.5 719.5,473.5
-    label 666.5, 432.5, 51 x 21
-  i-dice->i-refresh: 719.5,532.5 719.5,593.5
-    label 642.5, 552.5, 75 x 21
+    places (172 x 66): 877, 339, 172 x 66
+  i-person->i-web: 411,164 411,225
+    label 366, 184, 43 x 21
+  i-web->i-monitor: 411,284 411,345
+    label 334, 304, 75 x 21
+  i-monitor->i-api: 411,404 411,465
+    label 358, 424, 51 x 21
+  i-api->i-route: 411,524 411,585
+    label 309, 544, 100 x 21
+  i-gear->i-module: 713.5,172.5 713.5,233.5
+    label 660.5, 192.5, 51 x 21
+  i-module->i-stack: 713.5,292.5 713.5,353.5
+    label 644.5, 312.5, 67 x 21
+  i-stack->i-dice: 713.5,412.5 713.5,473.5
+    label 660.5, 432.5, 51 x 21
+  i-dice->i-refresh: 713.5,532.5 713.5,593.5
+    label 636.5, 552.5, 75 x 21
   i-cylinder->i-grid: 141,172.5 141,233.5
     label 88, 192.5, 51 x 21
   i-grid->i-document: 141,292.5 141,353.5
@@ -339,138 +339,138 @@ view icon-set, places closed (places closed)
     label 72, 552.5, 67 x 21
 
 scenario visit as lanes on shapes, default
-  size 967 x 432
-  band ground, depth 0: 0, 0, 423 x 28
-  band ridge, depth 1: 0, 28, 423 x 28
-  band crest, depth 2: 0, 56, 423 x 28
-  band summit, depth 3: 0, 84, 423 x 28
-  band peak, depth 4: 0, 112, 423 x 28
+  size 970 x 432
+  band ground, depth 0: 0, 0, 424 x 28
+  band ridge, depth 1: 0, 28, 424 x 28
+  band crest, depth 2: 0, 56, 424 x 28
+  band summit, depth 3: 0, 84, 424 x 28
+  band peak, depth 4: 0, 112, 424 x 28
   lane shed at 101: header 0, 156, 202 x 59, line 215 to 432
-  lane cairn at 328.5: header 234, 156, 189 x 59, line 215 to 432
-  lane visitor at 562.5: header 455, 156, 215 x 59, line 215 to 432
-  lane outside at 834.5: header 702, 156, 265 x 59, line 215 to 432
-  step 1 call arrow visitor->cairn, row 231 + 37: 562.5,264 328.5,264
-    label 395.5, 235, 100 x 21, badge 562.5,264
-  step 2 call arrow cairn->outside, row 268 + 37: 328.5,301 834.5,301
-    label 544, 272, 75 x 21, badge 328.5,301
-  step 3 reply arrow outside->cairn, row 305 + 37: 834.5,338 328.5,338
-    label 548, 309, 67 x 21, badge 834.5,338
-  step 4 call arrow cairn->shed, row 342 + 37: 328.5,375 101,375
-    label 152.75, 346, 124 x 21, badge 328.5,375
+  lane cairn at 329: header 234, 156, 190 x 59, line 215 to 432
+  lane visitor at 562.5: header 456, 156, 213 x 59, line 215 to 432
+  lane outside at 835.5: header 701, 156, 269 x 59, line 215 to 432
+  step 1 call arrow visitor->cairn, row 231 + 37: 562.5,264 329,264
+    label 395.75, 235, 100 x 21, badge 562.5,264
+  step 2 call arrow cairn->outside, row 268 + 37: 329,301 835.5,301
+    label 544.75, 272, 75 x 21, badge 329,301
+  step 3 reply arrow outside->cairn, row 305 + 37: 835.5,338 329,338
+    label 548.75, 309, 67 x 21, badge 835.5,338
+  step 4 call arrow cairn->shed, row 342 + 37: 329,375 101,375
+    label 153, 346, 124 x 21, badge 329,375
   step 5 call self shed->shed, row 379 + 37: 101,383 125,383 125,412 101,412
     label 129, 387, 75 x 21, badge 101,383
 
 scenario visit as lanes on shapes, everything open
-  size 1387 x 460
-  band ground, depth 0: 0, 0, 843 x 28
-  band ridge, depth 1: 0, 28, 843 x 28
-  band crest, depth 2: 0, 56, 843 x 28
-  band summit, depth 3: 0, 84, 843 x 28
-  band peak, depth 4: 0, 112, 843 x 28
+  size 1390 x 460
+  band ground, depth 0: 0, 0, 844 x 28
+  band ridge, depth 1: 0, 28, 844 x 28
+  band crest, depth 2: 0, 56, 844 x 28
+  band summit, depth 3: 0, 84, 844 x 28
+  band peak, depth 4: 0, 112, 844 x 28
   band shed, depth 5: 0, 140, 622 x 28
   lane shed at 101: header 0, 184, 202 x 59, line 243 to 460
   lane rake at 323: header 234, 184, 178 x 59, line 243 to 460
   lane spade at 533: header 444, 184, 178 x 59, line 243 to 460
-  lane cairn at 748.5: header 654, 184, 189 x 59, line 243 to 460
-  lane visitor at 982.5: header 875, 184, 215 x 59, line 243 to 460
-  lane outside at 1254.5: header 1122, 184, 265 x 59, line 243 to 460
-  step 1 call arrow visitor->cairn, row 259 + 37: 982.5,292 748.5,292
-    label 815.5, 263, 100 x 21, badge 982.5,292
-  step 2 call arrow cairn->outside, row 296 + 37: 748.5,329 1254.5,329
-    label 964, 300, 75 x 21, badge 748.5,329
-  step 3 reply arrow outside->cairn, row 333 + 37: 1254.5,366 748.5,366
-    label 968, 337, 67 x 21, badge 1254.5,366
-  step 4 call arrow cairn->shed, row 370 + 37: 748.5,403 101,403
-    label 362.75, 374, 124 x 21, badge 748.5,403
+  lane cairn at 749: header 654, 184, 190 x 59, line 243 to 460
+  lane visitor at 982.5: header 876, 184, 213 x 59, line 243 to 460
+  lane outside at 1255.5: header 1121, 184, 269 x 59, line 243 to 460
+  step 1 call arrow visitor->cairn, row 259 + 37: 982.5,292 749,292
+    label 815.75, 263, 100 x 21, badge 982.5,292
+  step 2 call arrow cairn->outside, row 296 + 37: 749,329 1255.5,329
+    label 964.75, 300, 75 x 21, badge 749,329
+  step 3 reply arrow outside->cairn, row 333 + 37: 1255.5,366 749,366
+    label 968.75, 337, 67 x 21, badge 1255.5,366
+  step 4 call arrow cairn->shed, row 370 + 37: 749,403 101,403
+    label 363, 374, 124 x 21, badge 749,403
   step 5 call arrow rake->spade, row 407 + 37: 323,440 533,440
     label 390.5, 411, 75 x 21, badge 323,440
 
 scenario visit as lanes on shapes, all closed
-  size 827 x 276
-  lane visitor at 107.5: header 0, 0, 215 x 59, line 59 to 276
-  lane ground at 388.5: header 247, 0, 283 x 59, line 59 to 276
-  lane outside at 694.5: header 562, 0, 265 x 59, line 59 to 276
-  step 1 call arrow visitor->ground, row 75 + 37: 107.5,108 388.5,108
-    label 198, 79, 100 x 21, badge 107.5,108
-  step 2 call arrow ground->outside, row 112 + 37: 388.5,145 694.5,145
-    label 504, 116, 75 x 21, badge 388.5,145
-  step 3 reply arrow outside->ground, row 149 + 37: 694.5,182 388.5,182
-    label 508, 153, 67 x 21, badge 694.5,182
-  step 4 call self ground->ground, row 186 + 37: 388.5,190 412.5,190 412.5,219 388.5,219
-    label 416.5, 194, 124 x 21, badge 388.5,190
-  step 5 call self ground->ground, row 223 + 37: 388.5,227 412.5,227 412.5,256 388.5,256
-    label 416.5, 231, 75 x 21, badge 388.5,227
+  size 829 x 276
+  lane visitor at 106.5: header 0, 0, 213 x 59, line 59 to 276
+  lane ground at 386.5: header 245, 0, 283 x 59, line 59 to 276
+  lane outside at 694.5: header 560, 0, 269 x 59, line 59 to 276
+  step 1 call arrow visitor->ground, row 75 + 37: 106.5,108 386.5,108
+    label 196.5, 79, 100 x 21, badge 106.5,108
+  step 2 call arrow ground->outside, row 112 + 37: 386.5,145 694.5,145
+    label 503, 116, 75 x 21, badge 386.5,145
+  step 3 reply arrow outside->ground, row 149 + 37: 694.5,182 386.5,182
+    label 507, 153, 67 x 21, badge 694.5,182
+  step 4 call self ground->ground, row 186 + 37: 386.5,190 410.5,190 410.5,219 386.5,219
+    label 414.5, 194, 124 x 21, badge 386.5,190
+  step 5 call self ground->ground, row 223 + 37: 386.5,227 410.5,227 410.5,256 386.5,256
+    label 414.5, 231, 75 x 21, badge 386.5,227
 
 scenario visit as lanes on shapes, ridge closed
-  size 827 x 320
-  band ground, depth 0: 247, 0, 283 x 28
-  lane visitor at 107.5: header 0, 44, 215 x 59, line 103 to 320
-  lane ridge at 388.5: header 247, 44, 283 x 59, line 103 to 320
-  lane outside at 694.5: header 562, 44, 265 x 59, line 103 to 320
-  step 1 call arrow visitor->ridge, row 119 + 37: 107.5,152 388.5,152
-    label 198, 123, 100 x 21, badge 107.5,152
-  step 2 call arrow ridge->outside, row 156 + 37: 388.5,189 694.5,189
-    label 504, 160, 75 x 21, badge 388.5,189
-  step 3 reply arrow outside->ridge, row 193 + 37: 694.5,226 388.5,226
-    label 508, 197, 67 x 21, badge 694.5,226
-  step 4 call self ridge->ridge, row 230 + 37: 388.5,234 412.5,234 412.5,263 388.5,263
-    label 416.5, 238, 124 x 21, badge 388.5,234
-  step 5 call self ridge->ridge, row 267 + 37: 388.5,271 412.5,271 412.5,300 388.5,300
-    label 416.5, 275, 75 x 21, badge 388.5,271
+  size 829 x 320
+  band ground, depth 0: 245, 0, 283 x 28
+  lane visitor at 106.5: header 0, 44, 213 x 59, line 103 to 320
+  lane ridge at 386.5: header 245, 44, 283 x 59, line 103 to 320
+  lane outside at 694.5: header 560, 44, 269 x 59, line 103 to 320
+  step 1 call arrow visitor->ridge, row 119 + 37: 106.5,152 386.5,152
+    label 196.5, 123, 100 x 21, badge 106.5,152
+  step 2 call arrow ridge->outside, row 156 + 37: 386.5,189 694.5,189
+    label 503, 160, 75 x 21, badge 386.5,189
+  step 3 reply arrow outside->ridge, row 193 + 37: 694.5,226 386.5,226
+    label 507, 197, 67 x 21, badge 694.5,226
+  step 4 call self ridge->ridge, row 230 + 37: 386.5,234 410.5,234 410.5,263 386.5,263
+    label 414.5, 238, 124 x 21, badge 386.5,234
+  step 5 call self ridge->ridge, row 267 + 37: 386.5,271 410.5,271 410.5,300 386.5,300
+    label 414.5, 275, 75 x 21, badge 386.5,271
 
 scenario visit as lanes on shapes, crest closed
-  size 694 x 348
-  band ground, depth 0: 247, 0, 150 x 28
-  band ridge, depth 1: 247, 28, 150 x 28
-  lane visitor at 107.5: header 0, 72, 215 x 59, line 131 to 348
-  lane crest at 322: header 247, 72, 150 x 59, line 131 to 348
-  lane outside at 561.5: header 429, 72, 265 x 59, line 131 to 348
-  step 1 call arrow visitor->crest, row 147 + 37: 107.5,180 322,180
-    label 164.75, 151, 100 x 21, badge 107.5,180
-  step 2 call arrow crest->outside, row 184 + 37: 322,217 561.5,217
-    label 404.25, 188, 75 x 21, badge 322,217
-  step 3 reply arrow outside->crest, row 221 + 37: 561.5,254 322,254
-    label 408.25, 225, 67 x 21, badge 561.5,254
-  step 4 call self crest->crest, row 258 + 37: 322,262 346,262 346,291 322,291
-    label 350, 266, 124 x 21, badge 322,262
-  step 5 call self crest->crest, row 295 + 37: 322,299 346,299 346,328 322,328
-    label 350, 303, 75 x 21, badge 322,299
+  size 696 x 348
+  band ground, depth 0: 245, 0, 150 x 28
+  band ridge, depth 1: 245, 28, 150 x 28
+  lane visitor at 106.5: header 0, 72, 213 x 59, line 131 to 348
+  lane crest at 320: header 245, 72, 150 x 59, line 131 to 348
+  lane outside at 561.5: header 427, 72, 269 x 59, line 131 to 348
+  step 1 call arrow visitor->crest, row 147 + 37: 106.5,180 320,180
+    label 163.25, 151, 100 x 21, badge 106.5,180
+  step 2 call arrow crest->outside, row 184 + 37: 320,217 561.5,217
+    label 403.25, 188, 75 x 21, badge 320,217
+  step 3 reply arrow outside->crest, row 221 + 37: 561.5,254 320,254
+    label 407.25, 225, 67 x 21, badge 561.5,254
+  step 4 call self crest->crest, row 258 + 37: 320,262 344,262 344,291 320,291
+    label 348, 266, 124 x 21, badge 320,262
+  step 5 call self crest->crest, row 295 + 37: 320,299 344,299 344,328 320,328
+    label 348, 303, 75 x 21, badge 320,299
 
 scenario visit as lanes on shapes, summit closed
-  size 694 x 376
-  band ground, depth 0: 247, 0, 150 x 28
-  band ridge, depth 1: 247, 28, 150 x 28
-  band crest, depth 2: 247, 56, 150 x 28
-  lane visitor at 107.5: header 0, 100, 215 x 59, line 159 to 376
-  lane summit at 322: header 247, 100, 150 x 59, line 159 to 376
-  lane outside at 561.5: header 429, 100, 265 x 59, line 159 to 376
-  step 1 call arrow visitor->summit, row 175 + 37: 107.5,208 322,208
-    label 164.75, 179, 100 x 21, badge 107.5,208
-  step 2 call arrow summit->outside, row 212 + 37: 322,245 561.5,245
-    label 404.25, 216, 75 x 21, badge 322,245
-  step 3 reply arrow outside->summit, row 249 + 37: 561.5,282 322,282
-    label 408.25, 253, 67 x 21, badge 561.5,282
-  step 4 call self summit->summit, row 286 + 37: 322,290 346,290 346,319 322,319
-    label 350, 294, 124 x 21, badge 322,290
-  step 5 call self summit->summit, row 323 + 37: 322,327 346,327 346,356 322,356
-    label 350, 331, 75 x 21, badge 322,327
+  size 696 x 376
+  band ground, depth 0: 245, 0, 150 x 28
+  band ridge, depth 1: 245, 28, 150 x 28
+  band crest, depth 2: 245, 56, 150 x 28
+  lane visitor at 106.5: header 0, 100, 213 x 59, line 159 to 376
+  lane summit at 320: header 245, 100, 150 x 59, line 159 to 376
+  lane outside at 561.5: header 427, 100, 269 x 59, line 159 to 376
+  step 1 call arrow visitor->summit, row 175 + 37: 106.5,208 320,208
+    label 163.25, 179, 100 x 21, badge 106.5,208
+  step 2 call arrow summit->outside, row 212 + 37: 320,245 561.5,245
+    label 403.25, 216, 75 x 21, badge 320,245
+  step 3 reply arrow outside->summit, row 249 + 37: 561.5,282 320,282
+    label 407.25, 253, 67 x 21, badge 561.5,282
+  step 4 call self summit->summit, row 286 + 37: 320,290 344,290 344,319 320,319
+    label 348, 294, 124 x 21, badge 320,290
+  step 5 call self summit->summit, row 323 + 37: 320,327 344,327 344,356 320,356
+    label 348, 331, 75 x 21, badge 320,327
 
 scenario visit as lanes on shapes, peak closed
-  size 827 x 421
-  band ground, depth 0: 247, 0, 283 x 28
-  band ridge, depth 1: 247, 28, 283 x 28
-  band crest, depth 2: 247, 56, 283 x 28
-  band summit, depth 3: 247, 84, 283 x 28
-  lane visitor at 107.5: header 0, 128, 215 x 59, line 187 to 421
-  lane peak at 388.5: header 247, 128, 283 x 76, line 204 to 421
-  lane outside at 694.5: header 562, 128, 265 x 59, line 187 to 421
-  step 1 call arrow visitor->peak, row 220 + 37: 107.5,253 388.5,253
-    label 198, 224, 100 x 21, badge 107.5,253
-  step 2 call arrow peak->outside, row 257 + 37: 388.5,290 694.5,290
-    label 504, 261, 75 x 21, badge 388.5,290
-  step 3 reply arrow outside->peak, row 294 + 37: 694.5,327 388.5,327
-    label 508, 298, 67 x 21, badge 694.5,327
-  step 4 call self peak->peak, row 331 + 37: 388.5,335 412.5,335 412.5,364 388.5,364
-    label 416.5, 339, 124 x 21, badge 388.5,335
-  step 5 call self peak->peak, row 368 + 37: 388.5,372 412.5,372 412.5,401 388.5,401
-    label 416.5, 376, 75 x 21, badge 388.5,372
+  size 829 x 421
+  band ground, depth 0: 245, 0, 283 x 28
+  band ridge, depth 1: 245, 28, 283 x 28
+  band crest, depth 2: 245, 56, 283 x 28
+  band summit, depth 3: 245, 84, 283 x 28
+  lane visitor at 106.5: header 0, 128, 213 x 59, line 187 to 421
+  lane peak at 386.5: header 245, 128, 283 x 76, line 204 to 421
+  lane outside at 694.5: header 560, 128, 269 x 59, line 187 to 421
+  step 1 call arrow visitor->peak, row 220 + 37: 106.5,253 386.5,253
+    label 196.5, 224, 100 x 21, badge 106.5,253
+  step 2 call arrow peak->outside, row 257 + 37: 386.5,290 694.5,290
+    label 503, 261, 75 x 21, badge 386.5,290
+  step 3 reply arrow outside->peak, row 294 + 37: 694.5,327 386.5,327
+    label 507, 298, 67 x 21, badge 694.5,327
+  step 4 call self peak->peak, row 331 + 37: 386.5,335 410.5,335 410.5,364 386.5,364
+    label 414.5, 339, 124 x 21, badge 386.5,335
+  step 5 call self peak->peak, row 368 + 37: 386.5,372 410.5,372 410.5,401 386.5,401
+    label 414.5, 376, 75 x 21, badge 386.5,372

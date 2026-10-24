@@ -97,7 +97,7 @@ test('INT-801 while editing, the breadcrumb view title opens a menu of views, sc
   await expect(menu.getByRole('menuitem')).toHaveText([
     'Big picture',
     'Services',
-    'Engineering: code modules',
+    'How the code is organised',
     'Generate picks',
     'Results poll',
     'A tour of the Lotto suite',
@@ -107,7 +107,7 @@ test('INT-801 while editing, the breadcrumb view title opens a menu of views, sc
   await expect(page.locator('.crumb').getByRole('button', { name: 'Services' })).toBeVisible();
 });
 
-test('INT-802 the editor shows line numbers and colours lines by kind, in Source Code Pro', async ({
+test('INT-802 the editor shows line numbers and colours lines by kind, in JetBrains Mono', async ({
   page,
 }) => {
   await openEditor(page);
@@ -120,7 +120,7 @@ test('INT-802 the editor shows line numbers and colours lines by kind, in Source
   await expect(page.locator('.editor-host .lines-comment').first()).toHaveText(/^\/\/ The Lotto/);
   await expect(page.locator('.editor-host .lines-tag').first()).toHaveText('default');
   const face = await editor(page).evaluate((node) => getComputedStyle(node).fontFamily);
-  expect(face).toMatch(/^"Source Code Pro"/);
+  expect(face).toMatch(/^"JetBrains Mono"/);
 });
 
 test('INT-803 Enter keeps the indent and adds two spaces after a line that opens a block; Tab indents', async ({
@@ -160,7 +160,7 @@ test('INT-805 the diagram updates after typing stops, keeping the view and audie
   await openEditor(page);
   await page.locator('.crumb').getByRole('button', { name: 'Big picture' }).click();
   await page.getByRole('menuitem', { name: 'Services' }).click();
-  await page.getByRole('tab', { name: 'Engineer' }).click();
+  await page.locator('body').press('3');
   await expect(page.locator('svg.aerie')).toHaveAttribute('data-audience', 'engineer');
   await expect(websiteName(page)).toHaveText('Website');
   await goToLine(page, 'website: Website | Picks a game, generates numbers [service]');
@@ -184,7 +184,9 @@ test('JOURNEY-007 INT-806 an error keeps the last diagram and lists the error in
   await expect(errors.locator('li').first()).toHaveText(TYPO_MESSAGE);
   await expect(errors.locator('li.error')).toHaveCount(1);
   await expect(errors.locator('li.warning')).toHaveCount(2);
-  await expect(page.locator('.notice')).toHaveText('Showing the last version without errors');
+  await expect(page.locator('.notice')).toHaveText(
+    'Your last edit has an error, so this is the last version that worked',
+  );
   expect(await page.locator('svg.aerie').innerHTML()).toBe(before);
 
   // Underlined in the text and marked in the margin; hovering shows the message.

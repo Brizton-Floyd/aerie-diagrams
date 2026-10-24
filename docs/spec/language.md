@@ -188,15 +188,16 @@ word       = { any character - " " }- ;
 - **LANG-101** `model <id>: <title>` names the model. It is optional; a file has at most one (E101).
   Its owner block may hold descriptions (the model's description) and `@level:` rewordings of the
   title. Without a model line the model has no id and no title, and the reader sees the file name.
-- **LANG-102** `audiences` declares who the wording is written for, in the order the audience switch
-  shows them. Each audience is an id, an optional display name in double quotes, and optional flags in
+- **LANG-102** `audiences` declares who the wording is written for, from the plainest to the most
+  technical: the viewer reads the first one first and uncovers the others in this order
+  ([interaction.md](interaction.md#wording-for-the-reader)). Each audience is an id, an optional display name in double quotes, and optional flags in
   parentheses. Without a display name, the name is the id with its first letter in upper case. A file has
   at most one `audiences` line (E102); an audience is listed once (E103).
 - **LANG-103** Without an `audiences` line the model has three audiences, exactly as if the file said
   `audiences exec "Executive", manager "Manager" (default), engineer "Engineer" (code)`.
-- **LANG-104** The `(default)` flag marks the **default audience**: the one a reader starts with, and
-  the voice of all unmarked wording. At most one audience is the default (E104). If none is marked, the
-  first one listed is the default.
+- **LANG-104** The `(default)` flag marks the **default audience**: the voice of all unmarked wording.
+  At most one audience is the default (E104). If none is marked, the first one listed is the default.
+  A reader always starts with the first audience listed (INT-101), whichever one is the default.
 - **LANG-105** The `(code)` flag marks an audience that reads code-like wording. Its taglines, verbs
   and descriptions are set in the monospace face ([look.md](look.md#type)). Any number of audiences may
   have it. A flag other than `default` or `code` is E106.

@@ -3,7 +3,16 @@
 // the picture, Back and Forward, Copy link, and a link reopening its exact picture. Real clicks and
 // keys only; the address and the clipboard are read, never written by the test.
 import { expect, test, type Page } from '@playwright/test';
-import { boxes, button, clickElement, node, openLotto, scale, settled } from './reader.ts';
+import {
+  boxes,
+  button,
+  clickElement,
+  node,
+  openLotto,
+  scale,
+  settled,
+  wordedFor,
+} from './reader.ts';
 
 test.use({
   viewport: { width: 1600, height: 900 },
@@ -61,8 +70,10 @@ async function differentPixels(page: Page, one: Buffer, two: Buffer): Promise<nu
   );
 }
 
-const STALE =
-  'Part of this link no longer matches the diagram, so Aerie is showing the closest picture.';
+const STALE = 'This link is older than the diagram. Showing the closest picture.';
+
+/** The titles of the sidebar's items of one kind, without their step counts. */
+const titles = (page: Page, kind: string) => sidebar(page).locator(`[data-${kind}] .item-title`);
 
 test.describe('SCOPE-005 the navigation sidebar', () => {
   test('JOURNEY-008 find your way with the sidebar, then step back with the browser', async ({
@@ -70,14 +81,14 @@ test.describe('SCOPE-005 the navigation sidebar', () => {
   }) => {
     await openLotto(page);
     const side = sidebar(page);
-    await expect(side.locator('[data-view]')).toHaveText([
+    await expect(titles(page, 'view')).toHaveText([
       'Big picture',
       'Services',
-      'Engineering: code modules',
+      'How the code is organised',
     ]);
-    await expect(side.locator('[data-scenario]')).toHaveText(['Generate picks', 'Results poll']);
-    await expect(side.locator('[data-walkthrough]')).toHaveText(['A tour of the Lotto suite']);
-    const current = side.locator('[aria-current="true"]');
+    await expect(titles(page, 'scenario')).toHaveText(['Generate picks', 'Results poll']);
+    await expect(titles(page, 'walkthrough')).toHaveText(['A tour of the Lotto suite']);
+    const current = side.locator('[aria-current="true"] .item-title');
     await expect(current).toHaveText(['Big picture']);
 
     await view(page, 'services').click();
@@ -94,26 +105,20 @@ test.describe('SCOPE-005 the navigation sidebar', () => {
       expect(box.y + box.height, key).toBeLessThanOrEqual((stage?.y ?? 0) + (stage?.height ?? 0));
     }
 
-    await page.keyboard.press('1');
-    await expect(view(page, 'engineering')).toHaveText('How the code is organised');
+    await page.keyboard.press('2');
+    await expect(view(page, 'engineering')).toHaveText('Engineering: code modules');
     await scenario(page, 'results-poll').click();
     await expect(current).toHaveText(['Results poll']);
-    await expect(page.locator('.caption-bar .count')).toHaveText('1/6');
+    await expect(page.locator('.caption-bar .count')).toHaveText('Step 1 of 6');
 
     await page.goBack();
     await shows(page, 'services');
     await expect(current).toHaveText(['Services']);
     await expect(page.locator('svg.aerie .trail')).toHaveCount(0);
-    await expect(page.getByRole('tab', { name: 'Executive' })).toHaveAttribute(
-      'aria-selected',
-      'true',
-    );
-    // Switching the audience was a visit of its own (INT-551).
+    await wordedFor(page, 'Manager');
+    // Changing the wording was a visit of its own (INT-551).
     await page.goBack();
-    await expect(page.getByRole('tab', { name: 'Manager' })).toHaveAttribute(
-      'aria-selected',
-      'true',
-    );
+    await wordedFor(page, 'plain');
     await shows(page, 'services');
     await page.goBack();
     await shows(page, 'big-picture');
@@ -121,21 +126,36 @@ test.describe('SCOPE-005 the navigation sidebar', () => {
     expect(new URL(page.url()).hash).toBe('');
   });
 
-  test('INT-401 lists views, scenarios and walkthroughs in declared order, titled for the audience', async ({
+  test('INT-401 lists views, scenarios and tours in declared order, titled for the audience, with their steps', async ({
     page,
   }) => {
     await openLotto(page);
     const side = sidebar(page);
-    await expect(side.locator('h2')).toHaveText(['Diagram', 'Views', 'Scenarios', 'Walkthroughs']);
-    await expect(side.locator('[data-view]')).toHaveText([
+    await expect(side.locator('h2')).toHaveText(['Views', 'Scenarios', 'Tours']);
+    await expect(titles(page, 'view')).toHaveText([
       'Big picture',
       'Services',
-      'Engineering: code modules',
+      'How the code is organised',
     ]);
-    await expect(side.locator('[data-scenario]')).toHaveText(['Generate picks', 'Results poll']);
-    await expect(side.locator('[data-walkthrough]')).toHaveText(['A tour of the Lotto suite']);
-    await page.keyboard.press('1');
-    await expect(view(page, 'engineering')).toHaveText('How the code is organised');
+    await expect(titles(page, 'scenario')).toHaveText(['Generate picks', 'Results poll']);
+    await expect(side.locator('[data-scenario] .item-meta')).toHaveText(['14 steps', '6 steps']);
+    await expect(titles(page, 'walkthrough')).toHaveText(['A tour of the Lotto suite']);
+    await expect(side.locator('[data-walkthrough] .item-meta')).toHaveText(['8 steps']);
+    await page.keyboard.press('2');
+    await expect(view(page, 'engineering')).toHaveText('Engineering: code modules');
+  });
+
+  test('INT-404 the Model footer chooses another bundled model or opens your own file', async ({
+    page,
+  }) => {
+    await openLotto(page);
+    const foot = sidebar(page).locator('.side-foot');
+    await expect(foot.locator('.foot-label')).toHaveText('Model');
+    await expect(foot.locator('select[name="model"] option:checked')).toHaveText('lotto.aerie');
+    await expect(foot.getByLabel('Open your own .aerie file')).toBeAttached();
+    await foot.locator('select[name="model"]').selectOption('samples/shapes.aerie');
+    await expect(page).toHaveURL(/\?model=samples\/shapes\.aerie$/);
+    await expect(page.locator('svg.aerie g.node[data-id="visitor"]')).toBeVisible();
   });
 
   test('INT-402 choosing a view shows its default zoom, clears the selection and fits the camera', async ({
@@ -147,7 +167,7 @@ test.describe('SCOPE-005 the navigation sidebar', () => {
     await page.keyboard.press('o');
     await clickElement(page, 'pick-generation');
     await expect(panel(page).locator('h1')).toHaveText('Pick generation');
-    await page.getByRole('button', { name: 'Magnify' }).click();
+    await page.getByRole('button', { name: 'Move closer (+)' }).click();
     await settled(page);
     expect(await scale(page)).not.toBe(fitted);
     await view(page, 'big-picture').click();
@@ -156,7 +176,7 @@ test.describe('SCOPE-005 the navigation sidebar', () => {
     await shows(page, 'services');
     // The view's own default: Engine service closed again, nothing selected, the camera fitted.
     await expect(node(page, 'pick-generation')).toHaveCount(0);
-    await expect(panel(page).locator('.kicker')).toHaveText('View');
+    await expect(panel(page).locator('.kicker')).toHaveText('Architecture');
     expect(await scale(page)).toBe(fitted);
     expect(fragment(page)).toBe('view=services');
   });
@@ -200,7 +220,7 @@ test.describe('SCOPE-005 the navigation sidebar', () => {
     await clickElement(page, 'website');
     await expect(current).toHaveText(['Services']);
     await scenario(page, 'results-poll').click();
-    await expect(current).toHaveText(['Results poll']);
+    await expect(current).toHaveText([/^Results poll/]);
     await walkthrough(page, 'tour').click();
     // Presenting hides the sidebar (INT-701), with the walkthrough marked in it; Esc ends it and
     // shows it again.
@@ -256,8 +276,8 @@ test.describe('the address', () => {
     await page.keyboard.press('o');
     await clickElement(page, 'pick-generation');
     await settled(page);
-    await page.getByRole('button', { name: 'Magnify' }).click();
-    await page.getByRole('button', { name: 'Fit all' }).click();
+    await page.getByRole('button', { name: 'Move closer (+)' }).click();
+    await page.getByRole('button', { name: 'Show everything (0)' }).click();
     const services = 'view=services&aud=engineer&open=engine-service&sel=pick-generation';
     expect(fragment(page)).toBe(services);
     expect(await page.evaluate(() => history.length)).toBe(start + 4);
@@ -283,10 +303,7 @@ test.describe('the address', () => {
     await shows(page, 'services');
     await expect(node(page, 'pick-generation')).toHaveClass(/\bsel\b/);
     await expect(panel(page).locator('h1')).toHaveText('Pick generation');
-    await expect(page.getByRole('tab', { name: 'Engineer' })).toHaveAttribute(
-      'aria-selected',
-      'true',
-    );
+    await wordedFor(page, 'Engineer');
     // Then the visits that led there, one by one, back to the first picture.
     await page.goBack();
     expect(fragment(page)).toBe('view=services&aud=engineer&open=engine-service');
@@ -298,10 +315,7 @@ test.describe('the address', () => {
     expect(new URL(page.url()).hash).toBe('');
     await shows(page, 'big-picture');
     await expect(view(page, 'big-picture')).toHaveAttribute('aria-current', 'true');
-    await expect(page.getByRole('tab', { name: 'Manager' })).toHaveAttribute(
-      'aria-selected',
-      'true',
-    );
+    await wordedFor(page, 'plain');
 
     // Forward returns, and the picture with it.
     for (let at = 0; at < 4; at++) await page.goForward();
@@ -315,13 +329,13 @@ test.describe('the address', () => {
     page,
   }) => {
     await openLotto(page, 'services');
-    await page.keyboard.press('1');
+    await page.keyboard.press('2');
     await expect(copy(page)).toHaveText('Copy link');
     await copy(page).click();
     await expect(copy(page)).toHaveText('Link copied');
     const copied = await page.evaluate(() => navigator.clipboard.readText());
     expect(copied).toBe(page.url());
-    expect(new URL(copied).hash).toBe('#view=services&aud=exec');
+    expect(new URL(copied).hash).toBe('#view=services&aud=manager');
     await expect(copy(page)).toHaveText('Copy link');
   });
 });
@@ -329,18 +343,18 @@ test.describe('the address', () => {
 test.describe('opening a shared link', () => {
   test('JOURNEY-006 a copied link reopens the exact picture', async ({ page, context }) => {
     await openLotto(page, 'services');
-    await page.getByRole('tab', { name: 'Executive' }).click();
+    await page.keyboard.press('2');
     await button(page, 'engine-service').focus();
     await page.keyboard.press('o');
     await clickElement(page, 'pick-generation');
     // The camera is not part of the picture, and a link opens fitted (INT-353).
-    await page.getByRole('button', { name: 'Fit all' }).click();
+    await page.getByRole('button', { name: 'Show everything (0)' }).click();
     await settled(page);
     await copy(page).click();
     await expect(copy(page)).toHaveText('Link copied');
     const link = await page.evaluate(() => navigator.clipboard.readText());
     expect(new URL(link).hash).toBe(
-      '#view=services&aud=exec&open=engine-service&sel=pick-generation',
+      '#view=services&aud=manager&open=engine-service&sel=pick-generation',
     );
     await expect(copy(page)).toHaveText('Copy link');
 
@@ -361,31 +375,50 @@ test.describe('opening a shared link', () => {
     }
     await settled(page);
     await settled(other);
-    // The visits are the reader's own, not the picture's (INT-551): the new page has only one.
+    // The visits are the reader's own, not the picture's (INT-551): the new page has only one. The
+    // camera's glass blurs what is behind it, and its rounded corners blend a step differently in
+    // a tab that has had the pointer on it, so it is left out too.
     const shot = {
       animations: 'disabled' as const,
       caret: 'hide' as const,
-      style: '.travel { visibility: hidden; }',
+      style: '.travel, .camera { visibility: hidden; }',
     };
     const [mine, theirs] = [await page.screenshot(shot), await other.screenshot(shot)];
     expect(await differentPixels(other, mine, theirs)).toBe(0);
   });
 
-  test('INT-505 a link opens at its picture directly, without a glide', async ({ page }) => {
+  test('INT-505 and LOOK-904 a link opens at its picture directly, without a glide; the cards only rise into place', async ({
+    page,
+  }) => {
     await page.goto('/?model=samples/lotto.aerie#view=services&open=engine-service');
     await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
     const first = await boxes(page);
     expect(first['node pick-generation']).toBeDefined();
+    // The first drawing arrives once: its cards rise a few pixels into place, nothing glides.
+    await expect(page.locator('svg.aerie')).toHaveClass(/\barriving\b/);
     await settled(page);
-    expect(await boxes(page)).toEqual(first);
+    await expect(page.locator('svg.aerie')).not.toHaveClass(/\barriving\b/);
+    const placed = await boxes(page);
+    const rise = 8 * (await scale(page));
+    for (const [key, box] of Object.entries(placed)) {
+      const was = first[key];
+      expect(was?.x, key).toBeCloseTo(box.x, 1);
+      expect(was?.width, key).toBeCloseTo(box.width, 1);
+      expect(was?.height, key).toBeCloseTo(box.height, 1);
+      expect((was?.y ?? 0) - box.y, key).toBeGreaterThanOrEqual(-0.01);
+      expect((was?.y ?? 0) - box.y, key).toBeLessThanOrEqual(rise + 0.01);
+    }
     await expect(page.locator('.notice')).toBeHidden();
+    // Later changes never replay it.
+    await clickElement(page, 'website');
+    await expect(page.locator('svg.aerie')).not.toHaveClass(/\barriving\b/);
   });
 
   test('JOURNEY-006 and INT-505 a part that no longer matches is dropped, and the reader is told', async ({
     page,
   }) => {
     await page.goto(
-      '/?model=samples/lotto.aerie#view=services&aud=exec&open=engine-service&sel=nothing-here',
+      '/?model=samples/lotto.aerie#view=services&aud=manager&open=engine-service&sel=nothing-here',
     );
     await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
     const notice = page.getByRole('status').filter({ hasText: STALE });
@@ -393,12 +426,9 @@ test.describe('opening a shared link', () => {
     // The rest of the picture is shown, and the address holds the picture that is shown.
     await shows(page, 'services');
     await expect(node(page, 'pick-generation')).toBeVisible();
-    await expect(page.getByRole('tab', { name: 'Executive' })).toHaveAttribute(
-      'aria-selected',
-      'true',
-    );
-    await expect(panel(page).locator('.kicker')).toHaveText('View');
-    expect(fragment(page)).toBe('view=services&aud=exec&open=engine-service');
+    await wordedFor(page, 'Manager');
+    await expect(panel(page).locator('.kicker')).toHaveText('Architecture');
+    expect(fragment(page)).toBe('view=services&aud=manager&open=engine-service');
     // The notice shows for six seconds.
     await expect(notice).toBeHidden({ timeout: 8000 });
   });
@@ -409,15 +439,9 @@ test.describe('opening a shared link', () => {
     url.hash = 'view=engineering&aud=engineer';
     await page.goto(url.href);
     await shows(page, 'engineering');
-    await expect(page.getByRole('tab', { name: 'Engineer' })).toHaveAttribute(
-      'aria-selected',
-      'true',
-    );
+    await wordedFor(page, 'Engineer');
     await page.goBack();
     await shows(page, 'big-picture');
-    await expect(page.getByRole('tab', { name: 'Manager' })).toHaveAttribute(
-      'aria-selected',
-      'true',
-    );
+    await wordedFor(page, 'plain');
   });
 });

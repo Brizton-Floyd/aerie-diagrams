@@ -12,8 +12,7 @@ import {
 } from '../model/index.ts';
 
 /** INT-505: what the stage says when part of a link names something the diagram no longer has. */
-export const STALE_LINK =
-  'Part of this link no longer matches the diagram, so Aerie is showing the closest picture.';
+export const STALE_LINK = 'This link is older than the diagram. Showing the closest picture.';
 
 /** INT-501: the fragment's keys, in the order they are written. */
 const KEYS = ['view', 'aud', 'open', 'closed', 'sel', 'play', 'lanes', 'present'] as const;

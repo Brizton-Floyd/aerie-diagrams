@@ -23,8 +23,6 @@ export const BOX = {
   minWidth: 150,
   /** Padding between an open container's edge and its children. */
   containerPad: 18,
-  /** How far inside the outline the inner contour line runs. */
-  inset: 5,
   /** Label padding, left and right. */
   labelPadX: 5,
   /** Label padding, top and bottom. */

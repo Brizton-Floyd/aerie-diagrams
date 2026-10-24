@@ -16,22 +16,12 @@ export const ADVANCES_FILE = 'src/layout/text/advances.json';
 
 /** The faces the diagram draws (docs/spec/look.md, type scale), each from all its subset files. */
 export const FACES = {
-  'sans-600': { family: 'Source Sans 3', package: 'source-sans-3', weight: 600, style: 'normal' },
-  'serif-400': {
-    family: 'Source Serif 4',
-    package: 'source-serif-4',
-    weight: 400,
-    style: 'normal',
-  },
-  'serif-400-italic': {
-    family: 'Source Serif 4',
-    package: 'source-serif-4',
-    weight: 400,
-    style: 'italic',
-  },
-  'code-400': {
-    family: 'Source Code Pro',
-    package: 'source-code-pro',
+  'sans-600': { family: 'Inter', package: 'inter', weight: 600, style: 'normal' },
+  'sans-500': { family: 'Inter', package: 'inter', weight: 500, style: 'normal' },
+  'sans-400': { family: 'Inter', package: 'inter', weight: 400, style: 'normal' },
+  'mono-400': {
+    family: 'JetBrains Mono',
+    package: 'jetbrains-mono',
     weight: 400,
     style: 'normal',
   },

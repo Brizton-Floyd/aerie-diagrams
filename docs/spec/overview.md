@@ -21,7 +21,8 @@ them. Two separate controls serve this:
 - **Zoom** changes depth: how far into nesting the reader sees (system, then service, then module).
   The reader opens and closes parts in place.
 - **Audience level** changes wording, never depth: the same boxes and lines, reworded for the reader.
-  The audience switch is always visible, and switching moves nothing on screen.
+  Every reader starts with the plainest wording and uncovers the more technical wording on demand;
+  changing the wording moves nothing on screen.
 
 The vocabulary (model, element, relationship, view, scenario, walkthrough, zoom, audience level, and
 the words to avoid) is in [GLOSSARY.md](../../GLOSSARY.md) and is binding in code, tests and the
@@ -46,12 +47,12 @@ The tone everywhere is plain English first, with technical detail one step away.
   visible, audience resolution and view resolution ([model.md](model.md)).
 - **SCOPE-003** Structure views laid out by ELK behind Aerie's own layout interface, with space
   reserved for every audience, and rule checks on every view and audience ([layout.md](layout.md)).
-- **SCOPE-004** The Contour look in light and dark themes, with Aerie's own icons
+- **SCOPE-004** The Signal look, dark by default with a light theme, with Aerie's own icons
   ([look.md](look.md)).
-- **SCOPE-005** Reading: the audience switch, select with the side panel, open and close in place, the
+- **SCOPE-005** Reading: plain wording first with "More technical" on demand, select with the side panel, open and close in place, the
   camera, the navigation sidebar, and shared links that reopen the exact picture
   ([interaction.md](interaction.md)).
-- **SCOPE-006** Scenarios played on the architecture as a red trail, or shown as lanes, with a step
+- **SCOPE-006** Scenarios played on the architecture as a lit trail, or shown as lanes, with a step
   list, play and step ([interaction.md](interaction.md#scenario-playback)).
 - **SCOPE-007** Presenter-mode walkthroughs ([interaction.md](interaction.md#presenter-mode-walkthroughs)).
 - **SCOPE-008** The live split editor and watch mode, with plain-word errors
@@ -85,7 +86,7 @@ new decision.
 | [language.md](language.md)         | the Lines language, canonical model, errors, formatter, command line      | `LANG`, `E`/`W` diagnostic codes |
 | [model.md](model.md)               | containment, audience resolution, views, lifting, scenarios, walkthroughs | `MODEL`                          |
 | [layout.md](layout.md)             | the layout interface, ELK, the reserve, opening in place, trail, lanes    | `LAYOUT`, `RULE`, `SCORE`        |
-| [look.md](look.md)                 | Contour tokens, type, shapes, icons, the trail, motion                    | `LOOK`                           |
+| [look.md](look.md)                 | Signal tokens, type, shapes, icons, the trail, motion                     | `LOOK`                           |
 | [interaction.md](interaction.md)   | everything a reader and an author do                                      | `INT`                            |
 | [acceptance.md](acceptance.md)     | test suites per slice, and the browser journeys                           | `ACC`, `JOURNEY`                 |
 | [claude-skill.md](claude-skill.md) | the Aerie skill for Claude                                                | `SKILL`                          |
@@ -121,14 +122,16 @@ they can be reviewed, and each can be changed by a pull request to this spec.
 - **Views can open a container partly** (a tag selector shows only the matching children), and the
   zoom state records the reader's changes as per-container open or closed marks.
 - **Scenarios** play on a stage view (the current view when it can hold every participant) and can be
-  shown "On the map" as a trail or "As lanes".
+  shown "On the diagram" as a trail or "As lanes".
 - **Layout** runs top down with people and outside systems on the top rank, and measures text from the
   bundled font files so layouts are identical everywhere.
 - **The camera** has a fit mode and a free mode; shared links open fitted.
-- **Contour tokens** keep the prototype's palette, with `muted`, `contour` and `trail-back` darkened
-  and `accent-ink` and `on-accent` added, so every text colour passes 4.5 to 1 and every needed line
-  3 to 1; edge labels are 13.5 px to honour the 13.5 px floor; the dark "night map" theme is part of
-  v1.
+- **Signal tokens** name each colour by its role in both themes, so every text colour passes 4.5 to 1
+  and every needed line 3 to 1 in each; the page mixes tokens for hairlines, glass and light rather
+  than writing colours of its own; edge labels are 13.5 px to honour the 13.5 px floor.
+- **Plain first** starts every reader at the first declared audience; the depth of "More technical"
+  lasts for the browser tab's session, not on the device, and never changes the diagram's wording on
+  its own.
 - **Shared links** put the picture in the address fragment with keys `view`, `aud`, `open`, `closed`,
   `sel`, `play`, `lanes` and `present`; theme, reduced motion and camera are not shared.
 - **The editor** works on a copy kept on the reader's device; watch mode serves on `127.0.0.1:4310`
@@ -141,8 +144,9 @@ they can be reviewed, and each can be changed by a pull request to this spec.
 | Decision                                                         | Where it is specified                                                                                                                         |
 | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | [0001 Clean room](../decisions/0001-clean-room.md)               | this spec's sources; [acceptance.md](acceptance.md) (Aerie compared only with Aerie)                                                          |
-| [0002 Audience levels](../decisions/0002-audience-levels.md)     | LANG-101 to LANG-106, section 6 of [language.md](language.md); MODEL-101 to MODEL-106; LAYOUT-201 to LAYOUT-205; RULE-005; INT-101 to INT-105 |
+| [0002 Audience levels](../decisions/0002-audience-levels.md)     | LANG-101 to LANG-106, section 6 of [language.md](language.md); MODEL-101 to MODEL-106; LAYOUT-201 to LAYOUT-205; RULE-005; INT-101 to INT-106 |
 | [0003 Lines](../decisions/0003-lines-language.md)                | [language.md](language.md); MODEL-301 to MODEL-306                                                                                            |
 | [0004 ELK hybrid layout](../decisions/0004-elk-hybrid-layout.md) | [layout.md](layout.md)                                                                                                                        |
-| [0005 Contour](../decisions/0005-contour-look.md)                | [look.md](look.md)                                                                                                                            |
+| [0005 Contour](../decisions/0005-contour-look.md)                | superseded by 0007                                                                                                                            |
 | [0006 Drift detection](../decisions/0006-drift-detection.md)     | [drift.md](drift.md); LANG-751 to LANG-759 in section 11 of [language.md](language.md); MODEL-006                                             |
+| [0007 Signal](../decisions/0007-signal-look.md)                  | [look.md](look.md); INT-101 to INT-106, INT-204, INT-207 and INT-208; LANG-104                                                                |

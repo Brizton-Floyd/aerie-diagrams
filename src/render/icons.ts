@@ -1,6 +1,6 @@
 // Aerie's own icons (docs/spec/look.md, LOOK-401 and LOOK-402): line drawings on a 64-unit grid,
 // strokes only, with round caps and joins, and dots drawn as small filled circles. Each icon is a
-// list of shapes; the stylesheet strokes them in `ink` at 4.2 units, about 1.4 px at 22 px.
+// list of shapes; the stylesheet strokes them in `accent-ink` at 3.6 units, about 1.2 px at 22 px.
 import type { IconName } from '../lines/index.ts';
 import { el, type SvgNode } from './svg.ts';
 
@@ -8,7 +8,7 @@ import { el, type SvgNode } from './svg.ts';
 export const ICON_GRID = 64;
 
 /** LOOK-401: the icon stroke in grid units. */
-export const ICON_STROKE = 4.2;
+export const ICON_STROKE = 3.6;
 
 /** One stroked shape of an icon. */
 export type IconShape =

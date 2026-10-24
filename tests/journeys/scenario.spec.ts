@@ -4,7 +4,7 @@
 // audience mid-scenario, ending it, and reduced motion. Real clicks and keys only.
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Locator, type Page } from '@playwright/test';
-import { boxes, button, clickElement, node, openLotto, settled } from './reader.ts';
+import { boxes, button, clickElement, node, openLotto, settled, useTheme } from './reader.ts';
 
 test.use({ viewport: { width: 1600, height: 900 } });
 
@@ -22,13 +22,15 @@ const currentBadge = (page: Page): Locator => page.locator('svg.aerie g.badges >
 /** Chooses Generate picks in the sidebar and waits for step 1. */
 async function playGeneratePicks(page: Page): Promise<void> {
   await page.locator('button[data-scenario="generate-picks"]').click();
-  await expect(caption(page).locator('.count')).toHaveText(`1/${String(STEPS)}`);
+  await expect(caption(page).locator('.count')).toHaveText(`Step 1 of ${String(STEPS)}`);
   await settled(page);
 }
 
 /** Waits until the scenario shows `step`, on the map or as lanes, and nothing moves. */
 async function atStep(page: Page, step: number): Promise<void> {
-  await expect(caption(page).locator('.count')).toHaveText(`${String(step)}/${String(STEPS)}`);
+  await expect(caption(page).locator('.count')).toHaveText(
+    `Step ${String(step)} of ${String(STEPS)}`,
+  );
   await expect(stepItem(page, step)).toHaveClass(/\bnow\b/);
   const lanes = await page.locator('svg.aerie g.rows').count();
   if (lanes > 0) {
@@ -71,7 +73,7 @@ test.describe('SCOPE-006 playing a scenario', () => {
     await expect(button(page, 'website')).toHaveAttribute('aria-pressed', 'false');
     await expect(page.locator('header .crumb')).toContainText('Generate picks');
     await expect(caption(page)).toHaveText(
-      '1/14The user has chosen a game, a strategy, a target prize and how many tickets.',
+      'Step 1 of 14The user has chosen a game, a strategy, a target prize and how many tickets.',
     );
     // LAYOUT-451: the fitted picture keeps clear of the caption bar.
     const drawing = await page.locator('svg.aerie').boundingBox();
@@ -96,15 +98,15 @@ test.describe('SCOPE-006 playing a scenario', () => {
     await expect(panel(page).locator('.kicker')).toHaveText('Scenario');
     await expect(panel(page).getByRole('heading', { level: 1 })).toHaveText('Generate picks');
     await expect(panel(page).locator('.lead')).toContainText('What happens when the user clicks');
-    for (const name of ['Back', 'Play', 'Next', 'Done', 'On the map', 'As lanes']) {
+    for (const name of ['Back', 'Play', 'Next', 'End', 'On the diagram', 'As lanes']) {
       await expect(control(page, name)).toBeVisible();
     }
-    await expect(control(page, 'On the map')).toHaveAttribute('aria-pressed', 'true');
+    await expect(control(page, 'On the diagram')).toHaveAttribute('aria-pressed', 'true');
     await expect(steps(page).getByRole('listitem')).toHaveCount(STEPS);
-    // Each step shows "{subject} to {object}" in small capitals, and its caption.
+    // Each step shows "{subject} to {object}" in capitals, and its caption.
     const first = stepItem(page, 1);
     await expect(first.locator('.ends')).toHaveText('User to Website');
-    await expect(first.locator('.ends')).toHaveCSS('font-variant-caps', 'all-small-caps');
+    await expect(first.locator('.ends')).toHaveCSS('text-transform', 'uppercase');
     await expect(first.locator('.caption')).toHaveText(
       'The user has chosen a game, a strategy, a target prize and how many tickets.',
     );
@@ -159,7 +161,7 @@ test.describe('SCOPE-006 playing a scenario', () => {
     // INT-605: Esc ends the scenario and returns to the view, fitted.
     await page.keyboard.press('Escape');
     await expect(caption(page)).toBeHidden();
-    await expect(panel(page).locator('.kicker')).toHaveText('View');
+    await expect(panel(page).locator('.kicker')).toHaveText('Architecture');
     await expect(page.locator('header .crumb')).not.toContainText('Generate picks');
     await settled(page);
     expect(await cameraOf(page)).toBe(fitted);
@@ -187,7 +189,7 @@ test.describe('SCOPE-006 playing a scenario', () => {
     // Every step of the scenario plays, each drawn on the trail (RULE-011).
     for (let step = 2; step <= STEPS; step++) {
       await page.keyboard.press('ArrowRight');
-      await expect(caption(page).locator('.count')).toHaveText(`${String(step)}/14`);
+      await expect(caption(page).locator('.count')).toHaveText(`Step ${String(step)} of 14`);
     }
     await atStep(page, STEPS);
     await expect(page.locator('svg.aerie g.trail > g.step')).toHaveCount(STEPS);
@@ -205,9 +207,9 @@ test.describe('SCOPE-006 playing a scenario', () => {
     await atStep(page, 12);
     await control(page, 'Play').click();
     await expect(control(page, 'Pause')).toHaveAttribute('aria-pressed', 'true');
-    await expect(caption(page).locator('.count')).toHaveText('12/14');
-    await expect(caption(page).locator('.count')).toHaveText('13/14', { timeout: 4000 });
-    await expect(caption(page).locator('.count')).toHaveText('14/14', { timeout: 4000 });
+    await expect(caption(page).locator('.count')).toHaveText('Step 12 of 14');
+    await expect(caption(page).locator('.count')).toHaveText('Step 13 of 14', { timeout: 4000 });
+    await expect(caption(page).locator('.count')).toHaveText('Step 14 of 14', { timeout: 4000 });
     await expect(control(page, 'Play')).toHaveAttribute('aria-pressed', 'false');
     await page.waitForTimeout(2600);
     await atStep(page, STEPS);
@@ -222,7 +224,7 @@ test.describe('SCOPE-006 playing a scenario', () => {
     await page.locator('aside.panel h1').click();
     await page.keyboard.press('Space');
     await expect(control(page, 'Pause')).toBeVisible();
-    await expect(caption(page).locator('.count')).toHaveText('2/14', { timeout: 4000 });
+    await expect(caption(page).locator('.count')).toHaveText('Step 2 of 14', { timeout: 4000 });
     await page.keyboard.press('Space');
     await expect(control(page, 'Play')).toBeVisible();
     // Stepping by hand stops Play.
@@ -252,13 +254,13 @@ test.describe('SCOPE-006 playing a scenario', () => {
     await atStep(page, 9);
   });
 
-  test('INT-605 Done ends the scenario', async ({ page }) => {
+  test('INT-605 End ends the scenario', async ({ page }) => {
     await openLotto(page);
     await playGeneratePicks(page);
-    await control(page, 'Done').click();
+    await control(page, 'End').click();
     await expect(caption(page)).toBeHidden();
     await expect(page.locator('svg.aerie g.trail')).toHaveCount(0);
-    await expect(panel(page).getByRole('heading', { name: 'Play a scenario' })).toBeVisible();
+    await expect(panel(page).getByRole('heading', { name: 'Watch it work' })).toBeVisible();
   });
 
   test('INT-606 switching view or starting another scenario stops the one playing', async ({
@@ -269,10 +271,10 @@ test.describe('SCOPE-006 playing a scenario', () => {
     await control(page, 'Play').click();
     await page.locator('button[data-scenario="results-poll"]').click();
     await expect(panel(page).getByRole('heading', { level: 1 })).toHaveText('Results poll');
-    await expect(caption(page).locator('.count')).toHaveText(/^1\//);
+    await expect(caption(page).locator('.count')).toHaveText(/^Step 1 of /);
     await expect(control(page, 'Play')).toHaveAttribute('aria-pressed', 'false');
     await page.waitForTimeout(2600);
-    await expect(caption(page).locator('.count')).toHaveText(/^1\//);
+    await expect(caption(page).locator('.count')).toHaveText(/^Step 1 of /);
     await page.locator('button[data-view="services"]').click();
     await expect(page.locator('svg.aerie[data-view="services"]')).toBeVisible();
     await expect(caption(page)).toBeHidden();
@@ -315,7 +317,7 @@ test.describe('SCOPE-006 playing a scenario', () => {
     await expect(page.locator('svg.aerie g.trail > g.step')).toHaveCount(9);
   });
 
-  test('INT-104 the audience switch keeps the step and moves no box, badge or trail', async ({
+  test('INT-106 a change of wording keeps the step and moves no box, badge or trail', async ({
     page,
   }) => {
     await openLotto(page);
@@ -327,7 +329,7 @@ test.describe('SCOPE-006 playing a scenario', () => {
     const trail = await page.locator('svg.aerie g.trail').innerHTML();
     await page.keyboard.press('3');
     // The step list and caption are reworded for the engineer.
-    await expect(stepItem(page, 2).locator('.ends')).toHaveText('Website to Screen API');
+    await expect(stepItem(page, 2).locator('.ends')).toHaveText('Website to BFF');
     await expect(stepItem(page, 2).locator('.caption')).toContainText('BFF_URL');
     await settled(page);
     expect(await boxes(page)).toEqual(before);
@@ -346,7 +348,7 @@ test.describe('reduced motion', () => {
     await page.getByLabel('Reduce motion').check();
     await playGeneratePicks(page);
     await page.keyboard.press('ArrowRight');
-    await expect(caption(page).locator('.count')).toHaveText('2/14');
+    await expect(caption(page).locator('.count')).toHaveText('Step 2 of 14');
     await expect(currentBadge(page)).toHaveAttribute('data-step', '2');
     // Nothing draws itself, glides, fades or waits.
     expect(await page.evaluate(() => document.getAnimations().length)).toBe(0);
@@ -357,14 +359,14 @@ test.describe('reduced motion', () => {
     await expect(page.locator('svg.aerie g.rows')).toBeAttached();
     expect(await page.locator('svg.aerie').count()).toBe(1);
     expect(await page.evaluate(() => document.getAnimations().length)).toBe(0);
-    await control(page, 'On the map').click();
+    await control(page, 'On the diagram').click();
     await expect(currentBadge(page)).toHaveAttribute('data-step', '2');
     expect(await page.locator('svg.aerie').count()).toBe(1);
     // The autoplay pace is not motion: Play still waits 2.4 s between steps.
     await control(page, 'Play').click();
     await page.waitForTimeout(1200);
-    await expect(caption(page).locator('.count')).toHaveText('2/14');
-    await expect(caption(page).locator('.count')).toHaveText('3/14', { timeout: 3000 });
+    await expect(caption(page).locator('.count')).toHaveText('Step 2 of 14');
+    await expect(caption(page).locator('.count')).toHaveText('Step 3 of 14', { timeout: 3000 });
     await control(page, 'Pause').click();
     await page.keyboard.press('Escape');
     await expect(caption(page)).toBeHidden();
@@ -377,14 +379,18 @@ for (const theme of ['light', 'dark'] as const) {
     page,
   }) => {
     test.slow();
-    await page.emulateMedia({ colorScheme: theme });
+    await useTheme(page, theme);
     await openLotto(page);
     await playGeneratePicks(page);
     await stepItem(page, 9).getByRole('button').click();
     for (const lanes of [false, true]) {
       if (lanes) await control(page, 'As lanes').click();
-      for (const audience of ['Executive', 'Manager', 'Engineer']) {
-        await page.getByRole('tab', { name: audience }).click();
+      for (const [key, audience] of [
+        ['1', 'Executive'],
+        ['2', 'Manager'],
+        ['3', 'Engineer'],
+      ] as const) {
+        await page.keyboard.press(key);
         await atStep(page, 9);
         const results = await new AxeBuilder({ page }).analyze();
         const found = results.violations.flatMap((violation) =>

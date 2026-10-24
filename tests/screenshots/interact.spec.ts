@@ -5,7 +5,7 @@
 // Update deliberately:
 // `npx playwright test --project screenshots --update-snapshots`.
 import { expect, test, type Page } from '@playwright/test';
-import { HIDE_TEXT, openModel, show } from './page.ts';
+import { HIDE_TEXT, openModel, show, useTheme } from './page.ts';
 
 test.use({ viewport: { width: 1600, height: 900 } });
 
@@ -13,13 +13,25 @@ test.use({ viewport: { width: 1600, height: 900 } });
 async function still(page: Page): Promise<void> {
   await page.mouse.move(0, 0);
   await expect
-    .poll(() => page.evaluate(() => document.getAnimations().length), { timeout: 5000 })
+    .poll(
+      () =>
+        page.evaluate(
+          () =>
+            // The light flowing along a selected line runs without end (LOOK-601).
+            document
+              .getAnimations()
+              .filter((each) => each.effect?.getComputedTiming().iterations !== Infinity).length,
+        ),
+      { timeout: 5000 },
+    )
     .toBe(0);
 }
 
 for (const theme of ['light', 'dark'] as const) {
   test.describe(`${theme} theme`, () => {
-    test.use({ colorScheme: theme });
+    test.beforeEach(async ({ page }) => {
+      await useTheme(page, theme);
+    });
 
     test(`LOOK-601 and LOOK-602 the Results store selected on Services, ${theme}`, async ({
       page,

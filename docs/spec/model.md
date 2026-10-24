@@ -48,7 +48,9 @@ Requirement ids: `MODEL-nnn`. Conventions are in [overview.md](overview.md#readi
 - **MODEL-105** An audience with the `code` flag reads its taglines, verb phrases, descriptions and
   captions in the monospace face; names are always in the sans face ([look.md](look.md#type)).
 - **MODEL-106** A reader starts with the model's default audience unless a shared link names another
-  (MODEL-601).
+  (MODEL-601). The viewer reads every model plain first (INT-101): it shows a model with its first
+  audience as the default audience, so the default picture and links without `aud` start there. Which
+  audience is the default never changes how wording is resolved (MODEL-101 to MODEL-104).
 
 ## View resolution
 

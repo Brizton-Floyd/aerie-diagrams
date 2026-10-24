@@ -14,13 +14,19 @@ phrase, element (for example "Checkout charges the card through Payments").
 
 **Scenario**: How something happens, told as ordered steps between elements.
 
-**Walkthrough**: A narrated run through views and scenarios, for presenting to a room.
+**Walkthrough**: A narrated run through views and scenarios, for presenting to a room. Readers see it called a
+**tour** ("Take the tour", "Tours"); the language and the docs say walkthrough.
 
 **Zoom**: How far into nesting a reader sees (system, then service, then module). Zoom changes depth, never
 wording.
 
 **Audience level**: Who the wording is written for (by default exec, manager, engineer). Audience level changes
 wording, never depth.
+
+**Plain wording**: The first audience level a model declares, which every reader starts with.
+
+**More technical**: The side panel's control that uncovers the next audience level's wording of an element, one
+layer at a time. Avoid "go deeper" for it: depth is zoom.
 
 **Lines**: Aerie's text language. A model is written in a `.aerie` file.
 
@@ -45,7 +51,7 @@ any scenario or walkthrough step. A shared link carries the picture.
 **Visit**: A picture the reader went to, with the camera where they left it. Back and Forward move between visits,
 and the list of recent visits names the latest ones.
 
-**Trail**: A scenario drawn on the architecture as a red line with numbered steps.
+**Trail**: A scenario drawn on the architecture as a lit line with numbered steps.
 
 **Lanes**: A scenario laid out with one column per element and one row per step.
 

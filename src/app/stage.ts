@@ -91,7 +91,14 @@ export interface StageActions {
   toggle(id: Id): void;
   /** The camera moved, by the reader or a change of picture, so the visit can keep it (INT-554). */
   moved(camera: CameraState): void;
+  /** INT-208: the hover card's content for an element the pointer rests on, or null for none. */
+  peek?(id: Id): Node | null;
 }
+
+/** INT-208: how long the pointer rests on a box before its hover card shows. */
+const PEEK_AFTER = 380;
+/** LOOK-810: the hover card's width and its gap from the box, in pixels. */
+const PEEK = { width: 300, gap: 14 } as const;
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
@@ -141,6 +148,36 @@ function copyAttributes(to: Element, from: Element, names: readonly string[]): v
   }
 }
 
+/**
+ * LOOK-904: the first drawing of a model rises into place, boxes in reading order (top to bottom,
+ * then left to right), then its lines (the stylesheet's `arriving` animations).
+ */
+function arrive(svg: SVGSVGElement): void {
+  const groups = [
+    ...svg.querySelectorAll<SVGGElement>(':scope > g.boxes > g.node, :scope > g.heads > g.head'),
+  ];
+  const place = (group: SVGGElement): [number, number] => {
+    const found = /translate\(([-\d.]+)[ ,]+([-\d.]+)\)/.exec(
+      group.getAttribute('transform') ?? '',
+    );
+    return [Number(found?.[2] ?? 0), Number(found?.[1] ?? 0)];
+  };
+  const order = [...new Set(groups.map((group) => place(group)[0]))].sort((a, b) => a - b);
+  for (const group of groups) {
+    group.style.setProperty('--order', String(order.indexOf(place(group)[0])));
+  }
+  svg.style.setProperty('--count', String(order.length));
+  svg.classList.add('arriving');
+  // Once the lines are in, the drawing is an ordinary one again, so later changes never replay it.
+  const edges = svg.querySelector(':scope > g.edges');
+  edges?.addEventListener('animationend', () => {
+    svg.classList.remove('arriving');
+  });
+  window.setTimeout(() => {
+    svg.classList.remove('arriving');
+  }, 6000);
+}
+
 export class Stage {
   readonly element: HTMLElement;
   private readonly holder: HTMLElement;
@@ -169,6 +206,10 @@ export class Stage {
   private swallowClick = false;
   /** True while a change puts the focus back, which the camera has already placed (INT-354). */
   private restoring = false;
+  /** INT-208: the hover card, the element it is for, and the timer that shows it. */
+  private readonly peekCard: HTMLElement;
+  private peeking: Id | null = null;
+  private peekTimer = 0;
 
   constructor(tree: () => Tree | null, actions: StageActions) {
     this.tree = tree;
@@ -177,23 +218,32 @@ export class Stage {
       h('p', { class: 'loading', role: 'status' }, ['Loading the diagram']),
     ]);
     this.sentences = h('ul', { class: 'sr-only', 'aria-label': 'Relationships in this picture' });
-    const button = (label: string, text: string, run: () => void): HTMLButtonElement =>
-      h(
+    const button = (label: string, icon: string, run: () => void): HTMLButtonElement => {
+      const made = h(
         'button',
         { type: 'button', class: 'cam', 'aria-label': label, title: label, onclick: run },
-        [text],
+        [],
       );
+      made.innerHTML = `<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="${icon}"/></svg>`;
+      return made;
+    };
+    // LOOK-806: the camera as one floating group of icon buttons, named by what they do.
     const camera = h('div', { class: 'camera', role: 'group', 'aria-label': 'Camera' }, [
-      button('Magnify', '+', () => {
+      button('Move closer (+)', 'M8 3.5v9M3.5 8h9', () => {
         this.magnifyBy(CAMERA.magnify);
       }),
-      button('Shrink', '−', () => {
+      button('Move back (-)', 'M3.5 8h9', () => {
         this.magnifyBy(CAMERA.shrink);
       }),
-      button('Fit all', 'Fit all', () => {
-        this.fit(true);
-      }),
+      button(
+        'Show everything (0)',
+        'M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10',
+        () => {
+          this.fit(true);
+        },
+      ),
     ]);
+    this.peekCard = h('div', { class: 'peek', 'aria-hidden': 'true', hidden: true });
     // INT-904: captions are announced as they change. The bar scrolls a caption longer than its
     // fixed height, so Tab reaches it and the keys scroll it (INT-901).
     this.captionBar = h('div', {
@@ -221,6 +271,7 @@ export class Stage {
       this.captionBar,
       this.narrationBar,
       camera,
+      this.peekCard,
     ]);
     this.listen();
     new ResizeObserver(() => {
@@ -325,6 +376,7 @@ export class Stage {
     this.layout = after;
     this.lanes = showing.lanes;
     next.style.transform = cameraTransform(this.camera);
+    if (old === null) arrive(next);
     const tree = this.tree();
     const crossing = old !== null && (wasLanes !== null) !== (showing.lanes !== null);
     if (crossing && timing('glide') > 0) {
@@ -505,7 +557,7 @@ export class Stage {
     }
   }
 
-  /** A box that changes size glides its outline, inner contour, focus ring and control with it. */
+  /** A box that changes size glides its outline, dawn, focus ring and control with it. */
   private resize(
     node: Element,
     from: Box,
@@ -518,7 +570,7 @@ export class Stage {
     });
     const parts: [string, number][] = [
       ['shape', 0],
-      ['inner', -BOX.inset],
+      ['dawn', 0],
       ['ring', SHAPE.ringOffset],
     ];
     for (const [name, grow] of parts) {
@@ -685,7 +737,26 @@ export class Stage {
       const bounds = stage.getBoundingClientRect();
       return { x: event.clientX - bounds.left, y: event.clientY - bounds.top };
     };
+    // INT-208: resting the pointer on a box shows its hover card; an open container shows one
+    // only over its header, so crossing its ground to reach a child shows nothing.
+    this.holder.addEventListener('pointerover', (event) => {
+      if (event.pointerType !== 'mouse' || this.drag !== null) return;
+      const target = event.target instanceof Element ? event.target : null;
+      const group = target?.closest('g.boxes > g.node[data-id], g.heads > g.head[data-id]') ?? null;
+      const id =
+        group === null || (group.classList.contains('open') && group.classList.contains('node'))
+          ? null
+          : group.getAttribute('data-id');
+      this.peekAt(id);
+    });
+    this.holder.addEventListener('pointerleave', () => {
+      this.peekAt(null);
+    });
+    this.holder.addEventListener('wheel', () => {
+      this.peekAt(null);
+    });
     this.holder.addEventListener('pointerdown', (event) => {
+      this.peekAt(null);
       if (event.button !== 0 || this.svg === null) return;
       this.swallowClick = false;
       this.drag = {
@@ -780,6 +851,44 @@ export class Stage {
   }
 
   // ------------------------------------------------------------ keyboard focus
+
+  /** INT-208: shows the hover card of an element after a rest, or hides it at once (null). */
+  private peekAt(id: Id | null): void {
+    if (id === this.peeking) return;
+    this.peeking = id;
+    window.clearTimeout(this.peekTimer);
+    this.peekCard.classList.remove('on');
+    this.peekCard.hidden = true;
+    if (id === null) return;
+    this.peekTimer = window.setTimeout(() => {
+      this.showPeek(id);
+    }, PEEK_AFTER);
+  }
+
+  private showPeek(id: Id): void {
+    const content = this.actions.peek?.(id) ?? null;
+    const shape = this.svg?.querySelector(
+      `:scope > g.boxes > g.node[data-id="${CSS.escape(id)}"] > .shape`,
+    );
+    if (content === null || shape === null || shape === undefined) return;
+    this.peekCard.replaceChildren(content);
+    this.peekCard.hidden = false;
+    const stage = this.element.getBoundingClientRect();
+    const box = shape.getBoundingClientRect();
+    const height = this.peekCard.offsetHeight;
+    const right = box.right - stage.left + PEEK.gap;
+    const left = box.left - stage.left - PEEK.gap - PEEK.width;
+    const x = right + PEEK.width <= stage.width - 12 ? right : Math.max(12, left);
+    // An open container's header is at its top, so its card stays by the header.
+    const top = box.top - stage.top;
+    const y = Math.min(Math.max(12, top), Math.max(12, stage.height - height - 12));
+    this.peekCard.style.left = `${String(Math.round(x))}px`;
+    this.peekCard.style.top = `${String(Math.round(y))}px`;
+    this.peekCard.classList.toggle('from-left', x < right);
+    requestAnimationFrame(() => {
+      if (this.peeking === id) this.peekCard.classList.add('on');
+    });
+  }
 
   /** The element of the drawing that has the keyboard focus, if any. */
   private focusedId(): Id | null {

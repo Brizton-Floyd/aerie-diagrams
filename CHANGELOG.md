@@ -3,6 +3,38 @@
 All notable changes to Aerie. Versions follow [Semantic Versioning](https://semver.org/); the
 functional spec for each version is [docs/spec/](docs/spec/overview.md).
 
+## Unreleased
+
+The Signal look and plain wording first ([decision 0007](docs/decisions/0007-signal-look.md)).
+
+### Signal
+
+- Aerie looks like Signal: an instrument panel at night, with hairline cards on a near-black stage,
+  glass controls and light only for what the reader is doing (violet for the selection and the
+  trail, a cyan light for the current step and the lines in play). It replaces Contour
+  ([docs/spec/look.md](docs/spec/look.md)).
+- Dark is the default. A light theme, the same panel in daylight, is one press of the theme button
+  away for bright rooms and projectors, and is remembered on the device; printing always uses it.
+  Both themes meet WCAG AA, and the accessibility audit finds no problems in either.
+- Type is Inter, with JetBrains Mono for the code voice and metadata. Inter is a little wider than
+  Source Sans, so the largest Lotto pictures fit at a slightly smaller scale (0.461 to 0.457); the
+  readability baseline was re-recorded for it on purpose.
+- A model's cover heads the side panel, with "Take the tour"; the first drawing of a model rises
+  into place; labels sit on pills; selected lines carry a flowing light.
+
+### Plain wording first
+
+- The "Written for" switch is gone. Every reader starts with the model's first audience, the plain
+  wording; "More technical" in the side panel uncovers each deeper wording in turn and remembers the
+  depth for the browser tab's session, and resting on a box shows a hover card with the deeper
+  names. "Word the whole diagram for Engineer" and the "Back to plain wording" chip word the whole
+  picture; the digit keys, links and the presenter's wording button still carry a level
+  ([docs/spec/interaction.md](docs/spec/interaction.md), INT-101 to INT-106, INT-204, INT-207,
+  INT-208).
+- Readers see "tour" for a walkthrough, and the copy is plainer throughout: "Step 5 of 14", "End",
+  "On the diagram", "Open it here", "Move closer", and notices that say what happened.
+- Choosing another model in the sidebar no longer fails to draw it.
+
 ## 1.1.0 - 2026-10-23
 
 Drift detection: `aerie drift` checks a model against the code it describes, on the command line and

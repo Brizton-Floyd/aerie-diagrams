@@ -1,182 +1,192 @@
-<?xml-stylesheet href="../contour.css" type="text/css"?>
-<svg xmlns="http://www.w3.org/2000/svg" class="aerie" viewBox="0 0 1373 755" width="1373" height="755" overflow="visible" role="img" aria-label="The Lotto suite: Generate picks, as lanes" data-view="big-picture" data-audience="manager" data-scenario="generate-picks">
+<?xml-stylesheet href="../signal.css" type="text/css"?>
+<svg xmlns="http://www.w3.org/2000/svg" class="aerie" viewBox="0 0 1380 755" width="1380" height="755" overflow="visible" role="img" aria-label="The Lotto suite: Generate picks, as lanes" data-view="big-picture" data-audience="manager" data-scenario="generate-picks">
   <defs>
     <pattern id="aerie-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
       <rect class="hatch-bg" width="7" height="7"/>
       <path class="hatch-line" d="M0 0V7"/>
     </pattern>
+    <radialGradient id="aerie-dawn" cx="0.18" cy="0" r="1.05" fx="0.12" fy="0">
+      <stop class="dawn-0" offset="0"/>
+      <stop class="dawn-1" offset="0.55"/>
+      <stop class="dawn-2" offset="1"/>
+    </radialGradient>
   </defs>
   <g class="rows">
-    <rect class="row now" data-step="14" x="0" y="702" width="1373" height="37"/>
+    <rect class="row now" data-step="14" x="0" y="702" width="1380" height="37"/>
   </g>
   <g class="bands">
     <g class="band open depth-0" data-id="suite">
-      <rect class="shape" x="0" y="0" width="1163" height="28" rx="9"/>
-      <text class="t-band" x="10" y="19" data-width="63">Lotto suite</text>
+      <rect class="shape" x="0" y="0" width="1170" height="28" rx="9"/>
+      <text class="t-band" x="10" y="19" data-width="69">Lotto suite</text>
     </g>
   </g>
   <g class="lanes">
     <path class="lane-line" data-id="website" d="M141.5 103V755"/>
-    <path class="lane-line" data-id="screen-api" d="M438 120V755"/>
-    <path class="lane-line" data-id="engine" d="M724.5 120V755"/>
-    <path class="lane-line" data-id="store" d="M1025.5 120V755"/>
-    <path class="lane-line" data-id="user" d="M1284 103V755"/>
+    <path class="lane-line" data-id="screen-api" d="M440 120V755"/>
+    <path class="lane-line" data-id="engine" d="M730 120V755"/>
+    <path class="lane-line" data-id="store" d="M1032.5 120V755"/>
+    <path class="lane-line" data-id="user" d="M1291 103V755"/>
   </g>
   <g class="boxes">
     <g class="node leaf now" data-id="website" transform="translate(0 44)">
-      <rect class="shape" width="283" height="59" rx="4"/>
-      <rect class="ring" x="-3" y="-3" width="289" height="65" rx="7"/>
+      <rect class="shape" width="283" height="59" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="289" height="65" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="web" transform="translate(12 12) scale(0.34375)">
         <rect x="8" y="11" width="48" height="42" rx="5"/>
         <path d="M8 21h48"/>
         <path d="M27 29l-7 7 7 7"/>
         <path d="M37 29l7 7-7 7"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="49">Website</text>
-      <text class="t-tagline" x="44" y="44" data-width="214">Picks a game, generates numbers</text>
+      <text class="t-name" x="44" y="26" data-width="56">Website</text>
+      <text class="t-tagline" x="44" y="44" data-width="217">Picks a game, generates numbers</text>
     </g>
     <g class="node leaf" data-id="screen-api" transform="translate(315 44)">
-      <rect class="shape" width="246" height="76" rx="4"/>
-      <rect class="ring" x="-3" y="-3" width="252" height="82" rx="7"/>
+      <rect class="shape" width="250" height="76" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="256" height="82" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="api" transform="translate(12 12) scale(0.34375)">
         <rect x="26" y="18" width="14" height="28" rx="3"/>
         <path d="M7 25h19M7 39h19"/>
         <path d="M40 32h16"/>
         <path d="M50 26l6 6-6 6"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="65">Screen API</text>
-      <text class="t-tagline" x="44" y="44" data-width="190">Prepares data for each screen</text>
+      <text class="t-name" x="44" y="26" data-width="75">Screen API</text>
+      <text class="t-tagline" x="44" y="44" data-width="194">Prepares data for each screen</text>
     </g>
-    <g class="node leaf" data-id="engine" transform="translate(593 44)">
-      <rect class="shape" width="263" height="76" rx="4"/>
-      <rect class="ring" x="-3" y="-3" width="269" height="82" rx="7"/>
+    <g class="node leaf" data-id="engine" transform="translate(597 44)">
+      <rect class="shape" width="266" height="76" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="272" height="82" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="gear" transform="translate(12 12) scale(0.34375)">
         <path d="M28.1 16.5 29 10.7h6l.9 5.8 4.3 1.8 4.7-3.5 4.3 4.3-3.5 4.7 1.8 4.3 5.8.9v6l-5.8.9-1.8 4.3 3.5 4.7-4.3 4.3-4.7-3.5-4.3 1.8-.9 5.8h-6l-.9-5.8-4.3-1.8-4.7 3.5-4.3-4.3 3.5-4.7-1.8-4.3-5.8-.9v-6l5.8-.9 1.8-4.3-3.5-4.7 4.3-4.3 4.7 3.5Z"/>
         <circle cx="32" cy="32" r="6"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="93">Analysis engine</text>
-      <text class="t-tagline" x="44" y="44" data-width="174">Generates and scores picks</text>
+      <text class="t-name" x="44" y="26" data-width="108">Analysis engine</text>
+      <text class="t-tagline" x="44" y="44" data-width="178">Generates and scores picks</text>
     </g>
-    <g class="node leaf" data-id="store" transform="translate(888 44)">
-      <rect class="shape" width="275" height="76" rx="4"/>
-      <rect class="ring" x="-3" y="-3" width="281" height="82" rx="7"/>
+    <g class="node leaf" data-id="store" transform="translate(895 44)">
+      <rect class="shape" width="275" height="76" rx="8"/>
+      <rect class="ring" x="-3" y="-3" width="281" height="82" rx="11"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="cylinder" transform="translate(12 12) scale(0.34375)">
         <path d="M14 14c0-3.3 8-6 18-6s18 2.7 18 6-8 6-18 6-18-2.7-18-6Z"/>
         <path d="M14 14v36c0 3.3 8 6 18 6s18-2.7 18-6V14"/>
         <path d="M14 26c0 3.3 8 6 18 6s18-2.7 18-6"/>
         <path d="M14 38c0 3.3 8 6 18 6s18-2.7 18-6"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="78">Results store</text>
-      <text class="t-tagline" x="44" y="44" data-width="192">Keeps each game's past draws</text>
+      <text class="t-name" x="44" y="26" data-width="89">Results store</text>
+      <text class="t-tagline" x="44" y="44" data-width="200">Keeps each game's past draws</text>
     </g>
-    <g class="node leaf person now" data-id="user" transform="translate(1195 44)">
+    <g class="node leaf person now" data-id="user" transform="translate(1202 44)">
       <rect class="shape" width="178" height="59" rx="29.5"/>
       <rect class="ring" x="-3" y="-3" width="184" height="65" rx="32.5"/>
+      <rect class="icon-tile" x="7" y="7" width="32" height="32" rx="8"/>
       <g class="icon" data-icon="person" transform="translate(12 12) scale(0.34375)">
         <circle cx="32" cy="21" r="10"/>
         <path d="M12 56c0-12 9-20 20-20s20 8 20 20"/>
       </g>
-      <text class="t-name" x="44" y="26" data-width="28">User</text>
+      <text class="t-name" x="44" y="26" data-width="32">User</text>
       <text class="t-tagline" x="44" y="44" data-width="105">Using a browser</text>
     </g>
   </g>
   <g class="trail">
     <g class="step call past" data-step="1">
-      <path class="curve" d="M1284 169L141.5 169"/>
+      <path class="curve" d="M1291 169L141.5 169"/>
       <path class="arrow" d="M153.5 164L141.5 169L153.5 174"/>
     </g>
     <g class="step call past" data-step="2">
-      <path class="curve" d="M141.5 240L438 240"/>
-      <path class="arrow" d="M426 245L438 240L426 235"/>
+      <path class="curve" d="M141.5 240L440 240"/>
+      <path class="arrow" d="M428 245L440 240L428 235"/>
     </g>
     <g class="step call past" data-step="3">
-      <path class="curve" d="M438 311L724.5 311"/>
-      <path class="arrow" d="M712.5 316L724.5 311L712.5 306"/>
+      <path class="curve" d="M440 311L730 311"/>
+      <path class="arrow" d="M718 316L730 311L718 306"/>
     </g>
     <g class="step call past" data-step="4">
-      <path class="curve" d="M724.5 319L742.5 319Q748.5 319 748.5 325L748.5 342Q748.5 348 742.5 348L724.5 348"/>
-      <path class="arrow" d="M736.5 343L724.5 348L736.5 353"/>
+      <path class="curve" d="M730 319L748 319Q754 319 754 325L754 342Q754 348 748 348L730 348"/>
+      <path class="arrow" d="M742 343L730 348L742 353"/>
     </g>
     <g class="step call past" data-step="5">
-      <path class="curve" d="M724.5 356L742.5 356Q748.5 356 748.5 362L748.5 379Q748.5 385 742.5 385L724.5 385"/>
-      <path class="arrow" d="M736.5 380L724.5 385L736.5 390"/>
+      <path class="curve" d="M730 356L748 356Q754 356 754 362L754 379Q754 385 748 385L730 385"/>
+      <path class="arrow" d="M742 380L730 385L742 390"/>
     </g>
     <g class="step call past" data-step="6">
-      <path class="curve" d="M724.5 422L1025.5 422"/>
-      <path class="arrow" d="M1013.5 427L1025.5 422L1013.5 417"/>
+      <path class="curve" d="M730 422L1032.5 422"/>
+      <path class="arrow" d="M1020.5 427L1032.5 422L1020.5 417"/>
     </g>
     <g class="step reply past" data-step="7">
-      <path class="curve" d="M1025.5 459L724.5 459"/>
+      <path class="curve" d="M1032.5 459L730 459"/>
     </g>
     <g class="step reply past" data-step="8">
-      <path class="curve" d="M724.5 467L742.5 467Q748.5 467 748.5 473L748.5 490Q748.5 496 742.5 496L724.5 496"/>
+      <path class="curve" d="M730 467L748 467Q754 467 754 473L754 490Q754 496 748 496L730 496"/>
     </g>
     <g class="step call past" data-step="9">
-      <path class="curve" d="M724.5 504L742.5 504Q748.5 504 748.5 510L748.5 544Q748.5 550 742.5 550L724.5 550"/>
-      <path class="arrow" d="M736.5 545L724.5 550L736.5 555"/>
+      <path class="curve" d="M730 504L748 504Q754 504 754 510L754 544Q754 550 748 550L730 550"/>
+      <path class="arrow" d="M742 545L730 550L742 555"/>
     </g>
     <g class="step reply past" data-step="10">
-      <path class="curve" d="M724.5 558L742.5 558Q748.5 558 748.5 564L748.5 581Q748.5 587 742.5 587L724.5 587"/>
+      <path class="curve" d="M730 558L748 558Q754 558 754 564L754 581Q754 587 748 587L730 587"/>
     </g>
     <g class="step reply past" data-step="11">
-      <path class="curve" d="M724.5 595L742.5 595Q748.5 595 748.5 601L748.5 618Q748.5 624 742.5 624L724.5 624"/>
+      <path class="curve" d="M730 595L748 595Q754 595 754 601L754 618Q754 624 748 624L730 624"/>
     </g>
     <g class="step reply past" data-step="12">
-      <path class="curve" d="M724.5 661L438 661"/>
+      <path class="curve" d="M730 661L440 661"/>
     </g>
     <g class="step reply past" data-step="13">
-      <path class="curve" d="M438 698L141.5 698"/>
+      <path class="curve" d="M440 698L141.5 698"/>
     </g>
     <g class="step reply now" data-step="14">
-      <path class="curve" d="M141.5 735L1284 735"/>
+      <path class="curve" d="M141.5 735L1291 735"/>
     </g>
   </g>
   <g class="labels">
     <g class="label" data-step="1">
-      <text class="t-label" x="630.75" y="156" data-width="164">clicks Generate Numbers on</text>
+      <text class="t-label" x="624.75" y="156" data-width="183">clicks Generate Numbers on</text>
     </g>
     <g class="label" data-step="2">
-      <text class="t-label" x="234.75" y="210" data-width="110">asks for picks from</text>
+      <text class="t-label" x="228.75" y="210" data-width="124">asks for picks from</text>
     </g>
     <g class="label" data-step="3">
-      <text class="t-label" x="515.25" y="281" data-width="132">requests analysis from</text>
+      <text class="t-label" x="511.5" y="281" data-width="147">requests analysis from</text>
     </g>
     <g class="label" data-step="4">
-      <text class="t-label" x="779" y="339" data-width="119">hands the request to</text>
+      <text class="t-label" x="777" y="339" data-width="134">hands the request to</text>
     </g>
     <g class="label" data-step="5">
-      <text class="t-label" x="782.5" y="376" data-width="145">asks for past draws from</text>
+      <text class="t-label" x="780" y="376" data-width="161">asks for past draws from</text>
     </g>
     <g class="label" data-step="6">
-      <text class="t-label" x="799" y="409" data-width="152">fetches draw history from</text>
+      <text class="t-label" x="797.75" y="409" data-width="167">fetches draw history from</text>
     </g>
     <g class="label" data-step="7">
-      <text class="t-label" x="795" y="446" data-width="160">returns the draw history to</text>
+      <text class="t-label" x="795.25" y="446" data-width="172">returns the draw history to</text>
     </g>
     <g class="label" data-step="8">
-      <text class="t-label" x="781" y="487" data-width="140">hands the past draws to</text>
+      <text class="t-label" x="779" y="487" data-width="155">hands the past draws to</text>
     </g>
     <g class="label" data-step="9">
-      <text class="t-label" x="775" y="532.5" data-width="192">generates and scores tickets with</text>
+      <text class="t-label" x="767.5" y="532.5" data-width="218">generates and scores tickets with</text>
     </g>
     <g class="label" data-step="10">
-      <text class="t-label" x="789" y="578" data-width="140">returns scored tickets to</text>
+      <text class="t-label" x="785.5" y="578" data-width="158">returns scored tickets to</text>
     </g>
     <g class="label" data-step="11">
-      <text class="t-label" x="782" y="615" data-width="113">returns the picks to</text>
+      <text class="t-label" x="781" y="615" data-width="126">returns the picks to</text>
     </g>
     <g class="label" data-step="12">
-      <text class="t-label" x="524.75" y="648" data-width="113">returns the picks to</text>
+      <text class="t-label" x="522" y="648" data-width="126">returns the picks to</text>
     </g>
     <g class="label" data-step="13">
-      <text class="t-label" x="207.25" y="685" data-width="165">sends picks ready to show to</text>
+      <text class="t-label" x="196.25" y="685" data-width="189">sends picks ready to show to</text>
     </g>
     <g class="label" data-step="14">
-      <text class="t-label" x="660.25" y="722" data-width="105">shows the picks to</text>
+      <text class="t-label" x="655.75" y="722" data-width="121">shows the picks to</text>
     </g>
   </g>
   <g class="badges">
-    <g class="badge" data-step="1" transform="translate(1284 169)">
+    <g class="badge" data-step="1" transform="translate(1291 169)">
       <circle r="9"/>
       <text class="t-badge" y="4">1</text>
     </g>
@@ -184,47 +194,47 @@
       <circle r="9"/>
       <text class="t-badge" y="4">2</text>
     </g>
-    <g class="badge" data-step="3" transform="translate(438 311)">
+    <g class="badge" data-step="3" transform="translate(440 311)">
       <circle r="9"/>
       <text class="t-badge" y="4">3</text>
     </g>
-    <g class="badge" data-step="4" transform="translate(724.5 319)">
+    <g class="badge" data-step="4" transform="translate(730 319)">
       <circle r="9"/>
       <text class="t-badge" y="4">4</text>
     </g>
-    <g class="badge" data-step="5" transform="translate(724.5 356)">
+    <g class="badge" data-step="5" transform="translate(730 356)">
       <circle r="9"/>
       <text class="t-badge" y="4">5</text>
     </g>
-    <g class="badge" data-step="6" transform="translate(724.5 422)">
+    <g class="badge" data-step="6" transform="translate(730 422)">
       <circle r="9"/>
       <text class="t-badge" y="4">6</text>
     </g>
-    <g class="badge" data-step="7" transform="translate(1025.5 459)">
+    <g class="badge" data-step="7" transform="translate(1032.5 459)">
       <circle r="9"/>
       <text class="t-badge" y="4">7</text>
     </g>
-    <g class="badge" data-step="8" transform="translate(724.5 467)">
+    <g class="badge" data-step="8" transform="translate(730 467)">
       <circle r="9"/>
       <text class="t-badge" y="4">8</text>
     </g>
-    <g class="badge" data-step="9" transform="translate(724.5 504)">
+    <g class="badge" data-step="9" transform="translate(730 504)">
       <circle r="9"/>
       <text class="t-badge" y="4">9</text>
     </g>
-    <g class="badge" data-step="10" transform="translate(724.5 558)">
+    <g class="badge" data-step="10" transform="translate(730 558)">
       <circle r="9"/>
       <text class="t-badge" y="4">10</text>
     </g>
-    <g class="badge" data-step="11" transform="translate(724.5 595)">
+    <g class="badge" data-step="11" transform="translate(730 595)">
       <circle r="9"/>
       <text class="t-badge" y="4">11</text>
     </g>
-    <g class="badge" data-step="12" transform="translate(724.5 661)">
+    <g class="badge" data-step="12" transform="translate(730 661)">
       <circle r="9"/>
       <text class="t-badge" y="4">12</text>
     </g>
-    <g class="badge" data-step="13" transform="translate(438 698)">
+    <g class="badge" data-step="13" transform="translate(440 698)">
       <circle r="9"/>
       <text class="t-badge" y="4">13</text>
     </g>

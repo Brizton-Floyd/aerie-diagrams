@@ -77,7 +77,7 @@ test('JOURNEY-009 and SCOPE-008 watch a file: saves update the page, an error ke
 }) => {
   await openPage(page);
   await page.locator('button[data-view="services"]').click();
-  await page.getByRole('tab', { name: 'Engineer' }).click();
+  await page.locator('body').press('3');
   await expect(page.locator('svg.aerie')).toHaveAttribute('data-audience', 'engineer');
 
   writeFileSync(file, LOTTO.replace('website: Website |', 'website: Web shop |'));
@@ -88,7 +88,9 @@ test('JOURNEY-009 and SCOPE-008 watch a file: saves update the page, an error ke
   const before = await page.locator('svg.aerie').innerHTML();
   writeFileSync(file, TYPO);
   await expect(page.locator('.overlay')).toHaveText(TYPO_MESSAGE);
-  await expect(page.locator('.notice')).toHaveText('Showing the last version without errors');
+  await expect(page.locator('.notice')).toHaveText(
+    'Your last edit has an error, so this is the last version that worked',
+  );
   expect(await page.locator('svg.aerie').innerHTML()).toBe(before);
 
   writeFileSync(file, LOTTO);
@@ -109,7 +111,7 @@ test('INT-851 INT-855 the page shows the file, offers no other model and has no 
   await expect(page.locator('svg.aerie')).toHaveAttribute('data-view', 'big-picture');
   await expect(page.getByRole('button', { name: 'Edit' })).toHaveCount(0);
   await expect(page.getByLabel('Model')).toHaveCount(0);
-  await expect(page.getByLabel('Open a .aerie file')).toHaveCount(0);
+  await expect(page.getByLabel('Open your own .aerie file')).toHaveCount(0);
   expect(new URL(page.url()).search).toBe('');
 });
 
@@ -118,7 +120,7 @@ test('INT-852 saving the file updates the page, keeping the view and audience th
 }) => {
   await openPage(page);
   await page.locator('button[data-view="services"]').click();
-  await page.getByRole('tab', { name: 'Engineer' }).click();
+  await page.locator('body').press('3');
   await expect(page.locator('svg.aerie')).toHaveAttribute('data-audience', 'engineer');
   writeFileSync(file, LOTTO.replace('website: Website |', 'website: Web shop |'));
   await expect(websiteName(page)).toHaveText('Web shop');
@@ -134,7 +136,9 @@ test('INT-852 an error keeps the last picture and shows the error list over the 
   await openPage(page);
   const before = await page.locator('svg.aerie').innerHTML();
   writeFileSync(file, TYPO);
-  await expect(page.locator('.notice')).toHaveText('Showing the last version without errors');
+  await expect(page.locator('.notice')).toHaveText(
+    'Your last edit has an error, so this is the last version that worked',
+  );
   await expect(page.locator('.overlay')).toHaveText(TYPO_MESSAGE);
   expect(await page.locator('svg.aerie').innerHTML()).toBe(before);
   await expect.poll(() => printed).toContain('Showing the last version without errors.\n');

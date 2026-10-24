@@ -45,7 +45,7 @@ export function captionOf(semantics: Semantics, scenario: Id, step: number, audi
   const steps = semantics.steps(scenario, audience);
   const here = steps[step - 1];
   return {
-    count: `${String(step)}/${String(steps.length)}`,
+    count: `Step ${String(step)} of ${String(steps.length)}`,
     text: here?.caption ?? '',
     code: semantics.audience(audience).code,
   };
@@ -110,7 +110,7 @@ export class ScenarioPanel {
     });
     this.onMap = button(
       'map',
-      'On the map',
+      'On the diagram',
       () => {
         actions.lanes(false);
       },
@@ -162,7 +162,7 @@ export class ScenarioPanel {
           this.back,
           this.play,
           this.next,
-          button('done', 'Done', () => {
+          button('done', 'End', () => {
             actions.done();
           }),
         ]),

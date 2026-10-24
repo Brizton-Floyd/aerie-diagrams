@@ -118,11 +118,13 @@ has the steps for opening a model and choosing a view and audience with clicks).
   [src/layout/index.ts](src/layout/index.ts). Only `src/layout/elk/` imports `elkjs` (LAYOUT-002,
   lint-enforced; tests too). Import `inProcessEngine` (Node) and `workerEngine` (browser) from their
   own modules so the browser bundle never pulls in the in-process ELK.
-- `src/render/` (the Contour renderer) is pure TypeScript too, built only on the three entry points
+- `src/render/` (the Signal renderer) is pure TypeScript too, built only on the three entry points
   above; its API notes are in [src/render/index.ts](src/render/index.ts). Drawings are SVG trees of
   classes and geometry; every colour, stroke, face and timing is in the stylesheet that
-  `contourStyle()` writes from the tokens, so a theme switch redraws nothing and colours never
-  appear outside `tokens.ts` (a unit test enforces it).
+  `signalStyle()` writes from the tokens, so a theme switch redraws nothing and colours never
+  appear outside `tokens.ts`, in the stylesheet or in `src/app/page.css` (a unit test enforces it);
+  the page mixes tokens with `color-mix` for hairlines, glass and light. Dark is the default theme
+  and `data-theme="light"` picks the light one (LOOK-002).
 - `src/extract/` (drift's extractor, D2 on) is pure TypeScript too, built only on
   `src/lines/index.ts` and its parsers (`yaml`, `dockerfile-ast`, `jsonc-parser`, `typescript`
   for `createSourceFile` only, `@xmldom/xmldom`, `properties-file`, `web-tree-sitter`); it reads a
@@ -155,8 +157,9 @@ has the steps for opening a model and choosing a view and audience with clicks).
   `src/action/main.ts`, which runs `aerie drift` in process and calls the REST API through an `Api`
   the tests keep in memory). `.github/workflows/drift.yml` runs it on pull requests that touch it and
   checks the comments; it posts real comments on that pull request, from the fixtures, by design.
-- Text is measured from `src/layout/text/advances.json`, written from the bundled Fontsource fonts by
-  `node scripts/font-metrics.ts`; rerun it when a font package changes (a unit test compares them).
+- Text is measured from `src/layout/text/advances.json`, written from the bundled Fontsource fonts
+  (Inter and JetBrains Mono) by `node scripts/font-metrics.ts`; rerun it when a font package changes
+  (a unit test compares them). A new face moves goldens, screenshots and the fit-scale baseline.
 - The split editor (A10) is CodeMirror 6 in `src/app/editor.ts`, loaded only when "Edit" is pressed
   (`split.ts`); what it knows about Lines (colours, Enter indent, completion) is pure, in
   `src/lines/editing.ts`. CodeMirror draws only the lines near its viewport, so journeys scroll to a
@@ -174,23 +177,32 @@ has the steps for opening a model and choosing a view and audience with clicks).
   native binaries). Screenshot runs also hide the side panel's content, which wraps per platform.
   Playwright's default per-pixel colour threshold still passes faint changes (dark-theme borders),
   so after changing page chrome regenerate with `--update-snapshots=all`, not only the failures.
+  The baselines are the Linux ones CI compares: macOS Chromium anti-aliases the rounded corners of
+  the glass controls (the 1 px ring shadow on an 8 px or round corner) a few pixels differently, so
+  a local macOS run of `test:screenshots` may report a handful of differing pixels; run it in the
+  Playwright image to judge. Screenshot runs turn `backdrop-filter` off for the same reason.
 - The page (`src/app/`): `viewer.ts` holds the picture and the keys, `stage.ts` shows drawings (in
   place when the layout is the same, else gliding by `transitionPlan`) and runs the camera,
   `panel.ts` builds the side panel. In fit mode the camera follows the container the reader opened
   or closed (LAYOUT-453, `followCamera`) at scale 1 or more, so most of the picture is off the stage
   after a drill-down; the stage is `overflow: clip`, so Playwright cannot scroll an off-stage box
-  into view: journeys reach it with `focus()` and keys, or press "Fit all" first. Every picture
+  into view: journeys reach it with `focus()` and keys, or press "Show everything (0)" first. Every picture
   change goes through `Viewer.change()`, which writes the picture into the address's fragment
   (`link.ts`, INT-501) and, for a reader's change that reaches another visit (`visitKey`), adds a
   visit and a history entry (INT-551, `visits.ts`); new controls just call it. Each visit keeps the
   camera through the stage's `moved` callback, and Back and Forward bring it back as
   `Arrival.camera`; the visits live in session storage, so a test comparing two pages' pixels
-  hides `.travel` (Back, Forward and the recent visits). Motion timings are
+  hides `.travel` (Back, Forward and the recent visits) and `.camera`, whose glass blurs what is
+  behind it. Readers start at the plain wording, the first declared audience (`plainFirst`, INT-101);
+  "More technical" and the hover card are `peek.ts`, and journeys word the diagram with the digit
+  keys (`wordedFor` in `tests/journeys/reader.ts` checks the chip) and pick a theme with `useTheme`.
+  Motion timings are
   read from the stylesheet's `--aerie-*` properties, so reduced motion needs no code path of its
   own. In an interactive drawing each box's `.shape` rect, not its group, is the focusable, named
   button (the accessibility audit, SCORE-005, rejects a button whose visible text is not in its
   name). Journeys wait for `document.getAnimations()` to empty (`settled` in
-  `tests/journeys/reader.ts`), so CSS animations never fill forwards. Scenario playback (A8) is
+  `tests/journeys/reader.ts`), so CSS animations never fill forwards; the light that flows along a
+  selected line runs without end, so `settled` ignores animations that never finish. Scenario playback (A8) is
   `scenario.ts` (side panel, caption, autoplay); other parts of the page start and end one with
   `Viewer.playScenario` and `endScenario`. Presenter mode (A9) is `presenter.ts` (narration bar
   words, Back/Next/Exit), started and ended with `Viewer.presentWalkthrough` and `endPresentation`;

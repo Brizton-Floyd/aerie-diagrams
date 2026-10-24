@@ -1,4 +1,4 @@
-// Drawing a structure view in the Contour look (docs/spec/look.md): boxes and contour bands with
+// Drawing a structure view in the Signal look (docs/spec/look.md): boxes and container bands with
 // their icons and text, relationship lines with chevrons and sentence labels, and a static scenario
 // trail. The drawing is a plain SVG tree of classes and geometry; colours, strokes and faces come
 // from the stylesheet (style.ts), so one drawing serves both themes.
@@ -15,16 +15,16 @@ import {
 import { emphasis, type EdgeMark, type Focus, type NodeMark } from './emphasis.ts';
 import { icon } from './icons.ts';
 import { chevron, roundedRoute } from './route.ts';
-import { HATCH_ID, contourStyle } from './style.ts';
+import { DAWN_ID, HATCH_ID, signalStyle } from './style.ts';
 import { el, num, path, translate, type SvgNode } from './svg.ts';
 import { BADGE_TEXT, DRAWN } from './type.ts';
 import type { Theme } from './tokens.ts';
 
 /** LOOK-301 to LOOK-305: corner radii, and the badge sizes of LOOK-704. */
 export const SHAPE = {
-  leafCorner: 4,
-  closedCorner: 8,
-  openCorner: 18,
+  leafCorner: 8,
+  closedCorner: 10,
+  openCorner: 14,
   /** A person is a pill, its corners as round as its height allows, up to this. */
   personCorner: 30,
   /** LOOK-306: the focus ring's gap outside the outline, plus half its 2 px stroke. */
@@ -33,6 +33,14 @@ export const SHAPE = {
   currentBadge: 12,
   /** LOOK-305: the hatching's spacing. */
   hatch: 7,
+  /** LOOK-401: how far the icon's tile reaches past the icon, and its corners. */
+  tilePad: 5,
+  tileCorner: 8,
+  /** LOOK-502: how far a label's pill reaches past its words, beside and above and below them. */
+  pillPadX: 7,
+  pillPadY: 2,
+  /** LOOK-502: the pill's corners, at most; a one-line pill is round at the ends. */
+  pillCorner: 10,
 } as const;
 
 /** What a picture shows besides its boxes and lines. */
@@ -102,7 +110,7 @@ export function textLine(line: PlacedLine, origin: { x: number; y: number }): Sv
 }
 
 /** INT-301: the tooltip of the open and close control. */
-export const TOGGLE_TIP = { open: 'Open in place', close: 'Close in place' } as const;
+export const TOGGLE_TIP = { open: 'Open it here', close: 'Close it' } as const;
 
 /** LOOK-302 and LOOK-303: the open and close control, a circle at the top right. */
 function toggle(width: number, open: boolean, tip: boolean): SvgNode {
@@ -127,8 +135,8 @@ function toggle(width: number, open: boolean, tip: boolean): SvgNode {
 }
 
 /**
- * One box (LOOK-201 to LOOK-306): its shape, the inner contour of a container, the focus ring, the
- * icon, the text placed for the audience, and a container's control. Drawn at the origin and moved
+ * One box (LOOK-201 to LOOK-306): its shape, an open container's dawn, the focus ring, the icon on
+ * its tile, the text placed for the audience, and a container's control. Drawn at the origin and moved
  * into place with a translation, so a later glide moves the whole group.
  */
 export function drawBox(
@@ -141,7 +149,6 @@ export function drawBox(
   spoken: Spoken | null = null,
 ): SvgNode {
   const corner = cornerOf(look, box.height);
-  const inset = BOX.inset;
   const ring = SHAPE.ringOffset;
   const container = look.state !== 'leaf';
   return el(
@@ -169,15 +176,9 @@ export function drawBox(
               'aria-expanded': container ? String(look.state === 'open') : null,
             }),
       }),
-      container &&
-        el('rect', {
-          class: 'inner',
-          x: inset,
-          y: inset,
-          width: box.width - 2 * inset,
-          height: box.height - 2 * inset,
-          rx: Math.max(0, corner - inset),
-        }),
+      // LOOK-303: the dawn, a faint light in an open container's top corner.
+      look.state === 'open' &&
+        el('rect', { class: 'dawn', width: box.width, height: box.height, rx: corner }),
       el('rect', {
         class: 'ring',
         x: -ring,
@@ -185,6 +186,15 @@ export function drawBox(
         width: box.width + 2 * ring,
         height: box.height + 2 * ring,
         rx: corner + ring,
+      }),
+      // LOOK-401: the icon sits on a tile of its own.
+      el('rect', {
+        class: 'icon-tile',
+        x: BOX.pad - SHAPE.tilePad,
+        y: BOX.pad - SHAPE.tilePad,
+        width: BOX.icon + 2 * SHAPE.tilePad,
+        height: BOX.icon + 2 * SHAPE.tilePad,
+        rx: SHAPE.tileCorner,
       }),
       icon(iconName, BOX.pad, BOX.pad, BOX.icon),
       ...(look.state === 'open' ? [] : boxLines(text, box, spoken !== null)),
@@ -244,6 +254,34 @@ export function hatchPattern(): SvgNode {
       el('path', { class: 'hatch-line', d: path('M', 0, 0, 'V', size) }),
     ],
   );
+}
+
+/** LOOK-303: the dawn's gradient, a soft light from the top left of an open container. */
+export function dawnLight(): SvgNode {
+  return el('radialGradient', { id: DAWN_ID, cx: 0.18, cy: 0, r: 1.05, fx: 0.12, fy: 0 }, [
+    el('stop', { class: 'dawn-0', offset: 0 }),
+    el('stop', { class: 'dawn-1', offset: 0.55 }),
+    el('stop', { class: 'dawn-2', offset: 1 }),
+  ]);
+}
+
+/**
+ * LOOK-502: the pill behind a label, fitted to the words placed for this audience rather than to
+ * the space the layout keeps for the widest audience, so it never looks empty.
+ */
+function labelPill(placed: readonly PlacedLine[]): SvgNode {
+  const left = Math.min(...placed.map((line) => line.x)) - SHAPE.pillPadX;
+  const right = Math.max(...placed.map((line) => line.x + line.width)) + SHAPE.pillPadX;
+  const top = Math.min(...placed.map((line) => line.y)) - SHAPE.pillPadY;
+  const bottom = Math.max(...placed.map((line) => line.y)) + BOX.labelLine + SHAPE.pillPadY;
+  return el('rect', {
+    class: 'pill',
+    x: left,
+    y: top,
+    width: right - left,
+    height: bottom - top,
+    rx: Math.min(SHAPE.pillCorner, (bottom - top) / 2),
+  });
 }
 
 const edgeClass = (base: string, mark: EdgeMark): string =>
@@ -344,8 +382,8 @@ export function drawingRoot(
       ...data,
     },
     [
-      options.standalone === true && el('style', {}, [contourStyle()]),
-      el('defs', {}, [hatchPattern()]),
+      options.standalone === true && el('style', {}, [signalStyle()]),
+      el('defs', {}, [hatchPattern(), dawnLight()]),
       ...layers,
     ],
   );
@@ -400,6 +438,8 @@ export function renderPicture(
     lines.push(
       el('g', { class: edgeClass('edge', mark), 'data-id': edge.id }, [
         el('path', { class: 'line', d: roundedRoute(route.points) }),
+        // LOOK-601: a light flows along a line that is in play.
+        el('path', { class: 'flow', d: roundedRoute(route.points) }),
         tip !== undefined &&
           before !== undefined &&
           el('path', { class: 'arrow', d: chevron(tip, before) }),
@@ -420,6 +460,8 @@ export function renderPicture(
             width: route.label.width,
             height: route.label.height,
           }),
+        // LOOK-502: the label sits on a pill.
+        labelPill(placed),
         ...placed.map((line) => textLine(line, { x: 0, y: 0 })),
       ]),
     );

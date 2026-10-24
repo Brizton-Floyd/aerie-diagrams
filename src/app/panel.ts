@@ -5,6 +5,7 @@ import type { Id } from '../lines/index.ts';
 import { proseFor, type Picture, type Semantics } from '../model/index.ts';
 import { el, icon, scenarioTitle, toMarkup } from '../render/index.ts';
 import { h, prose } from './dom.ts';
+import { layerContent, layersOf, modelAbout } from './peek.ts';
 
 /** What the panel's links and buttons do. */
 export interface PanelActions {
@@ -14,12 +15,18 @@ export interface PanelActions {
   toggle(id: Id): void;
   /** Plays a scenario. */
   play(scenario: Id): void;
+  /** Presents a walkthrough: the cover's tour (INT-204). */
+  present(walkthrough: Id): void;
+  /** INT-102: words the whole diagram for an audience, or back to the plain wording. */
+  readAt(audience: Id): void;
+  /** INT-207: how many "More technical" layers the reader has opened, kept for the next one. */
+  revealed(count: number): void;
 }
 
 /** INT-204: the short note on how to read a view. */
 export const READ_IT =
-  'Click any box to see what it does and how it connects. Use the round button on a box to open ' +
-  'it in place. Switch who it is written for at the top; nothing moves.';
+  'Click a box to see what it does and what it talks to. Boxes with a + hold more inside: press ' +
+  'it, or double-click the box, to open it right here. Rest the pointer on a box for a quick look.';
 
 /** Description text as paragraphs. */
 function paragraphs(text: string | null, className: string): HTMLElement[] {
@@ -72,7 +79,10 @@ function scenarioButtons(
           },
           [
             h('span', { class: 'play', 'aria-hidden': 'true' }),
-            scenarioTitle(semantics, id, audience),
+            h('span', { class: 'play-title' }, [scenarioTitle(semantics, id, audience)]),
+            h('span', { class: 'play-count' }, [
+              `${String(semantics.scenario(id).steps.length)} steps`,
+            ]),
           ],
         ),
       ]),
@@ -80,21 +90,67 @@ function scenarioButtons(
   );
 }
 
-/** INT-204: the panel with nothing selected: the view, how to read it, and its scenarios. */
+const plural = (count: number, one: string, many: string): string =>
+  `${String(count)} ${count === 1 ? one : many}`;
+
+/**
+ * INT-204: the panel with nothing selected is the model's cover (its title, what it is,
+ * how big it is, and the tour), then the view, how to read it, and its scenarios.
+ */
 export function viewPanel(semantics: Semantics, picture: Picture, actions: PanelActions): Node[] {
   const { audience } = picture;
+  const { model } = semantics;
   const about = semantics.scene(semantics.drawing(picture.view, picture.zoom), audience).about;
+  const lead = modelAbout(semantics, audience);
+  const tour = model.walkthroughs[0];
+  const stats = [
+    plural(model.elements.length, 'part', 'parts'),
+    plural(model.views.length, 'view', 'views'),
+    model.scenarios.length === 0 ? null : plural(model.scenarios.length, 'scenario', 'scenarios'),
+  ].filter((each) => each !== null);
   const out: Node[] = [
-    h('p', { class: 'kicker' }, ['View']),
-    h('h1', { tabindex: -1 }, [semantics.viewTitle(picture.view, audience)]),
-    ...paragraphs(about, 'lead'),
-    section('Read it', [h('p', {}, [READ_IT])]),
+    h('header', { class: 'cover' }, [
+      h('p', { class: 'kicker' }, ['Architecture']),
+      h('h1', { tabindex: -1, class: 'cover-title' }, [
+        semantics.title(audience) ?? model.id ?? 'Untitled',
+      ]),
+      ...paragraphs(lead, 'cover-lead'),
+      h(
+        'p',
+        { class: 'cover-stats' },
+        stats.map((each) => h('span', {}, [each])),
+      ),
+      tour === undefined
+        ? null
+        : h(
+            'button',
+            {
+              type: 'button',
+              class: 'cta',
+              'data-present': tour.id,
+              onclick: () => {
+                actions.present(tour.id);
+              },
+            },
+            [
+              h('span', { class: 'play', 'aria-hidden': 'true' }),
+              h('span', {}, ['Take the tour']),
+              h('span', { class: 'cta-count' }, [
+                plural(semantics.walkPictures(tour.id).length, 'step', 'steps'),
+              ]),
+            ],
+          ),
+    ]),
+    h('section', { class: 'this-view' }, [
+      h('h2', {}, ['This view']),
+      h('p', { class: 'view-title' }, [semantics.viewTitle(picture.view, audience)]),
+      ...paragraphs(about, 'lead'),
+    ]),
+    section('How to read it', [h('p', {}, [READ_IT])]),
   ];
-  const scenarios = semantics.model.scenarios.map((each) => each.id);
+  const scenarios = model.scenarios.map((each) => each.id);
   if (scenarios.length > 0) {
-    out.push(
-      section('Play a scenario', [scenarioButtons(semantics, scenarios, audience, actions)]),
-    );
+    out.push(section('Watch it work', [scenarioButtons(semantics, scenarios, audience, actions)]));
   }
   return out;
 }
@@ -144,6 +200,7 @@ export function elementPanel(
   picture: Picture,
   id: Id,
   actions: PanelActions,
+  revealed = 0,
 ): Node[] {
   const { audience } = picture;
   const code = semantics.audience(audience).code;
@@ -156,23 +213,10 @@ export function elementPanel(
   if (tagline !== null) out.push(h('p', { class: code ? 'lead code' : 'lead' }, [tagline]));
   // 2. The description.
   out.push(...paragraphs(semantics.about(id, audience), code ? 'about code' : 'about'));
-  // 3. The name and tagline at every level, the current one shaded.
-  out.push(
-    section('At every level', [
-      h(
-        'ul',
-        { class: 'levels' },
-        semantics.model.audiences.map((each) => {
-          const line = semantics.tagline(id, each.id);
-          return h('li', { class: each.id === audience ? 'on' : null, 'data-audience': each.id }, [
-            h('span', { class: 'who' }, [each.name]),
-            h('span', { class: 'what' }, [semantics.name(id, each.id)]),
-            line === null ? null : h('span', { class: each.code ? 'line code' : 'line' }, [line]),
-          ]);
-        }),
-      ),
-    ]),
-  );
+  // 3. INT-207: plain first, more on demand. Each press of "More technical" uncovers the next
+  // audience's wording, showing only what changes; the page remembers how far the reader went and
+  // opens the next element as far. The last layer offers to word the whole diagram that way.
+  out.push(moreTechnical(semantics, picture, id, revealed, actions));
   // 4. Its relationships, those of kinds the view draws first.
   const kinds = new Set(semantics.scope(picture.view).view.kinds);
   const drawn: HTMLElement[] = [];
@@ -191,7 +235,7 @@ export function elementPanel(
         ...(hidden.length === 0
           ? []
           : [
-              h('h3', {}, ['Not drawn in this view']),
+              h('h3', {}, ['Also connected, not drawn in this view']),
               h('ul', { class: 'sentences hidden-kind' }, hidden),
             ]),
       ]),
@@ -203,7 +247,7 @@ export function elementPanel(
     const drawnSet = semantics.drawn(picture.view, picture.zoom);
     const isOpen = semantics.scope(picture.view).state(drawnSet, id) === 'open';
     out.push(
-      section('Inside', [
+      section(`Inside (${String(children.length)})`, [
         h(
           'ul',
           { class: 'inside' },
@@ -225,7 +269,7 @@ export function elementPanel(
               actions.toggle(id);
             },
           },
-          [isOpen ? 'Close in place' : 'Open in place'],
+          [isOpen ? 'Close it' : 'Open it here'],
         ),
       ]),
     );
@@ -239,7 +283,82 @@ export function elementPanel(
     )
     .map((scenario) => scenario.id);
   if (scenarios.length > 0) {
-    out.push(section('In scenarios', [scenarioButtons(semantics, scenarios, audience, actions)]));
+    out.push(section('Takes part in', [scenarioButtons(semantics, scenarios, audience, actions)]));
   }
   return out;
+}
+
+/** INT-207: the "More technical" disclosure of an element, opened `revealed` layers deep. */
+function moreTechnical(
+  semantics: Semantics,
+  picture: Picture,
+  id: Id,
+  revealed: number,
+  actions: PanelActions,
+): HTMLElement {
+  const { audience } = picture;
+  const plain = semantics.model.defaultAudience;
+  const layers = layersOf(semantics, id, audience);
+  const box = h('section', { class: 'deeper' });
+  const blocks = layers.map((layer) => layerContent(layer));
+  let shown = Math.min(revealed, layers.length);
+  const more = h('button', { type: 'button', class: 'more', 'aria-expanded': 'false' });
+  const whole = h('button', { type: 'button', class: 'whole' });
+  const fewer = h('button', { type: 'button', class: 'fewer' }, ['Less']);
+  const update = (animate: boolean): void => {
+    blocks.forEach((block, at) => {
+      block.hidden = at >= shown;
+      block.classList.toggle('entering', animate && at === shown - 1);
+    });
+    const next = layers[shown];
+    more.hidden = next === undefined;
+    more.setAttribute('aria-expanded', shown > 0 ? 'true' : 'false');
+    more.replaceChildren(
+      h('span', { class: 'chev', 'aria-hidden': 'true' }),
+      h('span', {}, [shown === 0 ? 'More technical' : 'Even more technical']),
+      next === undefined ? '' : h('span', { class: 'more-who' }, [`${next.who} wording`]),
+    );
+    fewer.hidden = shown === 0;
+    const last = layers[shown - 1];
+    whole.hidden = last === undefined;
+    if (last !== undefined) whole.textContent = `Word the whole diagram for ${last.who}`;
+  };
+  more.addEventListener('click', () => {
+    shown = Math.min(shown + 1, layers.length);
+    actions.revealed(shown);
+    update(true);
+  });
+  fewer.addEventListener('click', () => {
+    shown = 0;
+    actions.revealed(0);
+    update(false);
+  });
+  whole.addEventListener('click', () => {
+    const last = layers[shown - 1];
+    if (last !== undefined) actions.readAt(last.audience);
+  });
+  update(false);
+  if (layers.length === 0) {
+    // Read deeper than the plain wording, the panel offers the way back instead.
+    if (audience === plain) return h('span', { hidden: true });
+    box.append(
+      h('p', { class: 'deeper-note' }, [
+        `Worded for ${semantics.audience(audience).name}. `,
+        h(
+          'button',
+          {
+            type: 'button',
+            class: 'whole',
+            onclick: () => {
+              actions.readAt(plain);
+            },
+          },
+          ['Back to the plain wording'],
+        ),
+      ]),
+    );
+    return box;
+  }
+  box.append(...blocks, h('div', { class: 'deeper-actions' }, [more, whole, fewer]));
+  return box;
 }

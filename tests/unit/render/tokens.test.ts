@@ -1,41 +1,53 @@
-// The Contour tokens and contrast (docs/spec/look.md, LOOK-001 to LOOK-013; SCORE-004).
+// The Signal tokens and contrast (docs/spec/look.md, LOOK-001 to LOOK-014; SCORE-004).
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
+  DEFAULT_THEME,
   LINE_PAIRINGS,
   OPACITY,
   TEXT_PAIRINGS,
   THEMES,
   TOKENS,
   bandOf,
-  contourStyle,
   contrast,
   lowestTextContrast,
   pairingContrast,
-  textureTile,
+  signalStyle,
 } from '../../../src/render/index.ts';
 
-// The token table of LOOK-001, as the spec writes it.
+const ROOT = join(import.meta.dirname, '../../..');
+
+// The token table of LOOK-001, as the spec writes it: dark, then light.
 const TABLE = `
-bg #f3eee2 #1b1d1a
-paper #fbf8f0 #24271f
-ink #2a2924 #ece5d2
-muted #5f594d #b3ac98
-rule #cdc2aa #3c3f35
-band-0 #ebe6d3 #262923
-band-1 #e2e2cb #2b3027
-band-2 #d7dcc2 #31372b
-band-3 #ccd5b9 #373f2f
-contour #7b7156 #9a9680
-contour-soft #bdb294 #57584a
-edge #4a463c #cfc6ad
-accent #b9472a #e9805e
-accent-ink #9c3a20 #f0906f
-accent-soft #f2d9c9 #4a2c22
-on-accent #ffffff #1b1d1a
-trail-back #a35c3d #c08068
-hatch-bg #f6f1e5 #22241f
-hatch-line #e0d5bd #34362e
-texture #a08a5a #d8c89a
+bg #090b10 #f3f4f8
+surface #11141b #ffffff
+ink #eceef4 #11141b
+muted #9ba3b5 #535b6d
+rule #1f2430 #e1e4ec
+outline #677189 #737b8f
+outline-hover #8a93a8 #5a6275
+band-0 #0e1117 #f7f8fb
+band-1 #12161f #f0f2f7
+band-2 #161b26 #e9ecf3
+band-3 #1a202d #e3e7ef
+frame #66708a #747c90
+edge #6c768c #737b90
+pill #141823 #ffffff
+accent #6a59f4 #5a48e6
+accent-ink #ada4ff #4a38d4
+accent-soft #1d1a3d #ece9ff
+on-accent #ffffff #ffffff
+live #22c8e6 #0a7f9e
+trail-back #38d6c4 #0b7a6e
+hatch-bg #0d0f15 #f7f8fb
+hatch-line #181c26 #e4e7ef
+glow #7b6bff #6a59f4
+grid #1c2130 #d3d8e3
+dawn #232a4a #e2deff
+shadow #000000 #8a92ab
+cta-from #5f4dff #5a48e6
+cta-to #3a60f2 #3557e0
 `;
 
 /** The CSS declarations of the block that starts with `selector {`. */
@@ -45,41 +57,61 @@ function block(css: string, selector: string): string {
   return css.slice(start, css.indexOf('\n}', start));
 }
 
+/** The custom properties a CSS text uses, without their `--aerie-` prefix. */
+const used = (css: string): string[] =>
+  (css.match(/var\(--aerie-([a-z0-9-]+)\)/g) ?? []).map((each) =>
+    each.slice('var(--aerie-'.length, -1),
+  );
+
+const MOTION_NAMES = [
+  'glide',
+  'swap',
+  'dimming',
+  'hover',
+  'step-draw',
+  'arrive-step',
+  'peek',
+  'presenter-fade',
+  'ease',
+];
+
 describe('colour tokens', () => {
-  it('LOOK-001 the light and dark themes hold the token table, halo the same as bg', () => {
-    for (const line of TABLE.trim().split('\n')) {
-      const [token = '', light, dark] = line.split(' ');
-      expect(TOKENS.light.colors[token as keyof typeof TOKENS.light.colors], token).toBe(light);
-      expect(TOKENS.dark.colors[token as keyof typeof TOKENS.dark.colors], token).toBe(dark);
+  it('LOOK-001 the dark and light themes hold the token table', () => {
+    const rows = TABLE.trim().split('\n');
+    for (const line of rows) {
+      const [token = '', dark, light] = line.split(' ');
+      expect(TOKENS.dark[token as keyof typeof TOKENS.dark], token).toBe(dark);
+      expect(TOKENS.light[token as keyof typeof TOKENS.light], token).toBe(light);
     }
-    for (const theme of THEMES) {
-      expect(Object.keys(TOKENS[theme].colors)).toHaveLength(TABLE.trim().split('\n').length + 1);
-      expect(TOKENS[theme].colors.halo).toBe(TOKENS[theme].colors.bg);
-    }
-    expect(TOKENS.light.textureOpacity).toBe(0.16);
-    expect(TOKENS.dark.textureOpacity).toBe(0.07);
+    for (const theme of THEMES) expect(Object.keys(TOKENS[theme])).toHaveLength(rows.length);
   });
 
   it('LOOK-001 the stylesheet defines every token for each theme and draws colours only through them', () => {
-    const css = contourStyle();
-    const light = block(css, ':root, [data-theme="light"]');
-    const dark = block(css, '[data-theme="dark"]');
+    const css = signalStyle();
+    const dark = block(css, ':root, [data-theme="dark"]');
+    const light = block(css, '[data-theme="light"]');
     for (const theme of THEMES) {
-      const found = theme === 'light' ? light : dark;
-      for (const [token, value] of Object.entries(TOKENS[theme].colors)) {
+      const found = theme === 'dark' ? dark : light;
+      for (const [token, value] of Object.entries(TOKENS[theme])) {
         expect(found).toContain(`--aerie-${token}: ${String(value)};`);
       }
     }
-    // Outside the token blocks (and the texture tiles they hold), no colour is written directly.
+    // Outside the token blocks, no colour is written directly.
     const rules = css
       .split('\n')
       .filter((line) => !/^\s*--aerie-[a-z0-9-]+: /.test(line))
       .join('\n');
     expect(rules.match(/#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(/gi) ?? []).toEqual([]);
-    for (const used of rules.match(/var\(--aerie-([a-z0-9-]+)\)/g) ?? []) {
-      const token = used.slice('var(--aerie-'.length, -1);
-      const motion = ['glide', 'swap', 'dimming', 'hover', 'step-draw', 'ease', 'texture-tile'];
-      expect(token in TOKENS.light.colors || motion.includes(token), token).toBe(true);
+    for (const token of used(rules)) {
+      expect(token in TOKENS.dark || MOTION_NAMES.includes(token), token).toBe(true);
+    }
+  });
+
+  it('LOOK-001 the page chrome colours only through the tokens, mixed with each other', () => {
+    const page = readFileSync(join(ROOT, 'src/app/page.css'), 'utf8');
+    expect(page.match(/#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(/gi) ?? []).toEqual([]);
+    for (const token of used(page)) {
+      expect(token in TOKENS.dark || MOTION_NAMES.includes(token), token).toBe(true);
     }
   });
 
@@ -94,17 +126,23 @@ describe('colour tokens', () => {
     ]);
   });
 
-  it('LOOK-002 the theme follows the system until a data-theme attribute names one', () => {
-    const css = contourStyle();
-    expect(css).toMatch(
-      /@media \(prefers-color-scheme: dark\) \{\n {2}:root:not\(\[data-theme="light"\]\) \{/,
-    );
-    expect(block(css, '[data-theme="dark"]')).toContain('color-scheme: dark;');
-    expect(block(css, ':root, [data-theme="light"]')).toContain('color-scheme: light;');
+  it('LOOK-002 dark is the default; data-theme="light" picks the light theme, and printing always uses it', () => {
+    expect(DEFAULT_THEME).toBe('dark');
+    const css = signalStyle();
+    expect(css).not.toContain('prefers-color-scheme');
+    expect(block(css, ':root, [data-theme="dark"]')).toContain('color-scheme: dark;');
+    expect(block(css, '[data-theme="light"]')).toContain('color-scheme: light;');
+    const print = block(css, '@media print');
+    expect(print).toContain(':root, [data-theme] {');
+    for (const [token, value] of Object.entries(TOKENS.light) as [string, string][]) {
+      expect(print).toContain(`--aerie-${token}: ${value};`);
+    }
+    // The print block comes after both themes, so it wins over a chosen one.
+    expect(css.indexOf('@media print')).toBeGreaterThan(css.indexOf('[data-theme="light"] {'));
   });
 
   it('LOOK-003 the opacity tokens', () => {
-    expect(OPACITY).toEqual({ dim: 0.2, context: 0.55, 'edge-dim': 0.14, past: 0.55 });
+    expect(OPACITY).toEqual({ dim: 0.22, context: 0.55, 'edge-dim': 0.14, past: 0.55 });
   });
 });
 
@@ -112,7 +150,8 @@ describe('contrast', () => {
   it('LOOK-011 every text colour has at least 4.5 to 1 on every surface it is drawn on, in both themes', () => {
     expect(TEXT_PAIRINGS).toContainEqual({ text: 'on-accent', surface: 'accent' });
     expect(TEXT_PAIRINGS).toContainEqual({ text: 'accent-ink', surface: 'accent-soft' });
-    expect(TEXT_PAIRINGS).toContainEqual({ text: 'muted', surface: 'halo' });
+    expect(TEXT_PAIRINGS).toContainEqual({ text: 'muted', surface: 'pill' });
+    expect(TEXT_PAIRINGS).toContainEqual({ text: 'on-accent', surface: 'cta-to' });
     for (const theme of THEMES) {
       for (const pairing of TEXT_PAIRINGS) {
         expect(
@@ -123,16 +162,19 @@ describe('contrast', () => {
     }
   });
 
-  it('LOOK-011 the lowest is accent-ink on band-3 in the light theme, about 4.54', () => {
+  it('LOOK-011 the lowest is on-accent on accent in the dark theme, about 4.83', () => {
     const all = THEMES.flatMap((theme) =>
       TEXT_PAIRINGS.map((pairing) => ({ theme, pairing, ratio: pairingContrast(theme, pairing) })),
     ).sort((a, b) => a.ratio - b.ratio);
-    expect(all[0]?.theme).toBe('light');
-    expect(all[0]?.pairing).toEqual({ text: 'accent-ink', surface: 'band-3' });
-    expect(all[0]?.ratio).toBeCloseTo(4.54, 2);
+    expect(all[0]?.theme).toBe('dark');
+    expect(all[0]?.pairing).toEqual({ text: 'on-accent', surface: 'accent' });
+    expect(all[0]?.ratio).toBeCloseTo(4.83, 2);
   });
 
   it('LOOK-012 lines and shapes a reader needs have at least 3 to 1 against the surface next to them', () => {
+    for (const line of ['outline', 'frame', 'edge', 'accent', 'accent-ink', 'live', 'trail-back']) {
+      expect(LINE_PAIRINGS.some((pairing) => pairing.text === line)).toBe(true);
+    }
     for (const theme of THEMES) {
       for (const pairing of LINE_PAIRINGS) {
         expect(
@@ -144,40 +186,29 @@ describe('contrast', () => {
   });
 
   it('LOOK-013 only pushed-back things are drawn below full strength, at the opacity tokens', () => {
-    const css = contourStyle();
-    const opacities = [...css.matchAll(/^(.*)\{[^}]*opacity: ([\d.]+);/gm)].map(
+    const css = signalStyle();
+    const opacities = [...css.matchAll(/^(.*)\{[^}]*(?<![a-z-])opacity: ([\d.]+);/gm)].map(
       ([, selector = '', value = '']) => ({ selector: selector.trim(), value: Number(value) }),
     );
-    const allowed = new Set<number>([...Object.values(OPACITY), 0.5, 0, 1]);
+    expect(opacities.length).toBeGreaterThan(0);
     for (const { selector, value } of opacities) {
-      expect(allowed.has(value), `${selector}: ${String(value)}`).toBe(true);
-      if (value < 1 && value !== 0.5) {
-        expect(selector, `${selector} is dimmed`).toMatch(/\.(dim|context|past)\b/);
-      }
+      // An animation fades from nothing to full strength; that is motion, not dimming.
+      if (selector.startsWith('@keyframes')) continue;
+      expect(value < 1, selector).toBe(true);
+      expect(Object.values(OPACITY) as number[], selector).toContain(value);
+      expect(selector, `${selector} is dimmed`).toMatch(/\.(dim|context|past)\b/);
     }
-    // LOOK-601: a selected element's inner contour at half opacity is the one other exception.
-    expect(css).toContain(
-      '.aerie .sel > .inner { stroke: var(--aerie-accent); stroke-dasharray: none; opacity: 0.5; }',
-    );
   });
 
   it('SCORE-004 the lowest text contrast of each theme is at least 4.5', () => {
     expect(lowestTextContrast('light')).toBeGreaterThanOrEqual(4.5);
     expect(lowestTextContrast('dark')).toBeGreaterThanOrEqual(4.5);
-    expect(lowestTextContrast('light')).toBe(4.53);
+    expect(lowestTextContrast('dark')).toBe(4.82);
   });
 
   it('computes WCAG contrast ratios', () => {
     expect(contrast('#000000', '#ffffff')).toBeCloseTo(21, 5);
     expect(contrast('#ffffff', '#ffffff')).toBe(1);
     expect(() => contrast('red', '#ffffff')).toThrow('not a #rrggbb colour');
-  });
-
-  it('LOOK-307 the texture tile is drawn in the texture token at its opacity', () => {
-    for (const theme of THEMES) {
-      const svg = decodeURIComponent(textureTile(theme).replace('data:image/svg+xml,', ''));
-      expect(svg).toContain(`stroke="${TOKENS[theme].colors.texture}"`);
-      expect(svg).toContain(`stroke-opacity="${String(TOKENS[theme].textureOpacity)}"`);
-    }
   });
 });

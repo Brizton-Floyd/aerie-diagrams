@@ -20,11 +20,11 @@ export interface TextRole {
 /** LAYOUT-103: the text roles the layout measures, from the type scale in look.md. */
 export const ROLES = {
   name: { face: 'sans-600', size: 14, line: 18, wrap: null },
-  tagline: { face: 'serif-400', size: 13.5, line: 17, wrap: 230 },
-  taglineCode: { face: 'code-400', size: 13.5, line: 17, wrap: 230 },
-  chip: { face: 'serif-400-italic', size: 13.5, line: 20, wrap: null },
-  label: { face: 'serif-400-italic', size: 13.5, line: 17, wrap: 240 },
-  labelCode: { face: 'code-400', size: 13.5, line: 17, wrap: 240 },
+  tagline: { face: 'sans-400', size: 13.5, line: 17, wrap: 230 },
+  taglineCode: { face: 'mono-400', size: 13.5, line: 17, wrap: 230 },
+  chip: { face: 'sans-500', size: 13.5, line: 20, wrap: null },
+  label: { face: 'sans-500', size: 13.5, line: 17, wrap: 240 },
+  labelCode: { face: 'mono-400', size: 13.5, line: 17, wrap: 240 },
   band: { face: 'sans-600', size: 13.5, line: 18, wrap: null },
 } as const satisfies Record<string, TextRole>;
 

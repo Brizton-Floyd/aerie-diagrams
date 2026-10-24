@@ -138,4 +138,4 @@ export function errorList(diagnostics: readonly Diagnostic[]): Diagnostic[] {
 }
 
 /** INT-806: the words at the top of the stage while the diagram is an earlier version. */
-export const KEPT_NOTICE = 'Showing the last version without errors';
+export const KEPT_NOTICE = 'Your last edit has an error, so this is the last version that worked';

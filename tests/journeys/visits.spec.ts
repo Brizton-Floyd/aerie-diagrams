@@ -4,7 +4,7 @@
 // one's exact picture, camera included. Real clicks and keys only; the address and the camera are
 // read, never written by the test.
 import { expect, test, type Page } from '@playwright/test';
-import { button, clickElement, node, openLotto, settled } from './reader.ts';
+import { button, clickElement, node, openLotto, settled, wordedFor } from './reader.ts';
 
 test.use({ viewport: { width: 1600, height: 900 } });
 
@@ -70,7 +70,7 @@ async function drag(page: Page, dx: number, dy: number): Promise<void> {
 }
 
 /**
- * The walk of JOURNEY-011: drill into the Analysis engine on the Big picture, select Pick
+ * The walk of JOURNEY-011: drill into the Number engine on the Big picture, select Pick
  * generation, then follow its connections to Draw history lookup and on to the Draw history service
  * in the Results store, another part of the diagram.
  */
@@ -144,14 +144,14 @@ test.describe('Back and Forward through visits', () => {
     const { start, followed } = await walk(page);
     const names = recent(page).getByRole('button');
     await expect(names).toHaveText([
-      'Analysis engine',
+      'Number engine',
       'Engine service',
       'Pick generation',
       'Draw history lookup',
       'Draw history service',
     ]);
     await expect(names.last()).toHaveAttribute('aria-current', 'true');
-    // Choosing Analysis engine goes back three visits at once.
+    // Choosing Number engine goes back three visits at once.
     await names.first().click();
     await expect.poll(() => fragment(page)).toBe('open=engine');
     await settled(page);
@@ -180,18 +180,18 @@ test.describe('Back and Forward through visits', () => {
     await drag(page, 60, 0);
     await drag(page, 0, -40);
     await drag(page, -20, 30);
-    await page.getByRole('button', { name: 'Magnify' }).click();
+    await page.getByRole('button', { name: 'Move closer (+)' }).click();
     const moved = await seen(page);
     expect(await page.evaluate(() => history.length)).toBe(length + 1);
     await clickElement(page, 'screen-api');
-    await expect(panel(page).locator('h1')).toHaveText('Screen API');
+    await expect(panel(page).locator('h1')).toHaveText('Website back end');
     await drag(page, 80, 0);
     expect(await page.evaluate(() => history.length)).toBe(length + 2);
     await back(page).click();
     await returnsTo(page, moved);
   });
 
-  test('INT-551 switching the audience is a visit; Back switches it back, moving nothing', async ({
+  test('INT-551 changing the wording is a visit; Back changes it back, moving nothing', async ({
     page,
   }) => {
     await openLotto(page, 'services');
@@ -202,10 +202,7 @@ test.describe('Back and Forward through visits', () => {
     await expect.poll(() => fragment(page)).toContain('aud=engineer');
     await back(page).click();
     await returnsTo(page, before);
-    await expect(page.getByRole('tab', { name: 'Manager' })).toHaveAttribute(
-      'aria-selected',
-      'true',
-    );
+    await wordedFor(page, 'plain');
   });
 
   test('INT-557 scenario steps and walkthrough steps keep their own controls and stay one visit', async ({
@@ -215,11 +212,11 @@ test.describe('Back and Forward through visits', () => {
     await clickElement(page, 'website');
     const before = await seen(page);
     await scenario(page, 'generate-picks').click();
-    await expect(page.locator('.caption-bar .count')).toHaveText('1/14');
+    await expect(page.locator('.caption-bar .count')).toHaveText('Step 1 of 14');
     await settled(page);
     // The Right arrow moves the scenario on; it is still one visit.
     for (let at = 0; at < 4; at++) await page.keyboard.press('ArrowRight');
-    await expect(page.locator('.caption-bar .count')).toHaveText('5/14');
+    await expect(page.locator('.caption-bar .count')).toHaveText('Step 5 of 14');
     await expect(recent(page).getByRole('button').last()).toHaveText('Generate picks');
     // Back leaves the scenario for the visit before it.
     await back(page).click();
@@ -227,7 +224,7 @@ test.describe('Back and Forward through visits', () => {
     await expect(page.locator('.caption-bar')).toBeHidden();
     // Forward plays it again at the step it was left on.
     await forward(page).click();
-    await expect(page.locator('.caption-bar .count')).toHaveText('5/14');
+    await expect(page.locator('.caption-bar .count')).toHaveText('Step 5 of 14');
     // A presentation hides Back, Forward and the list, and has its own Back and Next.
     await walkthrough(page, 'tour').click();
     await expect(travel(page)).toBeHidden();

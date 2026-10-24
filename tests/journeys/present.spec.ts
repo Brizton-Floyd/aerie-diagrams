@@ -1,10 +1,10 @@
 // A presenter walking a room through the Lotto sample's tour (docs/spec/interaction.md, INT-701 to
 // INT-707; docs/spec/model.md, MODEL-501 to MODEL-506; acceptance A9 and JOURNEY-005): presenter
 // mode, every step's picture, the keys and controls, scenario steps inside the walkthrough, the
-// live audience switch, links to a step, ending, and reduced motion. Real clicks and keys only.
+// live change of wording, links to a step, ending, and reduced motion. Real clicks and keys only.
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Locator, type Page } from '@playwright/test';
-import { boxOf, boxes, clickElement, node, openLotto, scale, settled } from './reader.ts';
+import { boxOf, boxes, clickElement, node, openLotto, scale, settled, useTheme } from './reader.ts';
 
 test.use({ viewport: { width: 1600, height: 900 } });
 
@@ -34,18 +34,23 @@ async function presentTour(page: Page): Promise<void> {
 /** Waits until the presentation shows `step` (and, inside a scenario, its step) and is still. */
 async function atStep(page: Page, step: number, scenarioStep?: number): Promise<void> {
   await expect(bar(page).locator('.narration-meta .count')).toHaveText(
-    `${String(step)} / ${String(STEPS)}`,
+    `${String(step)} of ${String(STEPS)}`,
   );
   if (scenarioStep === undefined) {
     await expect(bar(page).locator('.scenario-count')).toHaveCount(0);
   } else {
-    await expect(bar(page).locator('.scenario-count')).toHaveText(`${String(scenarioStep)}/14`);
+    await expect(bar(page).locator('.scenario-count')).toHaveText(
+      `Step ${String(scenarioStep)} of 14`,
+    );
     await expect(currentBadge(page)).toHaveAttribute('data-step', String(scenarioStep));
   }
   await settled(page);
 }
 
-/** What the tour shows at each step, for the Manager (docs/spec/model.md, walkthrough `tour`). */
+/**
+ * What the tour shows at each step in the plain wording, the Executive's, which a presentation
+ * starts with (INT-101; docs/spec/model.md, walkthrough `tour`).
+ */
 const TOUR: {
   view: string;
   focus: string[];
@@ -57,7 +62,7 @@ const TOUR: {
   {
     view: 'big-picture',
     focus: ['website'],
-    narration: 'The user opens the website in a browser and picks a state and a game.',
+    narration: 'Customers use the website to choose a game and get suggested numbers.',
     fragment: 'present=tour.1',
   },
   {
@@ -70,8 +75,7 @@ const TOUR: {
   {
     view: 'big-picture',
     focus: ['engine'],
-    narration:
-      'The Analysis engine does the thinking: dashboards, generated picks, scoring and betslips.',
+    narration: 'The engine is where the value is: it turns past draws into suggested picks.',
     fragment: 'present=tour.3',
   },
   {
@@ -85,8 +89,7 @@ const TOUR: {
   {
     view: 'big-picture',
     focus: ['store'],
-    narration:
-      "The Results store keeps each game's past draws and refreshes them from the Texas Lottery website every two hours.",
+    narration: 'The Results store keeps our data current on its own, with no one to run it.',
     fragment: 'present=tour.5',
   },
   {
@@ -101,7 +104,7 @@ const TOUR: {
 ];
 
 test.describe('SCOPE-007 presenter mode', () => {
-  test('INT-701 presenting fills the screen with the stage, the narration bar, the audience tabs and the controls', async ({
+  test('INT-701 and LOOK-813 presenting fills the screen with the stage, the narration bar and the controls', async ({
     page,
   }) => {
     await openLotto(page, 'services');
@@ -111,29 +114,31 @@ test.describe('SCOPE-007 presenter mode', () => {
     await expect(page.getByRole('navigation', { name: 'Diagram' })).toBeHidden();
     await expect(page.locator('aside.panel')).toBeHidden();
     await expect(page.locator('header .crumb')).toBeHidden();
+    await expect(page.locator('header.top')).toBeHidden();
     expect(await page.locator('main.aerie-stage').boundingBox()).toEqual({
       x: 0,
       y: 0,
       width: 1600,
       height: 900,
     });
-    // The narration bar: "1 / 8", the walkthrough's title and the step's narration, announced.
+    // The narration bar: "1 of 8", the walkthrough's title and the step's narration, announced.
     await expect(bar(page)).toHaveAttribute('aria-live', 'polite');
-    await expect(bar(page).locator('.narration-meta')).toHaveText('1 / 8A tour of the Lotto suite');
-    await expect(bar(page).locator('.narration-text')).toHaveText(TOUR[0]?.narration ?? '');
-    // LOOK type scale: presenter narration is 28 px Source Serif 4.
-    await expect(bar(page).locator('.narration-text')).toHaveCSS('font-size', '28px');
-    await expect(bar(page).locator('.narration-text')).toHaveCSS(
-      'font-family',
-      /^"?Source Serif 4"?/,
+    await expect(bar(page).locator('.narration-meta')).toHaveText(
+      '1 of 8A tour of the Lotto suite',
     );
-    // The audience tabs at the top right, always in view (INT-001).
-    const tabs = await page.getByRole('tablist', { name: 'Written for' }).boundingBox();
-    expect(tabs).not.toBeNull();
-    expect((tabs?.x ?? 0) + (tabs?.width ?? 0)).toBeGreaterThan(1500);
-    expect(tabs?.y ?? 900).toBeLessThan(40);
-    // Back, Next and Exit at the bottom right; Back does nothing on the first step.
-    await expect(controls(page).getByRole('button')).toHaveText(['Back', 'Next', 'Exit']);
+    await expect(bar(page).locator('.narration-text')).toHaveText(TOUR[0]?.narration ?? '');
+    // LOOK type scale: presenter narration is 27 px Inter.
+    await expect(bar(page).locator('.narration-text')).toHaveCSS('font-size', '27px');
+    await expect(bar(page).locator('.narration-text')).toHaveCSS('font-family', /^"?Inter"?/);
+    // No audience switch: the wording button (INT-106) sits with Back, Next and Exit at the bottom
+    // right; Back does nothing on the first step.
+    await expect(page.getByRole('tablist')).toHaveCount(0);
+    await expect(controls(page).getByRole('button')).toHaveText([
+      'Executive wording',
+      'Back',
+      'Next',
+      'Exit',
+    ]);
     const exit = await control(page, 'Exit').boundingBox();
     expect((exit?.x ?? 0) + (exit?.width ?? 0)).toBeGreaterThan(1500);
     expect(exit?.y ?? 0).toBeGreaterThan(780);
@@ -151,6 +156,8 @@ test.describe('SCOPE-007 presenter mode', () => {
   test('JOURNEY-005, INT-706 and MODEL-501 to MODEL-503 every step of the tour shows its picture, then the scenario plays through', async ({
     page,
   }) => {
+    // Each scenario step's badge pings for 1.7 s (LOOK-704), and the journey waits for it.
+    test.slow();
     await openLotto(page);
     await presentTour(page);
     // The keys and the Next control all go forward (INT-703).
@@ -180,7 +187,7 @@ test.describe('SCOPE-007 presenter mode', () => {
     await expect(page.locator('svg.aerie[data-view="services"]')).toBeVisible();
     expect(await focused(page)).toEqual([]);
     await expect(bar(page).locator('.narration-meta')).toHaveText(
-      '7 / 8A tour of the Lotto suiteGenerate picks 1/14',
+      '7 of 8A tour of the Lotto suiteGenerate picks Step 1 of 14',
     );
     await expect(bar(page).locator('.narration-text')).toHaveText(
       'Now follow one request: what happens when the user clicks Generate Numbers.',
@@ -200,7 +207,9 @@ test.describe('SCOPE-007 presenter mode', () => {
     await expect(page.locator('svg.aerie .trail')).toHaveCount(0);
     await expect(bar(page).locator('.narration-text')).toHaveText('The whole suite again.');
     // INT-706: on the last step Next does nothing, and the bar says the walkthrough has ended.
-    await expect(bar(page).locator('.narration-end')).toHaveText('End of the walkthrough');
+    await expect(bar(page).locator('.narration-end')).toHaveText(
+      'That is the end of the tour. Press Exit, or Esc, to explore on your own.',
+    );
     await expect(control(page, 'Next')).toHaveAttribute('aria-disabled', 'true');
     // Playwright waits for a control marked aria-disabled to be enabled, so it is forced.
     await control(page, 'Next').click({ force: true });
@@ -311,7 +320,7 @@ test.describe('SCOPE-007 presenter mode', () => {
     expect(await scale(page)).toBeCloseTo(framed, 3);
   });
 
-  test('INT-104 and MODEL-505 the audience switches live while presenting, and nothing moves', async ({
+  test('INT-106 and MODEL-505 the wording changes live while presenting, and nothing moves', async ({
     page,
   }) => {
     await openLotto(page);
@@ -325,11 +334,10 @@ test.describe('SCOPE-007 presenter mode', () => {
     await expect(bar(page).locator('.narration-text')).toContainText(
       'One Spring Boot jar on port 8002',
     );
-    await expect(bar(page).locator('.narration-text')).toHaveCSS('font-size', '24px');
-    await expect(page.getByRole('tab', { name: 'Engineer' })).toHaveAttribute(
-      'aria-selected',
-      'true',
-    );
+    await expect(bar(page).locator('.narration-text')).toHaveCSS('font-size', '23px');
+    await expect(control(page, 'Engineer wording')).toBeVisible();
+    // No chip while presenting: the wording button names it (INT-104).
+    await expect(page.locator('.wording')).toBeHidden();
     await settled(page);
     expect(await boxes(page)).toEqual(before);
     expect(fragment(page)).toBe('aud=engineer&present=tour.3');
@@ -337,20 +345,31 @@ test.describe('SCOPE-007 presenter mode', () => {
     await page.keyboard.press('ArrowRight');
     await atStep(page, 4);
     expect(fragment(page)).toBe('aud=engineer&present=tour.4');
-    // The tabs switch it too, and the executive reads the replaced narration.
+    // The wording button goes on to the next audience, round to the first, and the executive
+    // reads the replaced narration.
     await page.keyboard.press('ArrowLeft');
-    await page.getByRole('tab', { name: 'Executive' }).click();
+    await atStep(page, 3);
+    await control(page, 'Engineer wording').click();
     await expect(bar(page).locator('.narration-text')).toHaveText(
       'The engine is where the value is: it turns past draws into suggested picks.',
     );
-    expect(fragment(page)).toBe('aud=exec&present=tour.3');
+    await expect(control(page, 'Executive wording')).toBeVisible();
+    expect(fragment(page)).toBe('present=tour.3');
+    await control(page, 'Executive wording').click();
+    await expect(control(page, 'Manager wording')).toBeVisible();
+    await expect(bar(page).locator('.narration-text')).toHaveText(
+      'The Analysis engine does the thinking: dashboards, generated picks, scoring and betslips.',
+    );
+    await settled(page);
+    expect(await boxes(page)).toEqual(before);
+    expect(fragment(page)).toBe('aud=manager&present=tour.3');
   });
 
   test('INT-705 a step without narration shows its view title, or the scenario step caption', async ({
     page,
   }) => {
     await openLotto(page);
-    await page.getByLabel('Open a .aerie file').setInputFiles({
+    await page.getByLabel('Open your own .aerie file').setInputFiles({
       name: 'quiet.aerie',
       mimeType: 'text/plain',
       buffer: Buffer.from(
@@ -377,10 +396,10 @@ test.describe('SCOPE-007 presenter mode', () => {
       ),
     });
     await page.locator('button[data-walkthrough="tour"]').click();
-    await expect(bar(page).locator('.narration-meta .count')).toHaveText('1 / 2');
+    await expect(bar(page).locator('.narration-meta .count')).toHaveText('1 of 2');
     await expect(bar(page).locator('.narration-text')).toHaveText('Main view');
     await page.keyboard.press('ArrowRight');
-    await expect(bar(page).locator('.narration-meta .count')).toHaveText('2 / 2');
+    await expect(bar(page).locator('.narration-meta .count')).toHaveText('2 of 2');
     await expect(bar(page).locator('.narration-text')).toHaveText('The shop asks for the money.');
   });
 
@@ -391,15 +410,15 @@ test.describe('SCOPE-007 presenter mode', () => {
     await presentTour(page);
     for (let at = 1; at < 4; at++) await page.keyboard.press('ArrowRight');
     await atStep(page, 4);
-    await page.keyboard.press('1');
+    await page.keyboard.press('2');
     await control(page, 'Exit').click();
     await expect(bar(page)).toBeHidden();
     await settled(page);
-    expect(fragment(page)).toBe('view=services&aud=exec&open=engine-service');
+    expect(fragment(page)).toBe('view=services&aud=manager&open=engine-service');
     expect(await focused(page)).toEqual([]);
     await expect(node(page, 'pick-generation')).toBeVisible();
     await expect(page.getByRole('navigation', { name: 'Diagram' })).toBeVisible();
-    await expect(page.locator('aside.panel h1')).toHaveText('Services');
+    await expect(page.locator('aside.panel .view-title')).toHaveText('Services');
     await expect(controls(page)).toBeHidden();
     // Full screen ends with the presentation, and clicks select again.
     await expect.poll(() => page.evaluate(() => document.fullscreenElement)).toBeNull();
@@ -416,7 +435,7 @@ test.describe('SCOPE-007 presenter mode', () => {
     await page.evaluate(() => document.exitFullscreen());
     await expect(bar(page)).toBeHidden();
     expect(fragment(page)).toBe('');
-    await expect(page.locator('aside.panel h1')).toHaveText('Big picture');
+    await expect(page.locator('aside.panel .view-title')).toHaveText('Big picture');
   });
 
   test('INT-801 the split editor offers the walkthroughs in its view menu, and presenting covers it', async ({
@@ -455,10 +474,7 @@ test.describe('links to a step', () => {
     await page.goto('/?model=samples/lotto.aerie#aud=engineer&present=tour.7.9');
     await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
     await atStep(page, 7, 9);
-    await expect(page.getByRole('tab', { name: 'Engineer' })).toHaveAttribute(
-      'aria-selected',
-      'true',
-    );
+    await expect(control(page, 'Engineer wording')).toBeVisible();
     await page.keyboard.press('ArrowRight');
     await atStep(page, 7, 10);
     expect(fragment(page)).toBe('aud=engineer&present=tour.7.10');
@@ -499,7 +515,7 @@ test.describe('reduced motion', () => {
     await presentTour(page);
     for (let at = 2; at <= 7; at++) {
       await page.keyboard.press('ArrowRight');
-      await expect(bar(page).locator('.narration-meta .count')).toHaveText(`${String(at)} / 8`);
+      await expect(bar(page).locator('.narration-meta .count')).toHaveText(`${String(at)} of 8`);
       // Nothing glides, fades or draws itself: the picture and the camera jump.
       expect(await page.evaluate(() => document.getAnimations().length)).toBe(0);
     }
@@ -521,17 +537,20 @@ for (const theme of ['light', 'dark'] as const) {
     page,
   }) => {
     test.slow();
-    await page.emulateMedia({ colorScheme: theme });
+    await useTheme(page, theme);
     await openLotto(page);
     await presentTour(page);
     for (const [step, keys] of [
       [3, 2],
       [7, 4],
     ] as const) {
-      // The arrow keys belong to the audience tabs while one has the focus, so Next is pressed.
       for (let at = 0; at < keys; at++) await control(page, 'Next').click();
-      for (const audience of ['Executive', 'Manager', 'Engineer']) {
-        await page.getByRole('tab', { name: audience }).click();
+      for (const [key, audience] of [
+        ['1', 'Executive'],
+        ['2', 'Manager'],
+        ['3', 'Engineer'],
+      ] as const) {
+        await page.keyboard.press(key);
         await atStep(page, step, step === 7 ? 1 : undefined);
         const results = await new AxeBuilder({ page }).analyze();
         const found = results.violations.flatMap((violation) =>

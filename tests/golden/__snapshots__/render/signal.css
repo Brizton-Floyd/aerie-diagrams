@@ -1,0 +1,287 @@
+/* Signal (docs/spec/look.md), written by src/render/style.ts from the tokens. */
+:root, [data-theme="dark"] {
+  --aerie-bg: #090b10;
+  --aerie-surface: #11141b;
+  --aerie-ink: #eceef4;
+  --aerie-muted: #9ba3b5;
+  --aerie-rule: #1f2430;
+  --aerie-outline: #677189;
+  --aerie-outline-hover: #8a93a8;
+  --aerie-band-0: #0e1117;
+  --aerie-band-1: #12161f;
+  --aerie-band-2: #161b26;
+  --aerie-band-3: #1a202d;
+  --aerie-frame: #66708a;
+  --aerie-edge: #6c768c;
+  --aerie-pill: #141823;
+  --aerie-accent: #6a59f4;
+  --aerie-accent-ink: #ada4ff;
+  --aerie-accent-soft: #1d1a3d;
+  --aerie-on-accent: #ffffff;
+  --aerie-live: #22c8e6;
+  --aerie-trail-back: #38d6c4;
+  --aerie-hatch-bg: #0d0f15;
+  --aerie-hatch-line: #181c26;
+  --aerie-glow: #7b6bff;
+  --aerie-grid: #1c2130;
+  --aerie-dawn: #232a4a;
+  --aerie-shadow: #000000;
+  --aerie-cta-from: #5f4dff;
+  --aerie-cta-to: #3a60f2;
+  color-scheme: dark;
+}
+[data-theme="light"] {
+  --aerie-bg: #f3f4f8;
+  --aerie-surface: #ffffff;
+  --aerie-ink: #11141b;
+  --aerie-muted: #535b6d;
+  --aerie-rule: #e1e4ec;
+  --aerie-outline: #737b8f;
+  --aerie-outline-hover: #5a6275;
+  --aerie-band-0: #f7f8fb;
+  --aerie-band-1: #f0f2f7;
+  --aerie-band-2: #e9ecf3;
+  --aerie-band-3: #e3e7ef;
+  --aerie-frame: #747c90;
+  --aerie-edge: #737b90;
+  --aerie-pill: #ffffff;
+  --aerie-accent: #5a48e6;
+  --aerie-accent-ink: #4a38d4;
+  --aerie-accent-soft: #ece9ff;
+  --aerie-on-accent: #ffffff;
+  --aerie-live: #0a7f9e;
+  --aerie-trail-back: #0b7a6e;
+  --aerie-hatch-bg: #f7f8fb;
+  --aerie-hatch-line: #e4e7ef;
+  --aerie-glow: #6a59f4;
+  --aerie-grid: #d3d8e3;
+  --aerie-dawn: #e2deff;
+  --aerie-shadow: #8a92ab;
+  --aerie-cta-from: #5a48e6;
+  --aerie-cta-to: #3557e0;
+  color-scheme: light;
+}
+@media print {
+  :root, [data-theme] {
+    --aerie-bg: #f3f4f8;
+    --aerie-surface: #ffffff;
+    --aerie-ink: #11141b;
+    --aerie-muted: #535b6d;
+    --aerie-rule: #e1e4ec;
+    --aerie-outline: #737b8f;
+    --aerie-outline-hover: #5a6275;
+    --aerie-band-0: #f7f8fb;
+    --aerie-band-1: #f0f2f7;
+    --aerie-band-2: #e9ecf3;
+    --aerie-band-3: #e3e7ef;
+    --aerie-frame: #747c90;
+    --aerie-edge: #737b90;
+    --aerie-pill: #ffffff;
+    --aerie-accent: #5a48e6;
+    --aerie-accent-ink: #4a38d4;
+    --aerie-accent-soft: #ece9ff;
+    --aerie-on-accent: #ffffff;
+    --aerie-live: #0a7f9e;
+    --aerie-trail-back: #0b7a6e;
+    --aerie-hatch-bg: #f7f8fb;
+    --aerie-hatch-line: #e4e7ef;
+    --aerie-glow: #6a59f4;
+    --aerie-grid: #d3d8e3;
+    --aerie-dawn: #e2deff;
+    --aerie-shadow: #8a92ab;
+    --aerie-cta-from: #5a48e6;
+    --aerie-cta-to: #3557e0;
+    color-scheme: light;
+  }
+}
+:root {
+  --aerie-ease: cubic-bezier(.16,1,.3,1);
+  --aerie-glide: 520ms;
+  --aerie-swap: 170ms;
+  --aerie-dimming: 280ms;
+  --aerie-hover: 250ms;
+  --aerie-step-draw: 900ms;
+  --aerie-arrive-step: 45ms;
+  --aerie-peek: 180ms;
+  --aerie-presenter-fade: 300ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion="full"]) {
+  --aerie-glide: 0ms;
+  --aerie-swap: 0ms;
+  --aerie-dimming: 0ms;
+  --aerie-hover: 0ms;
+  --aerie-step-draw: 0ms;
+  --aerie-arrive-step: 0ms;
+  --aerie-peek: 0ms;
+  --aerie-presenter-fade: 0ms;
+  }
+}
+[data-motion="reduce"] {
+  --aerie-glide: 0ms;
+  --aerie-swap: 0ms;
+  --aerie-dimming: 0ms;
+  --aerie-hover: 0ms;
+  --aerie-step-draw: 0ms;
+  --aerie-arrive-step: 0ms;
+  --aerie-peek: 0ms;
+  --aerie-presenter-fade: 0ms;
+}
+[data-motion="reduce"] .aerie *,
+[data-motion="reduce"] .aerie *::before,
+[data-motion="reduce"] .aerie *::after {
+  animation-delay: 0ms !important;
+  animation-duration: 0ms !important;
+  transition-delay: 0ms !important;
+  transition-duration: 0ms !important;
+}
+
+/* Text: kerning and ligatures off, as measured (LAYOUT-102), and glyphs placed at their exact
+   advances with no hinting, so drawn text is as wide as measured on every system. */
+.aerie text {
+  font-kerning: none; font-variant-ligatures: none; white-space: pre; text-rendering: geometricPrecision;
+}
+.aerie .t-name { font: 600 14px "Inter", system-ui, sans-serif; fill: var(--aerie-ink); }
+.aerie .t-tagline { font: 400 13.5px "Inter", system-ui, sans-serif; fill: var(--aerie-muted); }
+.aerie .t-tagline-code { font: 400 13.5px "JetBrains Mono", ui-monospace, monospace; fill: var(--aerie-muted); }
+.aerie .t-chip { font: 500 13.5px "Inter", system-ui, sans-serif; fill: var(--aerie-accent-ink); }
+.aerie .t-label { font: 500 13.5px "Inter", system-ui, sans-serif; fill: var(--aerie-muted); }
+.aerie .t-label-code { font: 400 13.5px "JetBrains Mono", ui-monospace, monospace; fill: var(--aerie-muted); }
+.aerie .t-band { font: 600 13.5px "Inter", system-ui, sans-serif; fill: var(--aerie-ink); }
+
+/* An open container's header text, over the lines on a halo of its band (LOOK-303). */
+.aerie .head text { stroke-width: 5px; stroke-linejoin: round; paint-order: stroke fill; }
+.aerie .head.depth-0 text { stroke: var(--aerie-band-0); }
+.aerie .head.depth-1 text { stroke: var(--aerie-band-1); }
+.aerie .head.depth-2 text { stroke: var(--aerie-band-2); }
+.aerie .head.depth-3 text { stroke: var(--aerie-band-3); }
+.aerie .head.external text { stroke: var(--aerie-hatch-bg); }
+
+/* Shapes (LOOK-301 to LOOK-307): hairline cards that rest on the dark with a soft shadow. */
+.aerie .shape { fill: var(--aerie-surface); stroke: var(--aerie-outline); stroke-width: 1px; }
+.aerie .open > .shape { stroke: var(--aerie-frame); }
+.aerie .depth-0 > .shape { fill: var(--aerie-band-0); }
+.aerie .depth-1 > .shape { fill: var(--aerie-band-1); }
+.aerie .depth-2 > .shape { fill: var(--aerie-band-2); }
+.aerie .depth-3 > .shape { fill: var(--aerie-band-3); }
+.aerie .person > .shape { stroke-width: 1.4px; }
+.aerie .external > .shape { fill: url(#aerie-hatch); stroke-dasharray: 4 4; }
+.aerie .hatch-bg { fill: var(--aerie-hatch-bg); }
+.aerie .hatch-line { stroke: var(--aerie-hatch-line); stroke-width: 2px; }
+.aerie .node:not(.open) > .shape {
+  filter: drop-shadow(0 1px 0 color-mix(in srgb, var(--aerie-shadow) 80%, transparent)) drop-shadow(0 8px 18px color-mix(in srgb, var(--aerie-shadow) 55%, transparent));
+}
+.aerie .open > .shape { filter: drop-shadow(0 18px 40px color-mix(in srgb, var(--aerie-shadow) 60%, transparent)); }
+.aerie .open.depth-1 > .shape, .aerie .open.depth-2 > .shape, .aerie .open.depth-3 > .shape {
+  filter: drop-shadow(0 18px 40px color-mix(in srgb, var(--aerie-shadow) 70%, transparent));
+}
+.aerie .dawn { fill: url(#aerie-dawn); pointer-events: none; }
+.aerie .dawn-0 { stop-color: var(--aerie-dawn); stop-opacity: 0.9; }
+.aerie .dawn-1 { stop-color: var(--aerie-dawn); stop-opacity: 0.22; }
+.aerie .dawn-2 { stop-color: var(--aerie-dawn); stop-opacity: 0; }
+.aerie .icon-tile { fill: color-mix(in srgb, var(--aerie-glow) 14%, transparent); stroke: color-mix(in srgb, var(--aerie-glow) 34%, transparent); stroke-width: 1px; }
+.aerie .icon { fill: none; stroke: var(--aerie-accent-ink); stroke-width: 3.6px; stroke-linecap: round; stroke-linejoin: round; }
+.aerie .icon .dot { fill: var(--aerie-accent-ink); stroke: none; }
+.aerie .control circle { fill: var(--aerie-band-1); stroke: var(--aerie-outline); stroke-width: 1px; }
+.aerie .control path { fill: none; stroke: var(--aerie-ink); stroke-width: 1.4px; stroke-linecap: round; }
+.aerie .node:hover > .control circle { stroke: var(--aerie-accent-ink); fill: color-mix(in srgb, var(--aerie-glow) 22%, transparent); }
+.aerie .ring { fill: none; stroke: var(--aerie-live); stroke-width: 2px; display: none; }
+.aerie .shape:focus { outline: none; }
+.aerie .node:has(> .shape:focus-visible) > .ring { display: inline; }
+.aerie .node > * {
+  transition: stroke var(--aerie-hover) ease, stroke-width var(--aerie-hover) ease,
+    opacity var(--aerie-dimming) ease;
+}
+.aerie .node:not(.open):hover > .shape { stroke: var(--aerie-outline-hover); filter: drop-shadow(0 0 1px color-mix(in srgb, var(--aerie-glow) 60%, transparent)) drop-shadow(0 0 16px color-mix(in srgb, var(--aerie-glow) 30%, transparent)); }
+.aerie .node.open:hover > .shape { stroke-width: 1.6px; }
+.aerie .node:has(> .shape[role="button"]) { cursor: pointer; }
+.aerie .hit { fill: none; stroke: none; pointer-events: all; }
+
+/* The first drawing of a model: cards fade up out of the dark in reading order, then the lines. */
+.aerie.arriving .boxes > .node > *, .aerie.arriving .heads > .head > * {
+  animation: aerie-rise calc(var(--aerie-glide) * 1.3) var(--aerie-ease) backwards;
+  animation-delay: calc(var(--aerie-arrive-step) * var(--order, 0));
+}
+.aerie.arriving .edges, .aerie.arriving .labels {
+  animation: aerie-fade calc(var(--aerie-glide) * 1.2) ease backwards;
+  animation-delay: calc(var(--aerie-arrive-step) * var(--count, 6) + var(--aerie-glide) * 0.5);
+}
+@keyframes aerie-rise { from { opacity: 0; translate: 0 8px; } to { opacity: 1; translate: 0 0; } }
+@keyframes aerie-fade { from { opacity: 0; } to { opacity: 1; } }
+
+/* Relationships (LOOK-501, LOOK-502): thin and quiet, each label on a pill. */
+.aerie .edge .line { fill: none; stroke: var(--aerie-edge); stroke-width: 1.2px; }
+.aerie .edge .arrow { fill: none; stroke: var(--aerie-edge); stroke-width: 1.5px; stroke-linecap: round; stroke-linejoin: round; }
+.aerie .edge .flow { fill: none; stroke: none; pointer-events: none; }
+.aerie .edge, .aerie .label { transition: opacity var(--aerie-dimming) ease; }
+.aerie .pill {
+  fill: var(--aerie-pill); stroke: var(--aerie-rule); stroke-width: 1px;
+  transition: fill var(--aerie-hover) ease, stroke var(--aerie-hover) ease;
+}
+
+/* Selection, focus and the trail's emphasis (LOOK-601 to LOOK-603, LOOK-705): a violet edge with
+   a bloom of light; the selection's lines glow and carry a light that flows along them. */
+.aerie .node.sel > .shape, .aerie .node.now > .shape, .aerie .node.sel:hover > .shape, .aerie .node.now:hover > .shape {
+  stroke: var(--aerie-accent-ink); stroke-width: 1.5px; filter: drop-shadow(0 0 1px color-mix(in srgb, var(--aerie-glow) 90%, transparent)) drop-shadow(0 0 22px color-mix(in srgb, var(--aerie-glow) 45%, transparent));
+}
+.aerie .rel > .shape { stroke: color-mix(in srgb, var(--aerie-accent-ink) 70%, transparent); stroke-width: 1.2px; }
+.aerie .context > .shape, .aerie .context > .dawn, .aerie .context > .control { opacity: 0.55; }
+.aerie .node.dim > * { opacity: 0.22; }
+.aerie .edge.on .line { stroke: var(--aerie-accent); stroke-width: 1.6px; filter: drop-shadow(0 0 4px color-mix(in srgb, var(--aerie-glow) 70%, transparent)); }
+.aerie .edge.on .arrow { stroke: var(--aerie-accent-ink); }
+.aerie .edge.on .flow {
+  stroke: var(--aerie-live); stroke-width: 2px; stroke-linecap: round; stroke-dasharray: 2 30;
+  animation: aerie-flow calc(var(--aerie-glide) * 2.4) linear infinite;
+}
+@keyframes aerie-flow { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -32; } }
+.aerie .label.on .pill { stroke: color-mix(in srgb, var(--aerie-glow) 60%, transparent); fill: var(--aerie-accent-soft); }
+.aerie .label.on text { fill: var(--aerie-accent-ink); }
+.aerie .edge.dim { opacity: 0.14; }
+.aerie .label.dim, .aerie .head.dim { opacity: 0.22; }
+.aerie .head { transition: opacity var(--aerie-dimming) ease; }
+
+/* The scenario trail (LOOK-701 to LOOK-704): violet steps, the current one drawn in live light.
+   It is drawn over everything but answers no pointer, so a box or open control under a curve or
+   badge can still be clicked (INT-303). */
+.aerie .trail, .aerie .badges { pointer-events: none; }
+.aerie .step .curve, .aerie .step .arrow {
+  fill: none; stroke: var(--aerie-accent-ink); stroke-width: 2px; stroke-linecap: round; stroke-linejoin: round;
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--aerie-glow) 60%, transparent));
+}
+.aerie .step.now .curve, .aerie .step.now .arrow {
+  stroke: var(--aerie-live); stroke-width: 2.6px; filter: drop-shadow(0 0 5px color-mix(in srgb, var(--aerie-live) 75%, transparent));
+}
+.aerie .step.reply .curve { stroke: var(--aerie-trail-back); stroke-width: 2.6px; stroke-dasharray: 1 6; }
+.aerie .step.past .curve, .aerie .step.past .arrow { stroke-width: 1.6px; opacity: 0.55; }
+/* Filled backwards only: once drawn, the curve and arrowhead are in their own resting state, so
+   the finished animations end and the page counts as still. */
+.aerie .step.now.call .curve {
+  stroke-dasharray: 1 1;
+  animation: aerie-draw var(--aerie-step-draw) var(--aerie-ease) backwards;
+}
+.aerie .step.now.call .arrow { animation: aerie-arrive 1ms linear var(--aerie-step-draw) backwards; }
+@keyframes aerie-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes aerie-arrive { from { opacity: 0; } to { opacity: 1; } }
+.aerie .badge circle { fill: var(--aerie-surface); stroke: var(--aerie-accent-ink); stroke-width: 1.2px; }
+.aerie .badge.now circle {
+  fill: var(--aerie-accent); stroke: var(--aerie-live); stroke-width: 1.5px;
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--aerie-glow) 80%, transparent));
+  animation: aerie-ping calc(var(--aerie-glide) * 1.6) var(--aerie-ease) 2;
+}
+@keyframes aerie-ping { 0% { stroke-width: 10px; stroke-opacity: 0; } 30% { stroke-opacity: 0.5; } 100% { stroke-width: 1.5px; stroke-opacity: 1; } }
+.aerie .t-badge { font: 600 11px "Inter", system-ui, sans-serif; fill: var(--aerie-accent-ink); text-anchor: middle; }
+.aerie .badge.now .t-badge { font-size: 13px; fill: var(--aerie-on-accent); }
+
+/* Lanes (LOOK-706). */
+.aerie .lane-line { fill: none; stroke: color-mix(in srgb, var(--aerie-frame) 55%, transparent); stroke-width: 1px; stroke-dasharray: 2 5; }
+.aerie .row { fill: none; }
+.aerie .row.now { fill: color-mix(in srgb, var(--aerie-accent) 14%, transparent); }
+
+/* The stage behind the diagram (LOOK-307): a dot grid under a dawn at the top. */
+.aerie-stage {
+  background-color: var(--aerie-bg);
+  background-image:
+    radial-gradient(ellipse 70% 55% at 50% -12%, color-mix(in srgb, var(--aerie-dawn) 95%, transparent), transparent 70%),
+    radial-gradient(circle at 1px 1px, var(--aerie-grid) 1px, transparent 1.4px);
+  background-size: auto, 22px 22px;
+}
