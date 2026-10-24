@@ -36,6 +36,8 @@ is recorded separately and is not an implementation reference for these bug fixe
 - `/tmp/aerie-navigation-integration.log` - combined model-history and unknown-link regression output.
 - `/tmp/aerie-navigation-linux.log` - complete Linux validation of the integrated navigation changes.
 
+- `/tmp/aerie-model-navigation-pr.md` - pull request description authored for this change.
+
 ## URLs
 
 - https://github.com/Brizton-Floyd/aerie-diagrams/pull/85 - reviewed and merged element-details fix.
@@ -45,6 +47,14 @@ is recorded separately and is not an implementation reference for these bug fixe
 - https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/pulls/99 - verified head, mergeability and completed merge.
 - https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/pulls/100 - verified head, mergeability and completed merge.
 - https://github.com/Brizton-Floyd/aerie-diagrams/issues/93 - closed after PR 85 merged.
+
+- https://github.com/Brizton-Floyd/aerie-diagrams/pull/101 - published and verified combined navigation fixes.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/pulls/101 - head and merge verification.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/issues/86 - verified merged structural fix closed.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/issues/87 - verified merged sharing fix closed.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/issues/93 - verified merged details fix closed.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/issues/88 - navigation issue closure verification.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/issues/89 - missing-model issue closure verification.
 
 ## Review and integration
 
