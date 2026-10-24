@@ -210,9 +210,45 @@ input {
    copy button is wide enough for "Link copied", so the bar does not move when it says so. */
 .tool.copy {
   width: 100px;
+  padding: 0 8px;
+  white-space: nowrap;
   background: var(--aerie-ink);
   border-color: var(--aerie-ink);
   color: var(--aerie-bg);
+}
+.share-dialog {
+  width: 420px;
+  max-width: calc(100vw - 48px);
+  padding: 24px;
+  margin: auto;
+  border: 1px solid var(--hair-2);
+  border-radius: 12px;
+  background: var(--aerie-surface);
+  color: var(--aerie-ink);
+  box-shadow: var(--lift-3);
+}
+.share-dialog::backdrop {
+  background: color-mix(in srgb, var(--aerie-bg) 72%, transparent);
+}
+.share-dialog h1 {
+  margin: 0 0 12px;
+  font-size: 20px;
+  line-height: 28px;
+}
+.share-dialog p {
+  min-height: 84px;
+  margin: 0;
+}
+.share-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+.share-download {
+  width: 144px;
+}
+.share-close {
+  width: 80px;
 }
 .top .tool.copy:hover {
   background: color-mix(in srgb, var(--aerie-ink) 86%, var(--aerie-bg));

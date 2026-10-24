@@ -316,6 +316,13 @@ The owner chose the Signal look and plain wording first after reviewing Contour 
 | journeys    | An accessibility audit finds no problems in either theme, in every wording, with every layer open                        | LOOK-014, SCORE-005                        |
 | screenshots | Every Lotto view in every wording in both themes, a selection, a scenario, a tour step                                   | LOOK-301 to LOOK-706, LOOK-801 to LOOK-813 |
 
+## Safe model sharing (issue 87)
+
+Safe source sharing is covered by browser journeys for local files and edited copies: an explicit
+file-sharing explanation, byte-exact downloads, unchanged clipboard, modal focus, Escape retaining
+the selected flow stage, pending/invalid edits, and restored bundled links after discard (INT-508).
+Screenshot checks cover the sharing dialog in both themes.
+
 ## Numbered flow overview foundation (issue 83)
 
 | Suite    | What it proves                                                                                                                 | Requirements       |
