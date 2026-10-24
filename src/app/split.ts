@@ -49,13 +49,16 @@ export class Session {
 
   constructor(viewer: Viewer) {
     this.viewer = viewer;
-    const { path, source, restored } = viewer.published;
+    const { path, source, restored, shown } = viewer.published;
     this.path = path;
     this.published = source;
     const text = restored ?? stored(draftKey(path)) ?? source;
-    this.live = new Live((checked) => {
-      this.checked(checked);
-    });
+    this.live = new Live(
+      (checked) => {
+        this.checked(checked);
+      },
+      { shown },
+    );
     this.errors = h('ol', { class: 'errors', 'aria-label': 'Problems' });
     this.discard = h(
       'button',

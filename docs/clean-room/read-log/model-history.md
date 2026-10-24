@@ -16,6 +16,8 @@ Date: 2026-10-24
 - `/tmp/aerie-model-history-editor-red.log` - same-name draft replacing restored editor source.
 - `/tmp/aerie-model-history-pending-red.log` - old editor remaining open after cross-model Back.
 
+- `/tmp/aerie-model-history-repeat-red.log` - repeated invalid-draft return losing its last good diagram.
+
 ## URLs
 
 - https://github.com/Brizton-Floyd/aerie-diagrams/issues/88 - defect and acceptance criteria.

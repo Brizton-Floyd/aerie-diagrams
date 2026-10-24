@@ -456,11 +456,20 @@ export class Viewer {
   }
 
   /** Original source (INT-808), plus the exact restored text when returning through history. */
-  get published(): { path: string; source: string; restored: string | null } {
+  get published(): {
+    path: string;
+    source: string;
+    restored: string | null;
+    shown: Checked['shown'];
+  } {
     return {
       path: this.path,
       source: this.source,
       restored: this.restoredModel ? this.currentSource : null,
+      shown:
+        this.visits === null
+          ? null
+          : (this.rememberedModels.get(this.visits.id)?.checked.shown ?? null),
     };
   }
 

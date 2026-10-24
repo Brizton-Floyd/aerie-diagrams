@@ -115,6 +115,18 @@ test('INT-506 INT-556 edited model history restores its last good picture and ke
   await page.getByRole('button', { name: 'Edit', exact: true }).click();
   await editor.press('ControlOrMeta+End');
   await expect(editor).toContainText('invalid');
+  await page.getByRole('button', { name: 'Done', exact: true }).click();
+  await page.getByLabel('Model', { exact: true }).selectOption('samples/shapes.aerie');
+  await expect(page.locator('.cover-title')).toHaveText('Every Contour shape');
+  await page.goBack();
+  await expect(page.locator('.crumb')).toContainText('Edited Aerie');
+  await expect(page.locator('.flow-caption')).toContainText('Stage 3 of 4');
+  await expect(
+    page.getByText('Your last edit has an error, so this is the last version that worked', {
+      exact: true,
+    }),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Edit', exact: true }).click();
   await page.getByRole('button', { name: 'Discard changes', exact: true }).click();
   await expect(page.locator('.crumb')).toContainText('How Aerie works');
   await expect(page.getByRole('button', { name: 'Copy link', exact: true })).toBeVisible();
