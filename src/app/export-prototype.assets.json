@@ -56,6 +56,225 @@
           "to": 8
         }
       ],
+      "detailedSteps": [
+        {
+          "number": 1,
+          "subject": "author",
+          "object": "editor",
+          "role": "call",
+          "backed": true,
+          "verb": "writes the model in",
+          "sentence": "Model author writes the model in Model editor.",
+          "about": "The author writes or edits a Lines file.",
+          "caption": "The author writes or edits a Lines file."
+        },
+        {
+          "number": 2,
+          "subject": "editor",
+          "object": "semantics",
+          "role": "call",
+          "backed": true,
+          "verb": "sends model text to",
+          "sentence": "Model editor sends model text to Model semantics.",
+          "about": "The live editor checks each change. If it finds errors, the last good diagram stays visible.",
+          "caption": "The live editor checks each change. If it finds errors, the last good diagram stays visible."
+        },
+        {
+          "number": 3,
+          "subject": "semantics",
+          "object": "lines",
+          "role": "call",
+          "backed": true,
+          "verb": "checks the text with",
+          "sentence": "Model semantics checks the text with Lines language.",
+          "about": "The language parses text into a canonical model and reports errors with their line and column.",
+          "caption": "The language parses text into a canonical model and reports errors with their line and column."
+        },
+        {
+          "number": 4,
+          "subject": "lines",
+          "object": "semantics",
+          "role": "call",
+          "backed": true,
+          "verb": "returns the parsed model to",
+          "sentence": "Lines language returns the parsed model to Model semantics.",
+          "about": "Model semantics resolves nesting, views, audience wording and scenarios.",
+          "caption": "Model semantics resolves nesting, views, audience wording and scenarios."
+        },
+        {
+          "number": 5,
+          "subject": "semantics",
+          "object": "layout",
+          "role": "call",
+          "backed": true,
+          "verb": "supplies the resolved picture to",
+          "sentence": "Model semantics supplies the resolved picture to Layout engine.",
+          "about": "The viewer asks layout to place the resolved picture. Space is reserved for every audience.",
+          "caption": "The viewer asks layout to place the resolved picture. Space is reserved for every audience."
+        },
+        {
+          "number": 6,
+          "subject": "layout",
+          "object": "renderer",
+          "role": "call",
+          "backed": true,
+          "verb": "supplies positioned boxes to",
+          "sentence": "Layout engine supplies positioned boxes to Signal renderer.",
+          "about": "Signal uses the positions to draw SVG boxes, connections and labels.",
+          "caption": "Signal uses the positions to draw SVG boxes, connections and labels."
+        },
+        {
+          "number": 7,
+          "subject": "renderer",
+          "object": "viewer",
+          "role": "call",
+          "backed": true,
+          "verb": "supplies the drawing to",
+          "sentence": "Signal renderer supplies the drawing to Browser viewer.",
+          "about": "The browser viewer displays the drawing and manages reader actions.",
+          "caption": "The browser viewer displays the drawing and manages reader actions."
+        },
+        {
+          "number": 8,
+          "subject": "viewer",
+          "object": "reader",
+          "role": "call",
+          "backed": true,
+          "verb": "shows the diagram to",
+          "sentence": "Browser viewer shows the diagram to Diagram reader.",
+          "about": "The reader explores the picture and can share a link to the same view and state.",
+          "caption": "The reader explores the picture and can share a link to the same view and state."
+        }
+      ],
+      "components": [
+        {
+          "id": "author",
+          "parent": null,
+          "name": "Model author",
+          "tagline": "Describes the system",
+          "about": "Writes the architecture once in a Lines file.",
+          "technicalNote": null,
+          "children": [],
+          "incoming": [],
+          "outgoing": ["Model author writes the model in Model editor."]
+        },
+        {
+          "id": "aerie",
+          "parent": null,
+          "name": "Aerie",
+          "tagline": "One model, every audience",
+          "about": null,
+          "technicalNote": null,
+          "children": ["Model editor", "Model tools", "Diagram builder"],
+          "incoming": [],
+          "outgoing": []
+        },
+        {
+          "id": "editor",
+          "parent": "aerie",
+          "name": "Model editor",
+          "tagline": "Write architecture as text",
+          "about": "Loads a model or checks edits beside the diagram.",
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Model author writes the model in Model editor."],
+          "outgoing": ["Model editor sends model text to Model semantics."]
+        },
+        {
+          "id": "meaning",
+          "parent": "aerie",
+          "name": "Model tools",
+          "tagline": "Check the model and its meaning",
+          "about": "Checks the text and resolves the parts, views and wording.",
+          "technicalNote": null,
+          "children": ["Lines language", "Model semantics"],
+          "incoming": [],
+          "outgoing": []
+        },
+        {
+          "id": "lines",
+          "parent": "meaning",
+          "name": "Lines language",
+          "tagline": "Parse the text and report errors",
+          "about": null,
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Model semantics checks the text with Lines language."],
+          "outgoing": ["Lines language returns the parsed model to Model semantics."]
+        },
+        {
+          "id": "semantics",
+          "parent": "meaning",
+          "name": "Model semantics",
+          "tagline": "Resolve views, wording and steps",
+          "about": null,
+          "technicalNote": null,
+          "children": [],
+          "incoming": [
+            "Model editor sends model text to Model semantics.",
+            "Lines language returns the parsed model to Model semantics."
+          ],
+          "outgoing": [
+            "Model semantics checks the text with Lines language.",
+            "Model semantics supplies the resolved picture to Layout engine."
+          ]
+        },
+        {
+          "id": "picture",
+          "parent": "aerie",
+          "name": "Diagram builder",
+          "tagline": "Build an interactive picture",
+          "about": "Places the diagram, draws it and responds to reader actions.",
+          "technicalNote": null,
+          "children": ["Layout engine", "Signal renderer", "Browser viewer"],
+          "incoming": [],
+          "outgoing": []
+        },
+        {
+          "id": "layout",
+          "parent": "picture",
+          "name": "Layout engine",
+          "tagline": "Place boxes and connections",
+          "about": null,
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Model semantics supplies the resolved picture to Layout engine."],
+          "outgoing": ["Layout engine supplies positioned boxes to Signal renderer."]
+        },
+        {
+          "id": "renderer",
+          "parent": "picture",
+          "name": "Signal renderer",
+          "tagline": "Draw the diagram as SVG",
+          "about": null,
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Layout engine supplies positioned boxes to Signal renderer."],
+          "outgoing": ["Signal renderer supplies the drawing to Browser viewer."]
+        },
+        {
+          "id": "viewer",
+          "parent": "picture",
+          "name": "Browser viewer",
+          "tagline": "Open parts and follow flows",
+          "about": null,
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Signal renderer supplies the drawing to Browser viewer."],
+          "outgoing": ["Browser viewer shows the diagram to Diagram reader."]
+        },
+        {
+          "id": "reader",
+          "parent": null,
+          "name": "Diagram reader",
+          "tagline": "Explore and understand",
+          "about": "Reads the diagram, changes wording, opens parts and follows scenarios.",
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Browser viewer shows the diagram to Diagram reader."],
+          "outgoing": []
+        }
+      ],
       "width": 909,
       "height": 1144
     },
@@ -113,6 +332,225 @@
           "caption": "Readers open parts, change wording and follow flows on the same model.",
           "from": 8,
           "to": 8
+        }
+      ],
+      "detailedSteps": [
+        {
+          "number": 1,
+          "subject": "author",
+          "object": "editor",
+          "role": "call",
+          "backed": true,
+          "verb": "writes the model in",
+          "sentence": "Model author writes the model in Live editor.",
+          "about": "The author writes or edits a Lines file.",
+          "caption": "The author writes or edits a Lines file."
+        },
+        {
+          "number": 2,
+          "subject": "editor",
+          "object": "semantics",
+          "role": "call",
+          "backed": true,
+          "verb": "sends model text to",
+          "sentence": "Live editor sends model text to Model semantics.",
+          "about": "The live editor checks each change. If it finds errors, the last good diagram stays visible.",
+          "caption": "The live editor checks each change. If it finds errors, the last good diagram stays visible."
+        },
+        {
+          "number": 3,
+          "subject": "semantics",
+          "object": "lines",
+          "role": "call",
+          "backed": true,
+          "verb": "checks the text with",
+          "sentence": "Model semantics checks the text with Lines language.",
+          "about": "The language parses text into a canonical model and reports errors with their line and column.",
+          "caption": "The language parses text into a canonical model and reports errors with their line and column."
+        },
+        {
+          "number": 4,
+          "subject": "lines",
+          "object": "semantics",
+          "role": "call",
+          "backed": true,
+          "verb": "returns the parsed model to",
+          "sentence": "Lines language returns the parsed model to Model semantics.",
+          "about": "Model semantics resolves nesting, views, audience wording and scenarios.",
+          "caption": "Model semantics resolves nesting, views, audience wording and scenarios."
+        },
+        {
+          "number": 5,
+          "subject": "semantics",
+          "object": "layout",
+          "role": "call",
+          "backed": true,
+          "verb": "supplies the resolved picture to",
+          "sentence": "Model semantics supplies the resolved picture to Layout engine.",
+          "about": "The viewer asks layout to place the resolved picture. Space is reserved for every audience.",
+          "caption": "The viewer asks layout to place the resolved picture. Space is reserved for every audience."
+        },
+        {
+          "number": 6,
+          "subject": "layout",
+          "object": "renderer",
+          "role": "call",
+          "backed": true,
+          "verb": "supplies positioned boxes to",
+          "sentence": "Layout engine supplies positioned boxes to Signal renderer.",
+          "about": "Signal uses the positions to draw SVG boxes, connections and labels.",
+          "caption": "Signal uses the positions to draw SVG boxes, connections and labels."
+        },
+        {
+          "number": 7,
+          "subject": "renderer",
+          "object": "viewer",
+          "role": "call",
+          "backed": true,
+          "verb": "supplies the drawing to",
+          "sentence": "Signal renderer supplies the drawing to Browser viewer.",
+          "about": "The browser viewer displays the drawing and manages reader actions.",
+          "caption": "The browser viewer displays the drawing and manages reader actions."
+        },
+        {
+          "number": 8,
+          "subject": "viewer",
+          "object": "reader",
+          "role": "call",
+          "backed": true,
+          "verb": "shows the diagram to",
+          "sentence": "Browser viewer shows the diagram to Diagram reader.",
+          "about": "The reader explores the picture and can share a link to the same view and state.",
+          "caption": "The reader explores the picture and can share a link to the same view and state."
+        }
+      ],
+      "components": [
+        {
+          "id": "author",
+          "parent": null,
+          "name": "Model author",
+          "tagline": "Describes the system",
+          "about": "Writes the architecture once in a Lines file.",
+          "technicalNote": null,
+          "children": [],
+          "incoming": [],
+          "outgoing": ["Model author writes the model in Live editor."]
+        },
+        {
+          "id": "aerie",
+          "parent": null,
+          "name": "Aerie",
+          "tagline": "One model, every audience",
+          "about": null,
+          "technicalNote": null,
+          "children": ["Live editor", "Language and semantics", "Layout, rendering and viewer"],
+          "incoming": [],
+          "outgoing": []
+        },
+        {
+          "id": "editor",
+          "parent": "aerie",
+          "name": "Live editor",
+          "tagline": "src/app/live.ts",
+          "about": "Loads a model or checks edits beside the diagram.",
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Model author writes the model in Live editor."],
+          "outgoing": ["Live editor sends model text to Model semantics."]
+        },
+        {
+          "id": "meaning",
+          "parent": "aerie",
+          "name": "Language and semantics",
+          "tagline": "src/lines and src/model",
+          "about": "Checks the text and resolves the parts, views and wording.",
+          "technicalNote": "The language parser produces a canonical model and diagnostics. Model semantics resolves containment, view selection, audience wording and scenario steps independently of layout. These modules are pure TypeScript and are shared by the browser and command-line workflows.",
+          "children": ["Lines language", "Model semantics"],
+          "incoming": [],
+          "outgoing": []
+        },
+        {
+          "id": "lines",
+          "parent": "meaning",
+          "name": "Lines language",
+          "tagline": "Parse the text and report errors",
+          "about": null,
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Model semantics checks the text with Lines language."],
+          "outgoing": ["Lines language returns the parsed model to Model semantics."]
+        },
+        {
+          "id": "semantics",
+          "parent": "meaning",
+          "name": "Model semantics",
+          "tagline": "Resolve views, wording and steps",
+          "about": null,
+          "technicalNote": null,
+          "children": [],
+          "incoming": [
+            "Live editor sends model text to Model semantics.",
+            "Lines language returns the parsed model to Model semantics."
+          ],
+          "outgoing": [
+            "Model semantics checks the text with Lines language.",
+            "Model semantics supplies the resolved picture to Layout engine."
+          ]
+        },
+        {
+          "id": "picture",
+          "parent": "aerie",
+          "name": "Layout, rendering and viewer",
+          "tagline": "src/layout, src/render and src/app",
+          "about": "Places the diagram, draws it and responds to reader actions.",
+          "technicalNote": "Layout reserves space for every declared audience before positioning boxes and connections. The Signal renderer consumes those positions and draws SVG. The browser viewer manages navigation and reader actions. Changing audience wording preserves the diagram geometry.",
+          "children": ["Layout engine", "Signal renderer", "Browser viewer"],
+          "incoming": [],
+          "outgoing": []
+        },
+        {
+          "id": "layout",
+          "parent": "picture",
+          "name": "Layout engine",
+          "tagline": "Place boxes and connections",
+          "about": null,
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Model semantics supplies the resolved picture to Layout engine."],
+          "outgoing": ["Layout engine supplies positioned boxes to Signal renderer."]
+        },
+        {
+          "id": "renderer",
+          "parent": "picture",
+          "name": "Signal renderer",
+          "tagline": "Draw the diagram as SVG",
+          "about": null,
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Layout engine supplies positioned boxes to Signal renderer."],
+          "outgoing": ["Signal renderer supplies the drawing to Browser viewer."]
+        },
+        {
+          "id": "viewer",
+          "parent": "picture",
+          "name": "Browser viewer",
+          "tagline": "Open parts and follow flows",
+          "about": null,
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Signal renderer supplies the drawing to Browser viewer."],
+          "outgoing": ["Browser viewer shows the diagram to Diagram reader."]
+        },
+        {
+          "id": "reader",
+          "parent": null,
+          "name": "Diagram reader",
+          "tagline": "Explore and understand",
+          "about": "Reads the diagram, changes wording, opens parts and follows scenarios.",
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Browser viewer shows the diagram to Diagram reader."],
+          "outgoing": []
         }
       ],
       "width": 909,
@@ -176,6 +614,225 @@
           "to": 8
         }
       ],
+      "detailedSteps": [
+        {
+          "number": 1,
+          "subject": "author",
+          "object": "editor",
+          "role": "call",
+          "backed": true,
+          "verb": "writes the model in",
+          "sentence": "Model author writes the model in Model editor.",
+          "about": "The author writes or edits a Lines file.",
+          "caption": "The author writes or edits a Lines file."
+        },
+        {
+          "number": 2,
+          "subject": "editor",
+          "object": "semantics",
+          "role": "call",
+          "backed": true,
+          "verb": "sends model text to",
+          "sentence": "Model editor sends model text to Model semantics.",
+          "about": "The live editor checks each change. If it finds errors, the last good diagram stays visible.",
+          "caption": "The live editor checks each change. If it finds errors, the last good diagram stays visible."
+        },
+        {
+          "number": 3,
+          "subject": "semantics",
+          "object": "lines",
+          "role": "call",
+          "backed": true,
+          "verb": "checks the text with",
+          "sentence": "Model semantics checks the text with Lines language.",
+          "about": "The language parses text into a canonical model and reports errors with their line and column.",
+          "caption": "The language parses text into a canonical model and reports errors with their line and column."
+        },
+        {
+          "number": 4,
+          "subject": "lines",
+          "object": "semantics",
+          "role": "call",
+          "backed": true,
+          "verb": "returns the parsed model to",
+          "sentence": "Lines language returns the parsed model to Model semantics.",
+          "about": "Model semantics resolves nesting, views, audience wording and scenarios.",
+          "caption": "Model semantics resolves nesting, views, audience wording and scenarios."
+        },
+        {
+          "number": 5,
+          "subject": "semantics",
+          "object": "layout",
+          "role": "call",
+          "backed": true,
+          "verb": "supplies the resolved picture to",
+          "sentence": "Model semantics supplies the resolved picture to Layout engine.",
+          "about": "The viewer asks layout to place the resolved picture. Space is reserved for every audience.",
+          "caption": "The viewer asks layout to place the resolved picture. Space is reserved for every audience."
+        },
+        {
+          "number": 6,
+          "subject": "layout",
+          "object": "renderer",
+          "role": "call",
+          "backed": true,
+          "verb": "supplies positioned boxes to",
+          "sentence": "Layout engine supplies positioned boxes to Signal renderer.",
+          "about": "Signal uses the positions to draw SVG boxes, connections and labels.",
+          "caption": "Signal uses the positions to draw SVG boxes, connections and labels."
+        },
+        {
+          "number": 7,
+          "subject": "renderer",
+          "object": "viewer",
+          "role": "call",
+          "backed": true,
+          "verb": "supplies the drawing to",
+          "sentence": "Signal renderer supplies the drawing to Browser viewer.",
+          "about": "The browser viewer displays the drawing and manages reader actions.",
+          "caption": "The browser viewer displays the drawing and manages reader actions."
+        },
+        {
+          "number": 8,
+          "subject": "viewer",
+          "object": "reader",
+          "role": "call",
+          "backed": true,
+          "verb": "shows the diagram to",
+          "sentence": "Browser viewer shows the diagram to Diagram reader.",
+          "about": "The reader explores the picture and can share a link to the same view and state.",
+          "caption": "The reader explores the picture and can share a link to the same view and state."
+        }
+      ],
+      "components": [
+        {
+          "id": "author",
+          "parent": null,
+          "name": "Model author",
+          "tagline": "Describes the system",
+          "about": "Writes the architecture once in a Lines file.",
+          "technicalNote": null,
+          "children": [],
+          "incoming": [],
+          "outgoing": ["Model author writes the model in Model editor."]
+        },
+        {
+          "id": "aerie",
+          "parent": null,
+          "name": "Aerie",
+          "tagline": "One model, every audience",
+          "about": null,
+          "technicalNote": null,
+          "children": ["Model editor", "Model tools", "Diagram builder"],
+          "incoming": [],
+          "outgoing": []
+        },
+        {
+          "id": "editor",
+          "parent": "aerie",
+          "name": "Model editor",
+          "tagline": "Write architecture as text",
+          "about": "Loads a model or checks edits beside the diagram.",
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Model author writes the model in Model editor."],
+          "outgoing": ["Model editor sends model text to Model semantics."]
+        },
+        {
+          "id": "meaning",
+          "parent": "aerie",
+          "name": "Model tools",
+          "tagline": "Check the model and its meaning",
+          "about": "Checks the text and resolves the parts, views and wording.",
+          "technicalNote": null,
+          "children": ["Lines language", "Model semantics"],
+          "incoming": [],
+          "outgoing": []
+        },
+        {
+          "id": "lines",
+          "parent": "meaning",
+          "name": "Lines language",
+          "tagline": "Parse the text and report errors",
+          "about": null,
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Model semantics checks the text with Lines language."],
+          "outgoing": ["Lines language returns the parsed model to Model semantics."]
+        },
+        {
+          "id": "semantics",
+          "parent": "meaning",
+          "name": "Model semantics",
+          "tagline": "Resolve views, wording and steps",
+          "about": null,
+          "technicalNote": null,
+          "children": [],
+          "incoming": [
+            "Model editor sends model text to Model semantics.",
+            "Lines language returns the parsed model to Model semantics."
+          ],
+          "outgoing": [
+            "Model semantics checks the text with Lines language.",
+            "Model semantics supplies the resolved picture to Layout engine."
+          ]
+        },
+        {
+          "id": "picture",
+          "parent": "aerie",
+          "name": "Diagram builder",
+          "tagline": "Build an interactive picture",
+          "about": "Places the diagram, draws it and responds to reader actions.",
+          "technicalNote": null,
+          "children": ["Layout engine", "Signal renderer", "Browser viewer"],
+          "incoming": [],
+          "outgoing": []
+        },
+        {
+          "id": "layout",
+          "parent": "picture",
+          "name": "Layout engine",
+          "tagline": "Place boxes and connections",
+          "about": null,
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Model semantics supplies the resolved picture to Layout engine."],
+          "outgoing": ["Layout engine supplies positioned boxes to Signal renderer."]
+        },
+        {
+          "id": "renderer",
+          "parent": "picture",
+          "name": "Signal renderer",
+          "tagline": "Draw the diagram as SVG",
+          "about": null,
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Layout engine supplies positioned boxes to Signal renderer."],
+          "outgoing": ["Signal renderer supplies the drawing to Browser viewer."]
+        },
+        {
+          "id": "viewer",
+          "parent": "picture",
+          "name": "Browser viewer",
+          "tagline": "Open parts and follow flows",
+          "about": null,
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Signal renderer supplies the drawing to Browser viewer."],
+          "outgoing": ["Browser viewer shows the diagram to Diagram reader."]
+        },
+        {
+          "id": "reader",
+          "parent": null,
+          "name": "Diagram reader",
+          "tagline": "Explore and understand",
+          "about": "Reads the diagram, changes wording, opens parts and follows scenarios.",
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Browser viewer shows the diagram to Diagram reader."],
+          "outgoing": []
+        }
+      ],
       "width": 909,
       "height": 1144
     },
@@ -233,6 +890,225 @@
           "caption": "Readers open parts, change wording and follow flows on the same model.",
           "from": 8,
           "to": 8
+        }
+      ],
+      "detailedSteps": [
+        {
+          "number": 1,
+          "subject": "author",
+          "object": "editor",
+          "role": "call",
+          "backed": true,
+          "verb": "writes the model in",
+          "sentence": "Model author writes the model in Live editor.",
+          "about": "The author writes or edits a Lines file.",
+          "caption": "The author writes or edits a Lines file."
+        },
+        {
+          "number": 2,
+          "subject": "editor",
+          "object": "semantics",
+          "role": "call",
+          "backed": true,
+          "verb": "sends model text to",
+          "sentence": "Live editor sends model text to Model semantics.",
+          "about": "The live editor checks each change. If it finds errors, the last good diagram stays visible.",
+          "caption": "The live editor checks each change. If it finds errors, the last good diagram stays visible."
+        },
+        {
+          "number": 3,
+          "subject": "semantics",
+          "object": "lines",
+          "role": "call",
+          "backed": true,
+          "verb": "checks the text with",
+          "sentence": "Model semantics checks the text with Lines language.",
+          "about": "The language parses text into a canonical model and reports errors with their line and column.",
+          "caption": "The language parses text into a canonical model and reports errors with their line and column."
+        },
+        {
+          "number": 4,
+          "subject": "lines",
+          "object": "semantics",
+          "role": "call",
+          "backed": true,
+          "verb": "returns the parsed model to",
+          "sentence": "Lines language returns the parsed model to Model semantics.",
+          "about": "Model semantics resolves nesting, views, audience wording and scenarios.",
+          "caption": "Model semantics resolves nesting, views, audience wording and scenarios."
+        },
+        {
+          "number": 5,
+          "subject": "semantics",
+          "object": "layout",
+          "role": "call",
+          "backed": true,
+          "verb": "supplies the resolved picture to",
+          "sentence": "Model semantics supplies the resolved picture to Layout engine.",
+          "about": "The viewer asks layout to place the resolved picture. Space is reserved for every audience.",
+          "caption": "The viewer asks layout to place the resolved picture. Space is reserved for every audience."
+        },
+        {
+          "number": 6,
+          "subject": "layout",
+          "object": "renderer",
+          "role": "call",
+          "backed": true,
+          "verb": "supplies positioned boxes to",
+          "sentence": "Layout engine supplies positioned boxes to Signal renderer.",
+          "about": "Signal uses the positions to draw SVG boxes, connections and labels.",
+          "caption": "Signal uses the positions to draw SVG boxes, connections and labels."
+        },
+        {
+          "number": 7,
+          "subject": "renderer",
+          "object": "viewer",
+          "role": "call",
+          "backed": true,
+          "verb": "supplies the drawing to",
+          "sentence": "Signal renderer supplies the drawing to Browser viewer.",
+          "about": "The browser viewer displays the drawing and manages reader actions.",
+          "caption": "The browser viewer displays the drawing and manages reader actions."
+        },
+        {
+          "number": 8,
+          "subject": "viewer",
+          "object": "reader",
+          "role": "call",
+          "backed": true,
+          "verb": "shows the diagram to",
+          "sentence": "Browser viewer shows the diagram to Diagram reader.",
+          "about": "The reader explores the picture and can share a link to the same view and state.",
+          "caption": "The reader explores the picture and can share a link to the same view and state."
+        }
+      ],
+      "components": [
+        {
+          "id": "author",
+          "parent": null,
+          "name": "Model author",
+          "tagline": "Describes the system",
+          "about": "Writes the architecture once in a Lines file.",
+          "technicalNote": null,
+          "children": [],
+          "incoming": [],
+          "outgoing": ["Model author writes the model in Live editor."]
+        },
+        {
+          "id": "aerie",
+          "parent": null,
+          "name": "Aerie",
+          "tagline": "One model, every audience",
+          "about": null,
+          "technicalNote": null,
+          "children": ["Live editor", "Language and semantics", "Layout, rendering and viewer"],
+          "incoming": [],
+          "outgoing": []
+        },
+        {
+          "id": "editor",
+          "parent": "aerie",
+          "name": "Live editor",
+          "tagline": "src/app/live.ts",
+          "about": "Loads a model or checks edits beside the diagram.",
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Model author writes the model in Live editor."],
+          "outgoing": ["Live editor sends model text to Model semantics."]
+        },
+        {
+          "id": "meaning",
+          "parent": "aerie",
+          "name": "Language and semantics",
+          "tagline": "src/lines and src/model",
+          "about": "Checks the text and resolves the parts, views and wording.",
+          "technicalNote": "The language parser produces a canonical model and diagnostics. Model semantics resolves containment, view selection, audience wording and scenario steps independently of layout. These modules are pure TypeScript and are shared by the browser and command-line workflows.",
+          "children": ["Lines language", "Model semantics"],
+          "incoming": [],
+          "outgoing": []
+        },
+        {
+          "id": "lines",
+          "parent": "meaning",
+          "name": "Lines language",
+          "tagline": "Parse the text and report errors",
+          "about": null,
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Model semantics checks the text with Lines language."],
+          "outgoing": ["Lines language returns the parsed model to Model semantics."]
+        },
+        {
+          "id": "semantics",
+          "parent": "meaning",
+          "name": "Model semantics",
+          "tagline": "Resolve views, wording and steps",
+          "about": null,
+          "technicalNote": null,
+          "children": [],
+          "incoming": [
+            "Live editor sends model text to Model semantics.",
+            "Lines language returns the parsed model to Model semantics."
+          ],
+          "outgoing": [
+            "Model semantics checks the text with Lines language.",
+            "Model semantics supplies the resolved picture to Layout engine."
+          ]
+        },
+        {
+          "id": "picture",
+          "parent": "aerie",
+          "name": "Layout, rendering and viewer",
+          "tagline": "src/layout, src/render and src/app",
+          "about": "Places the diagram, draws it and responds to reader actions.",
+          "technicalNote": "Layout reserves space for every declared audience before positioning boxes and connections. The Signal renderer consumes those positions and draws SVG. The browser viewer manages navigation and reader actions. Changing audience wording preserves the diagram geometry.",
+          "children": ["Layout engine", "Signal renderer", "Browser viewer"],
+          "incoming": [],
+          "outgoing": []
+        },
+        {
+          "id": "layout",
+          "parent": "picture",
+          "name": "Layout engine",
+          "tagline": "Place boxes and connections",
+          "about": null,
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Model semantics supplies the resolved picture to Layout engine."],
+          "outgoing": ["Layout engine supplies positioned boxes to Signal renderer."]
+        },
+        {
+          "id": "renderer",
+          "parent": "picture",
+          "name": "Signal renderer",
+          "tagline": "Draw the diagram as SVG",
+          "about": null,
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Layout engine supplies positioned boxes to Signal renderer."],
+          "outgoing": ["Signal renderer supplies the drawing to Browser viewer."]
+        },
+        {
+          "id": "viewer",
+          "parent": "picture",
+          "name": "Browser viewer",
+          "tagline": "Open parts and follow flows",
+          "about": null,
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Signal renderer supplies the drawing to Browser viewer."],
+          "outgoing": ["Browser viewer shows the diagram to Diagram reader."]
+        },
+        {
+          "id": "reader",
+          "parent": null,
+          "name": "Diagram reader",
+          "tagline": "Explore and understand",
+          "about": "Reads the diagram, changes wording, opens parts and follows scenarios.",
+          "technicalNote": null,
+          "children": [],
+          "incoming": ["Browser viewer shows the diagram to Diagram reader."],
+          "outgoing": []
         }
       ],
       "width": 909,

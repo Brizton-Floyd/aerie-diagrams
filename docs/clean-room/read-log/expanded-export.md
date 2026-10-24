@@ -42,6 +42,14 @@ prototype stay on a separate branch, with no production implementation or Conflu
 - `/tmp/aerie-export-map-audit.md` - repaired map formatting and reconciled confirmed versus open decisions.
 - `/tmp/aerie-export-open-questions-audit.md` - corrected stale branding status and listed unresolved content questions.
 
+- `/tmp/aerie-export-flow-choice.md` - authored tracker record of the user's one-scenario selection.
+- `/tmp/aerie-export-stage-detail-choice.md` - authored tracker record of the user's stage/detail selection.
+- `/tmp/aerie-export-reference-capture.mjs` - reference-section capture and control smoke checks.
+- `/Users/briztonfloyd/.codex/visualizations/2026/10/24/01a16eb6-c800-7203-852e-b93904fb0934/export-component-reference.png` - visually reviewed reference-group example.
+- `/Users/briztonfloyd/.codex/visualizations/2026/10/24/01a16eb6-c800-7203-852e-b93904fb0934/export-architecture-rationale.png` - visually reviewed rationale example sourced from the repository's audience-level decision.
+- `/Users/briztonfloyd/.codex/visualizations/2026/10/24/01a16eb6-c800-7203-852e-b93904fb0934/export-scenario-detail.png` - captured all-stage/all-step layout.
+- `/Users/briztonfloyd/.codex/visualizations/2026/10/24/01a16eb6-c800-7203-852e-b93904fb0934/export-technical-reference-full.png` - full-page capture for visual evidence.
+
 ## URLs
 
 - https://github.com/Brizton-Floyd/aerie-diagrams/issues/42 - existing broader export backlog.
@@ -108,12 +116,22 @@ excluded from the artifact. Chromium smoke checks confirmed the headings/footer 
 while retaining all four stage explanations.
 The accepted decision is indexed in the map; no production exporter was implemented or merged.
 
+- http://127.0.0.1:4406/?export-prototype&variant=D&audience=engineer - component-reference example and interactive preview controls.
+
 ## Readiness audit
 
 Two human decision tickets remain open: content and first-release acceptance. The readiness audit
 did not resolve either. Replaced an accidentally serialized wrapper in the map body with normal
 Markdown, corrected stale branding status and reconciled the research summary with the user
 choices. No production implementation was started.
+
+## Component-reference exploration
+
+The user requested a visual example before deciding whether to include the component reference.
+Variant D stays on the disposable branch. Extra technical notes are authored from this repository,
+and the rationale example cites its actual decision; both are explicitly distinguished from the
+model's existing wording. No outside product design source informed this example, and no human
+content decision is closed by producing it.
 
 ## Forbidden sources opened
 

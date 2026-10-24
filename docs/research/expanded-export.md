@@ -110,3 +110,34 @@ The export heading and footer no longer add the application name. The user clari
 inside the diagram must remain. Chromium checks confirmed unbranded export headings and footers,
 Plain/Technical switching and all four stage explanations. This feedback does not
 certify the exporter, decide large-model limits or establish real Confluence import acceptance.
+
+## Component-reference visual example, awaiting a decision
+
+The user subsequently confirmed one selected scenario per export and both overview stages and
+all detailed steps. They requested a visual example before deciding whether full component
+reference material should be optional. No reference-section decision is inferred from that request.
+
+Variant D at `http://127.0.0.1:4406/?export-prototype&variant=D&audience=engineer` adds:
+
+1. The expanded architecture and stage overview.
+2. All eight actual scenario steps grouped under their four authored stages, preserving the stage
+   and detailed-step numbering distinction.
+3. An optional component reference with every drawn element, grouped into its parent context,
+   showing descriptions, children and direct incoming/outgoing relationships.
+
+The reference checkbox is independent of Plain/Technical wording. Chromium checks confirmed
+11 reference entries and eight detailed steps in both wording choices. Turning off the reference
+removes those entries while preserving all eight steps. The preview has no horizontal overflow
+at 1440 px. Typecheck, text and Markdown-link checks pass. This is not a production export gate.
+
+Diagram/flow wording and base descriptions come from the Aerie sample. Two extra technical
+paragraphs are authored for this prototype from the repository's module boundaries and layout
+behavior. The rationale example paraphrases the accepted
+[audience-level decision](../decisions/0002-audience-levels.md). This source distinction is disclosed
+above the document preview. It demonstrates possible documentation structure, not automatic
+extraction or invention of responsibilities or decision rationale. The eventual content source
+for such additional notes remains part of the open content decision.
+
+Visual assets: [component reference](export-prototype/component-reference.png),
+[architecture rationale](export-prototype/architecture-rationale.png) and
+[scenario detail](export-prototype/scenario-detail.png). No product exporter or schema was added.
