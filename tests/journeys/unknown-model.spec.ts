@@ -4,7 +4,7 @@ import { settled } from './reader.ts';
 
 test.use({ viewport: { width: 1280, height: 720 } });
 
-test('INT-002 unknown model links name the request and fallback, then recover through the model chooser', async ({
+test('INT-002 INT-506 unknown model links name the fallback and preserve it through model history', async ({
   page,
 }) => {
   const requested = 'missing model.aerie';
@@ -37,6 +37,11 @@ test('INT-002 unknown model links name the request and fallback, then recover th
   await expect(page.locator('svg.aerie')).toHaveAttribute('data-view', 'shapes');
   await expect(page.locator('.notice')).toBeHidden();
   expect(new URL(page.url()).searchParams.get('model')).toBe('samples/shapes.aerie');
+  await page.goBack();
+  await expect(page.locator('svg.aerie')).toHaveAttribute('data-view', 'services');
+  await expect(page.getByLabel('Model', { exact: true })).toHaveValue('samples/lotto.aerie');
+  expect(new URL(page.url()).searchParams.get('model')).toBe('samples/lotto.aerie');
+  await expect(page.locator('.notice')).toBeHidden();
 });
 
 test('INT-002 an unknown model link can recover by opening a local file', async ({ page }) => {
