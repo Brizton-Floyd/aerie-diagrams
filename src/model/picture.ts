@@ -6,10 +6,11 @@ import { lift } from './lift.ts';
 import type { Semantics } from './semantics.ts';
 import { DEFAULT_ZOOM, type Zoom, type ZoomMark } from './views.ts';
 
-/** MODEL-601: at most one of a selected element, a playing scenario or a presented walkthrough. */
+/** MODEL-601: selection, overview, playback and presentation are mutually exclusive activities. */
 export type Activity =
   | { kind: 'reading' }
   | { kind: 'selected'; element: Id }
+  | { kind: 'overview'; scenario: Id; step: number }
   | { kind: 'playing'; scenario: Id; step: number; lanes: boolean }
   | {
       kind: 'presenting';
@@ -107,6 +108,7 @@ export function normalisePicture(
       }
       return out({ activity: { kind: 'selected', element: shown } });
     }
+    case 'overview':
     case 'playing': {
       if (!semantics.hasScenario(activity.scenario)) {
         dropped.push({ part: 'scenario', id: activity.scenario });
@@ -118,6 +120,14 @@ export function normalisePicture(
         zoom = DEFAULT_ZOOM;
       }
       const count = semantics.scenario(activity.scenario).steps.length;
+      if (activity.kind === 'overview')
+        return out({
+          activity: {
+            kind: 'overview',
+            scenario: activity.scenario,
+            step: clamp(activity.step, 1, count),
+          },
+        });
       return out({
         activity: {
           kind: 'playing',
@@ -185,14 +195,19 @@ export function reveal(semantics: Semantics, picture: Picture, id: Id): Picture 
 
 /**
  * Selects an element, revealing it first (MODEL-207), or clears the selection with null. Nothing is
- * selected while a scenario plays or a walkthrough is presented: the picture is returned unchanged.
+ * selected during an overview, scenario playback or presentation: the picture is returned unchanged.
  */
 export function select(semantics: Semantics, picture: Picture, id: Id | null): Picture {
   const { kind } = picture.activity;
-  if (kind === 'playing' || kind === 'presenting') return picture;
+  if (kind === 'playing' || kind === 'presenting' || kind === 'overview') return picture;
   if (id === null) return normal(semantics, { ...picture, activity: READING });
   const shown = reveal(semantics, picture, id);
   return normal(semantics, { ...shown, activity: { kind: 'selected', element: id } });
+}
+
+/** MODEL-605: a complete, static scenario trail with one step selected for explanation. */
+export function overview(semantics: Semantics, picture: Picture, scenario: Id, step = 1): Picture {
+  return normal(semantics, { ...picture, activity: { kind: 'overview', scenario, step } });
 }
 
 /** MODEL-604 and MODEL-404: plays a scenario from step 1 on its stage view, clearing the selection. */

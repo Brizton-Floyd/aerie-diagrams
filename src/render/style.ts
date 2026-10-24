@@ -236,6 +236,10 @@ ${bands}
    It is drawn over everything but answers no pointer, so a box or open control under a curve or
    badge can still be clicked (INT-303). */
 .aerie .trail, .aerie .badges { pointer-events: none; }
+.aerie .overview-step { pointer-events: all; cursor: pointer; }
+.aerie .overview-step:focus-visible { outline: none; }
+.aerie .overview-step:focus-visible circle { stroke: ${v('live')}; stroke-width: 3px; }
+.aerie .overview-trail .step.now.call .curve { animation: none; stroke-dasharray: none; stroke-dashoffset: 0; }
 .aerie .step .curve, .aerie .step .arrow {
   fill: none; stroke: ${v('accent-ink')}; stroke-width: 2px; stroke-linecap: round; stroke-linejoin: round;
   filter: drop-shadow(0 0 3px ${mix('glow', 60)});

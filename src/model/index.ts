@@ -29,6 +29,7 @@ export {
   defaultPicture,
   normalisePicture,
   openContainer,
+  overview,
   play,
   present,
   presentBack,

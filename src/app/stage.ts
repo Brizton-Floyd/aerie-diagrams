@@ -93,6 +93,8 @@ export interface StageActions {
   moved(camera: CameraState): void;
   /** INT-208: the hover card's content for an element the pointer rests on, or null for none. */
   peek?(id: Id): Node | null;
+  /** INT-620: selects the numbered step of a static flow overview. */
+  overviewStep?(step: number): void;
 }
 
 /** INT-208: how long the pointer rests on a box before its hover card shows. */
@@ -798,6 +800,11 @@ export class Stage {
       // The second click of a double click belongs to the double click.
       if (event.detail > 1) return;
       const target = event.target instanceof Element ? event.target : null;
+      const step = target?.closest('.overview-step')?.getAttribute('data-step');
+      if (step !== undefined && step !== null) {
+        this.actions.overviewStep?.(Number(step));
+        return;
+      }
       // An open container's header text is drawn above the lines, in its own group (g.head).
       const node = target?.closest('g.boxes > g.node, g.heads > g.head') ?? null;
       const id = node?.getAttribute('data-id') ?? null;
@@ -816,6 +823,14 @@ export class Stage {
       const id = node?.getAttribute('data-id') ?? null;
       if (id !== null && this.svg !== null && byId(this.svg, 'node', id)?.matches('.open, .closed'))
         this.actions.toggle(id);
+    });
+    this.holder.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      const target = event.target instanceof Element ? event.target : null;
+      const step = target?.closest('.overview-step')?.getAttribute('data-step');
+      if (step === undefined || step === null) return;
+      event.preventDefault();
+      this.actions.overviewStep?.(Number(step));
     });
     // INT-354: an element reached with the keyboard is brought into view at the camera's scale. A
     // click's focus is left alone, since the reader can see what they clicked, and so is the focus

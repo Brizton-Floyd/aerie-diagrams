@@ -15,6 +15,7 @@ export interface PanelActions {
   toggle(id: Id): void;
   /** Plays a scenario. */
   play(scenario: Id): void;
+  overview(scenario: Id): void;
   /** Presents a walkthrough: the cover's tour (INT-204). */
   present(walkthrough: Id): void;
   /** INT-102: words the whole diagram for an audience, or back to the plain wording. */
@@ -84,6 +85,18 @@ function scenarioButtons(
               `${String(semantics.scenario(id).steps.length)} steps`,
             ]),
           ],
+        ),
+        h(
+          'button',
+          {
+            type: 'button',
+            class: 'tool flow-overview',
+            'aria-label': `Show flow overview of ${scenarioTitle(semantics, id, audience)}`,
+            onclick: () => {
+              actions.overview(id);
+            },
+          },
+          ['Show flow overview'],
         ),
       ]),
     ),

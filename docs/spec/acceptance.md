@@ -316,6 +316,17 @@ The owner chose the Signal look and plain wording first after reviewing Contour 
 | journeys    | An accessibility audit finds no problems in either theme, in every wording, with every layer open                        | LOOK-014, SCORE-005                        |
 | screenshots | Every Lotto view in every wording in both themes, a selection, a scenario, a tour step                                   | LOOK-301 to LOOK-706, LOOK-801 to LOOK-813 |
 
+## Numbered flow overview foundation (issue 83)
+
+| Suite    | What it proves                                                                                                                 | Requirements       |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------ |
+| unit     | Overview activity normalisation, stage-view selection, opening, wording, shared-link round trips and visit identity            | MODEL-605, INT-621 |
+| unit     | Complete static trails with named, focusable step controls and unchanged box geometry                                          | INT-620, INT-622   |
+| journeys | An Aerie model: selecting numbers with Enter and Space, accessibility audit, shared state, playback handoff, Back and clearing | INT-620 to INT-623 |
+
+This foundation is entered explicitly. Authored high-level stages and view-specific default flows
+remain tracked in [issue 83](https://github.com/Brizton-Floyd/aerie-diagrams/issues/83).
+
 ## Browser journeys
 
 Journeys run against the production build with the Lotto sample, at 1600 x 900, as a reader would use

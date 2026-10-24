@@ -53,6 +53,9 @@ and the list of recent visits names the latest ones.
 
 **Trail**: A scenario drawn on the architecture as a lit line with numbered steps.
 
+**Flow overview**: A complete, static scenario trail. Selecting a number explains that step without
+starting playback.
+
 **Lanes**: A scenario laid out with one column per element and one row per step.
 
 **Presenter mode**: A walkthrough shown full screen, one step at a time, for a room.

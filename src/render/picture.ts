@@ -49,6 +49,8 @@ export interface RenderOptions {
   focus?: Focus;
   /** A playing scenario's trail up to its current step, the last one (LOOK-701 to LOOK-704). */
   trail?: readonly TrailShape[];
+  /** INT-620: shows every trail step as an accessible control without playback animation. */
+  overview?: { step: number; sentences: readonly string[] };
   /** Sets the drawing's own theme; by default it follows the page's. */
   theme?: Theme;
   /** Embeds the stylesheet so the SVG stands alone, as a file. */
@@ -288,8 +290,11 @@ const edgeClass = (base: string, mark: EdgeMark): string =>
   mark === 'plain' ? base : `${base} ${mark}`;
 
 /** The trail's curves and its badges, drawn above everything else (LOOK-701 to LOOK-704). */
-export function drawTrail(shapes: readonly TrailShape[]): SvgNode[] {
-  const last = shapes.at(-1)?.number ?? 0;
+export function drawTrail(
+  shapes: readonly TrailShape[],
+  overview?: RenderOptions['overview'],
+): SvgNode[] {
+  const last = overview?.step ?? shapes.at(-1)?.number ?? 0;
   const curves = shapes.map((shape) => {
     const current = shape.number === last;
     const call = shape.role === 'call';
@@ -326,7 +331,11 @@ export function drawTrail(shapes: readonly TrailShape[]): SvgNode[] {
       },
       [
         // The current call step draws itself along a path one unit long (LOOK-701).
-        el('path', { class: 'curve', d, pathLength: current && call ? 1 : null }),
+        el('path', {
+          class: 'curve',
+          d,
+          pathLength: current && call && overview === undefined ? 1 : null,
+        }),
         // LOOK-702: a reply is a dotted line with no arrowhead.
         call && el('path', { class: 'arrow', d: chevron(shape.end, from) }),
       ],
@@ -337,8 +346,16 @@ export function drawTrail(shapes: readonly TrailShape[]): SvgNode[] {
     return el(
       'g',
       {
-        class: current ? 'badge now' : 'badge',
+        class: `${current ? 'badge now' : 'badge'}${overview === undefined ? '' : ' overview-step'}`,
         'data-step': shape.number,
+        ...(overview === undefined
+          ? {}
+          : {
+              role: 'button',
+              tabindex: 0,
+              'aria-label': `Step ${String(shape.number)}: ${overview.sentences[shape.number - 1] ?? ''}`,
+              'aria-current': current ? 'step' : null,
+            }),
         transform: translate(shape.badge.x, shape.badge.y),
       },
       [
@@ -354,7 +371,10 @@ export function drawTrail(shapes: readonly TrailShape[]): SvgNode[] {
       ],
     );
   });
-  return [el('g', { class: 'trail' }, curves), el('g', { class: 'badges' }, badges)];
+  return [
+    el('g', { class: overview === undefined ? 'trail' : 'trail overview-trail' }, curves),
+    el('g', { class: 'badges' }, badges),
+  ];
 }
 
 /** The root of a drawing: its size, its accessible name, the hatching and, standing alone, the style. */
@@ -481,7 +501,7 @@ export function renderPicture(
       el('g', { class: 'labels', 'aria-hidden': hidden }, labels),
       ...(options.trail === undefined || options.trail.length === 0
         ? []
-        : drawTrail(options.trail)),
+        : drawTrail(options.trail, options.overview)),
     ],
   );
 }

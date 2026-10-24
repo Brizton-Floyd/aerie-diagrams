@@ -70,6 +70,52 @@ input {
   min-height: 0;
 }
 
+/* INT-620: the flow overview stays within the existing side panel. */
+.flow-choice {
+  display: grid;
+  gap: 8px;
+  margin: 20px 0;
+}
+.flow-choice select {
+  width: 100%;
+}
+.flow-caption {
+  margin: 20px 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--hair);
+}
+.panel .flow-caption h2 {
+  font: 600 16px/1.5 var(--sans);
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--aerie-ink);
+}
+.flow-actions {
+  display: flex;
+  gap: 8px;
+}
+.flow-steps {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.flow-steps .tool {
+  width: 100%;
+  text-align: left;
+  white-space: normal;
+  line-height: 1.6;
+  height: auto;
+  padding: 8px 12px;
+}
+.flow-steps [aria-current='step'] {
+  border-color: var(--aerie-accent-ink);
+  background: var(--aerie-accent-soft);
+}
+.plays .flow-overview {
+  margin: 4px 0 12px;
+}
+
 /* LOOK-802: the top bar, one dark line with the product mark lit from within. */
 .top {
   position: relative;

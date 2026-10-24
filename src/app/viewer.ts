@@ -17,6 +17,7 @@ import {
   closeContainer,
   normalisePicture,
   openContainer,
+  overview,
   play,
   present,
   presentBack,
@@ -46,6 +47,7 @@ import {
   type Theme,
 } from '../render/index.ts';
 import { h } from './dom.ts';
+import { flowPanel, type FlowActions } from './flow.ts';
 import { STALE_LINK, readFragment, writeFragment } from './link.ts';
 import { KEPT_NOTICE, errorText, type Checked } from './live.ts';
 import { LOGO } from './logo.ts';
@@ -279,6 +281,11 @@ export class Viewer {
     this.stage = new Stage(() => this.opened?.semantics.tree ?? null, {
       pick: (id) => {
         this.pick(id);
+      },
+      overviewStep: (step) => {
+        const picture = this.picture;
+        if (picture?.activity.kind === 'overview')
+          this.flowActions.show(picture.activity.scenario, step);
       },
       toggle: (id) => {
         this.toggle(id);
@@ -765,6 +772,7 @@ export class Viewer {
     } else if (event.key === 'Escape') {
       if (presenting) this.endPresentation();
       else if (playing) this.scenarioActions.done();
+      else if (picture.activity.kind === 'overview') this.flowActions.clear();
       else if (picture.activity.kind === 'selected')
         this.change(select(opened.semantics, picture, null));
       else return;
@@ -845,6 +853,7 @@ export class Viewer {
       const laid = await layouter.picture(view, zoom, audience);
       let focus: Focus = { kind: 'none' };
       let trail;
+      let flow;
       if (activity.kind === 'selected') focus = { kind: 'select', ids: [activity.element] };
       // LOOK-603: walkthrough focus looks like selection, on every focused element at once.
       if (frame.length > 0) focus = { kind: 'select', ids: frame };
@@ -852,6 +861,14 @@ export class Viewer {
         const steps = semantics.trail(played.scenario, view, zoom, played.step);
         trail = trailShapes(laid.result, steps);
         focus = { kind: 'trail', visited: steps.visited, current: steps.current };
+      }
+      if (activity.kind === 'overview') {
+        const steps = semantics.steps(activity.scenario, audience);
+        const all = semantics.trail(activity.scenario, view, zoom, steps.length);
+        const at = semantics.trail(activity.scenario, view, zoom, activity.step);
+        trail = trailShapes(laid.result, all);
+        focus = { kind: 'trail', visited: all.visited, current: at.current };
+        flow = { step: activity.step, sentences: steps.map((step) => step.sentence) };
       }
       const scene = semantics.scene(laid.drawing, audience);
       showing = {
@@ -861,7 +878,12 @@ export class Viewer {
             laid,
             trail === undefined
               ? { focus, interactive: true }
-              : { focus, trail, interactive: true },
+              : {
+                  focus,
+                  trail,
+                  interactive: true,
+                  ...(flow === undefined ? {} : { overview: flow }),
+                },
           ),
         ),
         layout: laid,
@@ -885,6 +907,9 @@ export class Viewer {
 
   /** The actions of the side panel's links and buttons, on the picture as it is when used. */
   private readonly panelActions: PanelActions = {
+    overview: (scenario) => {
+      this.flowActions.show(scenario, 1);
+    },
     select: (id) => {
       this.choose(id);
     },
@@ -907,6 +932,30 @@ export class Viewer {
   };
 
   // ------------------------------------------------------------ scenario playback
+
+  private readonly flowActions: FlowActions = {
+    show: (scenario, step) => {
+      if (
+        this.opened === null ||
+        this.picture === null ||
+        !this.opened.semantics.hasScenario(scenario)
+      )
+        return;
+      const fit =
+        this.picture.activity.kind !== 'overview' || this.picture.activity.scenario !== scenario;
+      this.autoplay.stop();
+      this.change(overview(this.opened.semantics, this.picture, scenario, step), { fit });
+    },
+    play: (scenario, step) => {
+      if (this.picture === null) return;
+      this.playScenario(scenario);
+      this.playAt(step);
+    },
+    clear: () => {
+      if (this.opened === null || this.picture === null) return;
+      this.change(stop(this.opened.semantics, this.picture));
+    },
+  };
 
   /**
    * INT-601: plays a scenario from step 1 on its stage view (MODEL-404), clearing the selection,
@@ -1305,7 +1354,8 @@ export class Viewer {
 
     // INT-401 to INT-404: views, scenarios and walkthroughs, each titled for the audience; the
     // current view, or what plays or is presented, is marked.
-    const reading = activity.kind === 'reading' || activity.kind === 'selected';
+    const reading =
+      activity.kind === 'reading' || activity.kind === 'selected' || activity.kind === 'overview';
     sections.push(
       h('section', {}, [
         h('h2', {}, ['Views']),
@@ -1378,7 +1428,7 @@ export class Viewer {
       title ?? semantics.model.id ?? 'Untitled',
       semantics.viewTitle(picture.view, audience),
     ];
-    if (activity.kind === 'playing')
+    if (activity.kind === 'playing' || activity.kind === 'overview')
       crumbs.push(scenarioTitle(semantics, activity.scenario, audience));
     this.crumbSwap.set(
       h(
@@ -1396,6 +1446,12 @@ export class Viewer {
     // INT-204, INT-205 and INT-602: the side panel; when the reader was in it, the focus stays in
     // it, on the same control of a scenario's panel.
     const hadFocus = this.panel.contains(document.activeElement);
+    const flowFocus =
+      document.activeElement instanceof HTMLElement && hadFocus
+        ? ['data-flow-step', 'data-flow-action']
+            .map((name) => [name, document.activeElement?.getAttribute(name)] as const)
+            .find(([, value]) => value != null)
+        : undefined;
     if (activity.kind === 'playing') {
       const was = this.scenarioPanel;
       const kept = was?.focusKey() ?? null;
@@ -1416,11 +1472,20 @@ export class Viewer {
     }
     this.scenarioPanel = null;
     const content =
-      activity.kind === 'selected'
-        ? elementPanel(semantics, picture, activity.element, this.panelActions, this.revealed)
-        : viewPanel(semantics, picture, this.panelActions);
+      activity.kind === 'overview'
+        ? flowPanel(semantics, picture, this.flowActions)
+        : activity.kind === 'selected'
+          ? elementPanel(semantics, picture, activity.element, this.panelActions, this.revealed)
+          : viewPanel(semantics, picture, this.panelActions);
     this.panelSwap.set(h('div', { class: 'panel-content' }, content), (replaced) => {
-      if (replaced && hadFocus) this.panel.querySelector<HTMLElement>('h1')?.focus();
+      if (!replaced || !hadFocus) return;
+      const control =
+        activity.kind === 'overview' && flowFocus !== undefined
+          ? this.panel.querySelector<HTMLElement>(
+              `[${flowFocus[0]}="${CSS.escape(flowFocus[1] ?? '')}"]`,
+            )
+          : null;
+      (control ?? this.panel.querySelector<HTMLElement>('h1'))?.focus();
     });
   }
 }

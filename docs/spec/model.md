@@ -156,7 +156,7 @@ The **picture** is everything that decides what a reader sees. Shared links carr
 ([interaction.md](interaction.md#shared-links)).
 
 - **MODEL-601** A picture has: a view; an audience; a zoom state; and at most one of a selected
-  element, a playing scenario (with its current step and whether it is shown as lanes), or a presented
+  element, a static scenario overview (with its selected step), a playing scenario (with its current step and whether it is shown as lanes), or a presented
   walkthrough (with its current step and, inside a scenario step, the scenario step). The theme, the
   reduced-motion setting and the camera are reader preferences, not part of the picture.
 - **MODEL-602** The **default picture** is the first view (or the implicit view when there is none),
@@ -168,6 +168,10 @@ The **picture** is everything that decides what a reader sees. Shared links carr
   ([interaction.md](interaction.md#shared-links)).
 - **MODEL-604** Selection and playback exclude each other: starting a scenario or a walkthrough clears
   the selection.
+- **MODEL-605** A static scenario overview shows every step and keeps one selected for explanation.
+  It is a separate activity, excluding element selection, playback and presentation. It uses the
+  scenario's stage view, clamps its selected step and drops unknown scenarios as playback does.
+  Opening containers and changing audience preserve the overview. Existing default pictures are unchanged.
 
 ## Worked example: Lotto
 
