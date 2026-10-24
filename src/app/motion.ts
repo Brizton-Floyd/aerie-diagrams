@@ -1,4 +1,4 @@
-// Motion on the page (docs/spec/look.md, LOOK-901 to LOOK-903): the timings come from the Contour
+// Motion on the page (docs/spec/look.md, LOOK-901 to LOOK-903): the timings come from the Signal
 // stylesheet's custom properties, which are zero under reduced motion, so the page never decides on
 // its own whether to move. A change runs as one choreography of animations and timed steps that can
 // be finished at once, so changes never interleave (LAYOUT-403).

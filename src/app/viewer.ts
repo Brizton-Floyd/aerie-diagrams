@@ -1,5 +1,5 @@
 // The viewer page (`npm run dev`; docs/spec/interaction.md): opens a bundled sample or a local .aerie
-// file and lets a reader explore it in the Contour look, with the page grid of LOOK-801. A reader
+// file and lets a reader explore it in the Signal look, with the page grid of LOOK-801. A reader
 // selects an element to read about it in the side panel (INT-201 to INT-206), opens containers in
 // place (INT-301 to INT-304), switches the audience without moving anything (INT-101 to INT-105),
 // moves the camera (INT-351 to INT-353), and does all of it from the keyboard too (INT-901 to
