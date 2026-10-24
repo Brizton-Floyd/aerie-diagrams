@@ -1,10 +1,57 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
-import { boxes, settled, useTheme } from './reader.ts';
+import { boxes, boxOf, scale, settled, useTheme } from './reader.ts';
 
 test.use({ viewport: { width: 1600, height: 900 } });
 
 for (const theme of ['dark', 'light'] as const) {
+  test(`INT-626 jumping back through overview stages reveals their origins at the reader's zoom (${theme})`, async ({
+    page,
+  }) => {
+    await useTheme(page, theme);
+    await page.goto('/?model=samples/aerie.aerie');
+    await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+    await settled(page);
+    // Magnifying makes the first and last stages too far apart to remain visible together.
+    for (let i = 0; i < 4; i++)
+      await page.getByRole('button', { name: 'Move closer (+)', exact: true }).click();
+    await settled(page);
+    const zoom = await scale(page);
+    const onStage = async (id: string): Promise<boolean> => {
+      const box = await boxOf(page, id);
+      const stage = await page.locator('main.aerie-stage').boundingBox();
+      if (stage === null) throw new Error('The stage is not visible.');
+      return (
+        box.x >= stage.x &&
+        box.y >= stage.y &&
+        box.x + box.width <= stage.x + stage.width &&
+        box.y + box.height <= stage.y + stage.height
+      );
+    };
+    for (const [number, title, origin] of [
+      [4, 'Explore the diagram', 'picture'],
+      [2, 'Check its meaning', 'editor'],
+      [1, 'Write the model', 'author'],
+    ] as const) {
+      await page.getByRole('button', { name: `${String(number)}. ${title}`, exact: true }).click();
+      await expect(page.locator('.flow-caption')).toContainText(`Stage ${String(number)} of 4`);
+      await settled(page);
+      expect(await onStage(origin)).toBe(true);
+      expect(await scale(page)).toBeCloseTo(zoom, 5);
+      if (number === 4) expect(await onStage('author')).toBe(false);
+    }
+    const atFirst = await boxes(page);
+    await page
+      .getByRole('button', { name: 'Stage 1: Write the model', exact: true })
+      .press('Space');
+    await settled(page);
+    expect(await boxes(page)).toEqual(atFirst);
+    await page.keyboard.press('3');
+    await expect(page.locator('.wording')).toContainText('Technical');
+    await settled(page);
+    expect(await boxes(page)).toEqual(atFirst);
+  });
+
   test(`INT-624 INT-625 MODEL-607 LAYOUT-506 Big picture opens on Aerie's authored stages (${theme})`, async ({
     page,
     context,

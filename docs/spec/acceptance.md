@@ -399,3 +399,7 @@ below is from the final sample, `samples/lotto.aerie`.
 | unit        | Authored stage semantics, opt-in view defaults, cleared/selected/default link round trips, routed badge placement and audience invariance                   | MODEL-606, MODEL-607, INT-624, LAYOUT-506              |
 | journeys    | Aerie opens on four stages, shares a selected stage, hands off to the detailed range, clears persistently, restores history and re-enters a configured view | INT-624, INT-625                                       |
 | screenshots | The authored Aerie default overview in both themes                                                                                                          | INT-624, LAYOUT-506                                    |
+
+The overview camera journey jumps between distant stages at a manual zoom, checks that their
+origins return into view without changing scale, and keeps the camera still when the stage is
+already visible or its wording changes (INT-626).

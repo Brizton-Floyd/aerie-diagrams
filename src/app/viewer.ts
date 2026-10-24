@@ -955,8 +955,18 @@ export class Viewer {
         return;
       const fit =
         this.picture.activity.kind !== 'overview' || this.picture.activity.scenario !== scenario;
+      const semantics = this.opened.semantics;
+      const next = overview(semantics, this.picture, scenario, step);
+      const activity = next.activity;
+      const selected =
+        activity.kind === 'overview'
+          ? semantics
+              .overviewTrail(scenario, next.view, next.zoom)
+              .steps.find((each) => each.number === activity.step)
+          : undefined;
+      const origin = selected?.kind === 'line' ? selected.from : selected?.on;
       this.autoplay.stop();
-      this.change(overview(this.opened.semantics, this.picture, scenario, step), { fit });
+      this.change(next, { fit, ...(origin === undefined ? {} : { reveal: origin }) });
     },
     play: (scenario, step) => {
       if (this.picture === null || this.opened === null) return;
