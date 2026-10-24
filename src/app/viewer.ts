@@ -62,6 +62,7 @@ import {
 } from './presenter.ts';
 import { FIRST_SAMPLE, SAMPLES } from './samples.ts';
 import { Autoplay, ScenarioPanel, captionOf, type ScenarioActions } from './scenario.ts';
+import { ShareDialog } from './share.ts';
 import { Stage, type Arrival, type Showing } from './stage.ts';
 import { TravelControls, namesThatFit, type TravelActions } from './travel.ts';
 import { Visits, entryOf, visitKey, visitName, type CameraState, type Shelf } from './visits.ts';
@@ -190,6 +191,8 @@ export class Viewer {
   private readonly watching: boolean;
   private path = '';
   private source = '';
+  /** The latest text, including a local draft that has not checked cleanly yet. */
+  private currentSource = '';
   private opened: Opened | null = null;
   private picture: Picture | null = null;
   /** The fragment of the address the model was opened with, read when it is first drawn. */
@@ -210,6 +213,7 @@ export class Viewer {
   private readonly spoken: HTMLElement;
   private readonly themeButton: HTMLButtonElement;
   private readonly copyButton: HTMLButtonElement;
+  private readonly sharing = new ShareDialog();
   private copyTimer = 0;
   private staleTimer = 0;
   private readonly motionBox: HTMLInputElement;
@@ -326,6 +330,7 @@ export class Viewer {
     ]);
     this.body = h('div', { class: 'body' }, [this.sideWrap, this.stage.element, this.panel]);
     root.replaceChildren(top, this.body);
+    if (!this.watching) root.append(this.sharing.element);
     document.addEventListener('keydown', (event) => {
       this.key(event);
     });
@@ -422,6 +427,12 @@ export class Viewer {
     return { path: this.path, source: this.source };
   }
 
+  /** INT-508: sharing follows the current editor text, even before its debounced validation. */
+  changedSource(source: string): void {
+    this.currentSource = source;
+    this.refreshSharing();
+  }
+
   /**
    * INT-805, INT-806 and INT-852: a new version of the model's text. Without errors the diagram is
    * redrawn, keeping the view, audience, zoom state and selection wherever their ids still exist
@@ -429,6 +440,7 @@ export class Viewer {
    * stage; with nothing earlier to show, the stage lists the errors instead (INT-003).
    */
   revise(checked: Checked): void {
+    this.changedSource(checked.source);
     if (checked.model === null) {
       if (this.opened !== null) {
         this.say(KEPT_NOTICE);
@@ -663,8 +675,25 @@ export class Viewer {
     });
   }
 
-  /** INT-507: copies the full address; the button reads "Link copied" for a moment. */
+  /** Watch URLs supply their source; ordinary URLs supply only unchanged bundled models. */
+  private get canCopyLink(): boolean {
+    return this.watching || SAMPLES.get(this.path) === this.currentSource;
+  }
+
+  private refreshSharing(): void {
+    window.clearTimeout(this.copyTimer);
+    this.copyButton.textContent = this.canCopyLink ? 'Copy link' : 'Share model';
+    this.copyButton.title = this.canCopyLink
+      ? 'Copy a link to this picture'
+      : 'Share this model as a file';
+  }
+
+  /** INT-507 and INT-508: copies a source-backed address, or explains how to share the local file. */
   private async copyLink(): Promise<void> {
+    if (!this.canCopyLink) {
+      this.sharing.show(this.path, this.currentSource);
+      return;
+    }
     let copied = true;
     try {
       await navigator.clipboard.writeText(location.href);
@@ -676,7 +705,7 @@ export class Viewer {
     this.spoken.textContent = copied ? 'Link copied' : "Couldn't copy. Use the address bar.";
     window.clearTimeout(this.copyTimer);
     this.copyTimer = window.setTimeout(() => {
-      this.copyButton.textContent = 'Copy link';
+      this.refreshSharing();
     }, COPIED_FOR);
   }
 

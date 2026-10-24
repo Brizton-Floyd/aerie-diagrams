@@ -181,7 +181,16 @@ walkthrough step.
   replace the current entry.
 - **INT-507** The "Copy link" button copies the full address and reads "Link copied" for a moment.
   When the browser refuses the clipboard it reads "Couldn't copy" instead, and a screen reader hears
-  "Couldn't copy. Use the address bar."
+  "Couldn't copy. Use the address bar." This action is available for unchanged bundled models and
+  watch URLs, which supply their model source to a recipient.
+- **INT-508** For an opened local file or an edited copy, the same header control says "Share model"
+  instead of claiming to copy a usable model link. It opens a named dialog explaining that a link
+  does not include this model and offering "Download model" and "Close". Download saves the exact
+  current text as a `.aerie` file, including pending or invalid edits, without modifying the
+  clipboard. Escape and Close dismiss only the dialog and restore focus to its caller. Discarding
+  an edited copy restores ordinary link sharing when its source is a bundled model. Source changes
+  update the sharing action immediately, before editor validation finishes. The dialog follows the
+  current theme and is keyboard-accessible.
 
 ## Back and Forward
 

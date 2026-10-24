@@ -4,6 +4,7 @@
 // readers never download the text editor.
 import { format, type Diagnostic } from '../lines/index.ts';
 import { h } from './dom.ts';
+import { downloadModel } from './download.ts';
 import { LinesEditor } from './editor.ts';
 import { Live, errorList, errorText, type Checked } from './live.ts';
 import type { Viewer } from './viewer.ts';
@@ -33,13 +34,6 @@ function store(key: string, text: string | null): void {
   } catch {
     // Storage may be off; the copy then lasts while the page is open.
   }
-}
-
-/** The file name a download is saved as: the model's own, as a `.aerie` file. */
-function downloadName(path: string): string {
-  const name = path.split('/').pop() ?? '';
-  const base = name.replace(/\.aerie$/, '');
-  return `${base === '' ? 'model' : base}.aerie`;
 }
 
 /** One open split editor. */
@@ -116,6 +110,7 @@ export class Session {
     this.editor = new LinesEditor(host, {
       text,
       onChange: (changed) => {
+        this.viewer.changedSource(changed);
         store(draftKey(this.path), changed === this.published ? null : changed);
         this.discard.disabled = changed === this.published;
         this.live.edit(changed);
@@ -168,14 +163,7 @@ export class Session {
 
   /** INT-808: saves the author's copy as a `.aerie` file. */
   private download(): void {
-    const url = URL.createObjectURL(new Blob([this.editor.text], { type: 'text/plain' }));
-    const link = h('a', { href: url, download: downloadName(this.path) });
-    document.body.append(link);
-    link.click();
-    link.remove();
-    setTimeout(() => {
-      URL.revokeObjectURL(url);
-    }, 0);
+    downloadModel(this.path, this.editor.text);
   }
 
   /** INT-801: the divider between the editor and the diagram, dragged with the pointer. */
