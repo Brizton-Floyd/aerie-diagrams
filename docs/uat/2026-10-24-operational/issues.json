@@ -1,0 +1,93 @@
+[
+  {
+    "finding": 1,
+    "priority": "P1",
+    "issue": 86,
+    "url": "https://github.com/Brizton-Floyd/aerie-diagrams/issues/86",
+    "title": "P1: Keep the diagram visible after valid structural edits"
+  },
+  {
+    "finding": 2,
+    "priority": "P1",
+    "issue": 87,
+    "url": "https://github.com/Brizton-Floyd/aerie-diagrams/issues/87",
+    "title": "P1: Make sharing local and edited models explicit and safe"
+  },
+  {
+    "finding": 3,
+    "priority": "P2",
+    "issue": 88,
+    "url": "https://github.com/Brizton-Floyd/aerie-diagrams/issues/88",
+    "title": "P2: Preserve the previous model and picture in browser Back history"
+  },
+  {
+    "finding": 4,
+    "priority": "P2",
+    "issue": 89,
+    "url": "https://github.com/Brizton-Floyd/aerie-diagrams/issues/89",
+    "title": "P2: Explain unknown model links instead of silently substituting a model"
+  },
+  {
+    "finding": 5,
+    "priority": "P2",
+    "issue": 90,
+    "url": "https://github.com/Brizton-Floyd/aerie-diagrams/issues/90",
+    "title": "P2: Preserve keyboard focus after activating an overview badge"
+  },
+  {
+    "finding": 6,
+    "priority": "P2",
+    "issue": 91,
+    "url": "https://github.com/Brizton-Floyd/aerie-diagrams/issues/91",
+    "title": "P2: Reveal keyboard-focused overview badges without selecting them"
+  },
+  {
+    "finding": 7,
+    "priority": "P2",
+    "issue": 92,
+    "url": "https://github.com/Brizton-Floyd/aerie-diagrams/issues/92",
+    "title": "P2: Support keyboard resizing of the split editor"
+  },
+  {
+    "finding": 8,
+    "priority": "P1",
+    "issue": 93,
+    "url": "https://github.com/Brizton-Floyd/aerie-diagrams/issues/93",
+    "title": "P1: Open element details from the default flow overview"
+  },
+  {
+    "finding": 9,
+    "priority": "P2",
+    "issue": 94,
+    "url": "https://github.com/Brizton-Floyd/aerie-diagrams/issues/94",
+    "title": "P2: Make local draft state and reload recovery visible"
+  },
+  {
+    "finding": 10,
+    "priority": "P2",
+    "issue": 95,
+    "url": "https://github.com/Brizton-Floyd/aerie-diagrams/issues/95",
+    "title": "P2: Keep details and primary actions reachable in narrow desktop windows"
+  },
+  {
+    "finding": 11,
+    "priority": "P3",
+    "issue": 96,
+    "url": "https://github.com/Brizton-Floyd/aerie-diagrams/issues/96",
+    "title": "P3: Distinguish same-named models in the model chooser"
+  },
+  {
+    "finding": 12,
+    "priority": "P3",
+    "issue": 97,
+    "url": "https://github.com/Brizton-Floyd/aerie-diagrams/issues/97",
+    "title": "P3: Count or label the implicit Overview consistently"
+  },
+  {
+    "finding": 13,
+    "priority": "P2",
+    "issue": 98,
+    "url": "https://github.com/Brizton-Floyd/aerie-diagrams/issues/98",
+    "title": "P2: Expose contextual technical wording in stage explanations"
+  }
+]
