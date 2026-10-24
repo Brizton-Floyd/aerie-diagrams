@@ -15,11 +15,15 @@ Date: 2026-10-24
 
 - `/tmp/aerie-sharing-baselines/sharing.spec.ts/local-model-share-light.png` - Linux screenshot review of the light dialog.
 
+- `/tmp/aerie-sharing-pr.md` - review description generated for this fix.
+
 ## URLs
 
 - https://github.com/Brizton-Floyd/aerie-diagrams/issues/87 - tracked defect and acceptance criteria.
 - http://localhost:4487/?model=samples/aerie.aerie - production preview used by sharing journeys.
 - http://127.0.0.1:4398/?model=samples/aerie.aerie - local visual verification.
+
+- https://github.com/Brizton-Floyd/aerie-diagrams/pull/100 - independent draft fix and validation status.
 
 ## Forbidden sources opened
 
