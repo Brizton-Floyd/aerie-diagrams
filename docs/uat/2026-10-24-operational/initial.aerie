@@ -1,0 +1,7 @@
+model uat: Acceptance Test Copy
+
+a: Requester
+  > Sends a request.
+b: Service
+  > Handles the request.
+a calls b

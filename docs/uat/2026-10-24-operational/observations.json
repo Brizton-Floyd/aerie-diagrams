@@ -1,0 +1,120 @@
+{
+  "testedCommit": "60101fa",
+  "browser": "Chromium through in-app browser",
+  "modelOptions": [
+    {
+      "label": "lotto.aerie",
+      "value": "samples/lotto.aerie"
+    },
+    {
+      "label": "lotto.aerie",
+      "value": "docs/spec/examples/lotto.aerie"
+    }
+  ],
+  "localFileSharing": {
+    "sourceFile": "skills/aerie/examples/first-file.aerie",
+    "senderTitle": "Team notes",
+    "copiedUrl": "http://127.0.0.1:4398/",
+    "cleanStorageProbe": "Same server through localhost, which has separate origin storage",
+    "recipientTitle": "The Lotto suite"
+  },
+  "unknownModel": {
+    "requested": "http://127.0.0.1:4398/?model=missing-model.aerie",
+    "result": "http://127.0.0.1:4398/?model=samples/lotto.aerie",
+    "visibleNotice": false
+  },
+  "crossModelBack": {
+    "beforeModelChange": "http://127.0.0.1:4398/?model=samples/aerie.aerie#flow=full-flow.3",
+    "chosenModel": "samples/shapes.aerie",
+    "browserBackDestination": "about:blank",
+    "settledStageBeforeChange": "Stage 3 of 4"
+  },
+  "keyboardFocus": {
+    "focusedBadge": "Stage 1: Write the model",
+    "badgeTop": -252.2538146972656,
+    "badgeBottom": -214.84835815429688,
+    "stageTop": 52,
+    "stageBottom": 720,
+    "afterActivatingBadge2WithSpace": {
+      "activeTag": "BODY",
+      "activeLabel": null,
+      "selectedBadge": "Stage 2: Check its meaning"
+    }
+  },
+  "narrowWindow": {
+    "viewport": {
+      "width": 1024,
+      "height": 768
+    },
+    "pageWidth": 1280,
+    "panelLeft": 912,
+    "panelRight": 1280,
+    "documentScrollWidth": 1280,
+    "scope": "Below the documented v1 minimum, classified as enhancement"
+  },
+  "splitter": {
+    "markup": "<div class=\"divider\" role=\"separator\" aria-orientation=\"vertical\" aria-label=\"Editor width\"></div>",
+    "tabIndex": -1,
+    "keyboardPressResult": "Cannot focus the separator; action rejected as not focusable",
+    "editorEscapeThenTab": "Focus moved to Requester element"
+  },
+  "structuralEditing": {
+    "normalMotion": {
+      "replacePublishedModel": "There is no element user.",
+      "renameAtoRequester": "There is no element a."
+    },
+    "reducedMotion": {
+      "sameReplacementRendered": true,
+      "svgCount": 1
+    },
+    "fixtureCheckResults": ["No problems found.", "No problems found."]
+  },
+  "draftRecovery": {
+    "displayBeforeReload": "Acceptance Test Copy",
+    "displayAfterReload": "The Lotto suite",
+    "displayAfterReopeningEdit": "Acceptance Test Copy",
+    "dataLossConfirmed": false
+  },
+  "implicitViewStats": {
+    "visibleView": "Overview",
+    "coverStats": "2 parts0 views"
+  },
+  "stageWording": {
+    "plainTitle": "Check its meaning",
+    "panelButtons": [
+      "Follow the full flow",
+      "Clear flow",
+      "1. Write the model",
+      "2. Check its meaning",
+      "3. Build the picture",
+      "4. Explore the diagram"
+    ],
+    "titleAfterDigit3": "Parse and resolve the model"
+  },
+  "presenterPass": {
+    "cameraBeforeWording": "matrix(1.15, 0, 0, 1.15, 547.75, 138.475)",
+    "cameraAfterWording": "matrix(1.15, 0, 0, 1.15, 547.75, 138.475)",
+    "exitRestoredFocusToTour": true,
+    "fullscreenAfterExit": null
+  },
+  "playbackDesignObservation": {
+    "step": 8,
+    "originBottom": 804.942138671875,
+    "stageBottom": 720,
+    "numberBadgeVisible": true,
+    "countedAsDefect": false
+  },
+  "baseline": {
+    "initialPasses": 112,
+    "watchHarnessFailures": 6,
+    "watchRerunPasses": 6,
+    "distinctExistingJourneysPassed": 118,
+    "rerunAdjustment": "unset NO_COLOR"
+  },
+  "cleanup": {
+    "temporaryDraftsDiscarded": true,
+    "viewportReset": true,
+    "themeRestored": true,
+    "reducedMotionRestored": true
+  }
+}
