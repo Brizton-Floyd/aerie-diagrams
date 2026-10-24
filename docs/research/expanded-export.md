@@ -105,7 +105,7 @@ model change. The branch and these assets are disposable planning evidence, not 
 The user selected a static export of the current view, fully expanded, with all flow explanations
 included and a choice of plain or technical wording. The static diagram-plus-explanation composition
 is the starting design. Whole-model documents and interactive embeds are outside this first release.
-The export heading and footer no longer add the application name. A clarification is pending on
-whether the user also wants the modeled application's name removed from authored diagram content;
-component names have not been altered while that question remains open. This feedback does not
+The export heading and footer no longer add the application name. The user clarified that this removes Aerie branding only; authored system and component names
+inside the diagram must remain. Chromium checks confirmed unbranded export headings and footers,
+Plain/Technical switching and all four stage explanations. This feedback does not
 certify the exporter, decide large-model limits or establish real Confluence import acceptance.

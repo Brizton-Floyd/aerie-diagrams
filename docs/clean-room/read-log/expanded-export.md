@@ -100,8 +100,9 @@ tracker workflow; no outreach or external Confluence write occurred.
 
 The user chose the static, current-view, fully expanded composition with flow explanations and
 Plain/Technical wording. Only the prototype decision is resolved in this session. The prototype's
-export heading/footer no longer add the application name. A required clarification remains pending
-about authored application/component names inside the diagram, so those labels were not changed.
+export heading/footer no longer add the application name. The user clarified that authored system/component names remain; only added Aerie branding is
+excluded from the artifact. Chromium smoke checks confirmed the headings/footer and wording switch
+while retaining all four stage explanations.
 The accepted decision is indexed in the map; no production exporter was implemented or merged.
 
 ## Forbidden sources opened
