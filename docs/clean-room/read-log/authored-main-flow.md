@@ -23,6 +23,8 @@ Date: 2026-10-24
 ## URLs
 
 - https://github.com/Brizton-Floyd/aerie-diagrams/issues/83 - requested feature scope and acceptance criteria.
+- https://github.com/Brizton-Floyd/aerie-diagrams/pull/84 - this task's draft implementation review.
+- https://github.com/Brizton-Floyd/aerie-diagrams/actions/runs/40119005470 - this task's feature-branch CI status.
 - http://127.0.0.1:4398/ - this repository's production preview of the Aerie sample.
 
 ## Forbidden sources opened
