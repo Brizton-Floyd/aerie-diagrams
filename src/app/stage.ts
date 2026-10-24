@@ -857,11 +857,9 @@ export class Stage {
     if (id === this.peeking) return;
     this.peeking = id;
     window.clearTimeout(this.peekTimer);
-    if (id === null) {
-      this.peekCard.classList.remove('on');
-      this.peekCard.hidden = true;
-      return;
-    }
+    this.peekCard.classList.remove('on');
+    this.peekCard.hidden = true;
+    if (id === null) return;
     this.peekTimer = window.setTimeout(() => {
       this.showPeek(id);
     }, PEEK_AFTER);
