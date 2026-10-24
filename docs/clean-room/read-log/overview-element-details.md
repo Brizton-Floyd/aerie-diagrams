@@ -16,6 +16,7 @@ Date: 2026-10-24
 
 - http://127.0.0.1:4398/ - this repository's live Aerie sample; compared the same element click with the overview active and cleared.
 - https://github.com/Brizton-Floyd/aerie-diagrams - this repository's issue and pull-request dashboard.
+- https://github.com/Brizton-Floyd/aerie-diagrams/pull/85 - this task's defect fix and CI status.
 
 ## Diagnosis
 
