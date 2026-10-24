@@ -82,6 +82,8 @@ for (const theme of ['dark', 'light'] as const) {
     await shared
       .getByLabel('Open your own .aerie file')
       .setInputFiles(join(import.meta.dirname, '../fixtures/aerie-flow.aerie'));
+    await expect(shared.locator('.cover-title')).toHaveText('How Aerie works');
+    await expect(shared.locator('#app')).toHaveAttribute('data-ready', 'true');
     await shared.goto(`${shared.url().split('#')[0] ?? '/'}${fragment}`);
     await expect(shared.locator('.flow-caption')).toContainText('Step 3 of 8');
     await shared.close();
