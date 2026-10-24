@@ -32,6 +32,9 @@ prototype stay on a separate branch, with no production implementation or Conflu
 
 - `/tmp/aerie-export-typecheck.log` - compiler diagnostics for the disposable route; corrected prototype typing before capture.
 
+- `/tmp/aerie-export-prototype-progress.md` - authored visual evidence and open-decision tracker comment.
+- `/tmp/aerie-export-backlog-comment.md` - authored pointer from the existing sharing backlog to this map.
+
 ## URLs
 
 - https://github.com/Brizton-Floyd/aerie-diagrams/issues/42 - existing broader export backlog.
@@ -74,8 +77,19 @@ prototype stay on a separate branch, with no production implementation or Conflu
 - http://127.0.0.1:4406/?export-prototype&variant=B - local static layout rendered and inspected.
 - http://127.0.0.1:4406/?export-prototype&variant=C - local interactive controls exercised.
 
-GitHub API reads and native relationship writes used only this repository's issue, sub_issues and
-dependencies/blocked_by endpoints for the issues listed above. The user explicitly invoked the
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/issues/102 - canonical map metadata.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/issues/103 - research metadata and numeric ID.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/issues/104 - content metadata and numeric ID.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/issues/105 - prototype metadata and numeric ID.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/issues/106 - final acceptance metadata.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/issues/102/sub_issues - native child relationships.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/issues/105/dependencies/blocked_by - initial prototype dependencies, removed after the user's visual-first steering.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/issues/105/dependencies/blocked_by/6018544210 - removed content prerequisite for exploratory prototype.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/issues/105/dependencies/blocked_by/6018543890 - removed research prerequisite for exploratory illustrations.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/issues/104/dependencies/blocked_by - content decision waits for visual feedback.
+- https://api.github.com/repos/Brizton-Floyd/aerie-diagrams/issues/106/dependencies/blocked_by - acceptance waits for prototype, content and compatibility.
+
+GitHub API reads and native relationship writes used only this repository's issues. The user explicitly invoked the
 tracker workflow; no outreach or external Confluence write occurred.
 
 ## Forbidden sources opened
