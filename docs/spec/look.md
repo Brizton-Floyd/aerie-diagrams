@@ -232,7 +232,7 @@ and at 28% to 40% in the light one.
 - **LOOK-802** The top bar is `bg` with a hairline below. From the left: the logo and the wordmark
   "Aerie", a hairline divider, the breadcrumb (model title, a slash, the view title, and while a
   scenario plays, a slash and its title); then, on the right, "Copy link" (the one solid button: `ink`
-  with `bg` text, 100 px wide), "Edit" (64 px) and the theme button (30 px square). Other buttons are
+  with `bg` text, 100 px wide), "Export" (64 px), "Edit" (64 px) and the theme button (30 px square). Other buttons are
   30 px high with a hairline border, a wash and 7 px corners.
 - **LOOK-803** The sidebar is `bg` with a hairline on its right. Its headings are "Views", "Scenarios"
   and "Tours". Each item is 32 px or taller with 7 px corners; the current one is lit with a wash and a

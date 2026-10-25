@@ -5,6 +5,16 @@ functional spec for each version is [docs/spec/](docs/spec/overview.md).
 
 ## Unreleased
 
+### Static exports
+
+- Export the current view fully expanded as PNG or PDF, with one scenario's stages and detailed
+  explanations and an optional authored component reference. Preview the selected audience and
+  format before downloading; export settings preserve the main reading state. Documents carry no
+  added application branding. PDF pages preserve the preview as images with non-selectable text.
+- Invalid edits can export the last valid diagram with a warning outside the file. Oversized
+  images offer PDF instead of silently clipping or shrinking text. Confluence Cloud is the target;
+  live Cloud import testing was explicitly excluded from acceptance.
+
 The Signal look and plain wording first ([decision 0007](docs/decisions/0007-signal-look.md)).
 
 ### Signal

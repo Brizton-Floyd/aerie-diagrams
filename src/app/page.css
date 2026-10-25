@@ -1672,3 +1672,154 @@ input:focus-visible,
     background-image: none;
   }
 }
+
+/* EXPORT-007: a modal preview keeps export controls separate from the reader's picture. */
+.export-dialog {
+  width: min(1220px, calc(100vw - 48px));
+  max-width: none;
+  height: calc(100vh - 64px);
+  max-height: none;
+  padding: 24px;
+  border: 1px solid var(--hair-2);
+  border-radius: 14px;
+  background: var(--aerie-surface);
+  color: var(--aerie-ink);
+  box-shadow: var(--lift-3);
+  overflow: auto;
+}
+.export-dialog::backdrop {
+  background: color-mix(in srgb, var(--aerie-bg) 78%, transparent);
+}
+.export-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: start;
+}
+.export-head h1 {
+  font-size: 23px;
+  margin: 0 0 9px;
+}
+.export-head p,
+.export-help {
+  font-size: 13px;
+  color: var(--aerie-muted);
+  margin: 0;
+}
+.export-head button {
+  white-space: nowrap;
+}
+.export-settings {
+  display: flex;
+  align-items: end;
+  gap: 18px;
+  margin: 24px 0;
+  flex-wrap: wrap;
+}
+.export-settings label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 13px;
+}
+.export-settings select {
+  font: inherit;
+  color: var(--aerie-ink);
+  background: var(--aerie-surface);
+  border: 1px solid var(--aerie-outline);
+  border-radius: 7px;
+  height: 36px;
+  padding: 0 10px;
+  max-width: 300px;
+}
+.export-settings .export-reference {
+  flex-direction: row;
+  align-items: center;
+  height: 36px;
+}
+.export-reference input {
+  accent-color: var(--aerie-accent);
+  width: 16px;
+  height: 16px;
+}
+.export-warning {
+  padding: 12px 16px;
+  border: 1px solid var(--aerie-accent);
+  background: var(--aerie-accent-soft);
+  color: var(--aerie-accent-ink);
+  border-radius: 8px;
+  font-size: 14px;
+}
+.export-progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 48px;
+}
+.export-status {
+  font-size: 13px;
+  color: var(--aerie-muted);
+  white-space: normal;
+}
+.export-preview {
+  background: var(--wash);
+  border: 1px solid var(--hair-2);
+  border-radius: 8px;
+  min-height: 180px;
+  max-height: calc(100vh - 395px);
+  overflow: auto;
+  padding: 18px;
+  margin: 12px 0 16px;
+}
+.export-preview figure {
+  margin: 0 auto 20px;
+  max-width: 100%;
+  width: fit-content;
+}
+.export-preview img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  background: var(--aerie-surface);
+  box-shadow: var(--lift-1);
+}
+.export-preview figcaption {
+  font-size: 12px;
+  padding-top: 8px;
+  color: var(--aerie-muted);
+}
+.export-dialog .export-download {
+  white-space: nowrap;
+}
+.export-dialog :focus-visible {
+  outline: 2px solid var(--aerie-accent);
+  outline-offset: 3px;
+}
+
+.export-preview.actual-size figure,
+.export-preview.actual-size img {
+  max-width: none;
+}
+
+/* Fixed chrome widths keep hidden-text screenshot geometry independent of platform glyphs. */
+.tool.export {
+  width: 64px;
+}
+.export-settings select {
+  width: 180px;
+}
+.export-settings #export-flow {
+  width: 240px;
+}
+.export-settings .export-reference {
+  width: 230px;
+}
+.export-head > .tool {
+  width: 112px;
+  flex-shrink: 0;
+}
+.export-progress > .tool {
+  width: 136px;
+  flex-shrink: 0;
+}

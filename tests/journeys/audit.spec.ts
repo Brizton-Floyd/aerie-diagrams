@@ -70,9 +70,14 @@ test('INT-001, LOOK-801 and LOOK-802 the top bar, the sidebar, the stage and the
   expect(side).toMatchObject({ x: 0, y: 52, width: 232 });
   expect(stage).toMatchObject({ x: 232, y: 52, width: 1600 - 232 - 368 });
   expect(panel).toMatchObject({ x: 1600 - 368, y: 52, width: 368 });
-  // LOOK-802: the wordmark and breadcrumb, then Copy link, Edit and the theme button.
+  // LOOK-802: the wordmark and breadcrumb, then Copy link, Export, Edit and the theme button.
   await expect(page.getByRole('tablist')).toHaveCount(0);
-  await expect(page.locator('header.top .tools button')).toHaveText(['Copy link', 'Edit', '']);
+  await expect(page.locator('header.top .tools button')).toHaveText([
+    'Copy link',
+    'Export',
+    'Edit',
+    '',
+  ]);
   await expect(page.locator('header.top .tool.theme')).toHaveAccessibleName(
     'Switch to the light theme',
   );

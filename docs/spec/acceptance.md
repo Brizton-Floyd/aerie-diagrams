@@ -425,3 +425,13 @@ uploads. Edited-model journeys restore the last good picture with its invalid dr
 preserve the original source for discard, including repeated returns after reopening an invalid draft. Further journeys check same-name editor drafts and
 closing the old editor without losing pending text on a model change. Source retention is transient; reload recovery remains
 separate.
+
+## Static export (post-v1)
+
+| Suite    | What it proves                                                                                                | Requirements             |
+| -------- | ------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| unit     | expanded document, authored scenario/reference content, audiences, safe filenames, pagination and limits      | EXPORT-001 to EXPORT-005 |
+| journeys | actual PNG/PDF downloads, preview controls, invalid drafts, failure handling, keyboard and state preservation | EXPORT-006 to EXPORT-010 |
+
+The target is Confluence Cloud, but the user explicitly excluded live upload testing from acceptance.
+Local file inspection does not claim a verified import into the user's instance.

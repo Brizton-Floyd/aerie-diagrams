@@ -2,10 +2,15 @@
 export function downloadModel(path: string, source: string): void {
   const name = path.split('/').pop() ?? '';
   const base = name.replace(/\.aerie$/, '');
-  const url = URL.createObjectURL(new Blob([source], { type: 'text/plain' }));
+  downloadBlob(`${base === '' ? 'model' : base}.aerie`, new Blob([source], { type: 'text/plain' }));
+}
+
+/** Downloads a complete file and releases its temporary URL after navigation starts. */
+export function downloadBlob(name: string, blob: Blob): void {
+  const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = `${base === '' ? 'model' : base}.aerie`;
+  link.download = name;
   document.body.append(link);
   link.click();
   link.remove();

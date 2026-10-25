@@ -23,6 +23,7 @@ export interface DocSet {
 
 const SPEC_DIR = 'docs/spec/';
 const PREFIXES = [
+  'EXPORT',
   'SCOPE',
   'LANG',
   'MODEL',

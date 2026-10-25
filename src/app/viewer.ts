@@ -63,6 +63,7 @@ import {
 import { FIRST_SAMPLE, SAMPLES } from './samples.ts';
 import { Autoplay, ScenarioPanel, captionOf, type ScenarioActions } from './scenario.ts';
 import { ShareDialog } from './share.ts';
+import type { ExportPanel } from './export-panel.ts';
 import { Stage, type Arrival, type Showing } from './stage.ts';
 import { TravelControls, namesThatFit, type TravelActions } from './travel.ts';
 import { Visits, entryOf, visitKey, visitName, type CameraState, type Shelf } from './visits.ts';
@@ -221,6 +222,8 @@ export class Viewer {
   private readonly themeButton: HTMLButtonElement;
   private readonly copyButton: HTMLButtonElement;
   private readonly sharing = new ShareDialog();
+  private exportPanel: ExportPanel | null = null;
+  private readonly exportButton: HTMLButtonElement;
   private copyTimer = 0;
   private staleTimer = 0;
   private readonly motionBox: HTMLInputElement;
@@ -273,12 +276,23 @@ export class Viewer {
       },
       ['Copy link'],
     );
+    this.exportButton = h(
+      'button',
+      {
+        type: 'button',
+        class: 'tool export',
+        onclick: () => {
+          void this.exportDiagram();
+        },
+      },
+      ['Export'],
+    );
     const brand = h('div', { class: 'brand' }, [h('span', { class: 'word' }, ['Aerie'])]);
     brand.insertAdjacentHTML('afterbegin', LOGO);
     const top = h('header', { class: 'top' }, [
       brand,
       this.crumb,
-      h('div', { class: 'tools' }, [this.copyButton, this.themeButton]),
+      h('div', { class: 'tools' }, [this.copyButton, this.exportButton, this.themeButton]),
       this.spoken,
     ]);
     this.motionBox = h('input', {
@@ -358,6 +372,34 @@ export class Viewer {
     this.revealed = Math.max(0, Number(SESSION.get(DEPTH_KEY) ?? 0) || 0);
     const motion = remembered(MOTION_KEY);
     this.setMotion(motion === 'reduce' || motion === 'full' ? motion : null, false);
+  }
+
+  /** Export an isolated, validated snapshot; never change the main picture to open its boxes. */
+  private async exportDiagram(): Promise<void> {
+    this.exportButton.disabled = true;
+    try {
+      const { ExportPanel } = await import('./export-panel.ts');
+      if (this.opened === null || this.picture === null) {
+        this.say('Fix the model errors before exporting. There is no valid diagram to export yet.');
+        return;
+      }
+      if (this.exportPanel === null) {
+        this.exportPanel = new ExportPanel();
+        this.exportPanel.element.addEventListener('close', () => {
+          this.exportButton.focus();
+        });
+        this.root.append(this.exportPanel.element);
+      }
+      this.exportPanel.show({
+        ...this.opened,
+        picture: this.picture,
+        invalid: check(this.currentSource).model === null,
+      });
+    } catch {
+      this.say('Could not load the exporter. Reload the page and try again.');
+    } finally {
+      this.exportButton.disabled = false;
+    }
   }
 
   // ------------------------------------------------------------ preferences
@@ -858,6 +900,9 @@ export class Viewer {
 
   /** The keyboard (INT-004, INT-102, INT-201, INT-352, INT-553, INT-605, INT-703, INT-902). */
   private key(event: KeyboardEvent): void {
+    // A download can leave focus outside a modal while its encoding button is disabled.
+    // Never let those keys change the picture behind an open dialog.
+    if (this.root.querySelector('dialog[open]') !== null) return;
     if (event.defaultPrevented || event.ctrlKey || event.metaKey) return;
     if (inTextField(event.target)) return;
     if (event.altKey) {

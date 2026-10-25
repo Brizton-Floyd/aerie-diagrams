@@ -72,7 +72,8 @@ new decision.
 - Checking a model against the code or infrastructure it describes, and showing change over time.
   Checking against the code comes after v1 ([decision 0006](../decisions/0006-drift-detection.md),
   [drift.md](drift.md)).
-- Embedding a diagram in other pages, and exporting to images or documents.
+- Embedding an interactive diagram in other pages. Static PNG/PDF exporting is a post-v1 addition
+  specified in [export.md](export.md).
 - Search, comments, accounts, hosting and real-time collaboration.
 - Models split across several files.
 - Layouts for phones and narrow windows (v1 is designed for windows from 1280 x 720 up).
@@ -90,6 +91,7 @@ new decision.
 | [interaction.md](interaction.md)   | everything a reader and an author do                                      | `INT`                            |
 | [acceptance.md](acceptance.md)     | test suites per slice, and the browser journeys                           | `ACC`, `JOURNEY`                 |
 | [claude-skill.md](claude-skill.md) | the Aerie skill for Claude                                                | `SKILL`                          |
+| [export.md](export.md)             | static PNG/PDF documents and preview                                      | `EXPORT`                         |
 | [drift.md](drift.md)               | drift detection: checking a model against the code (after v1)             | `DRIFT`                          |
 
 - **Requirements** are the numbered statements, written in bold as `PREFIX-nnn` at the start of a
@@ -141,12 +143,13 @@ they can be reviewed, and each can be changed by a pull request to this spec.
 
 ## How the decisions map to this spec
 
-| Decision                                                         | Where it is specified                                                                                                                         |
-| ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| [0001 Clean room](../decisions/0001-clean-room.md)               | this spec's sources; [acceptance.md](acceptance.md) (Aerie compared only with Aerie)                                                          |
-| [0002 Audience levels](../decisions/0002-audience-levels.md)     | LANG-101 to LANG-106, section 6 of [language.md](language.md); MODEL-101 to MODEL-106; LAYOUT-201 to LAYOUT-205; RULE-005; INT-101 to INT-106 |
-| [0003 Lines](../decisions/0003-lines-language.md)                | [language.md](language.md); MODEL-301 to MODEL-306                                                                                            |
-| [0004 ELK hybrid layout](../decisions/0004-elk-hybrid-layout.md) | [layout.md](layout.md)                                                                                                                        |
-| [0005 Contour](../decisions/0005-contour-look.md)                | superseded by 0007                                                                                                                            |
-| [0006 Drift detection](../decisions/0006-drift-detection.md)     | [drift.md](drift.md); LANG-751 to LANG-759 in section 11 of [language.md](language.md); MODEL-006                                             |
-| [0007 Signal](../decisions/0007-signal-look.md)                  | [look.md](look.md); INT-101 to INT-106, INT-204, INT-207 and INT-208; LANG-104                                                                |
+| Decision                                                                                          | Where it is specified                                                                                                                         |
+| ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| [0001 Clean room](../decisions/0001-clean-room.md)                                                | this spec's sources; [acceptance.md](acceptance.md) (Aerie compared only with Aerie)                                                          |
+| [0002 Audience levels](../decisions/0002-audience-levels.md)                                      | LANG-101 to LANG-106, section 6 of [language.md](language.md); MODEL-101 to MODEL-106; LAYOUT-201 to LAYOUT-205; RULE-005; INT-101 to INT-106 |
+| [0003 Lines](../decisions/0003-lines-language.md)                                                 | [language.md](language.md); MODEL-301 to MODEL-306                                                                                            |
+| [0004 ELK hybrid layout](../decisions/0004-elk-hybrid-layout.md)                                  | [layout.md](layout.md)                                                                                                                        |
+| [0005 Contour](../decisions/0005-contour-look.md)                                                 | superseded by 0007                                                                                                                            |
+| [0006 Drift detection](../decisions/0006-drift-detection.md)                                      | [export.md](export.md)                                                                                                                        | static PNG/PDF documents and preview | `EXPORT` |
+| [drift.md](drift.md); LANG-751 to LANG-759 in section 11 of [language.md](language.md); MODEL-006 |
+| [0007 Signal](../decisions/0007-signal-look.md)                                                   | [look.md](look.md); INT-101 to INT-106, INT-204, INT-207 and INT-208; LANG-104                                                                |
