@@ -50,6 +50,11 @@ not copied into export content. No Confluence access or upload test is required 
 
 ## URLs
 
+- https://github.com/Brizton-Floyd/aerie-diagrams/pull/107 - created implementation PR, reviewed status and check results.
+- https://github.com/Brizton-Floyd/aerie-diagrams/actions - CI run state after making the repository public.
+- https://github.com/Brizton-Floyd/aerie-diagrams/actions/runs/40146480552 - initial pull-request CI started successfully.
+- https://github.com/Brizton-Floyd/aerie-diagrams/actions/runs/40146477637 - initial branch-push CI started successfully.
+
 - https://github.com/Brizton-Floyd/aerie-diagrams/issues/102 - completed planning map.
 - https://github.com/Brizton-Floyd/aerie-diagrams/issues/104 - canonical content resolution.
 - https://github.com/Brizton-Floyd/aerie-diagrams/issues/106 - canonical first-release resolution and local-only acceptance.
