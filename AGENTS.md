@@ -181,6 +181,10 @@ has the steps for opening a model and choosing a view and audience with clicks).
   the glass controls (the 1 px ring shadow on an 8 px or round corner) a few pixels differently, so
   a local macOS run of `test:screenshots` may report a handful of differing pixels; run it in the
   Playwright image to judge. Screenshot runs turn `backdrop-filter` off for the same reason.
+- Static export is `src/export/index.ts` (pure authored document and measured SVG pages); browser
+  preview/encoders are `src/app/export-panel.ts` and `export-files.ts`. PNG/PDF share document content
+  and bundle fonts; production exports never use the disposable prototype's illustrative notes.
+  The behavior and local-only Confluence Cloud acceptance are in `docs/spec/export.md`.
 - The page (`src/app/`): `viewer.ts` holds the picture and the keys, `stage.ts` shows drawings (in
   place when the layout is the same, else gliding by `transitionPlan`) and runs the camera,
   `panel.ts` builds the side panel. In fit mode the camera follows the container the reader opened

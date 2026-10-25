@@ -6,7 +6,7 @@ Aerie is diagram-as-code for architecture. Engineers describe a system once, in 
 every reader explores it as an interactive diagram at their own level: the same model reads differently
 for an executive, a manager and an engineer, and opens deeper in place when someone wants more detail.
 
-Private. The Lines language, the interactive viewer in the Signal look (dark, with a
+The Lines language, the interactive viewer in the Signal look (dark, with a
 light theme), plain wording first with "More technical" on demand, scenarios and presenter mode, the live editor and watch mode, the Aerie skill for Claude, and drift
 detection, which checks a model against the code it describes, on the command line and on every pull
 request ([CHANGELOG.md](CHANGELOG.md)).
@@ -40,6 +40,19 @@ Space to play, Esc to end), or "Take the tour" to present it full screen. The su
 bar switches to the light theme for bright rooms and projectors. The address always holds what you see, so "Copy
 link" shares the exact picture. "Edit" opens the live split editor beside the diagram; you can
 also open a local `.aerie` file from the sidebar.
+
+### Export a diagram
+
+Choose **Export** to preview the current view with all nested containers open. Pick a scenario,
+wording and PNG or PDF, and optionally include the model's full component reference. Every stage
+and detailed scenario step is included. The document adds no application branding, and export
+settings leave your reading picture unchanged.
+
+PNG is one image; PDF paginates long explanations and reference material. PDF pages preserve the
+preview as images, so their text is not selectable. Oversized PNGs offer PDF rather than cropping
+content. Invalid edits can export the last valid model with a warning outside the file. Files are
+prepared locally. Confluence Cloud is the target; a live import into a Cloud instance has not been
+verified. Supported limits and behavior are in [the export specification](docs/spec/export.md).
 
 ### Write a model and watch it
 

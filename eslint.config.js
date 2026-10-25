@@ -68,6 +68,23 @@ export default defineConfig(
     },
   },
   {
+    files: ['src/export/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [ELK_PATH],
+          patterns: [
+            NODE,
+            { regex: String.raw`^\.\./(?!(?:lines|model|layout|render)/index\.ts$)` },
+            ELK_PATTERN,
+          ],
+        },
+      ],
+      'no-restricted-globals': PURE_GLOBALS,
+    },
+  },
+  {
     // The Lines language is pure TypeScript: no DOM and no Node (docs/spec/language.md).
     files: ['src/lines/**/*.ts'],
     rules: {
