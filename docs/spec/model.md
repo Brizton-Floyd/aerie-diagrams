@@ -28,10 +28,13 @@ Requirement ids: `MODEL-nnn`. Conventions are in [overview.md](overview.md#readi
   "Outside the system" for `external`, otherwise its first tag with hyphens read as spaces and the
   first letter in upper case (`data-pipeline` gives "Data pipeline"), and "Element" when it has no
   tags. A nested element's label adds " in " and its parent's name: "Service in Lotto suite".
-- **MODEL-006** An element's `code` units, the model's `system` and its `ignores` (LANG-751) mean
-  nothing to a reader. Two models that differ only in them have the same views, drawn sets, edges,
-  labels, scenarios, walkthrough pictures, layouts and drawings, for every audience and zoom state.
-  They are read only by drift detection ([drift.md](drift.md)).
+- **MODEL-006** Two models that differ only in an element's `code` units, the model's `system`
+  and its `ignores` (LANG-751) have the same views, drawn sets, edges, labels, scenarios,
+  walkthrough pictures, layouts and drawings, for every audience and zoom state. Drift detection
+  reads their checking semantics ([drift.md](drift.md)). The post-v1 reader may search and list
+  authored code units as code references in an element's details; displaying those declarations
+  is not evidence that the model was checked against code ([reader-tools.md](reader-tools.md),
+  INT-1001 and INT-1033).
 
 ## Audience resolution
 

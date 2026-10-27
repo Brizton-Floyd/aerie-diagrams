@@ -110,7 +110,7 @@ test('INT-851 INT-855 the page shows the file, offers no other model and has no 
   await openPage(page);
   await expect(page.locator('svg.aerie')).toHaveAttribute('data-view', 'big-picture');
   await expect(page.getByRole('button', { name: 'Edit' })).toHaveCount(0);
-  await expect(page.getByLabel('Model')).toHaveCount(0);
+  await expect(page.getByRole('combobox', { name: 'Model', exact: true })).toHaveCount(0);
   await expect(page.getByLabel('Open your own .aerie file')).toHaveCount(0);
   expect(new URL(page.url()).search).toBe('');
 });

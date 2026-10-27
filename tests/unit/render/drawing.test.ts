@@ -57,14 +57,19 @@ describe('type', () => {
     expect(font('sans-600', 14)).toBe('600 14px "Inter", system-ui, sans-serif');
     expect(font('sans-500', 13.5)).toBe('500 13.5px "Inter", system-ui, sans-serif');
     expect(font('mono-400', 13.5)).toBe('400 13.5px "JetBrains Mono", ui-monospace, monospace');
-    // The page serves the font files itself (main.ts imports them from the Fontsource packages),
+    // Both readers import the same bundled Fontsource faces through their shared appearance.
     // never from a font service, and the licences ship in the third-party notices.
     const main = read('src/main.ts');
-    for (const family of ['inter', 'jetbrains-mono']) {
-      expect(main).toContain(`import '@fontsource/${family}/`);
+    const appearance = read('src/app/appearance.ts');
+    for (const entry of [main, read('src/portable.ts')]) {
+      expect(entry).toContain("from './app/appearance.ts'");
+      expect(entry).toContain('installAppearance()');
     }
-    expect(main).not.toContain('@fontsource/source-');
-    expect(main + read('index.html') + css + read('src/app/page.css')).not.toMatch(
+    for (const family of ['inter', 'jetbrains-mono']) {
+      expect(appearance).toContain(`import '@fontsource/${family}/`);
+    }
+    expect(appearance).not.toContain('@fontsource/source-');
+    expect(main + appearance + read('index.html') + css + read('src/app/page.css')).not.toMatch(
       /fonts\.googleapis|fonts\.gstatic|https?:\/\//,
     );
     const notices = readFileSync(join(ROOT, 'THIRD_PARTY_NOTICES.md'), 'utf8');

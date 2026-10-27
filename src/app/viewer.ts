@@ -14,6 +14,8 @@
 // (editing.ts) and watch mode (watching.ts) give it new versions of the model.
 import {
   check,
+  followElement,
+  locateElement,
   closeContainer,
   normalisePicture,
   openContainer,
@@ -32,8 +34,13 @@ import {
   type Picture,
 } from '../model/index.ts';
 import type { Id, Model } from '../lines/index.ts';
-import { CAMERA, Layouter, overviewShapes, trailShapes } from '../layout/index.ts';
-import { workerEngine } from '../layout/elk/worker.ts';
+import {
+  CAMERA,
+  Layouter,
+  overviewShapes,
+  trailShapes,
+  type LayoutEngine,
+} from '../layout/index.ts';
 import {
   BADGE_TEXT,
   DEFAULT_THEME,
@@ -63,7 +70,10 @@ import {
 import { FIRST_SAMPLE, SAMPLES } from './samples.ts';
 import { Autoplay, ScenarioPanel, captionOf, type ScenarioActions } from './scenario.ts';
 import { ShareDialog } from './share.ts';
-import type { ExportPanel } from './export-panel.ts';
+import type { ExportSnapshot } from './export-panel.ts';
+import type { PortableSnapshot } from './portable-html.ts';
+import { SearchDialog } from './search.ts';
+import './search.css';
 import { Stage, type Arrival, type Showing } from './stage.ts';
 import { TravelControls, namesThatFit, type TravelActions } from './travel.ts';
 import { Visits, entryOf, visitKey, visitName, type CameraState, type Shelf } from './visits.ts';
@@ -187,9 +197,10 @@ interface Opened {
 
 export class Viewer {
   private readonly root: HTMLElement;
-  private readonly engine = workerEngine();
+  private readonly engine: LayoutEngine;
   /** In watch mode the model is the author's file, so the page offers no other (INT-002). */
   private readonly watching: boolean;
+  private readonly portable: boolean;
   private path = '';
   private source = '';
   /** The latest text, including a local draft that has not checked cleanly yet. */
@@ -222,8 +233,10 @@ export class Viewer {
   private readonly themeButton: HTMLButtonElement;
   private readonly copyButton: HTMLButtonElement;
   private readonly sharing = new ShareDialog();
-  private exportPanel: ExportPanel | null = null;
-  private readonly exportButton: HTMLButtonElement;
+  private readonly finder = new SearchDialog((id) => {
+    this.find(id);
+  });
+  private readonly findButton: HTMLButtonElement;
   private copyTimer = 0;
   private staleTimer = 0;
   private readonly motionBox: HTMLInputElement;
@@ -251,9 +264,14 @@ export class Viewer {
   /** INT-553 and INT-555: Back, Forward and the recent visits, at the stage's top left. */
   private readonly travel: TravelControls;
 
-  constructor(root: HTMLElement, options: { watching?: boolean } = {}) {
+  constructor(
+    root: HTMLElement,
+    options: { engine: LayoutEngine; watching?: boolean; portable?: boolean; theme?: Theme },
+  ) {
     this.root = root;
+    this.engine = options.engine;
     this.watching = options.watching ?? false;
+    this.portable = options.portable ?? false;
     this.crumb = h('div', { class: 'crumb' });
     this.crumbSwap = new Swap(this.crumb);
     // INT-105: a screen reader hears each change of wording.
@@ -276,23 +294,24 @@ export class Viewer {
       },
       ['Copy link'],
     );
-    this.exportButton = h(
+    this.findButton = h(
       'button',
       {
         type: 'button',
-        class: 'tool export',
+        class: 'tool find-element',
+        title: 'Find an element (Ctrl or Command + K)',
         onclick: () => {
-          void this.exportDiagram();
+          this.openFinder();
         },
       },
-      ['Export'],
+      ['Find element'],
     );
     const brand = h('div', { class: 'brand' }, [h('span', { class: 'word' }, ['Aerie'])]);
     brand.insertAdjacentHTML('afterbegin', LOGO);
     const top = h('header', { class: 'top' }, [
       brand,
       this.crumb,
-      h('div', { class: 'tools' }, [this.copyButton, this.exportButton, this.themeButton]),
+      h('div', { class: 'tools' }, [this.findButton, this.copyButton, this.themeButton]),
       this.spoken,
     ]);
     this.motionBox = h('input', {
@@ -350,7 +369,7 @@ export class Viewer {
       h('label', { class: 'motion' }, [this.motionBox, ' Reduce motion']),
     ]);
     this.body = h('div', { class: 'body' }, [this.sideWrap, this.stage.element, this.panel]);
-    root.replaceChildren(top, this.body);
+    root.replaceChildren(top, this.body, this.finder.element);
     if (!this.watching) root.append(this.sharing.element);
     document.addEventListener('keydown', (event) => {
       this.key(event);
@@ -368,38 +387,10 @@ export class Viewer {
       this.endPresentation();
     });
     const theme = remembered(THEME_KEY);
-    this.applyTheme(theme === 'light' ? 'light' : DEFAULT_THEME);
+    this.applyTheme(options.theme ?? (theme === 'light' ? 'light' : DEFAULT_THEME));
     this.revealed = Math.max(0, Number(SESSION.get(DEPTH_KEY) ?? 0) || 0);
     const motion = remembered(MOTION_KEY);
     this.setMotion(motion === 'reduce' || motion === 'full' ? motion : null, false);
-  }
-
-  /** Export an isolated, validated snapshot; never change the main picture to open its boxes. */
-  private async exportDiagram(): Promise<void> {
-    this.exportButton.disabled = true;
-    try {
-      const { ExportPanel } = await import('./export-panel.ts');
-      if (this.opened === null || this.picture === null) {
-        this.say('Fix the model errors before exporting. There is no valid diagram to export yet.');
-        return;
-      }
-      if (this.exportPanel === null) {
-        this.exportPanel = new ExportPanel();
-        this.exportPanel.element.addEventListener('close', () => {
-          this.exportButton.focus();
-        });
-        this.root.append(this.exportPanel.element);
-      }
-      this.exportPanel.show({
-        ...this.opened,
-        picture: this.picture,
-        invalid: check(this.currentSource).model === null,
-      });
-    } catch {
-      this.say('Could not load the exporter. Reload the page and try again.');
-    } finally {
-      this.exportButton.disabled = false;
-    }
   }
 
   // ------------------------------------------------------------ preferences
@@ -448,12 +439,14 @@ export class Viewer {
     move: HistoryMove | 'history' = 'replace',
     restored?: Checked,
   ): Checked {
+    this.finder.close();
     this.beforeModelOpening?.();
     this.rememberPendingSource();
     // INT-501: the `model` query parameter names a bundled diagram, written as it is; a local file
     // has no address of its own.
     const url = new URL(location.href);
-    url.search = SAMPLES.has(path) && !this.watching ? `?model=${encodeURI(path)}` : '';
+    url.search =
+      SAMPLES.has(path) && !this.watching && !this.portable ? `?model=${encodeURI(path)}` : '';
     url.hash = link;
     // Finish the old drawing while its visit still owns camera updates. Different models never
     // glide between drawings: their ids do not identify the same elements.
@@ -515,6 +508,39 @@ export class Viewer {
     };
   }
 
+  /** INT-1021 and INT-1023: validate even a draft waiting for its debounced editor check. */
+  exportSnapshot(): PortableSnapshot | null {
+    if (this.opened === null || this.picture === null) {
+      this.say('Open a valid model before exporting HTML.');
+      return null;
+    }
+    const checked = check(this.currentSource);
+    if (checked.model === null) {
+      this.say(
+        'Fix the model’s errors before exporting HTML. Your last good diagram is still visible.',
+      );
+      return null;
+    }
+    const semantics = new Semantics(plainFirst(checked.model));
+    return {
+      path: this.path,
+      source: this.currentSource,
+      fragment: writeFragment(semantics, this.picture),
+      theme: this.currentTheme(),
+      title: semantics.title(this.picture.audience) ?? checked.model.id ?? 'Aerie model',
+    };
+  }
+
+  /** EXPORT-007: capture the last valid drawing without changing the reader's picture. */
+  staticExportSnapshot(): ExportSnapshot | null {
+    if (this.opened === null || this.picture === null) return null;
+    return {
+      ...this.opened,
+      picture: this.picture,
+      invalid: check(this.currentSource).model === null,
+    };
+  }
+
   /** Close an old editor before its model is replaced, including a browser Back/Forward. */
   onModelOpening(close: () => void): void {
     this.beforeModelOpening = close;
@@ -553,6 +579,7 @@ export class Viewer {
    * stage; with nothing earlier to show, the stage lists the errors instead (INT-003).
    */
   revise(checked: Checked): void {
+    this.finder.close();
     this.changedSource(checked.source);
     if (this.visits !== null)
       this.rememberedModels.set(this.visits.id, { path: this.path, source: this.source, checked });
@@ -613,6 +640,11 @@ export class Viewer {
   /** Adds a button to the top bar, before the theme button (LOOK-802). */
   addTool(tool: HTMLElement): void {
     this.themeButton.before(tool);
+  }
+
+  /** Attach a host-provided dialog without loading its controller in the portable reader. */
+  addDialog(dialog: HTMLDialogElement): void {
+    this.root.append(dialog);
   }
 
   /** INT-801: shows the split editor's pane where the sidebar was, or the sidebar again. */
@@ -705,11 +737,12 @@ export class Viewer {
       return;
     }
     const asked = new URL(location.href).searchParams.get('model');
-    if (!this.watching && asked !== null && !SAMPLES.has(asked)) {
+    if (!this.watching && !this.portable && asked !== null && !SAMPLES.has(asked)) {
       this.missingModel(asked);
       return;
     }
-    const sample = asked === null || this.watching ? undefined : SAMPLES.get(asked);
+    const sample =
+      asked === null || this.watching || this.portable ? undefined : SAMPLES.get(asked);
     if (asked !== null && asked !== this.path && sample !== undefined) {
       this.open(asked, sample, location.hash, 'history');
       return;
@@ -803,7 +836,7 @@ export class Viewer {
 
   /** Watch URLs supply their source; ordinary URLs supply only unchanged bundled models. */
   private get canCopyLink(): boolean {
-    return this.watching || SAMPLES.get(this.path) === this.currentSource;
+    return this.portable || this.watching || SAMPLES.get(this.path) === this.currentSource;
   }
 
   private refreshSharing(): void {
@@ -872,6 +905,20 @@ export class Viewer {
     this.change(select(opened.semantics, picture, id), { reveal: id });
   }
 
+  private openFinder(): void {
+    if (this.opened !== null && this.picture !== null)
+      this.finder.show(this.opened.semantics, this.picture.audience);
+  }
+
+  /** INT-1003: a search result reveals an exact element and becomes a normal reader visit. */
+  private find(id: Id): void {
+    if (this.opened === null || this.picture === null) return;
+    const next = locateElement(this.opened.semantics, this.picture, id);
+    if (next === this.picture) return;
+    this.autoplay.stop();
+    this.change(next, { reveal: id });
+  }
+
   /** INT-302: opens a closed container in place, or closes an open one. */
   private toggle(id: Id): void {
     const opened = this.opened;
@@ -903,6 +950,17 @@ export class Viewer {
     // A download can leave focus outside a modal while its encoding button is disabled.
     // Never let those keys change the picture behind an open dialog.
     if (this.root.querySelector('dialog[open]') !== null) return;
+    if (
+      !event.defaultPrevented &&
+      (event.ctrlKey || event.metaKey) &&
+      !event.altKey &&
+      event.code === 'KeyK' &&
+      !inTextField(event.target)
+    ) {
+      event.preventDefault();
+      this.openFinder();
+      return;
+    }
     if (event.defaultPrevented || event.ctrlKey || event.metaKey) return;
     if (inTextField(event.target)) return;
     if (event.altKey) {
@@ -1077,6 +1135,11 @@ export class Viewer {
 
   /** The actions of the side panel's links and buttons, on the picture as it is when used. */
   private readonly panelActions: PanelActions = {
+    follow: (id, view) => {
+      if (this.opened === null || this.picture === null) return;
+      const next = followElement(this.opened.semantics, this.picture, id, view);
+      if (next !== this.picture) this.change(next, { reveal: id });
+    },
     overview: (scenario) => {
       this.flowActions.show(scenario, 1);
     },
@@ -1484,6 +1547,7 @@ export class Viewer {
   }
 
   private renderControls(path: string): void {
+    this.findButton.disabled = this.opened === null || this.picture === null;
     const opened = this.opened;
     const picture = this.picture;
     const models = h(
@@ -1516,7 +1580,7 @@ export class Viewer {
     });
     // INT-404: choosing another model is a quiet footer under the lists, not their heading.
     this.sideFoot.replaceChildren(
-      ...(this.watching
+      ...(this.watching || this.portable
         ? []
         : [
             h('p', { class: 'foot-label' }, ['Model']),
@@ -1694,8 +1758,8 @@ function playingOf(picture: Picture | null): Extract<Activity, { kind: 'playing'
 }
 
 /** Starts the requested model at its picture, or explains an unavailable model before showing a fallback. */
-export function start(root: HTMLElement): Viewer {
-  const viewer = new Viewer(root);
+export function start(root: HTMLElement, engine: LayoutEngine): Viewer {
+  const viewer = new Viewer(root, { engine });
   const asked = new URL(location.href).searchParams.get('model');
   if (asked !== null && !SAMPLES.has(asked)) viewer.missingModel(asked);
   else {

@@ -16,3 +16,4 @@ on 2026-10-23, after v1; 0007 and 0008 on 2026-10-24.
 | [0006](0006-drift-detection.md)     | Drift detection: checking a model against the code   |
 | [0007](0007-signal-look.md)         | Signal: the visual identity, and plain wording first |
 | [0008](0008-authored-main-flows.md) | Authored main flows and high-level stages            |
+| [0009](0009-reader-tools.md)        | Reader tools, portable HTML, and documentation       |

@@ -1,0 +1,28 @@
+/* INT-1031: authored documentation keeps the panel's existing type and theme. */
+.doc-link {
+  color: var(--aerie-accent-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+.panel .doc-list {
+  margin: 8px 0 12px;
+  padding-left: 22px;
+  list-style: revert;
+}
+.panel .doc-list li {
+  margin-bottom: 4px;
+}
+.panel .doc-heading {
+  margin: 14px 0 8px;
+}
+.panel .doc-code {
+  margin: 8px 0 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--aerie-rule);
+  border-radius: 6px;
+  overflow-x: auto;
+  white-space: pre;
+  background: var(--aerie-bg);
+  color: var(--aerie-ink);
+}

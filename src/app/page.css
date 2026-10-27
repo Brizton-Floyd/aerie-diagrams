@@ -1063,11 +1063,13 @@ input:focus-visible,
 .panel .name:hover {
   color: var(--aerie-accent-ink);
 }
-.panel .inside li {
+.panel .inside li,
+.panel .follow-views li {
   display: grid;
   margin-bottom: 6px;
 }
-.panel .inside .name {
+.panel .inside .name,
+.panel .follow-views .name {
   justify-self: start;
 }
 .panel .line {
@@ -1822,4 +1824,16 @@ input:focus-visible,
 .export-progress > .tool {
   width: 136px;
   flex-shrink: 0;
+}
+
+/* Portable publishing uses fixed chrome widths, including while its bundle loads. */
+.export-html {
+  width: 112px;
+}
+.code-reference-note {
+  color: var(--aerie-muted);
+  font-size: 12px;
+}
+.code-references {
+  overflow-wrap: anywhere;
 }

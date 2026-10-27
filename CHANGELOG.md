@@ -17,6 +17,22 @@ functional spec for each version is [docs/spec/](docs/spec/overview.md).
 
 The Signal look and plain wording first ([decision 0007](docs/decisions/0007-signal-look.md)).
 
+### Reader tools and portable publishing
+
+- **Find element**, Ctrl+K, and Command+K search names across every audience, ids, tags, and code
+  references. Choosing a result reveals it and records the picture in visit history.
+- A selected element's **See this element in** actions follow it into another view, preserving
+  its identity and wording. Ordinary sidebar view changes retain their default behavior.
+- **Export HTML** downloads a complete interactive model snapshot with its opening picture and
+  theme. The file works offline, including fonts and layout, with every audience, view, scenario,
+  and tour available. It has no editor or model picker; invalid source prevents export.
+- Descriptions support safe links, headings, flat lists, emphasis, and fenced code blocks in
+  the existing details panel. Authored code references are shown alongside them without implying
+  a successful drift check. The Lines grammar and canonical model remain compatible.
+
+See [decision 0009](docs/decisions/0009-reader-tools.md) and the
+[reader-tool requirements](docs/spec/reader-tools.md).
+
 ### Signal
 
 - Aerie looks like Signal: an instrument panel at night, with hairline cards on a near-black stage,

@@ -1,4 +1,5 @@
 // A small helper for building the page's controls.
+import { inlineProse } from './documentation.ts';
 
 type Child = Node | string | null | false | undefined;
 
@@ -28,16 +29,7 @@ export function h<K extends keyof HTMLElementTagNameMap>(
   return node;
 }
 
-/** Description text with `**bold**` and `` `code` `` spans, as safe DOM nodes. */
+/** Description text with safe inline documentation formatting. */
 export function prose(text: string): Node[] {
-  const out: Node[] = [];
-  for (const part of text.split(/(\*\*[^*]+\*\*|`[^`]+`)/)) {
-    if (part === '') continue;
-    if (part.startsWith('**') && part.endsWith('**'))
-      out.push(h('strong', {}, [part.slice(2, -2)]));
-    else if (part.startsWith('`') && part.endsWith('`'))
-      out.push(h('code', {}, [part.slice(1, -1)]));
-    else out.push(document.createTextNode(part));
-  }
-  return out;
+  return inlineProse(text);
 }

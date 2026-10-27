@@ -79,20 +79,34 @@ new decision.
 - Layouts for phones and narrow windows (v1 is designed for windows from 1280 x 720 up).
 - A colour per service, or any author choice of colours.
 
+## Post-v1 additions
+
+The exclusions above describe the original v1 scope. Static PNG/PDF document export expands the
+current view and includes authored scenario explanations and an optional component reference,
+as specified in [export.md](export.md).
+
+[Decision 0009](../decisions/0009-reader-tools.md) adds element search, explicit following of a
+selection across views, portable interactive HTML export, and richer documentation in the
+existing details panel. Their requirements are in [reader-tools.md](reader-tools.md). Portable
+HTML contains a complete model snapshot with an offline reader, opening at the captured picture.
+Accounts, hosting, and real-time collaboration remain outside this addition. Ordinary view
+changes retain their original default behavior.
+
 ## Reading this spec
 
-| Document                           | What it covers                                                            | Ids                              |
-| ---------------------------------- | ------------------------------------------------------------------------- | -------------------------------- |
-| [overview.md](overview.md)         | purpose, audiences, scope, conventions, choices this spec makes           | `SCOPE`                          |
-| [language.md](language.md)         | the Lines language, canonical model, errors, formatter, command line      | `LANG`, `E`/`W` diagnostic codes |
-| [model.md](model.md)               | containment, audience resolution, views, lifting, scenarios, walkthroughs | `MODEL`                          |
-| [layout.md](layout.md)             | the layout interface, ELK, the reserve, opening in place, trail, lanes    | `LAYOUT`, `RULE`, `SCORE`        |
-| [look.md](look.md)                 | Signal tokens, type, shapes, icons, the trail, motion                     | `LOOK`                           |
-| [interaction.md](interaction.md)   | everything a reader and an author do                                      | `INT`                            |
-| [acceptance.md](acceptance.md)     | test suites per slice, and the browser journeys                           | `ACC`, `JOURNEY`                 |
-| [claude-skill.md](claude-skill.md) | the Aerie skill for Claude                                                | `SKILL`                          |
-| [export.md](export.md)             | static PNG/PDF documents and preview                                      | `EXPORT`                         |
-| [drift.md](drift.md)               | drift detection: checking a model against the code (after v1)             | `DRIFT`                          |
+| Document                           | What it covers                                                             | Ids                              |
+| ---------------------------------- | -------------------------------------------------------------------------- | -------------------------------- |
+| [overview.md](overview.md)         | purpose, audiences, scope, conventions, choices this spec makes            | `SCOPE`                          |
+| [language.md](language.md)         | the Lines language, canonical model, errors, formatter, command line       | `LANG`, `E`/`W` diagnostic codes |
+| [model.md](model.md)               | containment, audience resolution, views, lifting, scenarios, walkthroughs  | `MODEL`                          |
+| [layout.md](layout.md)             | the layout interface, ELK, the reserve, opening in place, trail, lanes     | `LAYOUT`, `RULE`, `SCORE`        |
+| [look.md](look.md)                 | Signal tokens, type, shapes, icons, the trail, motion                      | `LOOK`                           |
+| [interaction.md](interaction.md)   | everything a reader and an author do                                       | `INT`                            |
+| [reader-tools.md](reader-tools.md) | post-v1 search, following, offline HTML publishing, and safe documentation | `INT`                            |
+| [acceptance.md](acceptance.md)     | test suites per slice, and the browser journeys                            | `ACC`, `JOURNEY`                 |
+| [claude-skill.md](claude-skill.md) | the Aerie skill for Claude                                                 | `SKILL`                          |
+| [export.md](export.md)             | static PNG/PDF documents and preview                                       | `EXPORT`                         |
+| [drift.md](drift.md)               | drift detection: checking a model against the code (after v1)              | `DRIFT`                          |
 
 - **Requirements** are the numbered statements, written in bold as `PREFIX-nnn` at the start of a
   list item. Each states one testable behaviour in the present tense ("is", "shows", "never moves").
@@ -143,13 +157,15 @@ they can be reviewed, and each can be changed by a pull request to this spec.
 
 ## How the decisions map to this spec
 
-| Decision                                                                                          | Where it is specified                                                                                                                         |
-| ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| [0001 Clean room](../decisions/0001-clean-room.md)                                                | this spec's sources; [acceptance.md](acceptance.md) (Aerie compared only with Aerie)                                                          |
-| [0002 Audience levels](../decisions/0002-audience-levels.md)                                      | LANG-101 to LANG-106, section 6 of [language.md](language.md); MODEL-101 to MODEL-106; LAYOUT-201 to LAYOUT-205; RULE-005; INT-101 to INT-106 |
-| [0003 Lines](../decisions/0003-lines-language.md)                                                 | [language.md](language.md); MODEL-301 to MODEL-306                                                                                            |
-| [0004 ELK hybrid layout](../decisions/0004-elk-hybrid-layout.md)                                  | [layout.md](layout.md)                                                                                                                        |
-| [0005 Contour](../decisions/0005-contour-look.md)                                                 | superseded by 0007                                                                                                                            |
-| [0006 Drift detection](../decisions/0006-drift-detection.md)                                      | [export.md](export.md)                                                                                                                        | static PNG/PDF documents and preview | `EXPORT` |
-| [drift.md](drift.md); LANG-751 to LANG-759 in section 11 of [language.md](language.md); MODEL-006 |
-| [0007 Signal](../decisions/0007-signal-look.md)                                                   | [look.md](look.md); INT-101 to INT-106, INT-204, INT-207 and INT-208; LANG-104                                                                |
+| Decision                                                         | Where it is specified                                                                                                                            |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [0001 Clean room](../decisions/0001-clean-room.md)               | this spec's sources; [acceptance.md](acceptance.md) (Aerie compared only with Aerie)                                                             |
+| [0002 Audience levels](../decisions/0002-audience-levels.md)     | LANG-101 to LANG-106, section 6 of [language.md](language.md); MODEL-101 to MODEL-106; LAYOUT-201 to LAYOUT-205; RULE-005; INT-101 to INT-106    |
+| [0003 Lines](../decisions/0003-lines-language.md)                | [language.md](language.md); MODEL-301 to MODEL-306                                                                                               |
+| [0004 ELK hybrid layout](../decisions/0004-elk-hybrid-layout.md) | [layout.md](layout.md)                                                                                                                           |
+| [0005 Contour](../decisions/0005-contour-look.md)                | superseded by 0007                                                                                                                               |
+| [0006 Drift detection](../decisions/0006-drift-detection.md)     | [drift.md](drift.md); LANG-751 to LANG-759 in section 11 of [language.md](language.md); MODEL-006                                                |
+| [0007 Signal](../decisions/0007-signal-look.md)                  | [look.md](look.md); INT-101 to INT-106, INT-204, INT-207 and INT-208; LANG-104                                                                   |
+| [0009 Reader tools](../decisions/0009-reader-tools.md)           | [reader-tools.md](reader-tools.md), INT-1001 to INT-1003, INT-1011, INT-1012, INT-1021 to INT-1024, INT-1031 to INT-1033; LANG-010 and MODEL-006 |
+
+Static PNG/PDF document export is specified in [export.md](export.md), EXPORT-001 to EXPORT-010.

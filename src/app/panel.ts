@@ -2,13 +2,16 @@
 // nothing selected it describes the view; with an element selected it explains that element for the
 // current audience and lists its relationships as sentences whose names are links.
 import type { Id } from '../lines/index.ts';
-import { proseFor, type Picture, type Semantics } from '../model/index.ts';
+import { elementViews, proseFor, type Picture, type Semantics } from '../model/index.ts';
 import { el, icon, scenarioTitle, toMarkup } from '../render/index.ts';
-import { h, prose } from './dom.ts';
+import { h } from './dom.ts';
+import { documentation } from './documentation.ts';
 import { layerContent, layersOf, modelAbout } from './peek.ts';
 
 /** What the panel's links and buttons do. */
 export interface PanelActions {
+  /** INT-1012: follow this element into another view. */
+  follow(id: Id, view: Id): void;
   /** Reveals and selects an element (MODEL-207). */
   select(id: Id): void;
   /** Opens or closes a container in place (INT-302). */
@@ -31,8 +34,7 @@ export const READ_IT =
 
 /** Description text as paragraphs. */
 function paragraphs(text: string | null, className: string): HTMLElement[] {
-  if (text === null) return [];
-  return text.split(/\n\n+/).map((para) => h('p', { class: className }, prose(para)));
+  return documentation(text, className);
 }
 
 /** A section of the panel under a heading, separated by a rule (LOOK-804). */
@@ -283,6 +285,47 @@ export function elementPanel(
             },
           },
           [isOpen ? 'Close it' : 'Open it here'],
+        ),
+      ]),
+    );
+  }
+  // INT-1012: changing view deliberately with this element keeps the selection.
+  const elsewhere = elementViews(semantics, id).filter((view) => view !== picture.view);
+  if (elsewhere.length > 0)
+    out.push(
+      section('See this element in', [
+        h(
+          'ul',
+          { class: 'follow-views' },
+          elsewhere.map((view) =>
+            h('li', {}, [
+              h(
+                'button',
+                {
+                  type: 'button',
+                  class: 'name',
+                  'data-follow-view': view,
+                  onclick: () => {
+                    actions.follow(id, view);
+                  },
+                },
+                [semantics.viewTitle(view, audience)],
+              ),
+            ]),
+          ),
+        ),
+      ]),
+    );
+  // INT-1033: authored code mappings provide context without claiming a drift check.
+  const codeUnits = semantics.tree.get(id).code;
+  if (codeUnits.length > 0) {
+    out.push(
+      section('Code references', [
+        h('p', { class: 'code-reference-note' }, ['Declared in this model.']),
+        h(
+          'ul',
+          { class: 'code-references' },
+          codeUnits.map((unit) => h('li', {}, [h('code', {}, [`${unit.kind}:${unit.name}`])])),
         ),
       ]),
     );

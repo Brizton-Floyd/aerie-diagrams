@@ -1,0 +1,25 @@
+model handbook: Service handbook
+
+audiences exec "Plain", engineer "Technical" (code)
+
+api: Orders API | Receives orders [service]
+  code npm:aerie-diagrams
+  > # Ownership
+  > Maintained by *Platform*.
+  > [Contact the owner](mailto:platform@example.test)
+  > ## Runbooks
+  > - [Diagnose failures](https://example.test/runbooks/orders)
+  > - [Read the decision](../decisions/orders.md)
+  > 3. Verify health
+  > 4. Restore traffic
+  > ```typescript
+  > const healthy = true;
+  > ```
+  > [Unsafe action](javascript:alert(1))
+  > <img src="https://example.test/track.png" onerror="window.documentationRan = true">
+  @engineer: OrdersController
+  @engineer >> ## Technical notes
+  @engineer >> [API documentation](https://example.test/apis/orders)
+
+view big-picture: Big picture
+  show api
