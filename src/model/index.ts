@@ -68,3 +68,11 @@ export {
   type ZoomMark,
 } from './views.ts';
 export { proseFor, sentence, wordsFor } from './words.ts';
+
+export {
+  elementViews,
+  findElements,
+  followElement,
+  locateElement,
+  type ElementMatch,
+} from './find.ts';

@@ -435,3 +435,27 @@ separate.
 
 The target is Confluence Cloud, but the user explicitly excluded live upload testing from acceptance.
 Local file inspection does not claim a verified import into the user's instance.
+
+## Reader tools and portable publishing
+
+Post-v1 additions in [reader-tools.md](reader-tools.md), accepted by
+[decision 0009](../decisions/0009-reader-tools.md).
+
+| Suite         | What it proves                                                                                                                                         | Requirements                 |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
+| unit          | Model-wide matching across audience names, tags, ids and code units; exact reveal and eligible-view following without changing ordinary view switching | INT-1001, INT-1003, INT-1011 |
+| journeys      | Search keyboard use, no-match states, focus restoration, accessibility in both themes, nested reveal, model changes and ending playback                | INT-1001 to INT-1003         |
+| journeys      | Following preserves audience and selection; links, Back and Forward recover the picture                                                                | INT-1011, INT-1012           |
+| unit          | Portable snapshots preserve complete source and opening state; hostile content cannot escape embedded data or title markup                             | INT-1021, INT-1024           |
+| journeys      | Downloaded HTML opens offline from another folder with the complete interactive reader; invalid edits refuse export and load failures remain retryable | INT-1021 to INT-1024         |
+| unit          | Bounded Markdown renders through safe DOM nodes, preserves literal code, rejects executable destinations and supports existing audience prose          | LANG-010, INT-1031, INT-1032 |
+| journeys      | A selected element shows ownership, runbook and decision links, technical additions, literal code examples and authored code references                | INT-1031 to INT-1033         |
+| rules, golden | Code references remain independent of drawing geometry, and existing model layouts and rendered drawings remain stable                                 | MODEL-006                    |
+| screenshots   | Reviewed page-chrome updates remain reproducible on Linux; selected-element documentation remains in the existing panel                                | LOOK-802, LOOK-804           |
+
+Focused files include [model search tests](../../tests/unit/model/find.test.ts),
+[element navigation journeys](../../tests/journeys/element-navigation.spec.ts),
+[portable HTML tests](../../tests/unit/editor/portable-html.test.ts),
+[portable export journeys](../../tests/journeys/portable-export.spec.ts),
+[documentation tests](../../tests/unit/editor/documentation.test.ts), and
+[documentation journeys](../../tests/journeys/documentation.spec.ts).

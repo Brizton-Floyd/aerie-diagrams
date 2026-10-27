@@ -165,6 +165,9 @@ has the steps for opening a model and choosing a view and audience with clicks).
   `src/lines/editing.ts`. CodeMirror draws only the lines near its viewport, so journeys scroll to a
   line before reading or clicking it, and its keymaps never see Option+letter on macOS (match
   `event.code` instead).
+- Portable publishing uses the same viewer through `src/portable.ts`; `scripts/build-portable.ts`
+  bundles its fonts, styles and layout worker before `npm run dev` or `npm run build`. Generated
+  `.portable/` files are ignored. Export journeys reopen downloaded HTML offline through `file:`.
 - Vitest 5 hides the console output of passing tests; a suite that reports (LAYOUT-901) writes to
   `process.stdout`.
 - Playwright builds and serves the app on port 4173 and never reuses a running server. Set
@@ -181,9 +184,10 @@ has the steps for opening a model and choosing a view and audience with clicks).
   the glass controls (the 1 px ring shadow on an 8 px or round corner) a few pixels differently, so
   a local macOS run of `test:screenshots` may report a handful of differing pixels; run it in the
   Playwright image to judge. Screenshot runs turn `backdrop-filter` off for the same reason.
-- Static export is `src/export/index.ts` (pure authored document and measured SVG pages); browser
-  preview/encoders are `src/app/export-panel.ts` and `export-files.ts`. PNG/PDF share document content
-  and bundle fonts; production exports never use the disposable prototype's illustrative notes.
+- Static export is `src/export/index.ts` (pure authored document and measured SVG pages); its host-only
+  control is `src/app/static-export.ts`, with preview/encoders in `export-panel.ts` and `export-files.ts`.
+  PNG/PDF share content and bundle fonts; production exports never use the disposable prototype's
+  illustrative notes.
   The behavior and local-only Confluence Cloud acceptance are in `docs/spec/export.md`.
 - The page (`src/app/`): `viewer.ts` holds the picture and the keys, `stage.ts` shows drawings (in
   place when the layout is the same, else gliding by `transitionPlan`) and runs the camera,
@@ -225,8 +229,9 @@ titles, and map your slice's tests through [docs/spec/acceptance.md](docs/spec/a
 
 After v1, drift detection (`aerie drift`, checking a model against the code) is built in slices D1
 to D8, specified in [docs/spec/drift.md](docs/spec/drift.md) ([decision 0006](docs/decisions/0006-drift-detection.md)).
-Its model lines (`system`, `code`, `ignore drift`) are read only by drift and change no drawing
-(MODEL-006, `tests/rules/drift-lines.test.ts`); record each slice's open choices in `drift.md` and
+Its model lines (`system`, `code`, `ignore drift`) change no drawing (MODEL-006,
+`tests/rules/drift-lines.test.ts`); the reader may search and list authored code references, without
+claiming verification. Record each slice's open choices in `drift.md` and
 give what it builds `DRIFT-nnn` ids.
 
 ## Maintaining this file

@@ -41,7 +41,19 @@ bar switches to the light theme for bright rooms and projectors. The address alw
 link" shares the exact picture. "Edit" opens the live split editor beside the diagram; you can
 also open a local `.aerie` file from the sidebar.
 
-### Export a diagram
+### Find a part and follow it
+
+Press **Find element**, **Ctrl+K**, or **Command+K** to search the whole model by id, names
+in any audience, tags, or code references. Results show the containment path in your current
+wording. Use Up and Down to move through them, Enter to choose, and Escape to close. Choosing a
+result opens the containers around it and brings it into view, switching to an eligible view
+when necessary.
+
+A selected element's details list **See this element in**. Choose one of those views to keep
+that exact element selected, with the same audience wording. Back and Forward restore the
+pictures you visited. Choosing a view from the ordinary sidebar still opens its default picture.
+
+### Export a static PNG or PDF
 
 Choose **Export** to preview the current view with all nested containers open. Pick a scenario,
 wording and PNG or PDF, and optionally include the model's full component reference. Every stage
@@ -53,6 +65,40 @@ preview as images, so their text is not selectable. Oversized PNGs offer PDF rat
 content. Invalid edits can export the last valid model with a warning outside the file. Files are
 prepared locally. Confluence Cloud is the target; a live import into a Cloud instance has not been
 verified. Supported limits and behavior are in [the export specification](docs/spec/export.md).
+
+### Share an interactive HTML file
+
+Press **Export HTML** to download the current model as one interactive file. Move it to another
+folder or send it to a reader, who can open it in a browser without a server or network connection.
+The file opens on your current picture and theme and contains the complete Lines source, every
+view, and every audience's wording, including parts that are initially closed or outside the
+opening view. Search, following, scenarios, tours, and audience changes remain available; the
+portable reader has no editor or model picker.
+
+An export is a snapshot. Later source changes do not update it. Fix any model errors before
+exporting. For a local model, **Share model** still offers its `.aerie` file; a picture link alone
+does not include that source.
+
+### Add documentation beside the picture
+
+Descriptions support paragraphs, bold, emphasis, inline code, links, headings, flat lists, and
+fenced code blocks. Write each heading, list item, or code-block line as its own `>` line;
+deeper-indented continuation lines still join with spaces. Audience replacements and added
+technical paragraphs work as before.
+
+```aerie
+api: Orders API [service]
+  > # Ownership
+  > Maintained by **Platform**. [Contact the owner](mailto:platform@example.com).
+  > ## Runbooks and decisions
+  > - [Diagnose failures](https://example.com/runbooks/orders)
+  > - [Read the architecture decision](https://example.com/decisions/orders)
+```
+
+These are authored explanations. Existing `code` lines appear as code references in the same
+details panel; they do not claim that a drift check passed. Authored HTML stays literal, and
+executable links are inactive. Use absolute web links when exported-file recipients will not
+have repository documents beside the file. See [reader tools](docs/spec/reader-tools.md).
 
 ### Write a model and watch it
 
@@ -90,7 +136,7 @@ npx aerie drift docs/architecture.aerie --format diff  # every suggested edit, a
 ```
 
 A model needs nothing extra to be checked: elements are matched to the code by name. Three kinds of
-line make the check exact, and change nothing a reader sees:
+line make the check exact without changing the drawing:
 
 ```aerie
 model shop: Corner shop
@@ -178,7 +224,7 @@ CI runs the same command on every push and pull request.
 
 - [AGENTS.md](AGENTS.md) - how to work here, including the clean-room rules (mandatory).
 - [GLOSSARY.md](GLOSSARY.md) - the product's own vocabulary.
-- [docs/spec/](docs/spec/overview.md) - the functional specification: what Aerie v1 does.
+- [docs/spec/](docs/spec/overview.md) - the functional specification: v1 behavior and post-v1 additions.
 - [docs/decisions/](docs/decisions/) - settled product decisions.
 - [docs/slice-plan.md](docs/slice-plan.md) - the order in which v1 is built.
 

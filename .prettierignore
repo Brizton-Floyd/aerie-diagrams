@@ -1,4 +1,5 @@
 package-lock.json
+.portable/
 **/__snapshots__/
 **/__screenshots__/
 .claude/

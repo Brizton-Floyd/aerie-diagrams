@@ -27,6 +27,7 @@ export default defineConfig(
   {
     ignores: [
       'dist/',
+      '.portable/',
       'coverage/',
       'test-results/',
       'playwright-report/',

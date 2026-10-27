@@ -70,23 +70,34 @@ test('INT-001, LOOK-801 and LOOK-802 the top bar, the sidebar, the stage and the
   expect(side).toMatchObject({ x: 0, y: 52, width: 232 });
   expect(stage).toMatchObject({ x: 232, y: 52, width: 1600 - 232 - 368 });
   expect(panel).toMatchObject({ x: 1600 - 368, y: 52, width: 368 });
-  // LOOK-802: the wordmark and breadcrumb, then Copy link, Export, Edit and the theme button.
+  // LOOK-802: fixed-width reader and authoring tools sit beside the wordmark and breadcrumb.
   await expect(page.getByRole('tablist')).toHaveCount(0);
   await expect(page.locator('header.top .tools button')).toHaveText([
+    'Find element',
     'Copy link',
     'Export',
     'Edit',
+    'Export HTML',
+
     '',
   ]);
   await expect(page.locator('header.top .tool.theme')).toHaveAccessibleName(
     'Switch to the light theme',
   );
   for (const [name, width] of [
+    ['find-element', 108],
     ['copy', 100],
+    ['export', 64],
     ['edit', 64],
+    ['export-html', 112],
     ['theme', 30],
   ] as const) {
     expect((await page.locator(`header.top .tool.${name}`).boundingBox())?.width, name).toBe(width);
+    const height = await page.locator(`header.top .tool.${name}`).evaluate((button) => ({
+      content: button.scrollHeight,
+      room: button.clientHeight,
+    }));
+    expect(height.content, `${name} stays on one line`).toBeLessThanOrEqual(height.room);
   }
   // The top bar stays in view however the side panel scrolls.
   await page.getByRole('button', { name: 'Move closer (+)' }).click();

@@ -95,11 +95,15 @@ canonical JSON model is [examples/shop.json](examples/shop.json). The large work
   word that declares an id; a word that refers to something declared, but names nothing, is reported
   as unknown instead (E008, E301, E502, E503, E702), with a suggestion.
 - **LANG-009** The keywords of LANG-007 cannot be used as ids (E006).
-- **LANG-010** A **description** line is `>` followed by text. Each description line is one
-  paragraph. A paragraph continues on the following lines that are indented deeper than the `>` line;
-  each continuation line is trimmed and joined to the paragraph with one space. The text is a small
-  Markdown subset: `**bold**`, `*italic*`, `` `code` `` and `[text](https://...)` links. Anything else
-  is shown as plain text.
+- **LANG-010** A **description** line is `>` followed by text. Each description line contributes
+  one paragraph to the canonical text. A paragraph continues on the following lines that are
+  indented deeper than the `>` line; each continuation line is trimmed and joined to the paragraph
+  with one space. The reader supports a bounded Markdown subset: `**bold**`, `*italic*`, inline
+  code, safe links, headings, flat ordered and unordered lists, and fenced code blocks
+  ([reader-tools.md](reader-tools.md), INT-1031 and INT-1032). Write headings, list items, fence
+  markers, and individual code lines as separate `>` lines. Continuations keep their existing
+  space-joining behavior; no additional grammar or canonical-model field is introduced. Authored
+  HTML and unsupported markup remain literal text. Executable link destinations are inactive.
 - **LANG-011** **Words** are the one-line texts: names, taglines, verb phrases and titles. Inside
   words, runs of spaces count as one space, leading and trailing spaces are dropped, and a backslash
   makes the next `|`, `[`, `]` or `\` an ordinary character. Descriptions have no backslash escapes.
@@ -402,10 +406,12 @@ Three kinds of line tie a model to the code it describes, so that `aerie drift` 
 diagram and the project no longer match. What drift does with them is in [drift.md](drift.md); this
 section defines only the lines.
 
-- **LANG-751** `system` blocks, `code` lines and `ignore` lines never change what a reader sees: no
-  view, audience, zoom state, scenario, walkthrough, layout or drawing depends on them
-  ([model.md](model.md#elements-and-tags), MODEL-006). Only `aerie drift` reads them, and a model
-  without them is valid.
+- **LANG-751** `system` blocks, `code` lines and `ignore` lines do not change a view, audience,
+  zoom state, scenario, walkthrough, layout or drawing
+  ([model.md](model.md#elements-and-tags), MODEL-006). Drift reads their checking semantics; the
+  reader may search an element's authored code units and list them in its details as code
+  references (INT-1001 and INT-1033). Those declarations do not establish that a drift check ran
+  or passed. A model without these lines is valid.
 
 ### The system root
 

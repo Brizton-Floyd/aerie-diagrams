@@ -4,6 +4,7 @@
 import type { Id } from '../lines/index.ts';
 import { proseFor, type Semantics } from '../model/index.ts';
 import { h, prose } from './dom.ts';
+import { documentation } from './documentation.ts';
 
 /** One audience's wording of an element, where it differs from the layer before it. */
 export interface Layer {
@@ -107,13 +108,7 @@ export function layerContent(layer: Layer): HTMLElement {
     layer.tagline === null
       ? null
       : h('p', { class: layer.code ? 'layer-line code' : 'layer-line' }, [layer.tagline]),
-    ...(layer.about === null
-      ? []
-      : layer.about
-          .split(/\n\n+/)
-          .map((para) =>
-            h('p', { class: layer.code ? 'layer-about code' : 'layer-about' }, prose(para)),
-          )),
+    ...documentation(layer.about, layer.code ? 'layer-about code' : 'layer-about'),
   ]);
 }
 
