@@ -284,8 +284,16 @@ function everyRelationshipDrawn(semantics: Semantics, picture: Picture, findings
     }
   }
   const drawn = new Set(drawing.nodes.map((node) => node.id));
+  const exploring = drawing.exploring;
   semantics.model.relationships.forEach((relationship, index) => {
     if (!drawing.kinds.includes(relationship.kind)) return;
+    if (
+      exploring !== undefined &&
+      ![relationship.subject, relationship.object].some(
+        (id) => id === exploring || semantics.tree.contains(exploring, id),
+      )
+    )
+      return;
     const a = lift(semantics.tree, drawn, relationship.subject);
     const b = lift(semantics.tree, drawn, relationship.object);
     if (a === null || b === null || a === b || picture.holds(a, b) || picture.holds(b, a)) return;

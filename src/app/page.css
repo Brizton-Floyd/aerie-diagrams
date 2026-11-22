@@ -1035,6 +1035,12 @@ input:focus-visible,
   padding-top: 16px;
   border-top: 1px solid var(--hair);
 }
+.panel .exploration {
+  margin: 0 0 20px;
+  padding: 0 0 16px;
+  border-top: 0;
+  border-bottom: 1px solid var(--hair);
+}
 .panel .sentences li {
   margin-bottom: 8px;
 }

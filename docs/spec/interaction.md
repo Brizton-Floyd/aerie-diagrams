@@ -114,7 +114,14 @@ reader meets them as layers to uncover rather than as a switch to set first.
 - **INT-303** Opening and closing are allowed during scenario playback: the trail is redrawn at the new
   zoom (LAYOUT-505) and nothing else changes. They are not offered while presenting.
 - **INT-304** There is no global depth control: depth changes only by opening and closing in place, by
-  switching view, or by a walkthrough step.
+  exploring a part, switching view, or by a walkthrough step.
+- **INT-305** A selected container offers "Explore this part" near its description, except
+  while playing or presenting, or when it is already the explored root. Exploration shows the
+  container's immediate children and connected outside parts (MODEL-212). The breadcrumb retains
+  the root's original ancestry in the current audience's wording. The panel names the explored part,
+  counts shown and omitted parts, and explains that connected outside parts remain visible. "Return
+  to previous picture" restores the preceding exploration or authored picture, including its saved
+  camera. A fresh shared link offers "Show full view" instead. Both actions are keyboard buttons.
 
 ## The camera
 
@@ -149,7 +156,7 @@ depth.
 
 ## Shared links
 
-A link reopens the exact picture (MODEL-601): the same view, audience, zoom, selection, and scenario or
+A link reopens the exact picture (MODEL-601): the same view, audience, exploration, zoom, selection, and scenario or
 walkthrough step.
 
 - **INT-501** The page's address always shows the current picture. The path and the `model` query
@@ -160,6 +167,7 @@ walkthrough step.
   | --------- | --------------------------------------------------------------------------------------------------- |
   | `view`    | the view id                                                                                         |
   | `aud`     | the audience id                                                                                     |
+  | `explore` | the explored container's id                                                                         |
   | `open`    | ids of containers opened by the reader (zoom state `open`), comma-separated, in model order         |
   | `closed`  | ids of containers closed by the reader (zoom state `closed`), comma-separated, in model order       |
   | `sel`     | the selected element's id                                                                           |

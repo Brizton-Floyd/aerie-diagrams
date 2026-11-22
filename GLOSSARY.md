@@ -12,6 +12,9 @@ phrase, element (for example "Checkout charges the card through Payments").
 
 **View**: One purposeful way of showing the model, such as Big picture, Services or Engineering.
 
+**Exploration**: A picture centred on one container's children and its connected outside parts.
+"Explore this part" starts it; opening in place still changes depth within the current picture.
+
 **Scenario**: How something happens, told as ordered steps between elements.
 
 **Walkthrough**: A narrated run through views and scenarios, for presenting to a room. Readers see it called a
@@ -43,7 +46,7 @@ reader zooms.
 **Lifting**: Drawing a relationship between the nearest elements a reader can see when its own ends are inside a
 closed box.
 
-**Picture**: Everything that decides what a reader sees: the view, the audience level, what is open, the selection, and
+**Picture**: Everything that decides what a reader sees: the view, the audience level, the exploration, what is open, the selection, and
 any scenario or walkthrough step. A shared link carries the picture.
 
 **Camera**: Magnifying and moving the picture on screen. The camera is not zoom: it changes size, never depth.

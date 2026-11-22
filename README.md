@@ -35,7 +35,10 @@ model of a real lottery number service. Everyone starts with the plainest wordin
 read about it in the side panel, and press "More technical" there to uncover how a manager or an
 engineer would put it, or rest the pointer on a box for a quick look; "Word the whole diagram for
 Engineer" (or the keys 1, 2 and 3) changes every word on the page, and nothing moves. Use a box's
-round button to open it in place. Choose a scenario to play it on the diagram (arrow keys to step,
+round button to open it in place. For a quieter picture, select a container and choose "Explore this
+part": its children appear with connected outside parts kept visible. You can explore further, return
+to the previous picture, or share the exact exploration. Audience wording and the drawing style stay
+the same. Choose a scenario to play it on the diagram (arrow keys to step,
 Space to play, Esc to end), or "Take the tour" to present it full screen. The sun button in the top
 bar switches to the light theme for bright rooms and projectors. The address always holds what you see, so "Copy
 link" shares the exact picture. "Edit" opens the live split editor beside the diagram; you can

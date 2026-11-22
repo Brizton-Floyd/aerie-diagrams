@@ -3,6 +3,7 @@
 // the model, with no layout or drawing.
 import type { Audience, IconName, Id, Model, Scenario, View, Walkthrough } from '../lines/index.ts';
 import { drawnEdges, type DrawnEdge } from './lift.ts';
+import { explorationScope, touches } from './exploration.ts';
 import { Joins, stageView, trail, type StepRole, type Trail } from './scenarios.ts';
 import { InvalidModelError, Tree } from './tree.ts';
 import {
@@ -40,6 +41,8 @@ export interface DrawnNode {
  */
 export interface Drawing {
   view: Id;
+  /** MODEL-212: only relationships touching this subtree belong to an exploration. */
+  exploring?: Id;
   /** MODEL-210: the relationship kinds the view draws. */
   kinds: Id[];
   /** The normalised zoom state (MODEL-208). */
@@ -138,6 +141,7 @@ export class Semantics {
   readonly views: readonly View[];
   readonly joins: Joins;
   private readonly scopes = new Map<Id, ViewScope>();
+  private readonly explorations = new Map<string, ViewScope>();
   private readonly scenarioById = new Map<Id, Scenario>();
   private readonly walkthroughById = new Map<Id, Walkthrough>();
   private readonly walkPicturesById = new Map<Id, WalkPicture[]>();
@@ -167,10 +171,17 @@ export class Semantics {
   }
 
   /** The selection, default drawn set and zoom operations of a view. */
-  scope(view: Id): ViewScope {
+  scope(view: Id, exploring?: Id): ViewScope {
     const scope = this.scopes.get(view);
     if (scope === undefined) throw new InvalidModelError(`There is no view ${view}.`);
-    return scope;
+    if (exploring === undefined) return scope;
+    const key = `${view}/${exploring}`;
+    let found = this.explorations.get(key);
+    if (found === undefined) {
+      found = explorationScope(this.tree, scope.view, this.model.relationships, exploring);
+      this.explorations.set(key, found);
+    }
+    return found;
   }
 
   hasAudience(id: Id): boolean {
@@ -254,20 +265,20 @@ export class Semantics {
   // ------------------------------------------------------------ views
 
   /** MODEL-205: the drawn set of a view at a zoom state. */
-  drawn(view: Id, zoom: Zoom = DEFAULT_ZOOM): DrawnSet {
-    return this.scope(view).drawn(zoom);
+  drawn(view: Id, zoom: Zoom = DEFAULT_ZOOM, exploring?: Id): DrawnSet {
+    return this.scope(view, exploring).drawn(zoom);
   }
 
   /** What a view draws at a zoom state, the same for every audience. The zoom state is normalised. */
-  drawing(view: Id, zoom: Zoom = DEFAULT_ZOOM): Drawing {
-    const scope = this.scope(view);
+  drawing(view: Id, zoom: Zoom = DEFAULT_ZOOM, exploring?: Id): Drawing {
+    const scope = this.scope(view, exploring);
     const normal = scope.normalise(zoom);
     const drawn = scope.drawn(normal);
     const tree = this.tree;
     const nodes = [...drawn].map((id): DrawnNode => ({
       id,
-      parent: tree.parent(id),
-      depth: tree.depth(id),
+      parent: drawn.has(tree.parent(id) ?? '') ? tree.parent(id) : null,
+      depth: tree.ancestors(id).filter((ancestor) => drawn.has(ancestor)).length,
       rim: tree.isRim(id),
       icon: tree.icon(id),
       state: scope.state(drawn, id),
@@ -275,12 +286,26 @@ export class Semantics {
       inside: tree.children(id).length,
     }));
     const kinds = [...scope.view.kinds];
+    const edges = drawnEdges(tree, this.model.relationships, kinds, drawn);
+    const relevant =
+      exploring === undefined
+        ? edges
+        : edges
+            .flatMap((edge) => {
+              const carries = edge.carries.filter((index) => {
+                const relationship = this.model.relationships[index];
+                return relationship !== undefined && touches(tree, exploring, relationship);
+              });
+              return carries.length === 0 ? [] : [{ ...edge, carries }];
+            })
+            .sort((a, b) => (a.carries[0] ?? 0) - (b.carries[0] ?? 0));
     return {
       view,
+      ...(exploring === undefined ? {} : { exploring }),
       kinds,
       zoom: normal,
       nodes,
-      edges: drawnEdges(tree, this.model.relationships, kinds, drawn),
+      edges: relevant,
     };
   }
 

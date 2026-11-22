@@ -85,6 +85,20 @@ Requirement ids: `MODEL-nnn`. Conventions are in [overview.md](overview.md#readi
 - **MODEL-210** A view draws relationships of the kinds in its `kinds` list and no others.
 - **MODEL-211** Two named zoom states are used by tests and tools: **everything open**, where every
   drawn container is open, recursively; and **all closed**, where every top-level container is closed.
+- **MODEL-212** Exploring a container makes it a drawing root, opened one level. Its connected
+  outside neighbours start closed as other drawing roots. For each relationship of the view's kinds
+  touching the explored subtree, the outside endpoint is represented by its highest ancestor below
+  the common ancestor with the explored container, or its top-level ancestor in another tree.
+  Original ancestors above these roots are omitted from the drawing, an exception to MODEL-202
+  and MODEL-205. Opening, closing, revealing and lifting operate within these roots. Every eligible
+  relationship touching the explored subtree is retained; relationships solely between outside
+  neighbours are omitted, even if those neighbours are opened. Audience wording changes no geometry.
+- **MODEL-213** A picture may carry an explored container. Exploring resets zoom and selects that
+  container; exploring a leaf, an unknown id, or while playing or presenting does nothing. Further
+  exploration replaces the root. Wording changes and shared links preserve exploration. View changes,
+  scenario overviews, playback and presentation clear it and reset zoom. Revealing an element outside
+  the exploration returns to the authored view. Unknown or leaf exploration roots in links are dropped
+  with their scoped zoom; old links without exploration retain their meaning.
 
 ## Lifting
 
@@ -155,7 +169,7 @@ the reader can see.
 The **picture** is everything that decides what a reader sees. Shared links carry it
 ([interaction.md](interaction.md#shared-links)).
 
-- **MODEL-601** A picture has: a view; an audience; a zoom state; and at most one of a selected
+- **MODEL-601** A picture has: a view; an audience; a zoom state; an optional explored container; and at most one of a selected
   element, a static scenario overview (with its selected step), a playing scenario (with its current step and whether it is shown as lanes), or a presented
   walkthrough (with its current step and, inside a scenario step, the scenario step). The theme, the
   reduced-motion setting and the camera are reader preferences, not part of the picture.

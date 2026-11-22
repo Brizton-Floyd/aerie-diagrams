@@ -5,6 +5,15 @@ functional spec for each version is [docs/spec/](docs/spec/overview.md).
 
 ## Unreleased
 
+### Explore this part
+
+- Select a container and choose "Explore this part" to show its immediate children with connected
+  outside parts kept visible. Explore further, open children in place, or return to the previous
+  picture and camera. Shared links preserve the exploration and audience wording.
+- The draft root architecture model opens with 7 parts and 7 connections; implementation details
+  remain available through exploration and its other views. Signal styling and audience wording
+  are unchanged.
+
 ### Static exports
 
 - Export the current view fully expanded as PNG or PDF, with one scenario's stages and detailed

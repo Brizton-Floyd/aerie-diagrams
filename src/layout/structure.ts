@@ -138,9 +138,13 @@ export class Layouter {
   }
 
   /** A view at a zoom state, laid out for every audience at once. */
-  structure(view: Id, zoom: Zoom): Promise<StructureLayout> {
-    const drawing = this.semantics.drawing(view, zoom);
-    const key = [view, ...[...drawing.zoom].map(([id, mark]) => `${id}=${mark}`)].join('\n');
+  structure(view: Id, zoom: Zoom, exploring?: Id): Promise<StructureLayout> {
+    const drawing = this.semantics.drawing(view, zoom, exploring);
+    const key = [
+      view,
+      exploring ?? '',
+      ...[...drawing.zoom].map(([id, mark]) => `${id}=${mark}`),
+    ].join('\n');
     let found = this.kept.get(key);
     if (found === undefined) {
       found = this.compute(drawing);
@@ -178,8 +182,8 @@ export class Layouter {
   }
 
   /** A picture's view, zoom state and audience, laid out with the audience's text in place. */
-  async picture(view: Id, zoom: Zoom, audience: Id): Promise<PictureLayout> {
-    const structure = await this.structure(view, zoom);
+  async picture(view: Id, zoom: Zoom, audience: Id, exploring?: Id): Promise<PictureLayout> {
+    const structure = await this.structure(view, zoom, exploring);
     const wording = structure.wordings.find((each) => each.audience === audience);
     if (wording === undefined) throw new Error(`There is no audience ${audience}.`);
     return { ...structure, audience, text: placeText(structure.result, wording) };

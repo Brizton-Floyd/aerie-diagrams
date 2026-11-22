@@ -17,7 +17,18 @@ import {
 export const STALE_LINK = 'This link is older than the diagram. Showing the closest picture.';
 
 /** INT-501: the fragment's keys, in the order they are written. */
-const KEYS = ['view', 'aud', 'open', 'closed', 'sel', 'flow', 'play', 'lanes', 'present'] as const;
+const KEYS = [
+  'view',
+  'aud',
+  'explore',
+  'open',
+  'closed',
+  'sel',
+  'flow',
+  'play',
+  'lanes',
+  'present',
+] as const;
 
 type Key = (typeof KEYS)[number];
 
@@ -53,6 +64,7 @@ export function writeFragment(semantics: Semantics, picture: Picture): string {
   } else {
     if (shown.view !== semantics.firstView) parts.set('view', shown.view);
     if (shown.audience !== semantics.model.defaultAudience) parts.set('aud', shown.audience);
+    if (shown.exploring !== undefined) parts.set('explore', shown.exploring);
     const marked = (mark: ZoomMark): Id[] =>
       [...shown.zoom].filter(([, each]) => each === mark).map(([id]) => id);
     if (marked('open').length > 0) parts.set('open', marked('open').join(','));
@@ -148,6 +160,8 @@ export function readFragment(
     activity = { kind: 'selected', element: sel };
   } else if (flow === 'none') {
     activity = { kind: 'reading' };
+  } else if (given.has('explore')) {
+    activity = { kind: 'reading' };
   }
   const aud = given.get('aud');
   const read = normalisePicture(semantics, {
@@ -155,6 +169,7 @@ export function readFragment(
     audience: aud ?? semantics.model.defaultAudience,
     zoom,
     activity,
+    exploring: given.get('explore'),
   });
   const shown = read.picture.activity;
   // INT-502: without its own audience, a presentation opens in the one its steps reach.

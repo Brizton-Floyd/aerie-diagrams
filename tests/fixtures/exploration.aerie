@@ -1,0 +1,37 @@
+model exploration: A connected subsystem
+
+suite: Suite [system]
+  web: Website [service]
+    screen: Screen [module]
+  engine: Analysis engine [service]
+    @engineer: Processing engine | Implementation details
+    api: Request service [module]
+      handler: Request handler [module]
+    jobs: Background jobs [module]
+  store: Results store [store]
+    primary: Primary data [store]
+    secondary: Secondary data [store]
+  unrelated: Reporting [service]
+remote: Partner [external]
+  remote-api: Partner API [service]
+
+screen sends requests to handler
+handler reads primary
+jobs writes secondary
+primary sends updates to screen
+remote-api invokes handler
+handler depends on unrelated [code]
+
+view overview: Overview
+  show suite +4, remote +1
+
+view dependencies: Code dependencies
+  show suite +4, remote +1
+  kind code
+
+scenario request: Handle a request
+  screen sends a request to handler
+  handler reads primary
+
+walkthrough tour: A tour
+  step overview
