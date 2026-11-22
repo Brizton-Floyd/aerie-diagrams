@@ -89,7 +89,7 @@ new decision.
 | [layout.md](layout.md)             | the layout interface, ELK, the reserve, opening in place, trail, lanes    | `LAYOUT`, `RULE`, `SCORE`        |
 | [look.md](look.md)                 | Signal tokens, type, shapes, icons, the trail, motion                     | `LOOK`                           |
 | [interaction.md](interaction.md)   | everything a reader and an author do                                      | `INT`                            |
-| [exploration.md](exploration.md)   | draft implementation reference for Explore this part                      | existing `MODEL` and `INT` rules |
+| [exploration.md](exploration.md)   | standalone implementation reference for Explore this part                 | existing `MODEL` and `INT` rules |
 | [acceptance.md](acceptance.md)     | test suites per slice, and the browser journeys                           | `ACC`, `JOURNEY`                 |
 | [claude-skill.md](claude-skill.md) | the Aerie skill for Claude                                                | `SKILL`                          |
 | [export.md](export.md)             | static PNG/PDF documents and preview                                      | `EXPORT`                         |
