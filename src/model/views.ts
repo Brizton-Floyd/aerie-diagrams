@@ -16,7 +16,7 @@ export type Zoom = ReadonlyMap<Id, ZoomMark>;
 /** The empty zoom state: every container in its default state. */
 export const DEFAULT_ZOOM: Zoom = new Map();
 
-/** The elements drawn on screen, in model order. Every drawn element's parent is drawn too. */
+/** Drawn elements in model order; ancestors above exploration roots are omitted. */
 export type DrawnSet = ReadonlySet<Id>;
 
 /** LANG-506: the view of a model that declares none. It is not written into the canonical model. */
@@ -39,10 +39,13 @@ export class ViewScope {
   /** MODEL-202: the default drawn set `D0`, the selected elements and all their ancestors. */
   readonly defaults: DrawnSet;
   private readonly tree: Tree;
+  /** Exploration promotes the chosen part and its outside neighbours to drawing roots. */
+  private readonly roots: ReadonlySet<Id> | undefined;
 
-  constructor(tree: Tree, view: View) {
+  constructor(tree: Tree, view: View, roots?: ReadonlySet<Id>) {
     this.tree = tree;
     this.view = view;
+    this.roots = roots;
     const selected = new Set<Id>();
     for (const item of view.show) {
       if ('tag' in item) {
@@ -63,7 +66,9 @@ export class ViewScope {
     const defaults = new Set<Id>();
     for (const id of selected) {
       defaults.add(id);
-      for (const ancestor of tree.ancestors(id)) defaults.add(ancestor);
+      if (roots === undefined) {
+        for (const ancestor of tree.ancestors(id)) defaults.add(ancestor);
+      }
     }
     this.selected = new Set(tree.sort([...selected]));
     this.defaults = new Set(tree.sort([...defaults]));
@@ -78,10 +83,13 @@ export class ViewScope {
     const drawn = new Set<Id>();
     // Model order lists each parent before its children, so one pass sees every parent first.
     for (const element of this.tree.elements) {
-      if (element.parent === null) {
+      const isRoot =
+        this.roots === undefined ? element.parent === null : this.roots.has(element.id);
+      if (isRoot) {
         if (this.defaults.has(element.id)) drawn.add(element.id);
         continue;
       }
+      if (element.parent === null) continue;
       if (!drawn.has(element.parent)) continue;
       const mark = zoom.get(element.parent);
       if (mark === 'open' || (mark === undefined && this.defaults.has(element.id))) {
@@ -147,7 +155,12 @@ export class ViewScope {
 
   /** The containers that revealing `id` opens, outermost first, and the zoom state it gives. */
   revealing(zoom: Zoom, id: Id): { opened: Id[]; zoom: Zoom } {
-    const path = [...this.tree.ancestors(id).reverse(), id];
+    let path = [...this.tree.ancestors(id).reverse(), id];
+    if (this.roots !== undefined) {
+      const first = path.findIndex((each) => this.roots?.has(each));
+      if (first < 0) return { opened: [], zoom };
+      path = path.slice(first);
+    }
     const out = new Map(zoom);
     const opened: Id[] = [];
     let drawn = this.drawn(out);
@@ -175,8 +188,8 @@ export class ViewScope {
   /** MODEL-211: every top-level container closed. */
   allClosed(): Zoom {
     const out = new Map<Id, ZoomMark>();
-    for (const element of this.tree.topLevel()) {
-      if (this.tree.isContainer(element.id)) out.set(element.id, 'closed');
+    for (const id of this.roots ?? this.tree.topLevel().map((element) => element.id)) {
+      if (this.tree.isContainer(id)) out.set(id, 'closed');
     }
     return this.normalise(out);
   }
@@ -186,6 +199,9 @@ export class ViewScope {
    * top-level elements never change while the view is shown (MODEL-205).
    */
   holds(id: Id): boolean {
+    if (this.roots !== undefined) {
+      return [...this.roots].some((root) => root === id || this.tree.contains(root, id));
+    }
     return this.defaults.has(this.tree.top(id));
   }
 }

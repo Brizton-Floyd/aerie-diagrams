@@ -13,6 +13,7 @@ export interface PanelActions {
   select(id: Id): void;
   /** Opens or closes a container in place (INT-302). */
   toggle(id: Id): void;
+  explore(id: Id): void;
   /** Plays a scenario. */
   play(scenario: Id): void;
   overview(scenario: Id): void;
@@ -226,6 +227,24 @@ export function elementPanel(
   if (tagline !== null) out.push(h('p', { class: code ? 'lead code' : 'lead' }, [tagline]));
   // 2. The description.
   out.push(...paragraphs(semantics.about(id, audience), code ? 'about code' : 'about'));
+  if (semantics.tree.isContainer(id) && picture.exploring !== id) {
+    out.push(
+      h('p', {}, [
+        h(
+          'button',
+          {
+            type: 'button',
+            class: 'tool',
+            'data-explore': id,
+            onclick: () => {
+              actions.explore(id);
+            },
+          },
+          ['Explore this part'],
+        ),
+      ]),
+    );
+  }
   // 3. INT-207: plain first, more on demand. Each press of "More technical" uncovers the next
   // audience's wording, showing only what changes; the page remembers how far the reader went and
   // opens the next element as far. The last layer offers to word the whole diagram that way.
@@ -257,8 +276,8 @@ export function elementPanel(
   // 5. A container's children, and the button that opens or closes it in place.
   const children = semantics.tree.children(id);
   if (children.length > 0) {
-    const drawnSet = semantics.drawn(picture.view, picture.zoom);
-    const isOpen = semantics.scope(picture.view).state(drawnSet, id) === 'open';
+    const drawnSet = semantics.drawn(picture.view, picture.zoom, picture.exploring);
+    const isOpen = semantics.scope(picture.view, picture.exploring).state(drawnSet, id) === 'open';
     out.push(
       section(`Inside (${String(children.length)})`, [
         h(

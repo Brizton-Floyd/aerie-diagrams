@@ -70,6 +70,23 @@ describe('geometry', () => {
 });
 
 describe('structure rule checks', () => {
+  it('RULE-006 MODEL-212 checks missing boundary connections independently in exploration', async () => {
+    const layout = structuredClone(await lay.structure('big-picture', DEFAULT_ZOOM, 'engine'));
+    expect(check(layout)).toEqual([]);
+    const edge = layout.graph.edges.find((each) => each.source === 'screen-api');
+    if (edge === undefined) throw new Error('The incoming connection must be drawn.');
+    layout.graph.edges = layout.graph.edges.filter((each) => each.id !== edge.id);
+    layout.drawing.edges = layout.drawing.edges.filter((each) => each.id !== edge.id);
+    layout.result.edges = Object.fromEntries(
+      Object.entries(layout.result.edges).filter(([id]) => id !== edge.id),
+    );
+    expect(
+      check(layout).some(
+        (each) => each.rule === 'RULE-006' && each.message.includes(`has no edge ${edge.id}`),
+      ),
+    ).toBe(true);
+  });
+
   it('RULE-001 to RULE-007 pass a good layout', () => {
     expect(check(SERVICES)).toEqual([]);
   });

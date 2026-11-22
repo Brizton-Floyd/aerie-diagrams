@@ -15,6 +15,8 @@
 import {
   check,
   closeContainer,
+  explore,
+  endExploration,
   normalisePicture,
   openContainer,
   overview,
@@ -879,9 +881,9 @@ export class Viewer {
     if (opened === null || picture === null) return;
     if (picture.activity.kind === 'presenting') return;
     const { semantics } = opened;
-    const drawn = semantics.drawn(picture.view, picture.zoom);
+    const drawn = semantics.drawn(picture.view, picture.zoom, picture.exploring);
     if (!drawn.has(id) || !semantics.tree.isContainer(id)) return;
-    const open = semantics.scope(picture.view).state(drawn, id) === 'open';
+    const open = semantics.scope(picture.view, picture.exploring).state(drawn, id) === 'open';
     this.change(
       open ? closeContainer(semantics, picture, id) : openContainer(semantics, picture, id),
       { anchor: id, closing: open },
@@ -1008,7 +1010,7 @@ export class Viewer {
         frame,
       };
     } else {
-      const laid = await layouter.picture(view, zoom, audience);
+      const laid = await layouter.picture(view, zoom, audience, picture.exploring);
       let focus: Focus = { kind: 'none' };
       let trail;
       let flow;
@@ -1077,6 +1079,10 @@ export class Viewer {
 
   /** The actions of the side panel's links and buttons, on the picture as it is when used. */
   private readonly panelActions: PanelActions = {
+    explore: (id) => {
+      if (this.opened === null || this.picture === null) return;
+      this.change(explore(this.opened.semantics, this.picture, id), { fit: true }, 'navigate', id);
+    },
     overview: (scenario) => {
       this.flowActions.show(scenario, 1);
     },
@@ -1100,6 +1106,49 @@ export class Viewer {
       SESSION.set(DEPTH_KEY, String(count));
     },
   };
+
+  /** INT-305: return through visits when possible, preserving the exact previous camera. */
+  private beforeExploration(): number | null {
+    if (this.opened === null || this.picture?.exploring === undefined || this.visits === null)
+      return null;
+    for (let at = this.visits.at - 1; at >= 0; at--) {
+      const visit = this.visits.get(at);
+      if (visit === undefined) continue;
+      const before = readFragment(this.opened.semantics, visit.fragment).picture;
+      if (before.exploring !== this.picture.exploring) return at;
+    }
+    return null;
+  }
+
+  private explorationPanel(semantics: Semantics, picture: Picture): HTMLElement[] {
+    const root = picture.exploring;
+    if (root === undefined) return [];
+    const drawn = semantics.drawn(picture.view, picture.zoom, root);
+    const omitted = semantics.model.elements.length - drawn.size;
+    const before = this.beforeExploration();
+    return [
+      h('section', { class: 'exploration', 'aria-label': 'Exploration' }, [
+        h('h2', {}, ['Exploring']),
+        h('p', { class: 'view-title' }, [semantics.name(root, picture.audience)]),
+        h('p', {}, [
+          `${String(drawn.size)} parts shown. ${String(omitted)} parts outside this picture. Connected outside parts remain visible.`,
+        ]),
+        h(
+          'button',
+          {
+            type: 'button',
+            class: 'tool',
+            'data-exit-exploration': '',
+            onclick: () => {
+              if (before !== null) this.travelActions.go(before);
+              else this.change(endExploration(semantics, picture), { fit: true });
+            },
+          },
+          [before === null ? 'Show full view' : 'Return to previous picture'],
+        ),
+      ]),
+    ];
+  }
 
   // ------------------------------------------------------------ scenario playback
 
@@ -1628,6 +1677,13 @@ export class Viewer {
     ];
     if (activity.kind === 'playing' || activity.kind === 'overview')
       crumbs.push(scenarioTitle(semantics, activity.scenario, audience));
+    if (picture.exploring !== undefined) {
+      crumbs.push(
+        ...[...semantics.tree.ancestors(picture.exploring).reverse(), picture.exploring].map((id) =>
+          semantics.name(id, audience),
+        ),
+      );
+    }
     this.crumbSwap.set(
       h(
         'span',
@@ -1675,16 +1731,22 @@ export class Viewer {
         : activity.kind === 'selected'
           ? elementPanel(semantics, picture, activity.element, this.panelActions, this.revealed)
           : viewPanel(semantics, picture, this.panelActions);
-    this.panelSwap.set(h('div', { class: 'panel-content' }, content), (replaced) => {
-      if (!replaced || !hadFocus) return;
-      const control =
-        activity.kind === 'overview' && flowFocus !== undefined
-          ? this.panel.querySelector<HTMLElement>(
-              `[${flowFocus[0]}="${CSS.escape(flowFocus[1] ?? '')}"]`,
-            )
-          : null;
-      (control ?? this.panel.querySelector<HTMLElement>('h1'))?.focus();
-    });
+    this.panelSwap.set(
+      h('div', { class: 'panel-content' }, [
+        ...this.explorationPanel(semantics, picture),
+        ...content,
+      ]),
+      (replaced) => {
+        if (!replaced || !hadFocus) return;
+        const control =
+          activity.kind === 'overview' && flowFocus !== undefined
+            ? this.panel.querySelector<HTMLElement>(
+                `[${flowFocus[0]}="${CSS.escape(flowFocus[1] ?? '')}"]`,
+              )
+            : null;
+        (control ?? this.panel.querySelector<HTMLElement>('h1'))?.focus();
+      },
+    );
   }
 }
 

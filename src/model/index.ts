@@ -5,7 +5,7 @@
 //
 //   const semantics = new Semantics(model);            // once per model; checks its references
 //   const picture = defaultPicture(semantics);         // MODEL-602, or normalisePicture(link)
-//   const drawing = semantics.drawing(picture.view, picture.zoom);
+//   const drawing = semantics.drawing(picture.view, picture.zoom, picture.exploring);
 //   // drawing.nodes and drawing.edges are the same for every audience: lay them out once, and
 //   // reserve space for the wording of every audience in semantics.model.audiences:
 //   const scenes = semantics.model.audiences.map((a) => semantics.scene(drawing, a.id));
@@ -17,6 +17,8 @@
 //   labels with " (+N more)", and each carried relationship's own sentence.
 // - Zoom: `semantics.scope(view)` opens, closes, reveals and normalises zoom states; the picture
 //   functions do the same for a whole picture and keep it normalised (MODEL-603).
+// - Exploration: `explore` centres a picture on a container and its outside connections;
+//   `endExploration` restores the authored view. Pass `picture.exploring` to scope/drawing/layout.
 // - Scenarios: `semantics.stage`, `semantics.steps` (worded steps with replies and captions) and
 //   `semantics.trail` (lines and folded loops on the current drawn set, visited and current).
 // - Walkthroughs: `semantics.walkPictures` (the picture of every step) and `semantics.narration`;
@@ -26,6 +28,8 @@ export { check, modelDiagnostics } from './check.ts';
 export { drawnEdges, lift, type DrawnEdge } from './lift.ts';
 export {
   closeContainer,
+  explore,
+  endExploration,
   defaultPicture,
   normalisePicture,
   openContainer,

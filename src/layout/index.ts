@@ -5,7 +5,7 @@
 //
 //   const engine = workerEngine();                    // browser (elk/worker.ts); Node: inProcessEngine()
 //   const layouter = new Layouter(semantics, engine);  // once per model
-//   const picture = await layouter.picture(view, zoom, audience);
+//   const picture = await layouter.picture(view, zoom, audience, exploring); // optional explored id
 //   // picture.result: every box, route and label box (LayoutResult), the same for every audience;
 //   // picture.text: the audience's names, taglines, chips and labels at their places (LAYOUT-204).
 //   const lanes = await layouter.lanes(scenario, stageView, zoom);

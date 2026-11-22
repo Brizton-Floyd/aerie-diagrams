@@ -1,0 +1,172 @@
+// A draft for human review. Every part is described from this repository's own code and docs.
+
+model aerie: Aerie
+  > Aerie turns one text model into an interactive architecture diagram that readers can explore
+    at different levels of detail.
+  @exec: One architecture picture for every audience
+
+audiences exec "Executive", manager "Manager" (default), engineer "Engineer" (code)
+
+system
+  repo .
+
+author: Model author | Writes the system model [person]
+  > Describes a system in Aerie's Lines language and checks the model as it changes.
+
+reader: Diagram reader | Explores the system picture [person]
+  > Opens a view, reads about its parts, follows a scenario or takes a walkthrough.
+
+github: GitHub | Starts pull request checks [external]
+  > Hosts the repository and starts Aerie's drift Action for pull requests.
+
+aerie: Aerie | Turns architecture text into diagrams [system]
+  code npm:aerie-diagrams
+  > The browser viewer, model tools and pull request Action share one TypeScript codebase.
+  @exec: Architecture diagrams from one shared model
+  @engineer >> The root `package.json` names the package `aerie-diagrams` and exposes
+    `src/cli/aerie.ts` as the `aerie` command.
+
+  browser: Browser viewer | Makes a model interactive [service]
+    icon web
+    > Loads a bundled sample or a local `.aerie` file and presents its diagram in the browser.
+    @exec: The interactive architecture picture
+    @engineer >> `src/main.ts` starts the page. `src/app/viewer.ts` owns the model picture and
+      reader actions; `stage.ts`, `panel.ts`, `scenario.ts`, `presenter.ts`, `travel.ts` and
+      `visits.ts` supply its views and controls.
+
+    editor: Live editor | Checks edits and redraws the last good model [module]
+      > Lets an author edit a local model beside the diagram, with plain language errors.
+      @engineer: | CodeMirror 6, `src/app/split.ts`
+      @engineer >> `src/app/live.ts` checks changed text and keeps the last model without errors
+        on screen.
+
+  cli: Aerie command line | Checks and serves model files [tool]
+    icon gear
+    > Checks, formats and prints Lines models, watches a file, and compares a model with code.
+    @engineer: | `src/cli/aerie.ts`
+    @engineer >> The `check`, `format`, `model`, `watch` and `drift` commands share the language,
+      semantics, extraction and drift modules.
+
+  action: GitHub drift Action | Reports model drift on pull requests [tool action]
+    icon gear
+    > Runs drift checks for configured model files and posts reports and suggested edits to a pull
+      request.
+    @engineer: | `action.yml`, `src/action/main.ts`
+    @engineer >> The composite action runs the shared CLI in process. Its GitHub API adapter and
+      comment handling are in `src/action/github.ts` and `src/action/comments.ts`.
+
+  lines: Lines language | Parses and formats architecture text [module]
+    > Turns model text into a canonical model and reports language problems with line and column.
+    @engineer: | `src/lines/index.ts`
+    @engineer >> Exports the parser, formatter, printer, model types, editing helpers and
+      diagnostic catalogue. It has no DOM or Node dependency.
+
+  semantics: Model semantics | Resolves what the model means [module]
+    > Checks model references and resolves nesting, views, audience wording, scenarios and
+      walkthroughs.
+    @engineer: | `src/model/index.ts`
+    @engineer >> Builds the audience-independent drawing and the wording for each audience; it
+      also resolves zoom, scenario trails and walkthrough steps.
+
+  layout: Layout engine | Places every box and relationship [module]
+    > Lays out diagrams and scenario lanes while reserving room for every audience's wording.
+    @engineer: | `src/layout/index.ts`, ELK behind `src/layout/elk/`
+    @engineer >> The browser uses `workerEngine`; the CLI uses `inProcessEngine`. Layout rules and
+      readability scores check the resulting pictures.
+
+  renderer: Signal renderer | Draws the diagram as SVG [module]
+    > Draws the positioned picture, relationship lines, scenario trails and lanes in the Signal
+      look.
+    @engineer: | `src/render/index.ts`
+    @engineer >> `renderPicture` builds an SVG tree; `signalStyle` writes the visual tokens for
+      dark and light themes.
+
+  extractor: Code extractor | Reads supported project files [module]
+    > Reads deployment and build files to find code units and connections without running the
+      project.
+    @engineer: | `src/extract/index.ts`
+    @engineer >> Extractors cover Docker Compose, Node packages and Angular, Maven and Spring
+      Boot. Project access goes through `ProjectFiles`.
+
+  drift: Drift checker | Compares the model with code facts [module]
+    > Finds where a model and the supported facts in a project disagree, then reports evidence and
+      suggested edits.
+    @engineer: | `src/drift/index.ts`
+    @engineer >> Matching, relationship lifting and findings feed the text, diff, JSON and pull
+      request report formats.
+
+// ---------------------------------------------------------------- relationships
+
+author edits a model in editor
+editor sends changed Lines text to semantics
+semantics parses and checks model text with lines
+semantics gives the checked model to browser
+browser requests picture placement from layout
+layout sends positioned boxes and routes to renderer
+renderer draws the picture for browser
+browser shows the picture to reader
+
+author runs model commands with cli
+cli checks model text with semantics
+cli formats Lines text with lines
+cli reads repository facts through extractor
+extractor supplies code facts to drift
+drift returns findings to cli
+cli reports findings to action
+github starts action
+action runs drift checks through cli
+action posts drift findings to github
+
+// ---------------------------------------------------------------- views
+
+view big-picture: Big picture
+  show author, browser, cli, action, reader, github
+  > Who creates a model, who reads the diagram, and where pull request checks run.
+
+view inside-browser: From model to picture
+  show author, browser +1, lines, semantics, layout, renderer, reader
+  @exec: How a model becomes a diagram
+
+view code-check: Checking a change against code
+  show author, cli, extractor, drift, action, github
+  @exec: Catching differences before merge
+
+// ---------------------------------------------------------------- scenarios
+
+scenario render-model: From Lines file to diagram
+  > The browser checks a model, lays out its meaning and draws the result for a reader.
+  author edits a model in editor
+  editor sends changed Lines text to semantics
+  semantics parses and checks model text with lines
+  semantics gives the checked model to browser
+  browser requests picture placement from layout
+  layout sends positioned boxes and routes to renderer
+  renderer draws the picture for browser
+  browser shows the picture to reader
+
+scenario pull-request-drift: Checking a pull request
+  > The Action compares each configured model with code facts and reports its findings on GitHub.
+  github starts action
+  action runs drift checks through cli
+  cli reads repository facts through extractor
+  extractor supplies code facts to drift
+  drift returns findings to cli
+  cli reports findings to action
+  action posts drift findings to github
+
+// ---------------------------------------------------------------- walkthrough
+
+walkthrough tour: A tour of Aerie
+  step big-picture
+    > A model author writes one Lines file. A reader explores the resulting picture at their own
+      level of detail.
+  step inside-browser: editor
+    > The live editor checks each change and keeps the last version that worked on screen.
+  step inside-browser: lines, semantics
+    > The language turns text into a checked model, then semantics resolves its views and flows.
+  step inside-browser: layout, renderer
+    > Layout places the same picture for every audience, and Signal draws it in the browser.
+  step code-check: cli, extractor, drift
+    > The command line can compare a model with facts read from supported project files.
+  step pull-request-drift: 1-4
+    > On a pull request, the Action runs the same check and reports differences on GitHub.

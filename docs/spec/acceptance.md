@@ -41,6 +41,15 @@ are in [overview.md](overview.md#reading-this-spec).
 
 ## Slice by slice
 
+### Explore this part
+
+| Suite       | What it proves                                                                                 | Requirements                    |
+| ----------- | ---------------------------------------------------------------------------------------------- | ------------------------------- |
+| unit        | Scope, boundary lifting, nested exploration, stale and canonical links, activity transitions   | MODEL-212, MODEL-213            |
+| rules       | Every container in every sample view fits all audiences; every in-scope relationship is drawn  | MODEL-212, RULE-001 to RULE-009 |
+| journeys    | Explore Lotto, preserve outside connections and wording, share and return to the prior picture | INT-305, MODEL-213              |
+| screenshots | Exploration preserves Signal in dark and light themes                                          | INT-305, LOOK-002               |
+
 ### A2: Lines language
 
 | Suite  | What it proves                                                                                                                             | Requirements         |

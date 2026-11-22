@@ -29,11 +29,13 @@ export interface Picture {
   audience: Id;
   zoom: Zoom;
   activity: Activity;
+  /** MODEL-212: a subtree and its outside connections, independent of audience wording. */
+  exploring?: Id | undefined;
 }
 
 /** A part of a picture that named an id the model does not have, or could not be shown. */
 export interface Dropped {
-  part: 'view' | 'audience' | 'zoom' | 'selection' | 'scenario' | 'walkthrough';
+  part: 'view' | 'audience' | 'zoom' | 'selection' | 'scenario' | 'walkthrough' | 'exploration';
   id: Id;
 }
 
@@ -93,11 +95,29 @@ export function normalisePicture(
       dropped.push({ part: 'zoom', id });
     }
   }
-  // The zoom state belonged to a view the model no longer has, so the first view starts afresh.
-  let zoom = semantics.scope(view).normalise(viewKnown ? known : DEFAULT_ZOOM);
   const activity = picture.activity;
+  let exploring = picture.exploring;
+  if (
+    exploring !== undefined &&
+    (!semantics.tree.has(exploring) || !semantics.tree.isContainer(exploring))
+  ) {
+    dropped.push({ part: 'exploration', id: exploring });
+    exploring = undefined;
+  }
+  // Flows and tours need their complete stage. An invalid scope cannot reuse its zoom marks.
+  if (!viewKnown || (activity.kind !== 'reading' && activity.kind !== 'selected'))
+    exploring = undefined;
+  const reset = !viewKnown || picture.exploring !== exploring;
+  let zoom = semantics.scope(view, exploring).normalise(reset ? DEFAULT_ZOOM : known);
   const out = (changes: Partial<Picture> = {}): { picture: Picture; dropped: Dropped[] } => ({
-    picture: { view, audience, zoom, activity: READING, ...changes },
+    picture: {
+      view,
+      audience,
+      zoom,
+      activity: READING,
+      ...(exploring === undefined ? {} : { exploring }),
+      ...changes,
+    },
     dropped,
   });
   switch (activity.kind) {
@@ -108,7 +128,7 @@ export function normalisePicture(
         dropped.push({ part: 'selection', id: activity.element });
         return out();
       }
-      const shown = lift(semantics.tree, semantics.drawn(view, zoom), activity.element);
+      const shown = lift(semantics.tree, semantics.drawn(view, zoom, exploring), activity.element);
       if (shown === null) {
         dropped.push({ part: 'selection', id: activity.element });
         return out();
@@ -178,6 +198,7 @@ export function switchView(semantics: Semantics, picture: Picture, view: Id): Pi
     ...picture,
     view,
     zoom: DEFAULT_ZOOM,
+    exploring: undefined,
     activity: initialActivity(semantics, semantics.hasView(view) ? view : semantics.firstView),
   });
 }
@@ -190,14 +211,14 @@ export function switchAudience(semantics: Semantics, picture: Picture, audience:
 /** MODEL-206: opens a container in place. */
 export function openContainer(semantics: Semantics, picture: Picture, id: Id): Picture {
   const base = normal(semantics, picture);
-  const zoom = semantics.scope(base.view).open(base.zoom, id);
+  const zoom = semantics.scope(base.view, base.exploring).open(base.zoom, id);
   return normal(semantics, { ...base, zoom });
 }
 
 /** MODEL-206: closes a container in place; a selection inside it moves to it (MODEL-603). */
 export function closeContainer(semantics: Semantics, picture: Picture, id: Id): Picture {
   const base = normal(semantics, picture);
-  const zoom = semantics.scope(base.view).close(base.zoom, id);
+  const zoom = semantics.scope(base.view, base.exploring).close(base.zoom, id);
   return normal(semantics, { ...base, zoom });
 }
 
@@ -205,8 +226,36 @@ export function closeContainer(semantics: Semantics, picture: Picture, id: Id): 
 export function reveal(semantics: Semantics, picture: Picture, id: Id): Picture {
   const base = normal(semantics, picture);
   if (!semantics.tree.has(id)) return base;
-  const zoom = semantics.scope(base.view).reveal(base.zoom, id);
+  // A connection's details can name a part outside this exploration. Return to the full view
+  // before revealing it rather than silently selecting an unrelated visible ancestor.
+  if (base.exploring !== undefined && !semantics.scope(base.view, base.exploring).holds(id)) {
+    return reveal(semantics, endExploration(semantics, base), id);
+  }
+  const zoom = semantics.scope(base.view, base.exploring).reveal(base.zoom, id);
   return normal(semantics, { ...base, zoom });
+}
+
+/** MODEL-212: explore one container and its connections, starting with its immediate children. */
+export function explore(semantics: Semantics, picture: Picture, id: Id): Picture {
+  if (
+    !semantics.tree.has(id) ||
+    !semantics.tree.isContainer(id) ||
+    picture.activity.kind === 'playing' ||
+    picture.activity.kind === 'presenting' ||
+    picture.exploring === id
+  )
+    return picture;
+  return normal(semantics, {
+    ...picture,
+    exploring: id,
+    zoom: DEFAULT_ZOOM,
+    activity: { kind: 'selected', element: id },
+  });
+}
+
+/** MODEL-213: a fresh shared exploration can always return to its full authored view. */
+export function endExploration(semantics: Semantics, picture: Picture): Picture {
+  return normal(semantics, { ...picture, exploring: undefined, zoom: DEFAULT_ZOOM });
 }
 
 /**

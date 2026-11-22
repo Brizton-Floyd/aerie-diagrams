@@ -245,6 +245,8 @@ export function visitName(semantics: Semantics, visit: Visit, audience: Id): str
   const { picture } = readFragment(semantics, visit.fragment);
   const { activity } = picture;
   if (activity.kind === 'selected') return semantics.name(activity.element, audience);
+  if (picture.exploring !== undefined)
+    return `Exploring ${semantics.name(picture.exploring, audience)}`;
   if (activity.kind === 'playing') return scenarioTitle(semantics, activity.scenario, audience);
   if (activity.kind === 'overview')
     return `${scenarioTitle(semantics, activity.scenario, audience)} overview`;
