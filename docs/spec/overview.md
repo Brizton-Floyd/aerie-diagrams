@@ -81,18 +81,19 @@ new decision.
 
 ## Reading this spec
 
-| Document                           | What it covers                                                            | Ids                              |
-| ---------------------------------- | ------------------------------------------------------------------------- | -------------------------------- |
-| [overview.md](overview.md)         | purpose, audiences, scope, conventions, choices this spec makes           | `SCOPE`                          |
-| [language.md](language.md)         | the Lines language, canonical model, errors, formatter, command line      | `LANG`, `E`/`W` diagnostic codes |
-| [model.md](model.md)               | containment, audience resolution, views, lifting, scenarios, walkthroughs | `MODEL`                          |
-| [layout.md](layout.md)             | the layout interface, ELK, the reserve, opening in place, trail, lanes    | `LAYOUT`, `RULE`, `SCORE`        |
-| [look.md](look.md)                 | Signal tokens, type, shapes, icons, the trail, motion                     | `LOOK`                           |
-| [interaction.md](interaction.md)   | everything a reader and an author do                                      | `INT`                            |
-| [acceptance.md](acceptance.md)     | test suites per slice, and the browser journeys                           | `ACC`, `JOURNEY`                 |
-| [claude-skill.md](claude-skill.md) | the Aerie skill for Claude                                                | `SKILL`                          |
-| [export.md](export.md)             | static PNG/PDF documents and preview                                      | `EXPORT`                         |
-| [drift.md](drift.md)               | drift detection: checking a model against the code (after v1)             | `DRIFT`                          |
+| Document                           | What it covers                                                                                                                                                                                        | Ids                              |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| [overview.md](overview.md)         | purpose, audiences, scope, conventions, choices this spec makes                                                                                                                                       | `SCOPE`                          |
+| [language.md](language.md)         | the Lines language, canonical model, errors, formatter, command line                                                                                                                                  | `LANG`, `E`/`W` diagnostic codes |
+| [model.md](model.md)               | containment, audience resolution, views, lifting, scenarios, walkthroughs                                                                                                                             | `MODEL`                          |
+| [layout.md](layout.md)             | the layout interface, ELK, the reserve, opening in place, trail, lanes                                                                                                                                | `LAYOUT`, `RULE`, `SCORE`        |
+| [look.md](look.md)                 | Signal tokens, type, shapes, icons, the trail, motion                                                                                                                                                 | `LOOK`                           |
+| [interaction.md](interaction.md)   | everything a reader and an author do                                                                                                                                                                  | `INT`                            |
+| [exploration.md](exploration.md)   | standalone reference, with [HTML](../../output/html/aerie-explore-this-part-implementation-spec.html) and [prose-only PDF](../../output/pdf/aerie-explore-this-part-implementation-spec.pdf) editions | existing `MODEL` and `INT` rules |
+| [acceptance.md](acceptance.md)     | test suites per slice, and the browser journeys                                                                                                                                                       | `ACC`, `JOURNEY`                 |
+| [claude-skill.md](claude-skill.md) | the Aerie skill for Claude                                                                                                                                                                            | `SKILL`                          |
+| [export.md](export.md)             | static PNG/PDF documents and preview                                                                                                                                                                  | `EXPORT`                         |
+| [drift.md](drift.md)               | drift detection: checking a model against the code (after v1)                                                                                                                                         | `DRIFT`                          |
 
 - **Requirements** are the numbered statements, written in bold as `PREFIX-nnn` at the start of a
   list item. Each states one testable behaviour in the present tense ("is", "shows", "never moves").

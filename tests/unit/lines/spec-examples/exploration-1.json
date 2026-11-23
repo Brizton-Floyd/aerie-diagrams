@@ -1,0 +1,537 @@
+{
+  "model": {
+    "format": "aerie-model/1",
+    "id": "exploration",
+    "title": {
+      "base": "A connected subsystem",
+      "set": {}
+    },
+    "about": {
+      "base": null,
+      "set": {},
+      "add": {}
+    },
+    "audiences": [
+      {
+        "id": "exec",
+        "name": "Executive",
+        "code": false
+      },
+      {
+        "id": "manager",
+        "name": "Manager",
+        "code": false
+      },
+      {
+        "id": "engineer",
+        "name": "Engineer",
+        "code": true
+      }
+    ],
+    "defaultAudience": "manager",
+    "system": null,
+    "elements": [
+      {
+        "id": "suite",
+        "parent": null,
+        "name": {
+          "base": "Suite",
+          "set": {}
+        },
+        "tagline": {
+          "base": null,
+          "set": {}
+        },
+        "tags": [
+          "system"
+        ],
+        "icon": null,
+        "code": [],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "id": "web",
+        "parent": "suite",
+        "name": {
+          "base": "Website",
+          "set": {}
+        },
+        "tagline": {
+          "base": null,
+          "set": {}
+        },
+        "tags": [
+          "service"
+        ],
+        "icon": null,
+        "code": [],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "id": "screen",
+        "parent": "web",
+        "name": {
+          "base": "Screen",
+          "set": {}
+        },
+        "tagline": {
+          "base": null,
+          "set": {}
+        },
+        "tags": [
+          "module"
+        ],
+        "icon": null,
+        "code": [],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "id": "engine",
+        "parent": "suite",
+        "name": {
+          "base": "Analysis engine",
+          "set": {
+            "engineer": "Processing engine"
+          }
+        },
+        "tagline": {
+          "base": null,
+          "set": {
+            "engineer": "Implementation details"
+          }
+        },
+        "tags": [
+          "service"
+        ],
+        "icon": null,
+        "code": [],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "id": "api",
+        "parent": "engine",
+        "name": {
+          "base": "Request service",
+          "set": {}
+        },
+        "tagline": {
+          "base": null,
+          "set": {}
+        },
+        "tags": [
+          "module"
+        ],
+        "icon": null,
+        "code": [],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "id": "handler",
+        "parent": "api",
+        "name": {
+          "base": "Request handler",
+          "set": {}
+        },
+        "tagline": {
+          "base": null,
+          "set": {}
+        },
+        "tags": [
+          "module"
+        ],
+        "icon": null,
+        "code": [],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "id": "jobs",
+        "parent": "engine",
+        "name": {
+          "base": "Background jobs",
+          "set": {}
+        },
+        "tagline": {
+          "base": null,
+          "set": {}
+        },
+        "tags": [
+          "module"
+        ],
+        "icon": null,
+        "code": [],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "id": "store",
+        "parent": "suite",
+        "name": {
+          "base": "Results store",
+          "set": {}
+        },
+        "tagline": {
+          "base": null,
+          "set": {}
+        },
+        "tags": [
+          "store"
+        ],
+        "icon": null,
+        "code": [],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "id": "primary",
+        "parent": "store",
+        "name": {
+          "base": "Primary data",
+          "set": {}
+        },
+        "tagline": {
+          "base": null,
+          "set": {}
+        },
+        "tags": [
+          "store"
+        ],
+        "icon": null,
+        "code": [],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "id": "secondary",
+        "parent": "store",
+        "name": {
+          "base": "Secondary data",
+          "set": {}
+        },
+        "tagline": {
+          "base": null,
+          "set": {}
+        },
+        "tags": [
+          "store"
+        ],
+        "icon": null,
+        "code": [],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "id": "unrelated",
+        "parent": "suite",
+        "name": {
+          "base": "Reporting",
+          "set": {}
+        },
+        "tagline": {
+          "base": null,
+          "set": {}
+        },
+        "tags": [
+          "service"
+        ],
+        "icon": null,
+        "code": [],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "id": "remote",
+        "parent": null,
+        "name": {
+          "base": "Partner",
+          "set": {}
+        },
+        "tagline": {
+          "base": null,
+          "set": {}
+        },
+        "tags": [
+          "external"
+        ],
+        "icon": null,
+        "code": [],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "id": "remote-api",
+        "parent": "remote",
+        "name": {
+          "base": "Partner API",
+          "set": {}
+        },
+        "tagline": {
+          "base": null,
+          "set": {}
+        },
+        "tags": [
+          "service"
+        ],
+        "icon": null,
+        "code": [],
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      }
+    ],
+    "relationships": [
+      {
+        "subject": "screen",
+        "verb": {
+          "base": "sends requests to",
+          "set": {}
+        },
+        "object": "handler",
+        "kind": "runtime",
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "subject": "handler",
+        "verb": {
+          "base": "reads",
+          "set": {}
+        },
+        "object": "primary",
+        "kind": "runtime",
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "subject": "jobs",
+        "verb": {
+          "base": "writes",
+          "set": {}
+        },
+        "object": "secondary",
+        "kind": "runtime",
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "subject": "primary",
+        "verb": {
+          "base": "sends updates to",
+          "set": {}
+        },
+        "object": "screen",
+        "kind": "runtime",
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "subject": "remote-api",
+        "verb": {
+          "base": "invokes",
+          "set": {}
+        },
+        "object": "handler",
+        "kind": "runtime",
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      },
+      {
+        "subject": "handler",
+        "verb": {
+          "base": "depends on",
+          "set": {}
+        },
+        "object": "unrelated",
+        "kind": "code",
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        }
+      }
+    ],
+    "views": [
+      {
+        "id": "overview",
+        "title": {
+          "base": "Overview",
+          "set": {}
+        },
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        },
+        "show": [
+          {
+            "element": "suite",
+            "depth": 4
+          },
+          {
+            "element": "remote",
+            "depth": 1
+          }
+        ],
+        "kinds": [
+          "runtime"
+        ]
+      },
+      {
+        "id": "dependencies",
+        "title": {
+          "base": "Code dependencies",
+          "set": {}
+        },
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        },
+        "show": [
+          {
+            "element": "suite",
+            "depth": 4
+          },
+          {
+            "element": "remote",
+            "depth": 1
+          }
+        ],
+        "kinds": [
+          "code"
+        ]
+      }
+    ],
+    "scenarios": [
+      {
+        "id": "request",
+        "title": {
+          "base": "Handle a request",
+          "set": {}
+        },
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        },
+        "steps": [
+          {
+            "subject": "screen",
+            "verb": {
+              "base": "sends a request to",
+              "set": {}
+            },
+            "object": "handler",
+            "about": {
+              "base": null,
+              "set": {},
+              "add": {}
+            }
+          },
+          {
+            "subject": "handler",
+            "verb": {
+              "base": "reads",
+              "set": {}
+            },
+            "object": "primary",
+            "about": {
+              "base": null,
+              "set": {},
+              "add": {}
+            }
+          }
+        ]
+      }
+    ],
+    "walkthroughs": [
+      {
+        "id": "tour",
+        "title": {
+          "base": "A tour",
+          "set": {}
+        },
+        "about": {
+          "base": null,
+          "set": {},
+          "add": {}
+        },
+        "steps": [
+          {
+            "target": "overview",
+            "focus": [],
+            "range": null,
+            "open": [],
+            "close": [],
+            "audience": null,
+            "about": {
+              "base": null,
+              "set": {},
+              "add": {}
+            }
+          }
+        ]
+      }
+    ],
+    "ignores": []
+  },
+  "diagnostics": []
+}
