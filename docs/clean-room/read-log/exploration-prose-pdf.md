@@ -36,3 +36,14 @@ checks pass. No application behavior changed.
 
 - `/Users/briztonfloyd/.agents/skills/no-mistakes/SKILL.md`: reviewed validation workflow guidance; this project uses its existing npm and GitHub CI gate for this documentation merge.
 - `https://github.com/Brizton-Floyd/aerie-diagrams/actions/runs/45092007147`: CI failure identifying the missing spec-example baseline.
+
+HTML follow-up: while the merge was being validated, the user requested code samples in the HTML
+edition. Created a standalone HTML document from the complete specification, retaining all seven
+code blocks and fourteen main sections. It embeds Aerie's bundled fonts, follows Signal's light
+palette, requires no external network access, and keeps the prose-only PDF unchanged. Browser
+verification compared all code blocks with the authoritative spec and checked desktop and mobile
+widths; rendered pages were visually inspected. The complete local Linux gate passed before this
+additional standalone document; formatting and documentation checks cover the HTML addition.
+
+- `/Users/briztonfloyd/.agents/skills/lavish/SKILL.md`: reviewed HTML presentation guidance; the user's portable offline document requirement takes priority over hosted code-rendering dependencies and an interactive review session.
+- `/opt/homebrew/bin/lavish-axi`: read the code, plan and table playbooks for document presentation.
