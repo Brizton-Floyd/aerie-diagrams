@@ -27,3 +27,12 @@ no application code or main-branch update is needed.
 - `/Users/briztonfloyd/.agents/skills/gh-axi/SKILL.md`: authenticated GitHub tooling guidance for publication and verification.
 - `/Users/briztonfloyd/.agents/skills/release/SKILL.md`: reviewed branch safety guidance; this follow-up transfers documentation rather than releasing the application.
 - `https://github.com/Brizton-Floyd/aerie-diagrams`: user-designated destination; verify the uploaded PDF against its local Git blob identifier.
+
+Merge follow-up: the user explicitly requested merging the spec and PDF into main. The branch's
+first CI run found a missing canonical snapshot for the new spec's Lines example. Generated only
+that missing snapshot and reviewed its thirteen elements, six relationships, two views, scenario,
+walkthrough, audience wording and empty diagnostics against the document. The fourteen spec-example
+checks pass. No application behavior changed.
+
+- `/Users/briztonfloyd/.agents/skills/no-mistakes/SKILL.md`: reviewed validation workflow guidance; this project uses its existing npm and GitHub CI gate for this documentation merge.
+- `https://github.com/Brizton-Floyd/aerie-diagrams/actions/runs/45092007147`: CI failure identifying the missing spec-example baseline.
