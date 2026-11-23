@@ -19,3 +19,11 @@ Validation: extracted and scanned the final PDF text; checked page text boundari
 fifteen pages and visually inspected every page plus full-size detail pages. The PDF is ordinary
 text and tables. It makes no assertion about acceptance by any particular mail system. Temporary
 authoring and review files were generated from this project's content only.
+
+Publication follow-up: the user requested uploading the document to their Aerie GitHub repository
+so they can download it. Publishing the existing documentation branch is within that request;
+no application code or main-branch update is needed.
+
+- `/Users/briztonfloyd/.agents/skills/gh-axi/SKILL.md`: authenticated GitHub tooling guidance for publication and verification.
+- `/Users/briztonfloyd/.agents/skills/release/SKILL.md`: reviewed branch safety guidance; this follow-up transfers documentation rather than releasing the application.
+- `https://github.com/Brizton-Floyd/aerie-diagrams`: user-designated destination; verify the uploaded PDF against its local Git blob identifier.
